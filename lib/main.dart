@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/estimation/estimation_bloc.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/history_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
@@ -84,6 +86,12 @@ Future<void> main() async {
               BlocProvider<RatingBloc>(
                 create: (context) => RatingBloc(),
               ),
+              BlocProvider<ExpeditionBloc>(
+                create: (context) => ExpeditionBloc(),
+              ),
+              BlocProvider<EstimationBloc>(
+                create: (context) => EstimationBloc(),
+              ),
         ], child: MyApp(appLanguage: appLanguage))))
     );
   });
@@ -118,8 +126,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final destination = jsonDecode(decodedNotification["destination"]);
 
     final destinationString = jsonEncode(destination); // For payload
-
-    // Download image
     String? imagePath;
     if (imageUrl != null && imageUrl.isNotEmpty) {
       try {

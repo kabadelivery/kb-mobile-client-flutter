@@ -2,10 +2,13 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../kaba_chine/presentation/widgets/package_form_info.dart';
 import '../../core/utils.dart';
+import '../../data/expedition/line_model.dart';
+import '../bloc/estimation/estimation_bloc.dart';
 
 class EstimationForm extends StatefulWidget {
   const EstimationForm({super.key});
@@ -20,27 +23,67 @@ class _EstimationFormState extends State<EstimationForm> {
   String? selected_departure_town="Lomé";
   String selected_arrival_town ="Accra";
   int? estimation_price =null;
-  List<Map<String,String>> map_of_town= [
-    {"name":"Lomé","country_code":"TG"},
-    {"name":"Accra","country_code":"GH"},
-    {"name":"Cotonou","country_code":"BJ"},
-    {"name":"Abidjan","country_code":"CI"},
-    {"name":"Ouagadougou","country_code":"BF"},
-    {"name":"Niamey","country_code":"NE"},
-    {"name":"Dakar","country_code":"SN"},
+  List<Map<String,String>> map_of_town_arrival= [
   ];
+  List<Map<String,String>> map_of_town_departure= [
+  ];
+  List<LineModel>availableLines=[];
+  EstimationBloc estimationBloc = EstimationBloc();
+  @override
+  void initState() {
+    estimationBloc.add(getAvailableLines());
+    estimationBloc = BlocProvider.of<EstimationBloc>(context);
+    super.initState();
+  }
+  @override
+  void dispose(){
+    _weight.dispose();
+    estimationBloc.close();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+    estimationBloc = BlocProvider.of<EstimationBloc>(context);
     return  Form(
       key: _formKey,
-      child: Container(
-        width: MediaQuery.of(context).size.width,
+      child: BlocSelector<EstimationBloc, EstimationState,EstimationState>(
+  selector: (state) {
+   return state;
+  },
+  builder: (context, state) {
+    if(state is WeightEntered){
+      _weight.text = state.weight.toString();
+    }
+    if(state is DepartureTownChosen){
+      selected_departure_town = state.town;
+    }
+    if(state is ArrivalTownChosen){
+      selected_arrival_town = state.town;
+    }
+    if(state is EstimationCalculated){
+
+    }
+    if(state is getAvailableLinesState){
+      availableLines = state.lines;
+      for(LineModel line in state.lines){
+        Map<String,String> lineDepartureMap =  {"name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
+        Map<String,String> lineArrivalMap =  {"name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
+
+        if(!map_of_town_departure.contains(lineDepartureMap)){
+          map_of_town_departure.add(lineDepartureMap);
+        }
+        if(!map_of_town_arrival.contains(lineArrivalMap)){
+          map_of_town_arrival.add(lineArrivalMap);
+        }
+      }
+    }
+    return Container(
+        width: 330,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              width: 330,
               padding: EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topRight: Radius.circular(10),topLeft:Radius.circular(10) ),
@@ -76,10 +119,7 @@ class _EstimationFormState extends State<EstimationForm> {
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Ville de départ", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
-                  ),
+                  FormTitleWithIcon(title: "Ville de départ", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
@@ -99,28 +139,24 @@ class _EstimationFormState extends State<EstimationForm> {
                         height: 0,
                       ),
                       icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
-                      items: map_of_town.map((town){
+                      items: map_of_town_departure.map((town){
                         return DropdownMenuItem<String>(
                             value: town['name'],
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
                                 SizedBox(width: 10,),
                                 Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
                               ],
                             ));
                       }).toList(),
                       onChanged: (value){
-                        setState(() {
-                          selected_departure_town = value.toString();
-                        });
+                        estimationBloc.add(ChooseDepartureTown(value.toString()));
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
-                  ),
+                  FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
@@ -140,28 +176,25 @@ class _EstimationFormState extends State<EstimationForm> {
                         height: 0,
                       ),
                       icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
-                      items: map_of_town.map((town){
+                      items: map_of_town_arrival.map((town){
                         return DropdownMenuItem<String>(
                             value: town['name'],
                             child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+
                               children: [
-                                Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold),),
+                                Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
                                 SizedBox(width: 10,),
                                 Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
                               ],
                             ));
                       }).toList(),
                       onChanged: (value){
-                        setState(() {
-                          selected_departure_town = value.toString();
-                        });
+                        estimationBloc.add(ChooseArrivalTown(value.toString()));
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
-                  ),
+                  FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
                   SizedBox(height: 10,),
                   Container(
                     width: 330,
@@ -180,9 +213,7 @@ class _EstimationFormState extends State<EstimationForm> {
                         return null;
                       },
                       onChanged: (value){
-                        setState(() {
-                          _weight.text = value;
-                        });
+                        estimationBloc.add(WeightChanged(double.parse(_weight.text)));
                       },
                       maxLines: 1,
                       decoration: InputDecoration(
@@ -214,9 +245,11 @@ class _EstimationFormState extends State<EstimationForm> {
                   GestureDetector(
                     onTap: (){
                       if(_formKey.currentState!=null && (_formKey.currentState as FormState).validate()){
-                        setState(() {
-                          estimation_price = 10000;
-                        });
+                        estimationBloc.add(
+                            CalculateEstimation(arrivalTown: selected_arrival_town,
+                                departureTown: selected_departure_town!,
+                                weight: double.parse(_weight.text),
+                                availableLines: []));
                       }
                     },
                     child: Container(
@@ -227,7 +260,11 @@ class _EstimationFormState extends State<EstimationForm> {
                           gradient: LinearGradient(
                               begin: Alignment.centerLeft,
                               end: Alignment.centerRight,
-                              colors: [
+                              colors:_weight.text.isEmpty? [
+                              Color(0xFFCC1E44).withOpacity(.5),
+                              Color(0xFFB71B3E).withOpacity(.5),
+                              Color(0xFFA11738).withOpacity(.5),
+                              ]: [
                                 Color(0xFFCC1E44),
                                 Color(0xFFB71B3E),
                                 Color(0xFFA11738),
@@ -320,7 +357,9 @@ class _EstimationFormState extends State<EstimationForm> {
 
           ],
         ),
-      ),
+      );
+  },
+),
     );
   }
 }

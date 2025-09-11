@@ -1,12 +1,16 @@
+import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/billing.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
 import '../../Enums/expedition_type.dart';
 import '../../core/utils.dart';
+import '../../data/expedition/create_expedition_model.dart';
 import '../widget/estimation_math.dart';
 import '../widget/expedition_detail_form.dart';
 
@@ -20,11 +24,49 @@ class Expedition extends StatefulWidget {
 
 class _ExpeditionState extends State<Expedition> {
   int step = 1;
-
+  List<PackageModel> packages = [
+    PackageModel()
+  ];
+  ExpeditionBloc expeditionBloc = ExpeditionBloc();
+  CreateExpedition createExpedition = CreateExpedition();
+  @override
+  void initState() {
+    BlocProvider.of<ExpeditionBloc>(context).add(ExpeditionInitialEvent());
+    expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+    expeditionBloc.add(getAvailableLines());
+    super.initState();
+  }
+  @override
+  void dispose() {
+    BlocProvider.of<ExpeditionBloc>(context).add(ExpeditionInitialEvent());
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    expeditionBloc.stream.listen((state){
+      if (state is ExpeditionInitial) {}
+      else if (state is ExpeditionCreated) {
+      } else if (state is NegociationCreated) {
+      } else if (state is PackagesUpdatedState) {
+        createExpedition.colis = state.packages;
+      }
+      else if (state is chooseShippingMethodState) {
+        createExpedition.methodeCollecte = state.method;
 
+      } else if (state is chooseShippingMethodAddressTypeState) {
+        createExpedition.adresseOrigine = state.coords;
+      }
+      else if(state is enterSendPhoneNumberState){
+        createExpedition.telephoneOrigine = state.phoneNumber;
+      }
+      else if (state is chooseFetchDateState) {
+        createExpedition.dateCollecte = state.date;
+      } else if (state is chooseFetchTimeState) {
+        createExpedition.heureCollecte = state.hour;
+      }
+
+    });
+    return Scaffold(
         backgroundColor: Colors.white,
         body: Container(
             width: MediaQuery.of(context).size.width,
@@ -37,8 +79,9 @@ class _ExpeditionState extends State<Expedition> {
                 },
                 child: Container(
                     width: MediaQuery.of(context).size.width,
+
                     padding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                        EdgeInsets.only(left: 20,right:20 ,bottom: 20,top: 50),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
@@ -61,7 +104,7 @@ class _ExpeditionState extends State<Expedition> {
                 ),
               ),
               Container(
-                width: 380,
+                width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   boxShadow: [
@@ -146,7 +189,7 @@ class _ExpeditionState extends State<Expedition> {
                   child: Column(
                     children: [
                       Container(margin: EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                        width: MediaQuery.of(context).size.width,
+                        width:330,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(15),
@@ -252,13 +295,49 @@ class _ExpeditionState extends State<Expedition> {
                   ),
                 ),
               )
-           :Expanded(child: SingleChildScrollView(
+           :Expanded(
+             child: SingleChildScrollView(
              child: Column(
                children: [
-                 ExpeditionDetailForm(),
                  SizedBox(height: 10,),
                  Container(
-                   width: 330,
+                     width: 330,
+                     child: PackageSelector()),
+                 BlocConsumer<ExpeditionBloc, ExpeditionState>(
+                   bloc: expeditionBloc,
+                   listener: (context, state) {
+                     if(state is PackagesUpdatedState){
+                       packages = state.packages;
+                     }
+                     if(state is ExpeditionInitial){
+                       step = 1;
+                       packages = [
+                         PackageModel()
+                       ];
+                     }
+                   },
+                   builder: (context, state) {
+                     return Container(
+                       width: 330,
+                       child: Column(
+                         children: packages
+                             .asMap()
+                             .entries
+                             .map((entry) => Padding(
+                           padding: const EdgeInsets.symmetric(vertical: 8.0),
+                           child: ExpeditionDetailForm(index: entry.key),
+                         ))
+                             .toList(),
+                       ),
+                     );
+                   },
+
+                 ),
+                 SizedBox(height: 10),
+                 PickUpOptions(),
+                 SizedBox(height: 10,),
+                 Container(
+                   width: 350,
                    child: MaterialButton(
                      color: KabaExpeditionColor.primary,
                      shape: RoundedRectangleBorder(
@@ -286,7 +365,9 @@ class _ExpeditionState extends State<Expedition> {
                        child: Row(
                          mainAxisAlignment: MainAxisAlignment.center,
                          children: [
-                           Text("Finaliser",style: TextStyle(color: Colors.white,),),
+                           Icon(Icons.check_circle_outline_rounded,color: Colors.white,),
+                           SizedBox(width: 10,),
+                           Text("Continuer et Négocier ?",style: TextStyle(color: Colors.white,),),
                            ],
                        ),
                      ),
@@ -296,8 +377,6 @@ class _ExpeditionState extends State<Expedition> {
                ],
              ),
            )),
-
-
             ]
             )
         )

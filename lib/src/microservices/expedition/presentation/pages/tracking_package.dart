@@ -25,8 +25,8 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
     "💰 Prix abordable",
     "👩‍💼  Service client",
     "📱 Facilité d’utilisation",
-    "📍  Suivi temps réel",
-    "📦  Colis sécurisé"
+    "📍 Suivi temps réel",
+    "📦 Colis sécurisé"
   ];
   @override
   void initState() {
