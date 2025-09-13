@@ -1,7 +1,5 @@
 
-import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
-import 'package:KABA/src/resources/menu_api_provider.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
 

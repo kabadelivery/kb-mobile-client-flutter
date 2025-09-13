@@ -10,6 +10,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/ui/customwidgets/FloatingCartButton/FloatingCartButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShippingFeeTag.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
@@ -207,7 +208,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
             Navigator.pop(context);
           }),
       actions: <Widget>[
-        GestureDetector(
+      /*   GestureDetector(
           onTap: () => _showMenuBottomSheet(ALL),
           child: Row(
             children: <Widget>[
@@ -233,11 +234,16 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
               ),
             ],
           ),
-        )
+        ) */
       ],
     );
 
     return Scaffold(
+      floatingActionButton: FloatingCartButton(
+        itemCount: _foodCount, onPressed: () { _showMenuBottomSheet(ALL);  },
+     // dynamic number
+   
+  ),
       backgroundColor: Colors.white,
       appBar: appBar,
       body: AnnotatedRegion<SystemUiOverlayStyle>(

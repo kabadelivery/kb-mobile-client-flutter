@@ -51,7 +51,7 @@ class ProposalPresenter implements ProposalContract {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
           List<ShopProductModel>? proposals =
-              lo?.map((bs) => ShopProductModel.fromJson(bs))?.toList();
+              lo.map((bs) => ShopProductModel.fromJson(bs)).toList();
           /* send these to json */
           _proposalView.inflateProposal(proposals!);
           _proposalView.showLoading(false);
@@ -76,7 +76,7 @@ class ProposalPresenter implements ProposalContract {
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(proposals_json)["data"];
         List<ShopProductModel>? proposals =
-            lo?.map((bs) => ShopProductModel.fromJson(bs))?.toList();
+            lo.map((bs) => ShopProductModel.fromJson(bs)).toList();
         /* send these to json */
         CustomerUtils.saveProposalPage(proposals_json);
         CustomerUtils.saveProposalVersion(); // date

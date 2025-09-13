@@ -2,7 +2,6 @@ import 'package:KABA/src/microservices/kaba_chine/data/chat/chat_conversation_mo
 
 import '../../data/chat/chat_message_model.dart';
 import '../../data/chat/data_remote_source.dart';
-import 'chat_conversation_entity.dart';
 import 'chat_message_entity.dart';
 
 abstract class ChatRepository {

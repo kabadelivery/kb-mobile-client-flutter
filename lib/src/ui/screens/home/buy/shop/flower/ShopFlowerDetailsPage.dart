@@ -8,6 +8,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/modals/Modal_2_connect.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';
@@ -480,54 +481,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  /* add an image*/
-                  // location_permission
-                  Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-                          image: new DecorationImage(
-                        fit: BoxFit.fitHeight,
-                        image: new AssetImage(ImageAssets.login_description),
-                      ))),
-                  SizedBox(height: 10),
-                  Text(
-                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
-                      textAlign: TextAlign.center)
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context)!.translate('not_now')}"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child:
-                    Text("${AppLocalizations.of(context)!.translate('login')}"),
-                onPressed: () {
-                  /* */
-                  /* jump to login page... */
-                  Navigator.of(context).pop();
-
-                  Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(LoginView()),
-                          fromOrderingProcess: true)));
-                },
-              )
-            ],
-          );
+          return const Modal_2_connect(); 
         },
       );
     } else {

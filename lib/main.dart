@@ -8,8 +8,6 @@ import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/hist
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
-import 'package:KABA/src/models/NotificationFDestination.dart';
-import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';

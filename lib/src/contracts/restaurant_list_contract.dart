@@ -78,7 +78,7 @@ class RestaurantListPresenter implements RestaurantListContract {
           restaurants = await compute(sortOutRestaurantList, {
             "data": data,
             "position": userPosition,
-            "is_email_account": user == null || user?.username == null
+            "is_email_account": user.username == null
                 ? false
                 : (customer.username!.contains("@") ? true : false),
             "filter_key": filter_key,
@@ -125,7 +125,7 @@ class RestaurantListPresenter implements RestaurantListContract {
 
     try {
       await Future.delayed(Duration(milliseconds: 1000), () => {});
-      if (filter_key != null && filter_key?.trim() != "")
+      if (filter_key.trim() != "")
         shops = _filteredData(shops, filter_key);
       _restaurantListView.loadRestaurantListLoading(false);
       _restaurantListView.inflateFilteredRestaurants(shops, filter_key);

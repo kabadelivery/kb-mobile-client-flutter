@@ -1,14 +1,9 @@
 /* login contract */
-import 'dart:convert';
 
 import 'package:KABA/src/xrint.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/resources/address_api_provider.dart';
-import 'package:KABA/src/resources/client_personal_api_provider.dart';
-import 'package:KABA/src/utils/functions/CustomerUtils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AddressContract {
 

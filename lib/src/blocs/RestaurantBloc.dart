@@ -1,8 +1,4 @@
-import 'package:KABA/src/models/CustomerModel.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CommentModel.dart';
-import 'package:KABA/src/models/DeliveryAddressModel.dart';
-import 'package:KABA/src/models/HomeScreenModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';

@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPnewPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/fake-orderpage/NewDesignOrderPage.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as t;
 
@@ -103,6 +107,11 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       }
       _loginFieldController?.text = widget.login!;
     }
+
+
+
+
+
   }
 
   @override
@@ -110,7 +119,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: KColors.primaryColor,
+          backgroundColor: Colors.white,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
               onPressed: () {
@@ -131,149 +140,139 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
           ),
         ),
         backgroundColor: Colors.white,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child:Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 30),
-                    // Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
-                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
-                    /* radiobutton - check who are you */
-                    !isCodeSent ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          new Radio(
-                            value: 0,
-                            groupValue: _registerModeRadioValue,
-                            onChanged: _handleRadioValueChange,
-                          ), new Text(
-                              "${AppLocalizations.of(context)!.translate('phone_number')}",
-                              style: new TextStyle(fontSize: 14.0)),
-                          new Radio(
-                            value: 1,
-                            groupValue: _registerModeRadioValue,
-                            onChanged: _handleRadioValueChange,
-                          ), new Text(
-                              "${AppLocalizations.of(context)!.translate('email')}",
-                              style: new TextStyle(fontSize: 14.0)),
-                        ]) : Container(),
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
+        body: Column(
+         // height: MediaQuery.of(context).size.height,
+          children: [
+             SingleChildScrollView(
 
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController,
-                                enabled: !isCodeSent,
-                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint![_registerModeRadioValue]), style: TextStyle(color:KColors.new_black)),
-                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
-
-
-                    SizedBox(height: 10),
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _nicknameFieldController,
-                                enabled: !isCodeSent,
-                                onChanged: _onNicknameFieldTextChanged,
-                                decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:KColors.new_black),
-                                keyboardType: TextInputType.emailAddress),
-                            decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
-                    _registerModeRadioValue == 1 ? SizedBox(height: 20) : Container(),
-
-                    _registerModeRadioValue == 1 ? Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context)!.translate('please_enter_whatsapp_no')}",
-                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)) : Container(),
-                    _registerModeRadioValue == 1 ?  SizedBox(height: 10) : Container(),
-
-                    _registerModeRadioValue == 1 /* email */ ?
-                    Row(mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CountryCodePicker(
-                          flagWidth: 16,
-                          onChanged: _onCountryChanged,
-                          // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                          initialSelection: _initialSelection,
-                          // favorite: ['+33','FR'],
-                          // optional. Shows only country name and flag
-                          showCountryOnly: false,
-                          // optional. Shows only country name and flag when popup is closed.
-                          showOnlyCountryWhenClosed: false,
-                          // optional. aligns the flag and the Text left
-                          alignLeft: false,
-                        )
-                         ,
-                        SizedBox(width: 160,
-                            child: Container(
-                                padding: EdgeInsets.all(14),
-                                child: TextField(controller: _whatsappPhonenumberController,
-                                    enabled: !isCodeSent,
-                                    onChanged: _onWhaNumberieldTextChanged,
-                                    decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:KColors.new_black),
-                                    keyboardType: TextInputType.emailAddress),
-                                decoration:  isWhaNumberError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                            )),
-                      ],
-                    )
-                        : Container(),
-
-                    SizedBox(height: 30),
-                    (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
-                    SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
-                        height: 15, width: 15) : Container(),
-
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context)!.translate('press_code_hint')}",
-                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:<Widget>[
-                          isCodeSent ?
-                          SizedBox(width: 80,
-                              child: Container(
-                                  padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('code')}"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
-//                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                          ) : Container(),
-                          isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlinedButton(
-                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
-                              child: Row(
-                            children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                              /* stream builder, that shows that the code is been sent */
-                              isCodeSent == false &&  isCodeSending ? Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
-                                ],
-                              ) : Container(),
-                            ],
-                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
-                        ]),
-                    SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+            child:Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 15),
+                     Row(mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                        SizedBox(width: 10),
-                        (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
+                       Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
+                       SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                        SizedBox(width: 5),
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
                       ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
-                    SizedBox(height: 50),
-                  ]
+                    ),
+                     SizedBox(height: 40),
+                      Center(
+                        child: 
+                       Text("Creer votre Compte ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                      ),
+                      SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),
+                    child:   
+                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+              const SizedBox(height: 40),
+
+              // Username
+              TextField(
+               // controller: usernameController,
+                decoration: InputDecoration(
+                  hintText: "Nom d'utilisateur",
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
               ),
-            ),
+              const SizedBox(height: 15),
+
+              // Password
+              TextField(
+               // controller: passwordController,
+               // obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  hintText: "Mot de passe",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                 /*  suffixIcon: IconButton(
+                   // icon: Icon(
+                   //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                      //  _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ), */
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+
+              // Confirm Password
+              TextField(
+                //controller: confirmPasswordController,
+                //obscureText: _obscureConfirmPassword,
+                decoration: InputDecoration(
+                  hintText: "Confirmer le mot de passe",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                 /*  suffixIcon: IconButton(
+                    icon: Icon(_obscureConfirmPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                  ) */
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Create account button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                 onPressed: () {
+                    showReceiveCodeBottomSheet(context);
+                 },
+                   // Handle create account action,
+                  child: const Text(
+                    "Créer le compte",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              
+
+              // Back button
+              Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text("Retour"),
+                ),
+              )
+            ],
           ),
-        ));
+        ),
+      ),
+      Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.fill, )
+          ]
+          
+        )
+        );
   }
 
   void _handleRadioValueChange (int? value) {
@@ -685,7 +684,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   @override
-  void codeError() {
+  void codeError() { 
     mToast("${AppLocalizations.of(context)!.translate('register_code_error')}");
   }
 
@@ -696,6 +695,70 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
      countryDialCode = value;
      _initialSelection = value.code!;
   }
+  
+  void showReceiveCodeBottomSheet(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    backgroundColor: Colors.white,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 50,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Confirmation",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text( "Vous allez recevoir un code de vérification pour finaliser  ",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black54),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: KColors.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () {
+              // close the bottom sheet
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => VerificationPage(),
+                ),
+              );
+            },
+                child: const Text(
+                  "Recevoir le Code",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
 
 }

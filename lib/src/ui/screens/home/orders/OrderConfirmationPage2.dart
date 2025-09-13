@@ -135,7 +135,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
   bool topup_button_pressed =false;
   bool pay_now_button_pressed=false;
+   double total = 0 ;
+  // double total = articlePrice + deliveryPrice + extraFees;
   bool pay_at_delivery_button_pressed=false;
+  
+  double  articlePrice =  0;
+  double  deliveryPrice = 0;
+  double  extraFees = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -149,11 +155,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 onPressed: () {
                   Navigator.pop(context);
                 }),
-            backgroundColor: KColors.primaryYellowColor,
+            backgroundColor: KColors.primaryColor,
             centerTitle: true,
             title: Text(
                 "${AppLocalizations.of(context)!.translate('confirm_order')}",
-                style: TextStyle(fontSize: 16))),
+                style: TextStyle(color:Colors.white , fontSize: 18, fontWeight: FontWeight.w600),
+                )),
         // check if the restaurant is open before showing anything.
         body: (isPayAtDeliveryLoading == true ||
                 isPayNowLoading == true ||
@@ -707,13 +714,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _cookingTimeEstimation() {
     return Container(
-        margin: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.all(Radius.circular(5)),
-            color: KColors.new_gray),
-        padding: EdgeInsets.only(top: 15, bottom: 15, left: 10, right: 10),
-        child: Row(
+      margin: EdgeInsets.all(15),
+        padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 12, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                
+                color: Color(0xFFEFF5FF),
+                borderRadius: BorderRadius.circular(21),
+                
+                border:
+                    Border.all(color: Colors.blue),
+              ),
+        child: /* Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
@@ -729,7 +741,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       color: KColors.primaryColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w600))
-            ]));
+            ]) */
+           Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.timer_outlined, color: Colors.blue),
+                SizedBox(width:15),
+                Text("${AppLocalizations.of(context)!.translate('cooking_time_estimation')}"),
+                SizedBox(width: 30),
+                 Text('${AppLocalizations.of(context)!.translate('min_short_on_average')}',style: TextStyle(color: Colors.red,fontWeight: FontWeight.w600),),
+               /*  ElevatedButton(
+
+                  onPressed: () {},
+                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
+                ) */
+              ],
+            ),
+            );
   }
 
   _buildDeliveryCoupon() {
@@ -755,7 +783,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[SizedBox(height: 20)]
-            ..add(Container(
+            ..add
+            (Container(
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
                   color: KColors.new_gray,
@@ -821,15 +850,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             : Container(),
                         color: Colors.white),
                     SizedBox(height: 10),
-                    Container(
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.only(
-                          left: 10, right: 10, top: 5, bottom: 5),
-                      color: KColors.new_gray,
+                    /*  Container(
+                       margin: EdgeInsets.only(left:15,right:15),
+              padding: const EdgeInsets.only(
+                  top: 12, bottom: 15, left: 12, right: 12),
+                      color: Color(0xFFFFE8ED),
+                      
                       child: TextField(
                           controller: _addInfoController,
                           textAlign: TextAlign.start,
-                          maxLines: 3,
+                          maxLines: 1,
                           style:
                               TextStyle(color: KColors.new_black, fontSize: 14),
                           decoration: InputDecoration(
@@ -837,40 +867,97 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                 "${AppLocalizations.of(context)!.translate('additional_info')}",
                             border: InputBorder.none,
                           )),
-                    ),
+                    ), */ 
+                     Container(
+                      margin: EdgeInsets.only(left:15,right:15),
+              padding: const EdgeInsets.only(
+                  top: 12, bottom: 15, left: 12, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                
+                color: Color(0xFFFFE8ED),
+                borderRadius: BorderRadius.circular(21),
+                
+                border:
+                    Border.all(color: Colors.red),
+              ),
+              child: Column(
+                children: [
+                  Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.chat_bubble_outline_outlined, color: Colors.red),
+                SizedBox(width:10),
+                Text("${AppLocalizations.of(context)!.translate('additional_info')}",style: TextStyle(fontWeight:FontWeight.normal),),
+                SizedBox(width:10),
+                 Icon(Icons.keyboard_arrow_down, color: Colors.red),
+               /*  ElevatedButton(
+
+                  onPressed: () {},
+                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
+                ) */
+              ],
+            ),
+                ],
+              ),
+            ),
+
                     SizedBox(height: 10),
                     /* choose a delivery address */
                     InkWell(
                         splashColor: Colors.white,
                         child: Container(
-                            margin: EdgeInsets.only(left: 10, right: 10),
+                            margin: EdgeInsets.only(left: 5, right:5 ),
                             padding: EdgeInsets.only(top: 10, bottom: 10),
                             decoration: BoxDecoration(
                                 shape: BoxShape.rectangle,
                                 borderRadius:
                                     BorderRadius.all(Radius.circular(5)),
-                                color: KColors.mBlue.withAlpha(30)),
+                                 // color: KColors.mBlue.withAlpha(30)
+                                  ),
                             child: Row(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Row(children: <Widget>[
-                                    BouncingWidget(
-                                      duration: Duration(milliseconds: 400),
-                                      scaleFactor: 2,
-                                      onPressed: () {},
-                                      child: Icon(Icons.location_on,
-                                          size: 28, color: KColors.mBlue),
-                                    ),
-                                  ]),
-                                  SizedBox(width: 10),
-                                  Text(
-                                      "${AppLocalizations.of(context)!.translate('choose_delivery_address')}",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 14,
-                                          color: KColors.mBlue))
-                                ])),
+                                children: 
+                                
+                                <Widget>[
+                                  
+                                   Container(
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 12, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                
+                color: Color(0xFFEFF5FF),
+                borderRadius: BorderRadius.circular(21),
+                
+                border:
+                    Border.all(color: Colors.blue),
+              ),
+              child: Column(
+                children: [
+                  Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.place_outlined, color: Colors.blue),
+                SizedBox(width:32),
+                Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),),
+                SizedBox(width:70),
+                 Icon(Icons.control_point_outlined, color: Colors.blue),
+               /*  ElevatedButton(
+
+                  onPressed: () {},
+                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
+                ) */
+              ],
+            ),
+               
+               
+                ],
+              ),
+            ),
+           
+                                ]
+                                
+                                )),
                         onTap: () {
                           _pickDeliveryAddress();
                         }),
@@ -880,9 +967,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   _orderBillConfiguration!.isBillBuilt == true
                   ?GestureDetector(
                 onTap: (){
-                  showBillingPopUp();
+                 // showBillingPopUp();
                 },
-                child: Container(
+               /*  child: Container(
                   width: MediaQuery.of(context).size.width - 20,
                     height: 40,
                      alignment: Alignment.center,
@@ -892,7 +979,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ),
                     child: Text("${AppLocalizations.of(context)!.translate('see_bill')}",style: TextStyle(color: Colors.white,fontSize: 16),
                     )
-                ),
+                ), */
               ):Container(),
                     //NEW USER VOUCHER
                     is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
@@ -921,7 +1008,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         ),
                       ),
                     )),
-                    SizedBox(height: 20)
+                    SizedBox(height: 20),
+                     Row(
+              children: [
+                Text("hI"),
+              ],
+            ),
                   ])),
     );
   }
@@ -1598,7 +1690,22 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     }
 
     return Container(
-      color: Colors.white,
+      margin: EdgeInsets.only(left: 15, right: 15),
+      padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 0.5, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                
+                color: Color(0xFFFFFFFFF),
+                borderRadius: BorderRadius.circular(21),
+                 boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 6,
+            offset: Offset(0, 3),
+          ),
+        ],
+                
+              ),
       child: Column(
         children: <Widget>[
           _orderBillConfiguration.open_type! == 0
@@ -2373,55 +2480,251 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     if (_selectedVoucher == null) {
       return Column(children: <Widget>[
-        SizedBox(height: 10),
-        /* do you have a voucher you want to use ? */
-        InkWell(
-          onTap: () => _selectVoucher(),
-          child: Shimmer(
-            duration: Duration(seconds: 2),
-            //Default value
-            color: Colors.white,
-            //Default value
-            enabled: true,
-            //Default value
-            direction: ShimmerDirection.fromLTRB(),
-            child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                margin: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  shape: BoxShape.rectangle,
-                  gradient: LinearGradient(
-                      begin: Alignment.topRight,
-                      end: Alignment.bottomLeft,
-                      colors: [KColors.primaryYellowColor, Colors.yellow]),
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
+        Padding(
+          padding: const EdgeInsets.only(left: 15, right: 15),  
+          child:    Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                       // showCodeInput = !showCodeInput; // 👈 toggle visibility
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFCC1E44)),
+                    child: Text('Ajouter Code Abo.'),
+                  ),
                 ),
-                /* please choose a voucher. */
+                SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _selectVoucher();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFE9A00)),
+                    child: Text('Ajouter un don'),
+                  ),
+                ),
+              ],
+            )
+            
+          ),
+            
+            Container(
+              margin: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+             
+               decoration: BoxDecoration(
+
+                          color: Color(0xFFFFFFFF), // background color
+                          borderRadius: BorderRadius.circular(8),
+                          border:
+                          Border.all(color: const Color.fromARGB(255, 172, 108, 108)),
+                                  boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 6,
+                  offset: Offset(0, 3),
+                ),
+              ]
+                        ),
+              child: Padding(
+                padding: EdgeInsets.all(16),
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                              icon: Icon(Icons.add,color: Colors.white,),
-                              onPressed: () => _selectVoucher()),
-                          IconButton(
-                              icon: Icon(FontAwesomeIcons.ticketAlt,
-                                  color: Colors.white),
-                              onPressed: () => _selectVoucher())
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Détails de la facture'),
+                    SizedBox(height: 22),
+                   _buildInvoiceRow(
+  'Prix article',
+  double.tryParse(_orderBillConfiguration?.command_pricing?.toString() ?? '') ?? 0.0,
+),
+_buildInvoiceRow(
+  'Prix Livraison',
+  double.tryParse(_orderBillConfiguration?.shipping_pricing?.toString() ?? '') ?? 0.0,
+),
+_buildInvoiceRow(
+  'Frais supplémentaires',
+  double.tryParse(_orderBillConfiguration?.additional_fees_total_price?.toString() ?? '') ?? 0.0,
+),
+                    Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // internal padding
+            decoration: BoxDecoration(
+              color: Color(0xFFF3F3F5), // grey background
+              borderRadius: BorderRadius.circular(8), // small border radius
+            ),
+            child: Row(
+              children: [
+              Container(
+                
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                  child:  Text(
+                    "Ces frais s'appliquent en cas de pluie, jours fériés,week-end,\n forte demande et la nuit ",
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                  ),)  
+              ],
+    ),
+  ),
+),
+                    Divider(),
+                    SizedBox(height: 10),
+           _buildInvoiceRow(
+  'Total',
+  double.tryParse(_orderBillConfiguration?.total_normal_pricing?.toString() ?? '') ?? 0.0,
+  isTotal: true,
+),
+                    SizedBox(height: 13),
+                   Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Color(0xFFFFC8D4),
+                borderRadius: BorderRadius.circular(12),
+                border:
+                    Border.all(color: const Color.fromARGB(255, 173, 46, 46)),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        width: 40, // small square container
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFFFC8D4), // background color
+                          borderRadius:
+                              BorderRadius.circular(8), // rounded corners
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(
+                              8.0), // inner padding for the image
+                          child: Image.asset(
+                            "assets/images/png/abonnement-icons/Package.png", // your image
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "💡 Économisez sur vos livraisons !",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Color(0xFFCD1F45),
+                            ),
+                          ),
+                          SizedBox(height: 4), // spacing between texts
+                          Text(
+                            "  Cette livraison vous aurait coûté 0 Franc \n  si vous aviez souscrit à une de nos formules \n  d'abonnement Kaba.",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.normal,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 4), // spacing between texts
+                           Text(
+                            " ⚡ Economies: 2 300 FCFA",
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.normal,
+                              color: Color(0xFF00A63E),
+                            ),
+                          ),
                         ],
                       ),
-                      Text(
-                          "${AppLocalizations.of(context)!.translate('add_coupon')}",
-                          style: TextStyle(color: Colors.white, fontSize: 14)),
-                    ])),
-          ),
-        ),
-        _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
-      ]);
+                    ],
+                  ),
+               SizedBox(height: 11),
+                ElevatedButton(
+              onPressed: () {
+                // 👉 handle order confirmation logic here
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
+                  minimumSize: Size(double.infinity, 30)),
+              child: Text(' S’abonner ? '),
+            ), 
+            
+            ],
+
+
+              ),
+            ),
+                   
+                   
+              
+                 
+                  ],
+                ),
+              ),
+              
+            ),
+          
+      
+                    
+      
+      
+     Container(
+      margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
+              padding: const EdgeInsets.only(
+                  top: 5, bottom: 5, left: 12, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                color: Color(0xFFFFFFFF),
+                borderRadius: BorderRadius.circular(12),
+                border:
+                    Border.all(color: const Color.fromARGB(255, 172, 108, 108)),
+              ),
+              child: Column(
+                children: [
+                  Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Votre solde:'),
+                SizedBox(width:8 ),
+                Text( "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",style: TextStyle(color: const Color.fromARGB(255, 173, 46, 46) ),),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Text('RECHARGER'),
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 173, 46, 46) ),
+                ),
+              ],
+            ),
+
+       ] ),
+
+     ),
+
+        SizedBox(height: 16),
+            // User Balance
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0  
+              ),child:ElevatedButton(
+              onPressed: () {
+                print("pay now pressed");
+                _buildOrderNowButton(pay_now_button_pressed);
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
+                  minimumSize: Size(double.infinity, 50)),
+              child: Text('PAYER LA COMMANDE'),
+            ),
+            ),
+            SizedBox(height: 20),
+
+
+                  
+                   ]) ;
     } else {
 //      _selectedVoucher
       return Column(
@@ -2798,6 +3101,18 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         );
       }
 
+    );
+  }
+    Widget _buildInvoiceRow(String label, double value, {bool isTotal = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label),
+          Text('${value.toStringAsFixed(0)} ${AppLocalizations.of(context)!.translate('currency')}',style:TextStyle(fontWeight: FontWeight.w900),),
+        ],
+      ),
     );
   }
 }

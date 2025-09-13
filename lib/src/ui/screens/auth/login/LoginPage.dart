@@ -57,6 +57,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   bool isConnecting = false;
 
+  bool isPhoneSelected = true;
+
   TextEditingController _loginFieldController = new TextEditingController();
 
 
@@ -96,29 +98,162 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   Widget build(BuildContext context) {
+     
     return Scaffold(
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
-            child:Center(
-              child: Column(
+            child:Column(
+      
+              
+              children:[ Padding(
+                padding: EdgeInsets.all(20) ,
+                child:Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 80),
-                    Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:KColors.primaryColor, fontSize: 24, fontWeight: FontWeight.bold)),
+                   
                     SizedBox(height: 100),
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                     Row(mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                       Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
+                       SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                        SizedBox(width: 5),
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
+                      ],
+                    ),
+                    SizedBox(height: 40),
+                   
+                     
+                      Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
+                      SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),
+                    child:   
+                    Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 30),
-                    SizedBox(width: 250,
+                      Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.grey.shade300, width: 2),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => setState(() => isPhoneSelected = true),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: isPhoneSelected ? KColors.primaryColor: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "N° Téléphone",
+                              style: TextStyle(
+                                color: isPhoneSelected
+                                    ? Colors.white
+                                    : Colors.black87,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => setState(() => isPhoneSelected = false),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          decoration: BoxDecoration(
+                            color: !isPhoneSelected ? KColors.primaryColor : Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              "Email",
+                              style: TextStyle(
+                                color: !isPhoneSelected
+                                    ? KColors.primaryColor
+                                    : Colors.black87,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+               
+                   if (isPhoneSelected) ...[
+                TextFormField(
+                  controller: _loginFieldController,
+                  enabled:!isConnecting, maxLength: TextField.noMaxLength,
+                  decoration: InputDecoration(
+                    prefixIcon: const Padding(
+                      padding: EdgeInsets.only(left: 8, right: 4),
+                      child: Text("🇹🇬 +228 ",
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                    prefixIconConstraints:
+                        const BoxConstraints(minWidth: 0, minHeight: 0),
+                    hintText: "Entrez votre numéro",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  keyboardType: TextInputType.phone,
+                ),
+                 /* SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
+                            child:
+                             TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
                             InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('identifier')}"), style: TextStyle(color:KColors.new_black)),
-                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))),
+                            decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
+                            
+                            ) */
+              ] else ...[
+                TextFormField(
+                  controller: _loginFieldController,
+                  decoration: InputDecoration(
+                    hintText: "Entrez votre email",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  keyboardType: TextInputType.emailAddress,
+                ),
+              ],
+              SizedBox(height: 20),
+               SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: () {
+                     _launchConnexion();
+                  },
+                  child: const Text(
+                    "Continuer →",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+                    
                     SizedBox(height: 30),
-                    Row(
+                   /*  Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children:<Widget>[
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(
@@ -131,26 +266,22 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                 ],
                               )  : Container(),
                             ],
-                          ), onPressed: () {_launchConnexion();}),
+                          ), onPressed: () {
+                            _launchConnexion();
+                            }),
                           SizedBox(width:20),
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage(null);}),
-                        ]),
-                    SizedBox(height: 30),
-                    Center(
-                      child: InkWell(
-                        child:Row(mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(FontAwesomeIcons.questionCircle, color: Colors.grey),
-                            SizedBox(width: 5),
-                            Text("${AppLocalizations.of(context)!.translate('recover_password')} ?", style: KStyles.hintTextStyle_gray),
-                          ],
-                        ),
-                        onTap: (){_moveToRecoverPasswordPage();},
-                      ),
-                    ),
-                    SizedBox(height: 50),
+                        ]), */
+                         
+                      
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
+                   
                   ]
               ),
+              ),
+              SizedBox(height: 40),
+              Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.cover,height: 275, ),
+              ]
             ),
           ),
         ));

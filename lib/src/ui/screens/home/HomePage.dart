@@ -21,6 +21,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/customwidgets/modals/Modal_2_connect.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
@@ -60,6 +61,7 @@ import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
+
 
 FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -631,6 +633,7 @@ class _HomePageState extends State<HomePage> {
       loginStuffChecked = 1;
     }
     return Scaffold(
+       
       body: pages![StateContainer.of(context)!.tabPosition!],
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 12.5,
@@ -695,57 +698,11 @@ class _HomePageState extends State<HomePage> {
         // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: true , // user must tap button!
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                  "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    // location_permission
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-
-                            image: new DecorationImage(
-                          fit: BoxFit.fitHeight,
-                          image: new AssetImage(ImageAssets.login_description),
-                        ))),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context)!.translate(msg[value % 2])}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14))
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('not_now')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('login')}"),
-                  onPressed: () {
-                    /* */
-                    /* jump to login page... */
-                    Navigator.of(context).pop();
-
-                    Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            LoginPage(presenter: LoginPresenter(LoginView()))));
-                  },
-                )
-              ],
-            );
+            
+            return const Modal_2_connect();
+            
           },
         );
       } else {

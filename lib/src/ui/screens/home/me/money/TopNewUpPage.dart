@@ -146,7 +146,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        backgroundColor: KColors.primaryColor,
+        backgroundColor: Colors.green,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 20),
             onPressed: () {

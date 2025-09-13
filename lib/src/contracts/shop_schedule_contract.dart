@@ -50,7 +50,7 @@ class ShopSchedulePresenter implements ShopScheduleContract {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"]["content"];
           List<ShopScheduleModel>? ShopSchedules =
-              lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
+              lo.map((bs) => ShopScheduleModel.fromJson(bs)).toList();
           /* send these to json */
           _shopScheduleView.inflateShopSchedule(ShopSchedules!);
           _shopScheduleView.showLoading(false);
@@ -67,7 +67,7 @@ class ShopSchedulePresenter implements ShopScheduleContract {
         // also get the restaurant entity here.
         Iterable lo = mJsonDecode(schedule_json)["data"]["content"];
         List<ShopScheduleModel>? ShopSchedules =
-            lo?.map((bs) => ShopScheduleModel.fromJson(bs))?.toList();
+            lo.map((bs) => ShopScheduleModel.fromJson(bs)).toList();
         /* send these to json */
         CustomerUtils.saveShopSchedulePage(restaurant_id, schedule_json);
         _shopScheduleView.showLoading(false);

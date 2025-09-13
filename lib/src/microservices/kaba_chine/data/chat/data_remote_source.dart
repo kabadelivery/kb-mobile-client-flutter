@@ -99,6 +99,7 @@ class ChatRemoteDataSourceImpl implements ChatRemoteDataSource {
       debugPrintStack();
       debugPrint('Error sending message: ${resp.statusCode}');
     }
+    return null;
   }
 
   @override
