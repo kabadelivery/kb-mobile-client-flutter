@@ -2,6 +2,7 @@ import 'package:KABA/src/microservices/expedition/data/expedition/remote_data_so
 import 'package:KABA/src/microservices/expedition/usecases/get_shipping_lines.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import '../../../data/expedition/line_model.dart';
@@ -21,10 +22,12 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
     on<ChooseDepartureTown>(_onChooseDepartureTown);
     on<ChooseArrivalTown>(_onChooseArrivalTown);
     on<getAvailableLines>(_onGetAvailableLines);
+    on<InitEstimationEvent>(_onInitEstimationEvent);
   }
 
   void _onWeightChanged(WeightChanged event, Emitter<EstimationState> emit) {
     if (event.weight != null && event.weight! > 0) {
+
       emit(WeightEntered(event.weight!));
     } else {
       emit(EstimationInitial());
@@ -37,14 +40,14 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
     GetShippingLines lines = GetShippingLines(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
     CustomerModel customerModel = await CustomerUtils.getCustomer();
     List<LineModel> linesList = await lines.call(customerToken: customerModel.token!);
+    debugPrint("XXX lines ${linesList.length}");
+    emit(getAvailableLinesState(linesList));
   }
   Future<void> _onCalculateEstimation(
       CalculateEstimation event,
       Emitter<EstimationState> emit,
       ) async {
     emit(EstimationLoading());
-
-    try {
        final matchingLine = event.availableLines.firstWhere(
             (line) =>
         line.depart?.nom?.toLowerCase() == event.departureTown.toLowerCase() &&
@@ -61,9 +64,7 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
         customerToken: customerModel.token!,
       );
       emit(EstimationCalculated(result));
-    } catch (e) {
-      emit(EstimationError(e.toString()));
-    }
+
   }
   void _onChooseDepartureTown(
       ChooseDepartureTown event,
@@ -78,5 +79,10 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
       ) {
     emit(ArrivalTownChosen(event.town));
   }
+  void _onInitEstimationEvent(
+      InitEstimationEvent event,
+      Emitter<EstimationState> emit,
+      ) {
+    emit(EstimationInitial());}
 }
 

@@ -1,13 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:KABA/src/microservices/expedition/core/constants.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/line_model.dart';
 import 'package:dio/dio.dart';
-
+import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'package:mime/mime.dart';
+import 'package:http_parser/http_parser.dart';
 import '../../../../utils/_static_data/ServerConfig.dart';
 import 'create_expedition_model.dart';
 import 'line_pricing_calculate_model.dart';
 import 'negociation_model.dart';
-
+import 'package:mime/mime.dart';
 abstract class ExpeditionRemoteDataSource {
   Future<List<LineModel>> getShippingLines({required String customer_token});
   Future<LinePricingCalculateModel> calculateShippingLinePricing({
@@ -16,11 +22,10 @@ abstract class ExpeditionRemoteDataSource {
   });
 
   Future<CreateExpedition> createAnExpedition({
-    required Map<String, dynamic> body,
-    required String customer_token,
+    required CreateExpedition expedition,
+    required String customerToken,
   });
   Future<List<ExpeditionModel>> getUserExpedition({
-    required String id,
     required String customer_token,
   });
 
@@ -28,6 +33,7 @@ abstract class ExpeditionRemoteDataSource {
     required Map<String, dynamic> body,
     required String customer_token,
   });
+  Future<String> uploadImage(String imagePath);
 }
 
 class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
@@ -42,7 +48,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       },
     ));
   }
-
   @override
   Future<List<LineModel>> getShippingLines({required String customer_token}) async {
     final dio = _dioWithToken(customer_token);
@@ -64,7 +69,7 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       } else if (data is Map) {
         lines.add(LineModel.fromJson(Map<String, dynamic>.from(data)));
       }
-
+      debugPrint("XXX ${lines}");
       return lines;
     } on DioError catch (e) {
       throw Exception('Erreur getShippingLines: ${e.message}');
@@ -81,7 +86,7 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
     final dio = _dioWithToken(customer_token);
 
     try {
-      final response = await dio.get(GET_SHIPPING_LINES_PRICING_LINK, queryParameters: queryParameters);
+      final response = await dio.get(GET_SINGLE_SHIPPING_LINE_PRICING_LINK+"ligneId=${queryParameters['ligneId']}&poids=${queryParameters['poids']}");
       final data = response.data;
       return LinePricingCalculateModel.fromJson(Map<String, dynamic>.from(data));
     } on DioError catch (e) {
@@ -90,36 +95,79 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       throw Exception('Erreur inattendue calculateShippingLinePricing: $e');
     }
   }
-
   @override
-  Future<CreateExpedition> createAnExpedition({
-    required Map<String, dynamic> body,
-    required String customer_token,
-  }) async {
-    final dio = _dioWithToken(customer_token);
+  Future<String> uploadImage(String imagePath) async {
+    final uploadUrl =UPLOAD_IMAGE;
 
-    try {
-      final response = await dio.post(CREATE_EXPEDITION_LINK, data: body);
-      final data = response.data;
-      return CreateExpedition.fromJson(Map<String, dynamic>.from(data));
-    } on DioError catch (e) {
-      // si API renvoie un message d'erreur dans response.data, tu peux le récupérer ici
-      final message = e.response?.data ?? e.message;
-      throw Exception('Erreur createAnExpedition: $message');
-    } catch (e) {
-      throw Exception('Erreur inattendue createAnExpedition: $e');
+    final request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
+    request.headers['Content-Type'] = 'multipart/form-data';
+
+    final mimeType = lookupMimeType(imagePath);
+    final file = await http.MultipartFile.fromPath(
+      'file',
+      imagePath,
+      contentType: mimeType != null ? MediaType.parse(mimeType) : null,
+    );
+    debugPrint('Fichier image : ${file.filename}, ${file.length}');
+
+    request.files.add(file);
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+
+    if (response.statusCode == 200 ||response.statusCode == 201) {
+      final data = json.decode(response.body);
+      if (data['url'] != null) {
+        debugPrint('URL de l’image : ${data['url']}');
+        return data['url'];
+      } else {
+        throw Exception('L’URL de l’image est absente de la réponse');
+      }
+    } else {
+      throw Exception('Erreur lors de l’upload d’image : ${response.statusCode}');
     }
   }
+ @override
+ Future<CreateExpedition> createAnExpedition({
+   required CreateExpedition expedition,
+   required String customerToken,
+ }) async {
+   final dio = _dioWithToken(customerToken);
+   expedition.colis = expedition.colis?.map((colis) {
+     colis.quantite=1;
+     return colis;
+   }).toList();
+  var data ={
+    "ligneId":expedition.colis![0].ligneId,
+    "adresseOrigine": expedition.adresseOrigine,
+    "adresseDestination": expedition.adresseDestination,
+    "contactOrigine": expedition.telephoneOrigine,
+    "telephoneOrigine": expedition.telephoneOrigine,
+    "contactDestination":expedition.telephoneDestination,
+    "telephoneDestination": expedition.telephoneDestination,
+    "methodeLivraison":"International",
+    "methodeCollecte": expedition.methodeCollecte,
+    "colis": expedition.colis
+  };
+   var response = await dio.post(CREATE_EXPEDITION_LINK,data: expedition.toJson());
+
+   if (response.statusCode == 200) {
+     final data = jsonDecode(response.data);
+     return CreateExpedition.fromJson(Map<String, dynamic>.from(data));
+   } else {
+     throw Exception("❌ Failed to create expedition: ${response.data}");
+   }
+ }
+
 
   @override
   Future<List<ExpeditionModel>> getUserExpedition({
-    required String id,
     required String customer_token,
   }) async {
     final dio = _dioWithToken(customer_token);
 
     try {
-      final String url = (id.toLowerCase() == 'me') ? GET_USER_EXPEDITION_LINK : '${ServerConfig.kaba_expedition}/expeditions/$id';
+      final String url = GET_USER_EXPEDITION_LINK;
       final response = await dio.get(url);
       final data = response.data;
 

@@ -24,7 +24,7 @@ class LinePricingCalculated extends ExpeditionState {
 
 class ExpeditionCreated extends ExpeditionState {
   final CreateExpedition expedition;
-  ExpeditionCreated(this.expedition);
+  ExpeditionCreated({required this.expedition});
 }
 
 class UserExpeditionsLoaded extends ExpeditionState {
@@ -128,4 +128,13 @@ class chooseFetchTimeState extends ExpeditionState{
 class enterSendPhoneNumberState extends ExpeditionState{
   final String phoneNumber;
   enterSendPhoneNumberState({required this.phoneNumber});
+}
+class chooseStarState extends ExpeditionState{
+  final int star;
+  chooseStarState({required this.star});
+}
+
+class chooseLikableState extends ExpeditionState{
+  final int index;
+  chooseLikableState({required this.index});
 }

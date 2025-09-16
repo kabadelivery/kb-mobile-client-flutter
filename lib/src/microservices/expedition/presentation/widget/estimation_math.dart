@@ -1,4 +1,6 @@
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +24,7 @@ class _EstimationFormState extends State<EstimationForm> {
   TextEditingController _weight = TextEditingController();
   String? selected_departure_town="Lomé";
   String selected_arrival_town ="Accra";
-  int? estimation_price =null;
+  double? estimation_price =null;
   List<Map<String,String>> map_of_town_arrival= [
   ];
   List<Map<String,String>> map_of_town_departure= [
@@ -31,14 +33,14 @@ class _EstimationFormState extends State<EstimationForm> {
   EstimationBloc estimationBloc = EstimationBloc();
   @override
   void initState() {
-    estimationBloc.add(getAvailableLines());
     estimationBloc = BlocProvider.of<EstimationBloc>(context);
+    estimationBloc.add(getAvailableLines());
     super.initState();
   }
   @override
   void dispose(){
     _weight.dispose();
-    estimationBloc.close();
+    estimationBloc.add(InitEstimationEvent());
     super.dispose();
   }
   @override
@@ -51,9 +53,7 @@ class _EstimationFormState extends State<EstimationForm> {
    return state;
   },
   builder: (context, state) {
-    if(state is WeightEntered){
-      _weight.text = state.weight.toString();
-    }
+    debugPrint("XXX state ${state}");
     if(state is DepartureTownChosen){
       selected_departure_town = state.town;
     }
@@ -61,18 +61,23 @@ class _EstimationFormState extends State<EstimationForm> {
       selected_arrival_town = state.town;
     }
     if(state is EstimationCalculated){
-
+      estimation_price =state.result.prixFinal;
     }
     if(state is getAvailableLinesState){
+      debugPrint("XXX state lines${state.lines}");
       availableLines = state.lines;
+      selected_departure_town= state.lines[0].depart!.nom??"";
+      selected_arrival_town= state.lines[0].arrivee!.nom??"";
+      map_of_town_arrival.clear();
+      map_of_town_departure.clear();
       for(LineModel line in state.lines){
-        Map<String,String> lineDepartureMap =  {"name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
-        Map<String,String> lineArrivalMap =  {"name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
+        Map<String,String> lineDepartureMap =  {"id":"${line.id}","name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
+        Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
 
-        if(!map_of_town_departure.contains(lineDepartureMap)){
+        if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
           map_of_town_departure.add(lineDepartureMap);
         }
-        if(!map_of_town_arrival.contains(lineArrivalMap)){
+        if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
           map_of_town_arrival.add(lineArrivalMap);
         }
       }
@@ -108,7 +113,7 @@ class _EstimationFormState extends State<EstimationForm> {
                     children: [
                       Text("Calculer votre estimation",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black87),),
                       SizedBox(height: 5,),
-                      Text("Prix transparent et compétitif",style: TextStyle(fontSize: 12,color: Colors.black54),)
+                      Text("Prix transparent et compétitif",style: TextStyle(fontSize: 13,color: Colors.black54),)
                     ],
                   )
                 ],
@@ -249,7 +254,7 @@ class _EstimationFormState extends State<EstimationForm> {
                             CalculateEstimation(arrivalTown: selected_arrival_town,
                                 departureTown: selected_departure_town!,
                                 weight: double.parse(_weight.text),
-                                availableLines: []));
+                                availableLines: availableLines));
                       }
                     },
                     child: Container(
@@ -275,7 +280,7 @@ class _EstimationFormState extends State<EstimationForm> {
                       child:   Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FormTitleWithIcon(title: "Calculer l'estimation", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
+                          FormTitleWithIcon(title: state is EstimationLoading?"Calcul en cours...":"Calculer l'estimation", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
                         ],
                       ),
                     ),
@@ -330,6 +335,9 @@ class _EstimationFormState extends State<EstimationForm> {
                     children: [
                       SizedBox(height: 20,),
                       GestureDetector(
+                        onTap: (){
+                          showNegotiationDialog(context);
+                        },
                         child: Container(
                           width: 330,
                           height: 40,
@@ -376,3 +384,47 @@ Widget  FormTitleWithIcon({required String title, required Icon icon,Color?textC
   );
 }
 
+void showNegotiationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      title: Row(
+        children: const [
+          Icon(Icons.info_outline, color:KabaExpeditionColor.primary),
+          SizedBox(width: 8),
+          Text(
+            "Négociation de prix",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+      content: const Text(
+        "La négociation du prix n’est possible qu’après l’étape 2 (détails du colis).\n\n",
+           style: TextStyle(fontSize: 14, height: 1.4),
+      ),
+      actionsAlignment: MainAxisAlignment.center,
+      actions: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: KabaExpeditionColor.primary, // couleur du bouton
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text(
+              "J'ai compris",
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}

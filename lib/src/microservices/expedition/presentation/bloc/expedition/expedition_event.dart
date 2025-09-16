@@ -18,21 +18,13 @@ class CalculateShippingLinePricingEvent extends ExpeditionEvent {
 }
 
 class CreateExpeditionEvent extends ExpeditionEvent {
-  final Map<String, dynamic> body;
-  final String customerToken;
+ CreateExpedition createExpedition;
   CreateExpeditionEvent({
-    required this.body,
-    required this.customerToken,
+    required this.createExpedition,
   });
 }
 
 class GetUserExpeditionEvent extends ExpeditionEvent {
-  final String id;
-  final String customerToken;
-  GetUserExpeditionEvent({
-    required this.id,
-    required this.customerToken,
-  });
 }
 
 class CreateNegociationEvent extends ExpeditionEvent {
@@ -62,14 +54,16 @@ class ExpandPackageWidgetAction extends ExpeditionEvent {
 class ChooseDepartureTownEvent extends ExpeditionEvent {
   final int packageIndex;
   final String town;
-  ChooseDepartureTownEvent({required this.packageIndex, required this.town});
+  final String lineId;
+  ChooseDepartureTownEvent({required this.packageIndex, required this.town, required this.lineId});
 }
 
 
 class ChooseArrivalTownEvent extends ExpeditionEvent {
   final int packageIndex;
   final String town;
-  ChooseArrivalTownEvent({required this.packageIndex, required this.town});
+  final String lineId;
+  ChooseArrivalTownEvent({required this.packageIndex, required this.town, required this.lineId});
 }
 
 class ChangeWeightEvent extends ExpeditionEvent {
@@ -134,5 +128,14 @@ class enterRecipientPhoneNumber extends ExpeditionEvent{
 class enterSendPhoneNumber extends ExpeditionEvent{
   final String phoneNumber;
   enterSendPhoneNumber({required this.phoneNumber});
+}
 
+class chooseStarEvent extends ExpeditionEvent{
+  final int star;
+  chooseStarEvent({required this.star});
+}
+
+class chooseLikableItem extends ExpeditionEvent{
+  final int index;
+  chooseLikableItem({required this.index});
 }

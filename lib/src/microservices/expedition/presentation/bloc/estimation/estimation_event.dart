@@ -3,6 +3,7 @@ part of 'estimation_bloc.dart';
 @immutable
 sealed class EstimationEvent {}
 
+class InitEstimationEvent extends EstimationEvent {}
 class WeightChanged extends EstimationEvent {
   final double? weight;
   WeightChanged(this.weight);

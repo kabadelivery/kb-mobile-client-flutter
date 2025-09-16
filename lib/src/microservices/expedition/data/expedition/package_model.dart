@@ -8,12 +8,13 @@ class PackageModel {
   String? description;
   double? poids;
   int? quantite;
-  List<File?>? images;
+  List<String?>? images;
   String? adresseDestination;
   String? departureTown;
   String? arrivalTown;
   DeliveryAddressModel? recipientAddress;
   String?  recipientPhoneNumber ;
+  String? ligneId;
   PackageModel({
     this.id,
     this.expeditionId,
@@ -24,7 +25,9 @@ class PackageModel {
     this.departureTown,
     this.arrivalTown,
     this.recipientAddress,
-    this.recipientPhoneNumber
+    this.recipientPhoneNumber,
+    this.quantite,
+    this.ligneId
   });
 
   factory PackageModel.fromJson(Map<String, dynamic> json) {
@@ -33,11 +36,14 @@ class PackageModel {
       expeditionId: json['expeditionId'],
       description: json['description'],
       poids: (json['poids'] as num).toDouble(),
-      images: List<File?>.from(json['images']),
+      images: List<String?>.from(json['images']),
       adresseDestination: json['adresseDestination'],
       departureTown: json['departureTown'],
       arrivalTown: json['arrivalTown'],
       recipientPhoneNumber: json['recipientPhoneNumber'],
+      recipientAddress: json['recipientAddress'],
+      quantite: json['quantite'],
+      ligneId: json['ligneId'],
     );
   }
 
@@ -51,6 +57,9 @@ class PackageModel {
     'departureTown': departureTown,
     'arrivalTown': arrivalTown,
     'recipientPhoneNumber': recipientPhoneNumber,
+    'recipientAddress': recipientAddress,
+    'quantite': quantite,
+    'ligneId': ligneId,
   };
 
   PackageModel copyWith({
@@ -59,12 +68,13 @@ class PackageModel {
     String? description,
     double? poids,
     int? quantite,
-    List<File?>? images,
+    List<String?>? images,
     String? adresseDestination,
     String? departureTown,
     String? arrivalTown,
     String? recipientPhoneNumber,
-    DeliveryAddressModel? recipientAddress
+    DeliveryAddressModel? recipientAddress,
+    String? ligneId,
   }) {
     return PackageModel(
       id: id ?? this.id,
@@ -77,6 +87,8 @@ class PackageModel {
       arrivalTown: arrivalTown ?? this.arrivalTown,
       recipientPhoneNumber: recipientPhoneNumber ?? this.recipientPhoneNumber,
       recipientAddress: recipientAddress ?? this.recipientAddress,
+      quantite: quantite ?? this.quantite,
+      ligneId: ligneId ?? this.ligneId,
     );
   }
 }

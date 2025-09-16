@@ -8,11 +8,11 @@ class CreateExpeditionUseCase {
   CreateExpeditionUseCase(this.repository);
 
   Future<CreateExpedition> call({
-    required Map<String, dynamic> body,
+    required CreateExpedition body,
     required String customerToken,
   }) {
     return repository.createAnExpedition(
-      body: body,
+      expedition:(body),
       customerToken: customerToken,
     );
   }

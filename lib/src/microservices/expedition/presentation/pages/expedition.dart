@@ -1,16 +1,24 @@
 import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
+import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
 import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/billing.dart';
+import 'package:KABA/src/microservices/expedition/usecases/create_expedition.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
+import '../../../../models/CustomerModel.dart';
+import '../../../../ui/customwidgets/LoadingPopUp.dart';
+import '../../../../utils/functions/CustomerUtils.dart';
 import '../../Enums/expedition_type.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/create_expedition_model.dart';
+import '../../data/expedition/remote_data_source.dart';
 import '../widget/estimation_math.dart';
 import '../widget/expedition_detail_form.dart';
 
@@ -29,6 +37,7 @@ class _ExpeditionState extends State<Expedition> {
   ];
   ExpeditionBloc expeditionBloc = ExpeditionBloc();
   CreateExpedition createExpedition = CreateExpedition();
+  bool isLoading = false;
   @override
   void initState() {
     BlocProvider.of<ExpeditionBloc>(context).add(ExpeditionInitialEvent());
@@ -36,11 +45,7 @@ class _ExpeditionState extends State<Expedition> {
     expeditionBloc.add(getAvailableLines());
     super.initState();
   }
-  @override
-  void dispose() {
-    BlocProvider.of<ExpeditionBloc>(context).add(ExpeditionInitialEvent());
-    super.dispose();
-  }
+
   @override
   Widget build(BuildContext context) {
     expeditionBloc.stream.listen((state){
@@ -64,10 +69,13 @@ class _ExpeditionState extends State<Expedition> {
       } else if (state is chooseFetchTimeState) {
         createExpedition.heureCollecte = state.hour;
       }
+
     });
     return Scaffold(
         backgroundColor: Colors.white,
-        body: Container(
+        body: isLoading?
+        Center(child: CircularProgressIndicator())
+        :Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -134,7 +142,7 @@ class _ExpeditionState extends State<Expedition> {
                         ),
                         Container(
                           height: 2,
-                          width: 210,
+                          width: 220,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.centerLeft,
@@ -166,15 +174,15 @@ class _ExpeditionState extends State<Expedition> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                            width: 60,
+                            width: 70,
                             child: Text("Détails du colis",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
+                              style: TextStyle(fontSize: 12,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
                         Container(
-                            width: 60,
+                            width: 70,
                             child: Text("Destination & Poids",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 10,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
+                              style: TextStyle(fontSize: 12,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
 
                       ],
                     )
@@ -224,7 +232,7 @@ class _ExpeditionState extends State<Expedition> {
                                 Text("Important",style: TextStyle(fontWeight: FontWeight.bold),)
                                 ],
                             ),
-                            Text("Votre facture peut changer en fonction de la nature et du conditionnement de votre colis.",style: TextStyle(fontSize: 12,color: Colors.black), textAlign: TextAlign.justify),
+                            Text("Votre facture peut changer en fonction de la nature et du conditionnement de votre colis.",style: TextStyle(fontSize: 14,color: Colors.black), textAlign: TextAlign.justify),
 
                           ],
                         )),
@@ -344,7 +352,7 @@ class _ExpeditionState extends State<Expedition> {
 
                      ),
                      elevation: 0,
-                     onPressed: (){
+                     onPressed: ()async{
                        Navigator.of(context).push(PageRouteBuilder(
                            pageBuilder: (context, animation, secondaryAnimation) => BillingPage(),
                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -359,6 +367,32 @@ class _ExpeditionState extends State<Expedition> {
                              );
                            }
                        ));
+                     /*
+                     *    await Future.delayed(Duration(milliseconds: 500));
+                       CustomerModel customer = await CustomerUtils.getCustomer();
+                       CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
+                       await createExpeditionUseCase(
+                       body: createExpedition,
+                       customerToken: customer.token!,
+                       ).then((_){
+
+
+                         Navigator.of(context).push(PageRouteBuilder(
+                             pageBuilder: (context, animation, secondaryAnimation) => BillingPage(),
+                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                               var begin = Offset(1.0, 0.0);
+                               var end = Offset.zero;
+                               var curve = Curves.ease;
+                               var tween = Tween(begin: begin, end: end);
+                               var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                               return SlideTransition(
+                                   position: tween.animate(curvedAnimation),
+                                   child: child
+                               );
+                             }
+                         ));
+                       });
+                     * */
                      },
                      child: Container(
                        child: Row(

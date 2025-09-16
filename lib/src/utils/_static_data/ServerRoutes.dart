@@ -5,7 +5,6 @@ class ServerRoutes {
   /* update home */
   static const String LINK_HOME_PAGE =
       ServerConfig.SERVER_ADDRESS + "/api/front/get";
-
   /* get restaurant db */
   static const String LINK_RESTO_FOOD_DB =
       ServerConfig.SERVER_ADDRESS + "/sample/restaurant_menu_sample.json";

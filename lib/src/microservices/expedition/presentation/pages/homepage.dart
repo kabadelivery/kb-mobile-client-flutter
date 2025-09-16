@@ -1,6 +1,7 @@
 import 'package:KABA/src/microservices/expedition/Enums/expedition_type.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/tracking_package.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/microservices/kaba_chine/functions/contact.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -56,13 +57,17 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                     ),
                     Row(
                       children: [
-                        IconButton(onPressed: (){}, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
+                        IconButton(onPressed: (){
+                          contactPhone(phoneNumber: "22892109474");
+                        }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
+                        IconButton(onPressed: (){
+                          contactWhatsApp(phoneNumber: "22892109474", message: "");
+                        }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                         MaterialButton(
                           elevation: 0,
                           onPressed: (){
                             Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => TrackingPackage(),
+                                pageBuilder: (context, animation, secondaryAnimation) => TrackingPackages(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   var begin = Offset(1.0, 0.0);
                                   var end = Offset.zero;
@@ -106,7 +111,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           SizedBox(height: 5,),
                           Container(
                               width: 270,
-                              child: Text("Choisissez votre destination et expédiez en toute sécurité",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),)),
+                              child: Text("Choisissez votre destination et expédiez en toute sécurité",style: TextStyle(fontSize: 13,color: Colors.black87,fontFamily: 'Inter'),)),
                           SizedBox(height: 10,),
                           Container(
                             width: 270,

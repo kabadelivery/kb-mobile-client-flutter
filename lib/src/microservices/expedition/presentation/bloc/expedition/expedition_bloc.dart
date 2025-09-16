@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 import '../../../../../models/CustomerModel.dart';
 import '../../../../../models/DeliveryAddressModel.dart';
 import '../../../../../utils/functions/CustomerUtils.dart';
+import '../../../../kaba_chine/usecases/order/upload_image.dart';
 import '../../../data/expedition/create_expedition_model.dart';
 import '../../../data/expedition/expedition_model.dart';
 import '../../../data/expedition/line_model.dart';
@@ -23,6 +24,7 @@ import '../../../usecases/createNegociation.dart';
 import '../../../usecases/create_expedition.dart';
 import '../../../usecases/getUserExpedition.dart';
 import '../../../usecases/get_shipping_lines.dart';
+import '../../../usecases/uploadImage.dart';
 
 part 'expedition_event.dart';
 part 'expedition_state.dart';
@@ -53,6 +55,8 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
     on<chooseFetchTimeEvent>(_chooseFetchTime);
     on<enterRecipientPhoneNumber>(_enterRecipientPhoneNumber);
     on<enterSendPhoneNumber>(_enterSendPhoneNumber);
+    on<chooseStarEvent>(_chooseStar);
+    on<chooseLikableItem>(_chooseLikable);
   }
 
   Future<void> _onGetShippingLines(
@@ -92,17 +96,7 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       CreateExpeditionEvent event,
       Emitter<ExpeditionState> emit,
       ) async {
-    emit(ExpeditionLoading());
-    try {
-      CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-      final created = await createExpeditionUseCase(
-        body: event.body,
-        customerToken: event.customerToken,
-      );
-      emit(ExpeditionCreated(created));
-    } catch (e) {
-      emit(ExpeditionError(e.toString()));
-    }
+      emit(ExpeditionCreated(expedition:event.createExpedition));
   }
 
   Future<void> _onGetUserExpedition(
@@ -111,10 +105,10 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       ) async {
     emit(ExpeditionLoading());
     try {
+      CustomerModel customerModel = await CustomerUtils.getCustomer();
       GetUserExpedition getUserExpeditionUseCase = GetUserExpedition(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
       final expeditions = await getUserExpeditionUseCase(
-        id: event.id,
-        customerToken: event.customerToken,
+        customerToken: customerModel.token!,
       );
       emit(UserExpeditionsLoaded(expeditions));
     } catch (e) {
@@ -186,12 +180,14 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
         if (current.images == null) {
           current.images = [null,null,null];
         }
-        current.images![event.photoIndex] = event.file;
-        packages[event.packageIndex] =
-            current.copyWith(images: current.images);
-        emit(PackagesUpdatedState(
-            index: event.packageIndex,
-            packages: List.from(packages), packagesCount: packages.length));
+        UploadExpeditionImage uploadExpeditionImage = UploadExpeditionImage(repo: ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
+      String url =  await uploadExpeditionImage.call(imagePath: event.file.path);
+       if(url!=null){
+         current.images![event.photoIndex] = url;
+         emit(PackagesUpdatedState(
+             index: event.packageIndex,
+             packages: List.from(packages), packagesCount: packages.length));
+       }
   }
   Future<void> _onChangeRecipientAddress(
       ChangeRecipientAddressEvent event,
@@ -252,6 +248,8 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       if (event.packageIndex < packages.length) {
         packages[event.packageIndex] =
             packages[event.packageIndex].copyWith(arrivalTown: event.town);
+        packages[event.packageIndex] =
+            packages[event.packageIndex].copyWith(ligneId: event.lineId);
         emit(PackagesUpdatedState(
             index: event.packageIndex,
             packages: List.from(packages), packagesCount: packages.length));
@@ -268,6 +266,8 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       if (event.packageIndex < packages.length) {
         packages[event.packageIndex] =
             packages[event.packageIndex].copyWith(departureTown: event.town);
+        packages[event.packageIndex] =
+            packages[event.packageIndex].copyWith(ligneId: event.lineId);
         emit(PackagesUpdatedState(
             index: event.packageIndex,
             packages: List.from(packages), packagesCount: packages.length));
@@ -373,5 +373,17 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       Emitter<ExpeditionState> emit,
       ) {
     emit(enterSendPhoneNumberState(phoneNumber: event.phoneNumber));
+  }
+  void _chooseStar(
+      chooseStarEvent event,
+      Emitter<ExpeditionState> emit,
+      ) {
+    emit(chooseStarState(star: event.star));
+  }
+  void _chooseLikable(
+      chooseLikableItem event,
+      Emitter<ExpeditionState> emit,
+      ) {
+    emit(chooseLikableState(index: event.index));
   }
 }

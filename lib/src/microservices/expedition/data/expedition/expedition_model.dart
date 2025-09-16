@@ -1,4 +1,5 @@
 
+import 'package:KABA/src/microservices/expedition/data/expedition/facturation.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
 
 import 'createdby_model.dart';
@@ -21,15 +22,12 @@ class ExpeditionModel {
    DateTime? estimatedDelivery;
    DateTime? actualDelivery;
    String? currentLocation;
-   String? image1Url;
-   String? image2Url;
    DateTime? createdAt;
    DateTime? updatedAt;
    List<PackageModel>? colis;
    LineModel? ligne;
    CreatedByModel? createdBy;
-
-
+   ColisDetail? colisDetail;
   ExpeditionModel({
      this.id,
      this.trackingNumber,
@@ -47,13 +45,12 @@ class ExpeditionModel {
     this.estimatedDelivery,
     this.actualDelivery,
     this.currentLocation,
-    this.image1Url,
-    this.image2Url,
      this.createdAt,
      this.updatedAt,
      this.colis,
      this.ligne,
      this.createdBy,
+    this.colisDetail
   });
 
   factory ExpeditionModel.fromJson(Map<String, dynamic> json) {
@@ -78,8 +75,6 @@ class ExpeditionModel {
           ? DateTime.tryParse(json['actualDelivery'])
           : null,
       currentLocation: json['currentLocation'],
-      image1Url: json['image1Url'],
-      image2Url: json['image2Url'],
       createdAt: DateTime.parse(json['createdAt']),
       updatedAt: DateTime.parse(json['updatedAt']),
       colis: (json['colis'] as List)
@@ -87,6 +82,7 @@ class ExpeditionModel {
           .toList(),
       ligne: LineModel.fromJson(json['ligne']),
       createdBy: CreatedByModel.fromJson(json['createdBy']),
+      colisDetail: ColisDetail.fromJson(json['colisDetail']),
     );
   }
 
@@ -107,12 +103,11 @@ class ExpeditionModel {
     'estimatedDelivery': estimatedDelivery?.toIso8601String(),
     'actualDelivery': actualDelivery?.toIso8601String(),
     'currentLocation': currentLocation,
-    'image1Url': image1Url,
-    'image2Url': image2Url,
     'createdAt': createdAt!.toIso8601String(),
     'updatedAt': updatedAt!.toIso8601String(),
     'colis': colis!.map((e) => e?.toJson()).toList(),
     'ligne': ligne!.toJson(),
     'createdBy': createdBy!.toJson(),
+    'colisDetail': colisDetail!.toJson(),
   };
 }

@@ -45,7 +45,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
               children: [
                 Icon(Icons.local_shipping_outlined,color: KabaExpeditionColor.primary,size: 16,),
                 SizedBox(width: 5,),
-                Text("Par voie terrestre",style: TextStyle(fontSize: 11,color: Colors.black87,fontFamily: 'Inter'),),
+                Text("Par voie terrestre",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
 
               ],
             ),
@@ -53,7 +53,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
               children: [
                 Icon(FontAwesomeIcons.earthAfrica,color: KabaExpeditionColor.primary,size: 16,),
                 SizedBox(width: 5,),
-                Text("7 pays disponibles",style: TextStyle(fontSize: 11,color: Colors.black87,fontFamily: 'Inter'),),
+                Text("7 pays disponibles",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
 
               ],
             ),
@@ -97,7 +97,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text("Expédier maintenant",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 11,color: Colors.white,fontFamily: 'Inter'),),
+                Text("Expédier maintenant",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.white,fontFamily: 'Inter'),),
                 SizedBox(width: 5,),
                 Icon(Icons.arrow_forward,color: Colors.white,size: 12,)
               ],

@@ -46,13 +46,10 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
   TextEditingController _weight = TextEditingController();
   String? selected_departure_town="Lomé";
   String selected_arrival_town ="Accra";
-  int? estimation_price =null;
-  List<Map<String,String>> map_of_town_arrival= [
-  ];
-  List<Map<String,String>> map_of_town_departure= [
-  ];
+  double? estimation_price =null;
+  List<Map<String,String>> map_of_town_arrival= [];
+  List<Map<String,String>> map_of_town_departure= [];
   List<LineModel>availableLines=[];
-
   bool expanded = false;
   PackageModel packageModel = PackageModel();
   late ExpeditionBloc expeditionBloc;
@@ -78,13 +75,15 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
       if(state.index==widget.index){
         expanded=  state.expanded;
         availableLines =expeditionBloc.linesList ;
-        for(LineModel line in expeditionBloc.linesList){
-          Map<String,String> lineDepartureMap =  {"name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
-          Map<String,String> lineArrivalMap =  {"name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
-          if(!map_of_town_departure.contains(lineDepartureMap)){
+        map_of_town_arrival.clear();
+        map_of_town_departure.clear();
+        for(LineModel line in availableLines){
+          Map<String,String> lineDepartureMap =  {"id":"${line.id}","name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
+          Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
+          if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
             map_of_town_departure.add(lineDepartureMap);
           }
-          if(!map_of_town_arrival.contains(lineArrivalMap)){
+          if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
             map_of_town_arrival.add(lineArrivalMap);
           }
         }
@@ -97,9 +96,9 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
         try{
           registeredAddressChoosed = registeredAddressChoosed;
           gpsAddressChoosed = gpsAddressChoosed;
-          firstImagePath = packageModel.images![0]!=null?packageModel.images![0]!.path:"";
-          secondImagePath = packageModel.images![1]!=null?packageModel.images![1]!.path:"";
-          thirdImagePath = packageModel.images![2]!=null?packageModel.images![2]!.path:"";
+          firstImagePath = packageModel.images![0]!=null?packageModel.images![0]!:"";
+          secondImagePath = packageModel.images![1]!=null?packageModel.images![1]!:"";
+          thirdImagePath = packageModel.images![2]!=null?packageModel.images![2]!:"";
           _weight.text = packageModel.poids!=null?packageModel.poids.toString():"";
           _packageContainer.text = packageModel.description!=null?packageModel.description.toString():"";
           debugPrint("First image path: $firstImagePath");
@@ -153,8 +152,8 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Colis ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 12),),
-                          Text("Configuration requise",style: TextStyle(fontSize: 12,color: Colors.black54),)
+                          Text("Colis ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 14),),
+                          Text("Configuration requise",style: TextStyle(fontSize: 14,color: Colors.black54),)
                         ],
                       )
                     ],
@@ -222,7 +221,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                   ));
                             }).toList(),
                             onChanged: (value){
-                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString()));
+                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town).first.id!));
                             },
                           ),
                         ),
@@ -261,12 +260,11 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                       Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
                                       SizedBox(width: 10,),
                                       Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
-
                                     ],
                                   ));
                             }).toList(),
                             onChanged: (value){
-                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString()));
+                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.arrivee!.nom==selected_arrival_town).first.id!));
                             },
                           ),
                         ),
@@ -332,37 +330,52 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                   ),
                 ),
                 SizedBox(height: 10,),
-                BlocSelector<EstimationBloc, EstimationState, EstimationState>(
-                      selector: (state) {
-                        return state;
-                      },
-                      builder: (context, state) {
-                        if(state is EstimationCalculated){
-                            estimation_price = int.parse(state.result.prixFinal.toString());
-                        }
-                        if(state is EstimationLoading){
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: BlocSelector<EstimationBloc, EstimationState, EstimationState>(
+                        selector: (state) {
+                          return state;
+                        },
+                        builder: (context, state) {
+                          if(state is EstimationCalculated){
+                              estimation_price = state.result.prixFinal;
+                          }
+                          if(state is EstimationLoading){
 
-                        }
-                        if(state is EstimationError){
-                          estimation_price = 0;
-                        }
-                        return Container(
-                          padding: EdgeInsets.symmetric(horizontal: 10),
-                                      child: Row(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              Icon(Icons.circle,size:12,color: KabaExpeditionColor.primary,),
-                                              SizedBox(width: 5,),
-                                              state is EstimationLoading?
-                                              Text('Calcul en cours...')
-                                              :Text("Coût estimé : ${_weight.text.isNotEmpty?estimation_price:"0" }FCFA")
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    );
-                  },
+                          }
+                          if(state is EstimationError){
+                            estimation_price = 0;
+                          }
+                          return Container(
+
+                            width: 200,
+                            decoration: BoxDecoration(
+                              color: KabaExpeditionColor.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(width: 1,color: KabaExpeditionColor.primary.withOpacity(1),)
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
+                                        child: Row(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
+                                                SizedBox(width: 5,),
+                                                state is EstimationLoading?
+                                                Text('Calcul en cours...')
+                                                :Row(
+                                                  children: [
+                                                    Text("Coût estimé :",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                                    Text("${_weight.text.isNotEmpty?estimation_price:"0" } FCFA", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                                  ],
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      );
+                    },
+                  ),
                 ),
                 SizedBox(height: 10,),
                 //Package description
@@ -676,7 +689,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         image:packageModel.images![0]!=null?  DecorationImage(
-                                            image:FileImage(packageModel.images![0]!),
+                                            image:NetworkImage(packageModel.images![0]!),
                                             fit: BoxFit.cover
                                         ):null
                                     ),
@@ -769,7 +782,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         image:packageModel.images![1]!=null?  DecorationImage(
-                                            image:FileImage(packageModel.images![1]!),
+                                            image:NetworkImage(packageModel.images![1]!),
                                             fit: BoxFit.cover
                                         ):null
                                     ),
@@ -862,7 +875,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         image:packageModel.images![2]!=null?  DecorationImage(
-                                    image:FileImage(packageModel.images![2]!),
+                                    image:NetworkImage(packageModel.images![2]!),
                                       fit: BoxFit.cover
                                   ):null
                                     ),
@@ -963,9 +976,9 @@ class _PickUpOptionsState extends State<PickUpOptions> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Adresse de recupération',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                Text('Adresse de recupération',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                 SizedBox(height: 10),
-                Text("Numéro de téléphone de l'expéditeur?",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
+                Text("Numéro de téléphone de l'expéditeur?",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 TextFormField(
                   controller: _senderPhoneNumber,
@@ -1002,8 +1015,8 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("Kaba recupère le colis ?",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
-                        Text("Service de récupération à domicile",style: TextStyle(fontSize: 11,color: Colors.black38),),
+                        Text("Kaba recupère le colis ?",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("Service de récupération à domicile",style: TextStyle(fontSize: 13,color: Colors.black38),),
                       ],
                     ),
                     SizedBox(width: 10,),
@@ -1034,7 +1047,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       children: [
                         Row(
                           children: [
-                            Text("📍 Adresse de récupération",style: TextStyle(fontSize: 12,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
+                            Text("📍 Adresse de récupération",style: TextStyle(fontSize: 14,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
                           ],
                         ),
                         SizedBox(height:10),
@@ -1057,7 +1070,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.location_on_outlined,size: 20,color: !positionChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                    Text("Position actuelle",style: TextStyle(fontSize: 11,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                    Text("Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
                                   ],
                                 ),
                               ),
@@ -1097,7 +1110,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.save_outlined,size: 20,color: !addressSavedChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                    Text("Adresses enregistrées",style: TextStyle(fontSize: 11,color:!addressSavedChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                    Text("Adresses enregistrées",style: TextStyle(fontSize: 13,color:!addressSavedChoosed? KabaExpeditionColor.primary:Colors.white),)
                                   ],
                                 ),
                               ),
@@ -1151,15 +1164,15 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.add_circle_outline,size: 20,color: !addNewAddress? KabaExpeditionColor.primary:Colors.white,),
-                                Text("Ajouter une nouvelle adresse",style: TextStyle(fontSize: 11,color:!addNewAddress? KabaExpeditionColor.primary:Colors.white),)
+                                Text("Ajouter une nouvelle adresse",style: TextStyle(fontSize: 13,color:!addNewAddress? KabaExpeditionColor.primary:Colors.white),)
                               ],
                             ),
                           ),
                         ),
                         SizedBox(height:10),
-                        Text("📅 Planification de la récupération",style: TextStyle(fontSize: 12,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
+                        Text("📅 Planification de la récupération",style: TextStyle(fontSize: 13,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
                         SizedBox(height:10),
-                        Text("Date de récupération",style: TextStyle(fontSize: 12,color:Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("Date de récupération",style: TextStyle(fontSize: 13,color:Colors.black87,fontWeight: FontWeight.bold),),
                         SizedBox(height:10),
                         GestureDetector(
                           onTap: ()async{
@@ -1196,8 +1209,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                         GestureDetector(
                           child: Container(
                             width: 330,
-
-                            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 0),
+                            padding: EdgeInsets.only(left:10,right:10,top: 0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color:Colors.white,
@@ -1206,10 +1218,10 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
                                 DropdownButton(
-                                  hint: Text("Sélectionnez un créneau",style: TextStyle(fontSize: 12,color:selectedDate==null? Colors.black54:Colors.white),),
+                                  hint: Text("Sélectionnez un créneau",style: TextStyle(fontSize: 13,color:selectedDate==null? Colors.black54:Colors.white),),
                                     underline: SizedBox(),
                                    value: selectedTime,
-                                   padding: EdgeInsets.only(right: 100),
+                                   padding: EdgeInsets.only(right: 90),
                                     icon: null,
                                     iconEnabledColor:selectedTimes!=null?Colors.white:null,
                                     items: selectedTimes.map((e) => DropdownMenuItem(
@@ -1220,7 +1232,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                       BlocProvider.of<ExpeditionBloc>(context).add(chooseFetchTimeEvent(hour: value!));
                                     }),
 
-                                Icon(Icons.alarm,color:Colors.black,size: 17,)
+                                Icon(Icons.alarm,color:Colors.grey,size: 17,)
                               ],
                             ),
                           ),
@@ -1235,8 +1247,8 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("Vous déposez le colis ?",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
-                        Text("Déposer à nos bureaux Kaba",style: TextStyle(fontSize: 11,color: Colors.black38),),
+                        Text("Vous déposez le colis ?",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("Déposer à nos bureaux Kaba",style: TextStyle(fontSize: 13,color: Colors.black38),),
                       ],
                     ),
                     SizedBox(width: 10,),
@@ -1271,7 +1283,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                         children: [
                           Icon(Icons.location_on_outlined,size: 20,color: KabaExpeditionColor.primary,),
                           SizedBox(width: 10,),
-                          Text("Bureau Kaba",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
+                          Text("Bureau Kaba",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
 
                         ],
                       ),

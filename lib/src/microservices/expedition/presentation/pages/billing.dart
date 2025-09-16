@@ -61,7 +61,7 @@ class _BillingPageState extends State<BillingPage> {
                       children: [
                         Icon(FontAwesomeIcons.fileText,color: KabaExpeditionColor.primary,size: 18,),
                         SizedBox(width: 10,),
-                        Text("Récapitulatif de votre expédition",style: TextStyle(fontSize:12,fontWeight: FontWeight.bold),),
+                        Text("Récapitulatif de votre expédition",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold),),
 
                       ],
                     ),
@@ -70,14 +70,14 @@ class _BillingPageState extends State<BillingPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Route : ",style: TextStyle(color: Colors.black54,fontSize: 12),),
+                        Text("Route : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
                         Row(
                           children: [
-                            Text("Lomé", style: TextStyle(fontSize: 12,color: Colors.black)),
+                            Text("Lomé", style: TextStyle(fontSize: 14,color: Colors.black)),
                             SizedBox(width: 5,),
                             Icon(Icons.arrow_forward,color: Colors.black,size: 15,),
                             SizedBox(width: 5,),
-                            Text("Accra",style: TextStyle(fontSize: 12,color: Colors.black)),
+                            Text("Accra",style: TextStyle(fontSize: 14,color: Colors.black)),
                           ],
                         )
                       ],
@@ -87,8 +87,8 @@ class _BillingPageState extends State<BillingPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Poids : ",style: TextStyle(color: Colors.black54,fontSize: 12),),
-                        Text("2.5 Kg", style: TextStyle(fontSize: 12,color: Colors.black))
+                        Text("Poids : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                        Text("2.5 Kg", style: TextStyle(fontSize: 14,color: Colors.black))
                       ],
                     ),
                     SizedBox(height: 10,),
@@ -96,8 +96,8 @@ class _BillingPageState extends State<BillingPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Type : ",style: TextStyle(color: Colors.black54,fontSize: 12),),
-                        Text("Vêtements", style: TextStyle(fontSize: 12,color: Colors.black))
+                        Text("Type : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                        Text("Vêtements", style: TextStyle(fontSize: 14,color: Colors.black))
                       ],
                     ),
                     SizedBox(height: 10,),
@@ -105,8 +105,8 @@ class _BillingPageState extends State<BillingPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Quantité : ",style: TextStyle(color: Colors.black54,fontSize: 12),),
-                        Text("03 articles", style: TextStyle(fontSize: 12,color: Colors.black))
+                        Text("Quantité : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                        Text("03 articles", style: TextStyle(fontSize: 14,color: Colors.black))
                       ],
                     ),
                     SizedBox(height: 20,),
@@ -120,8 +120,8 @@ class _BillingPageState extends State<BillingPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Montant provisoire :",style: TextStyle(fontSize: 13,color:Colors.black,fontWeight: FontWeight.bold),),
-                        Text("25000 FCFA",style: TextStyle(fontSize: 13,color:Color(0xFFCD1F45),fontWeight: FontWeight.bold,decorationColor:KabaExpeditionColor.primary, decoration: negociate?TextDecoration.lineThrough:null),)
+                        Text("Montant provisoire :",style: TextStyle(fontSize: 14,color:Colors.black,fontWeight: FontWeight.bold),),
+                        Text("25000 FCFA",style: TextStyle(fontSize: 14,color:Color(0xFFCD1F45),fontWeight: FontWeight.bold,decorationColor:KabaExpeditionColor.primary, decoration: negociate?TextDecoration.lineThrough:null),)
 
                       ],
                     ),
@@ -161,7 +161,7 @@ class _BillingPageState extends State<BillingPage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10)
                           ),
-                          child: Text("Envoyer la proposition",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:Colors.white),),
+                          child: Text("Envoyer la proposition",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white),),
                           onPressed: (){
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => Confirmationpage(),
@@ -197,7 +197,7 @@ class _BillingPageState extends State<BillingPage> {
                   Icon(Icons.check_circle_outline_outlined,color: KabaExpeditionColor.primary,size: 22,),
                   SizedBox(width: 10,),
                   Flexible(child: Text("Ce montant est provisoire et peut être ajusté après vérification de votre colis par nos équipes",
-                  style: TextStyle(fontSize: 12),))
+                  style: TextStyle(fontSize: 14),))
                 ],
               ),
             ),

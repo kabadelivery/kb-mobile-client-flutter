@@ -13,17 +13,17 @@ abstract class ExpeditionRepository {
     required String customerToken,
   });
   Future<CreateExpedition> createAnExpedition({
-    required Map<String, dynamic> body,
+    required CreateExpedition expedition,
     required String customerToken,
   });
   Future<List<ExpeditionModel>> getUserExpedition({
-    required String id,
     required String customerToken,
   });
   Future<NegotiationModel> createNegociation({
     required Map<String, dynamic> body,
     required String customerToken,
   });
+  Future<String> uploadImage(String imagePath);
 }
 
 class ExpeditionRepositoryImpl implements ExpeditionRepository {
@@ -35,6 +35,7 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
   Future<List<LineModel>> getShippingLines({required String customerToken}) {
     return remote.getShippingLines(customer_token: customerToken);
   }
+
 
   @override
   Future<LinePricingCalculateModel> calculateShippingLinePricing({
@@ -49,21 +50,20 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
 
   @override
   Future<CreateExpedition> createAnExpedition({
-    required Map<String, dynamic> body,
+    required CreateExpedition expedition,
     required String customerToken,
   }) {
     return remote.createAnExpedition(
-      body: body,
-      customer_token: customerToken,
+      expedition: expedition,
+      customerToken: customerToken
     );
   }
 
   @override
   Future<List<ExpeditionModel>> getUserExpedition({
-    required String id,
     required String customerToken,
   }) {
-    return remote.getUserExpedition(id: id, customer_token: customerToken);
+    return remote.getUserExpedition(customer_token: customerToken);
   }
 
   @override
@@ -75,5 +75,9 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
       body: body,
       customer_token: customerToken,
     );
+  }
+  @override
+  Future<String> uploadImage(String imagePath) {
+    return remote.uploadImage(imagePath);
   }
 }

@@ -7,11 +7,9 @@ class GetUserExpedition {
   GetUserExpedition(this.repository);
 
   Future<List<ExpeditionModel>> call({
-    required String id,
     required String customerToken,
   }) {
     return repository.getUserExpedition(
-      id: id,
       customerToken: customerToken,
     );
   }
