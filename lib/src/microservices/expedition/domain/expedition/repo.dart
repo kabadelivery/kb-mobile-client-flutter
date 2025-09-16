@@ -4,6 +4,7 @@ import 'package:KABA/src/microservices/expedition/data/expedition/create_expedit
 import 'package:KABA/src/microservices/expedition/data/expedition/line_pricing_calculate_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/negociation_model.dart';
 
+import '../../../../models/CustomerModel.dart';
 import '../../data/expedition/remote_data_source.dart';
 
 abstract class ExpeditionRepository {
@@ -12,9 +13,9 @@ abstract class ExpeditionRepository {
     required Map<String, dynamic> queryParameters,
     required String customerToken,
   });
-  Future<CreateExpedition> createAnExpedition({
+  Future<ExpeditionModel> createAnExpedition({
     required CreateExpedition expedition,
-    required String customerToken,
+    required CustomerModel customer,
   });
   Future<List<ExpeditionModel>> getUserExpedition({
     required String customerToken,
@@ -49,13 +50,13 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
   }
 
   @override
-  Future<CreateExpedition> createAnExpedition({
+  Future<ExpeditionModel> createAnExpedition({
     required CreateExpedition expedition,
-    required String customerToken,
+    required CustomerModel customer,
   }) {
     return remote.createAnExpedition(
       expedition: expedition,
-      customerToken: customerToken
+      customer: customer,
     );
   }
 

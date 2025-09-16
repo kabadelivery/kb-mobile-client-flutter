@@ -1330,7 +1330,6 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       ),
                    //   SizedBox(width: 10,),
                    //   Text("Ouvert : Lundi - Samedi 08h-18h ",style: TextStyle(fontSize:12,color:KabaExpeditionColor.primary),),
-
                     ],
                   ),
                 ):SizedBox(height: 0,),

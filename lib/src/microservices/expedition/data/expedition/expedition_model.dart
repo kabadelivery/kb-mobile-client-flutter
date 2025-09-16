@@ -82,7 +82,7 @@ class ExpeditionModel {
           .toList(),
       ligne: LineModel.fromJson(json['ligne']),
       createdBy: CreatedByModel.fromJson(json['createdBy']),
-      colisDetail: ColisDetail.fromJson(json['colisDetail']),
+      colisDetail: json['colisDetail']!=null?ColisDetail.fromJson(json['colisDetail']):null,
     );
   }
 

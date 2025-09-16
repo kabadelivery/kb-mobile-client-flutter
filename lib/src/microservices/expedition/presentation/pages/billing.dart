@@ -1,3 +1,4 @@
+import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/confirmationPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../core/utils.dart';
 
 class BillingPage extends StatefulWidget {
-  const BillingPage({super.key});
+  final ExpeditionModel expedition;
+  const BillingPage({required this.expedition, super.key});
   @override
   State<BillingPage> createState() => _BillingPageState();
 }

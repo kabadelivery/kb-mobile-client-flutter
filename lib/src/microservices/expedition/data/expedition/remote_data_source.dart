@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:KABA/src/microservices/expedition/core/constants.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/line_model.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -21,9 +22,9 @@ abstract class ExpeditionRemoteDataSource {
     required String customer_token,
   });
 
-  Future<CreateExpedition> createAnExpedition({
+  Future<ExpeditionModel> createAnExpedition({
     required CreateExpedition expedition,
-    required String customerToken,
+    required CustomerModel customer,
   });
   Future<List<ExpeditionModel>> getUserExpedition({
     required String customer_token,
@@ -128,11 +129,11 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
     }
   }
  @override
- Future<CreateExpedition> createAnExpedition({
+ Future<ExpeditionModel> createAnExpedition({
    required CreateExpedition expedition,
-   required String customerToken,
+   required CustomerModel customer,
  }) async {
-   final dio = _dioWithToken(customerToken);
+   final dio = _dioWithToken(customer.token!);
    expedition.colis = expedition.colis?.map((colis) {
      colis.quantite=1;
      return colis;
@@ -143,17 +144,40 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
     "adresseDestination": expedition.adresseDestination,
     "contactOrigine": expedition.telephoneOrigine,
     "telephoneOrigine": expedition.telephoneOrigine,
-    "contactDestination":expedition.telephoneDestination,
-    "telephoneDestination": expedition.telephoneDestination,
+    "contactDestination":expedition.colis![0].recipientPhoneNumber,
+    "telephoneDestination": expedition.colis![0].recipientPhoneNumber,
     "methodeLivraison":"International",
     "methodeCollecte": expedition.methodeCollecte,
-    "colis": expedition.colis
+    "colis": expedition.colis?.map((colis) {
+      return colis.toJson();
+    }).toList(),
+    "dateCollecte": expedition.dateCollecte,
+    "heureCollecte": expedition.heureCollecte,
+    "createdBy": {
+      "id":customer.phone_number,
+      "email": customer.email,
+      "password": "kaba_h0rnqu5edj",
+      "name": customer.phone_number,
+      "role": "CLIENT",
+      "createdAt": DateTime.now().toString(),
+      "updatedAt": DateTime.now().toString()
+    },
   };
-   var response = await dio.post(CREATE_EXPEDITION_LINK,data: expedition.toJson());
 
-   if (response.statusCode == 200) {
-     final data = jsonDecode(response.data);
-     return CreateExpedition.fromJson(Map<String, dynamic>.from(data));
+   var response = await dio.post(
+     CREATE_EXPEDITION_LINK,
+     data: data,
+     options: Options(
+       headers: {
+         "Authorization": "Bearer ${customer.token}",
+         "Content-Type": "application/json",
+       },
+     ),
+   );
+   if (response.statusCode == 200 || response.statusCode == 201) {
+     final data = response.data;
+     debugPrint("XXX ${data['colis']}");
+     return ExpeditionModel.fromJson(Map<String, dynamic>.from(data));
    } else {
      throw Exception("❌ Failed to create expedition: ${response.data}");
    }

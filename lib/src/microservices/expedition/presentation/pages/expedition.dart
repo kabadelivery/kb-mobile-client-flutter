@@ -57,12 +57,14 @@ class _ExpeditionState extends State<Expedition> {
       }
       else if (state is chooseShippingMethodState) {
         createExpedition.methodeCollecte = state.method;
+        createExpedition.adresseDestination = "319 Rue AGP, Agbalépédo, Lomé TOGO";
 
       } else if (state is chooseShippingMethodAddressTypeState) {
         createExpedition.adresseOrigine = state.coords;
       }
       else if(state is enterSendPhoneNumberState){
         createExpedition.telephoneOrigine = state.phoneNumber;
+        debugPrint("phone number ${state.phoneNumber}");
       }
       else if (state is chooseFetchDateState) {
         createExpedition.dateCollecte = state.date;
@@ -353,32 +355,19 @@ class _ExpeditionState extends State<Expedition> {
                      ),
                      elevation: 0,
                      onPressed: ()async{
-                       Navigator.of(context).push(PageRouteBuilder(
-                           pageBuilder: (context, animation, secondaryAnimation) => BillingPage(),
-                           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                             var begin = Offset(1.0, 0.0);
-                             var end = Offset.zero;
-                             var curve = Curves.ease;
-                             var tween = Tween(begin: begin, end: end);
-                             var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                             return SlideTransition(
-                                 position: tween.animate(curvedAnimation),
-                                 child: child
-                             );
-                           }
-                       ));
-                     /*
-                     *    await Future.delayed(Duration(milliseconds: 500));
+                       await Future.delayed(Duration(milliseconds: 500));
                        CustomerModel customer = await CustomerUtils.getCustomer();
                        CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-                       await createExpeditionUseCase(
-                       body: createExpedition,
-                       customerToken: customer.token!,
-                       ).then((_){
+                        await createExpeditionUseCase(
+                         body: createExpedition,
+                         customer: customer,
+                       ).then((expedition){
 
 
                          Navigator.of(context).push(PageRouteBuilder(
-                             pageBuilder: (context, animation, secondaryAnimation) => BillingPage(),
+                             pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
+                               expedition:expedition
+                             ),
                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                var begin = Offset(1.0, 0.0);
                                var end = Offset.zero;
@@ -392,7 +381,6 @@ class _ExpeditionState extends State<Expedition> {
                              }
                          ));
                        });
-                     * */
                      },
                      child: Container(
                        child: Row(
