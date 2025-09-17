@@ -5,6 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../contracts/topup_contract.dart';
+import '../../../../ui/screens/home/me/money/TopNewUpPage.dart';
+import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/createdby_model.dart';
 import '../../data/expedition/line_model.dart';
@@ -110,11 +113,11 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                     height: 160,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15),
-                        color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value? Color(0xFFECFDF5):
+                        color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value? Color(0xFFECFDF5):
                         Color(0xFFFFDCC3),
                         boxShadow: [
                           BoxShadow(
-                              color:  widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?Color(0xFF01792E).withOpacity(0.2):
+                              color:  widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF01792E).withOpacity(0.2):
                               Color(0xFFFFA358).withOpacity(0.2),
                               spreadRadius: 2,
                               blurRadius: 20,
@@ -129,7 +132,7 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                                color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?Color(0xFFD2F9E1)
+                                color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFFD2F9E1)
                                     :Color(0x6EE69027),
                                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topRight: Radius.circular(15))
                             ),
@@ -141,7 +144,7 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                             width: 36,
                             height: 36,
                             decoration: BoxDecoration(
-                                color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?Color(0xFFD2F9E1)
+                                color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFFD2F9E1)
                                     :Color(0x6EE69027),
                                 borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomLeft: Radius.circular(15))
                             ),
@@ -162,10 +165,10 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                                         borderRadius: BorderRadius.circular(100),
                                         gradient: LinearGradient(
                                             colors: [
-                                              widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?
+                                              widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?
                                               Color(0xFF39CF7B):
                                               Color(0xFFFF926B),
-                                              widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?
+                                              widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?
                                               Color(0xFF00A163):
                                               Color(0xFFFFCF50),
                                             ]
@@ -173,18 +176,19 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
 
                                         )
                                     ),
-                                    child: Center(child: Icon(widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?CupertinoIcons.check_mark_circled:Icons.access_time_rounded,color: Colors.white,size: 40,))
+                                    child: Center(child: Icon(widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?CupertinoIcons.check_mark_circled:Icons.access_time_rounded,color: Colors.white,size: 40,))
                                 ),
                               ),
-                              Text(widget.expeditionModel.status==ExpeditionStatus.DEMANDE_FAITE.value?"Demande en cours":
+                              Text(widget.expeditionModel.status==ExpeditionStatus.EN_ATTENTE.value?"Demande en cours":
                                   widget.expeditionModel.status==ExpeditionStatus.EN_COURS_EXPEDITION.value?"En cours d’expedition":
                                       widget.expeditionModel.status==ExpeditionStatus.ARRIVE_EN_VILLE.value?"Arrivé à destination":
                                           widget.expeditionModel.status==ExpeditionStatus.DEPART_CONFIRME.value?"Départ confirmé":
                                               widget.expeditionModel.status==ExpeditionStatus.PAIEMENT.value?"Validation de paiement":
                                                   widget.expeditionModel.status==ExpeditionStatus.NEGOCIATION.value?"En cours de negociation":
                                                       widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?"Colis récupéré":
+                                                      widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?"Demande acceptée":
                                                       "🥳 Colis livré avec succès"
-                                ,style: TextStyle(color:widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?Color(0xFF3D6F2E):
+                                ,style: TextStyle(color:widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF3D6F2E):
                                       Color(0xFF894B00),
                                     fontWeight: FontWeight.bold,fontSize: 18),),
                               SizedBox(height: 15,),
@@ -193,7 +197,7 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: Text("Merci d’avoir choisi KABA Expédition",textAlign: TextAlign.center,
 
-                                    style: TextStyle(fontSize: 14,color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?Color(0xFF01792E)
+                                    style: TextStyle(fontSize: 14,color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF01792E)
                                     :Color(0xFF894B00)),
                                   )),
                               SizedBox(height: 20,),
@@ -247,7 +251,7 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children:[
                                     Text("Numéro",style: TextStyle(fontSize: 14,color: Colors.black87),),
-                                    Text(expedition.trackingNumber.toString(),style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),),
+                                    Text(expedition.trackingNumber.toString().substring(0,10)+"...",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),),
                                     Row(
                                       children: [
                                         Text("Route : ",style: TextStyle(fontSize: 14,color: Colors.black87),),
@@ -286,6 +290,27 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
 
                   ),
                 ),
+        widget.expeditionModel.status==ExpeditionStatus.NEGOCIATION.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?
+                Container(
+                  width: 330,
+                  padding: EdgeInsets.all(10),
+                  child: MaterialButton(
+                      onPressed: ()async{
+                        Map results = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.expedition,additionnal_infos: {'delivery_id':expedition.id,},amount_to_send: expedition.colisDetail!.prixFinal,),
+                          ),
+                        );
+                      },
+                      color: KabaExpeditionColor.primary,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      minWidth: 330,
+                      child: Text("Procéder au payement",style: TextStyle(color: Colors.white,fontSize: 14,fontWeight: FontWeight.bold))),
+                ):Container(),
                 widget.expeditionModel.status==ExpeditionStatus.LIVRAISON_AU_DESTINATAIRE?
                 Column(
                   children: [

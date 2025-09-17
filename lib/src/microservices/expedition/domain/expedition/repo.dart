@@ -17,6 +17,8 @@ abstract class ExpeditionRepository {
     required CreateExpedition expedition,
     required CustomerModel customer,
   });
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,
+      String delivery_id,String paymentMethod);
   Future<List<ExpeditionModel>> getUserExpedition({
     required String customerToken,
   });
@@ -37,7 +39,11 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
     return remote.getShippingLines(customer_token: customerToken);
   }
 
-
+  @override
+  Future<Map> payForDelivery(CustomerModel customer, String phoneNumber, String amount,
+      String delivery_id,String paymentMethod) {
+    return remote.payForDelivery(customer, phoneNumber, amount, delivery_id,paymentMethod);
+  }
   @override
   Future<LinePricingCalculateModel> calculateShippingLinePricing({
     required Map<String, dynamic> queryParameters,

@@ -29,7 +29,8 @@ class ExpeditionCreated extends ExpeditionState {
 
 class UserExpeditionsLoaded extends ExpeditionState {
   final List<ExpeditionModel> expeditions;
-  UserExpeditionsLoaded(this.expeditions);
+  bool? error;
+  UserExpeditionsLoaded({required this.expeditions,this.error});
 }
 
 class NegociationCreated extends ExpeditionState {

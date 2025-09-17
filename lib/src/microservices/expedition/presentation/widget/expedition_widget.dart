@@ -10,7 +10,8 @@ import '../../data/expedition/expedition_model.dart';
 
 Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel expedition}) {
   List status = [
-  "DEMANDE_FAITE",
+  "EN_ATTENTE",
+  "ACCEPTEE",
   "NEGOCIATION",
   "PAIEMENT",
   "RECUPERATION_EFFECTUEE",
@@ -19,22 +20,19 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
   "ARRIVE_EN_VILLE",
   "LIVRAISON_AU_DESTINATAIRE"
   ];
-  int indexOfStatus = status.indexOf(expedition.status);
+  int indexOfStatus = status.indexOf(expedition.status)+1;
   return Container(
     margin: const EdgeInsets.all(12),
     padding: const EdgeInsets.all(12),
     decoration: BoxDecoration(
       color: Colors.white,
-      border: Border.all(
-        color: Colors.grey.shade400,
-        width: 0.5, // <-- Border width
-      ),
+
       borderRadius: BorderRadius.circular(8),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.1),
-          blurRadius: 4,
-          offset: const Offset(0, 2),
+          color: Colors.grey.withOpacity(0.5),
+          blurRadius: 10,
+          offset: const Offset(0, 5),
         ),
       ],
     ),
@@ -64,7 +62,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "${expedition.trackingNumber}",
+                          "${expedition.trackingNumber!.substring(0,10)}...",
                           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                         SizedBox(height: 4),
@@ -93,7 +91,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
 
           backgroundColor: Colors.white,
           content: SizedBox(
-            height: 600,
+            height: 660,
             width: double.maxFinite,
             child: ExpeditionStepper(currentStatus: ExpeditionStatus.values.where((element) => element.name == expedition.status).first),
           ),
@@ -114,7 +112,8 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
                                   expedition.status==ExpeditionStatus.PAIEMENT.value?"Paiement":
                                       expedition.status==ExpeditionStatus.NEGOCIATION.value?"Negotiation":
                                           expedition.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?"Récupération effectuée":
-                                              expedition.status==ExpeditionStatus.DEMANDE_FAITE.value?"Demande faite"
+                                              expedition.status==ExpeditionStatus.EN_ATTENTE.value?"Demande faite":
+                                              expedition.status==ExpeditionStatus.ACCEPTEE.value?"Accepté"
                                                   :"Status inconnu"
                   }",
                   style: TextStyle(color: Colors.white, fontSize: 12),
@@ -149,7 +148,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
         ClipRRect(
           borderRadius: BorderRadius.circular(10), // 👈 round corners
           child: LinearProgressIndicator(
-            value: 6 / 9,
+            value: indexOfStatus / status.length,
             minHeight: 12, // 👈 make it thicker
             backgroundColor: Colors.grey.shade300,
             color: KabaExpeditionColor.primary,

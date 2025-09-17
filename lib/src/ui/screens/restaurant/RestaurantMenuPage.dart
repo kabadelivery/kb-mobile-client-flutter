@@ -147,7 +147,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   @override
   Widget build(BuildContext context) {
-    xrint("widget?.restaurant!.is_certified ${widget?.restaurant!.is_certified}");
     if (MAX_CHIP_FOR_SCREEN < 0) {
       MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
     }

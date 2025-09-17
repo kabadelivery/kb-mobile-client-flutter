@@ -30,6 +30,7 @@ class _EstimationFormState extends State<EstimationForm> {
   List<Map<String,String>> map_of_town_departure= [
   ];
   List<LineModel>availableLines=[];
+  bool error = false;
   EstimationBloc estimationBloc = EstimationBloc();
   @override
   void initState() {
@@ -64,22 +65,27 @@ class _EstimationFormState extends State<EstimationForm> {
       estimation_price =state.result.prixFinal;
     }
     if(state is getAvailableLinesState){
-      debugPrint("XXX state lines${state.lines}");
-      availableLines = state.lines;
-      selected_departure_town= state.lines[0].depart!.nom??"";
-      selected_arrival_town= state.lines[0].arrivee!.nom??"";
-      map_of_town_arrival.clear();
-      map_of_town_departure.clear();
-      for(LineModel line in state.lines){
-        Map<String,String> lineDepartureMap =  {"id":"${line.id}","name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
-        Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
+      if(state.lines.isNotEmpty){
+        debugPrint("XXX state lines${state.lines}");
+        availableLines = state.lines;
+        selected_departure_town= state.lines[0].depart!.nom??"";
+        selected_arrival_town= state.lines[0].arrivee!.nom??"";
+        map_of_town_arrival.clear();
+        map_of_town_departure.clear();
+        error = false;
+        for(LineModel line in state.lines){
+          Map<String,String> lineDepartureMap =  {"id":"${line.id}","name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
+          Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
 
-        if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
-          map_of_town_departure.add(lineDepartureMap);
+          if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
+            map_of_town_departure.add(lineDepartureMap);
+          }
+          if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
+            map_of_town_arrival.add(lineArrivalMap);
+          }
         }
-        if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
-          map_of_town_arrival.add(lineArrivalMap);
-        }
+      }else{
+        error = true;
       }
     }
     return Container(
@@ -247,6 +253,39 @@ class _EstimationFormState extends State<EstimationForm> {
                     ),
                   ),
                   SizedBox(height: 20,),
+                  error?
+                GestureDetector(
+                onTap: (){
+                 estimationBloc.add(getAvailableLines());
+                },
+                child: Container(
+                height: 40,
+                width: 330,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors:_weight.text.isEmpty? [
+                Color(0xFFCC1E44).withOpacity(.5),
+                Color(0xFFB71B3E).withOpacity(.5),
+                Color(0xFFA11738).withOpacity(.5),
+                ]: [
+                Color(0xFFCC1E44),
+                Color(0xFFB71B3E),
+                Color(0xFFA11738),
+                ]
+                ),
+                borderRadius: BorderRadius.circular(5)
+                ),
+                child:   Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                FormTitleWithIcon(title: 'Reéssayer', icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
+                ],
+                ),
+                ),
+                ):
                   GestureDetector(
                     onTap: (){
                       if(_formKey.currentState!=null && (_formKey.currentState as FormState).validate()){
@@ -285,7 +324,6 @@ class _EstimationFormState extends State<EstimationForm> {
                       ),
                     ),
                   ),
-
                   estimation_price!=null?
                   Column(
                     children: [

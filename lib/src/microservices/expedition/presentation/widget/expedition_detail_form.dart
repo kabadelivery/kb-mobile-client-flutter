@@ -82,9 +82,11 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
           Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
           if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
             map_of_town_departure.add(lineDepartureMap);
+
           }
           if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
             map_of_town_arrival.add(lineArrivalMap);
+
           }
         }
       }
@@ -93,20 +95,17 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
       if(state.index==widget.index){
         packageModel = state.packages[widget.index];
         debugPrint("PackageModel: ${packageModel.toJson()}");
-        try{
+
           registeredAddressChoosed = registeredAddressChoosed;
           gpsAddressChoosed = gpsAddressChoosed;
-          firstImagePath = packageModel.images![0]!=null?packageModel.images![0]!:"";
-          secondImagePath = packageModel.images![1]!=null?packageModel.images![1]!:"";
-          thirdImagePath = packageModel.images![2]!=null?packageModel.images![2]!:"";
-          _weight.text = packageModel.poids!=null?packageModel.poids.toString():"";
+          try{
+            firstImagePath = packageModel.images![0]!=null?packageModel.images![0]!:"";
+            secondImagePath = packageModel.images![1]!=null?packageModel.images![1]!:"";
+            thirdImagePath = packageModel.images![2]!=null?packageModel.images![2]!:"";
+          }catch(e){
+          }
           _packageContainer.text = packageModel.description!=null?packageModel.description.toString():"";
-          debugPrint("First image path: $firstImagePath");
-          debugPrint("Second image path: $secondImagePath");
-          debugPrint("Third image path: $thirdImagePath");
-        }catch(e){
-          debugPrint("Error: $e");
-        }
+       
       }
     }
     return Container(
@@ -221,6 +220,9 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                   ));
                             }).toList(),
                             onChanged: (value){
+                              setState(() {
+                                selected_departure_town = value;
+                              });
                               BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town).first.id!));
                             },
                           ),
@@ -264,6 +266,9 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                   ));
                             }).toList(),
                             onChanged: (value){
+                              setState(() {
+                                selected_arrival_town = value!;
+                              });
                               BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.arrivee!.nom==selected_arrival_town).first.id!));
                             },
                           ),

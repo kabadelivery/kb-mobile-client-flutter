@@ -536,7 +536,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           child: Column(
             children: [
               Container(
-                  width:335 ,
+                  width:double.infinity,
                   height: 50,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(

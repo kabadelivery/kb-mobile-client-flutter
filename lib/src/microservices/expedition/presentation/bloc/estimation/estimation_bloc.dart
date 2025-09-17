@@ -37,11 +37,15 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
       getAvailableLines event,
       Emitter<EstimationState> emit,
       ) async {
-    GetShippingLines lines = GetShippingLines(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-    CustomerModel customerModel = await CustomerUtils.getCustomer();
-    List<LineModel> linesList = await lines.call(customerToken: customerModel.token!);
-    debugPrint("XXX lines ${linesList.length}");
-    emit(getAvailableLinesState(linesList));
+    try{
+      GetShippingLines lines = GetShippingLines(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
+      CustomerModel customerModel = await CustomerUtils.getCustomer();
+      List<LineModel> linesList = await lines.call(customerToken: customerModel.token!);
+      debugPrint("XXX lines ${linesList.length}");
+      emit(getAvailableLinesState(linesList));
+    }catch(e){
+      emit(getAvailableLinesState([]));
+    }
   }
   Future<void> _onCalculateEstimation(
       CalculateEstimation event,

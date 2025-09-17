@@ -4,6 +4,7 @@ import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/e
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../core/utils.dart';
 import '../../data/expedition/city_model.dart';
@@ -11,6 +12,7 @@ import '../../data/expedition/createdby_model.dart';
 import '../../data/expedition/line_model.dart';
 import '../../data/expedition/package_model.dart';
 import '../widget/expedition_widget.dart';
+import '../widget/popAnimation.dart';
 
 class TrackingPackages extends StatefulWidget {
   const TrackingPackages({super.key});
@@ -21,190 +23,33 @@ class TrackingPackages extends StatefulWidget {
 
 class _TrackingPackagesState extends State<TrackingPackages> {
   List<ExpeditionModel> expeditions = [
- ExpeditionModel(
-  id: "EXP-2025-001",
-  trackingNumber: "KABA-2025-001",
-  partnerId: "PARTNER-123",
-  status: "EN_COURS_EXPEDITION",
-  ligneId: "LINE-001",
-  adresseOrigine: "Lomé, Togo",
-  adresseDestination: "Accra, Ghana",
-  contactOrigine: "Kossi Agbeko",
-  contactDestination: "Ama Boateng",
-  telephoneOrigine: "+22890123456",
-  telephoneDestination: "+233541234567",
-  methodeLivraison: "Express",
-  methodeCollecte: "Point relais",
-  estimatedDelivery: DateTime.now().add(const Duration(days: 3)),
-  actualDelivery: null,
-  currentLocation: "Frontière Togo - Ghana",
-  createdAt: DateTime.now().subtract(const Duration(days: 1)),
-  updatedAt: DateTime.now(),
-  colis: [
-  PackageModel(
-  id: "PKG-001",
-  expeditionId: "EXP-2025-001",
-  description: "5 Vêtements",
-  poids: 3.5,
-  adresseDestination: "Accra Mall, Accra",
-  departureTown: "Lomé",
-  arrivalTown: "Accra",
-  recipientPhoneNumber: "+233541234567",
-  ),
-  PackageModel(
-  id: "PKG-002",
-  expeditionId: "EXP-2025-001",
-  description: "10 Sacs",
-  poids: 12.0,
-  adresseDestination: "Osu, Accra",
-  departureTown: "Lomé",
-  arrivalTown: "Accra",
-  recipientPhoneNumber: "+233502345678",
-  ),
-  ],
-  ligne: LineModel(
-  id: "LINE-001",
-  departId: "CITY-LOME",
-  arriveeId: "CITY-ACCRA",
-  active: true,
-  partenaireId: "PARTNER-123",
-  prixParKg: 1500.0,
-  dureeJours: 3,
-  depart: CityModel(
-  id: "CITY-LOME",
-  nom: "Lomé",
-  paysId: "TG",
-  pays: {"code": "TG", "nom": "Togo"},
-  ),
-  arrivee: CityModel(
-  id: "CITY-ACCRA",
-  nom: "Accra",
-  paysId: "GH",
-  pays: {"code": "GH", "nom": "Ghana"},
-  ),
-  ),
-  createdBy: CreatedByModel(
-  id: "USER-001",
-  name: "Admin KABA",
-  email: "admin@kaba.com",
-  ),
-   colisDetail: ColisDetail(
-     description: "Ordinateur portable HP",
-     poids: 2.5, // en kg
-     ligneId: "LIGNE-1234",
-     prixParKg: 1500,
-     prixBase: 2000,
-     reductionAppliquee: 100,
-     pourcentageReduction: 10,
-     prixFinal: 3350,
-   ),
-
- ),
- ExpeditionModel(
-  id: "EXP-2025-001",
-  trackingNumber: "KABA-2025-001",
-  partnerId: "PARTNER-123",
-  status: "EN_COURS_EXPEDITION",
-  ligneId: "LINE-001",
-  adresseOrigine: "Lomé, Togo",
-  adresseDestination: "Accra, Ghana",
-  contactOrigine: "Kossi Agbeko",
-  contactDestination: "Ama Boateng",
-  telephoneOrigine: "+22890123456",
-  telephoneDestination: "+233541234567",
-  methodeLivraison: "Express",
-  methodeCollecte: "Point relais",
-  estimatedDelivery: DateTime.now().add(const Duration(days: 3)),
-  actualDelivery: null,
-  currentLocation: "Frontière Togo - Ghana",
-  createdAt: DateTime.now().subtract(const Duration(days: 1)),
-  updatedAt: DateTime.now(),
-  colis: [
-  PackageModel(
-  id: "PKG-001",
-  expeditionId: "EXP-2025-001",
-  description: "5 Vêtements",
-  poids: 3.5,
-  adresseDestination: "Accra Mall, Accra",
-  departureTown: "Lomé",
-  arrivalTown: "Accra",
-  recipientPhoneNumber: "+233541234567",
-  ),
-  PackageModel(
-  id: "PKG-002",
-  expeditionId: "EXP-2025-001",
-  description: "10 Sacs",
-  poids: 12.0,
-  adresseDestination: "Osu, Accra",
-  departureTown: "Lomé",
-  arrivalTown: "Accra",
-  recipientPhoneNumber: "+233502345678",
-  ),
-  ],
-  ligne: LineModel(
-  id: "LINE-001",
-  departId: "CITY-LOME",
-  arriveeId: "CITY-ACCRA",
-  active: true,
-  partenaireId: "PARTNER-123",
-  prixParKg: 1500.0,
-  dureeJours: 3,
-  depart: CityModel(
-  id: "CITY-LOME",
-  nom: "Lomé",
-  paysId: "TG",
-  pays: {"code": "TG", "nom": "Togo"},
-  ),
-  arrivee: CityModel(
-  id: "CITY-ACCRA",
-  nom: "Accra",
-  paysId: "GH",
-  pays: {"code": "GH", "nom": "Ghana"},
-  ),
-  ),
-  createdBy: CreatedByModel(
-  id: "USER-001",
-  name: "Admin KABA",
-  email: "admin@kaba.com",
-  ),
-   colisDetail: ColisDetail(
-     description: "Ordinateur portable HP",
-     poids: 2.5, // en kg
-     ligneId: "LIGNE-1234",
-     prixParKg: 1500,
-     prixBase: 2000,
-     reductionAppliquee: 100,
-     pourcentageReduction: 10,
-     prixFinal: 3350,
-   ),
-
- ),
   ];
   ExpeditionBloc expeditionBloc = ExpeditionBloc();
   bool isLoading = true;
+  bool error = false;
   @override
   void initState() {
     super.initState();
     expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
-   // expeditionBloc.add(GetUserExpeditionEvent());
+    expeditionBloc.add(GetUserExpeditionEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    isLoading = false;
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         body: BlocConsumer<ExpeditionBloc, ExpeditionState>(
           listener: (context, state) {
             if(state is UserExpeditionsLoaded){
               expeditions = state.expeditions;
-
               isLoading = false;
+              error = state.error??false;
             }
           },
           builder: (context, state) {
-            return isLoading?CircularProgressIndicator():
+            return
             Column(
+
               children: [
                 InkWell(
                   onTap: (){
@@ -213,8 +58,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                   child: Container(
                     width: MediaQuery.of(context).size.width,
 
-                    padding:
-                    EdgeInsets.only(left: 20,right:20 ,bottom: 20,top: 50),
+                    padding: EdgeInsets.only(left: 20,right: 20,bottom: 20,top: 70),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
@@ -229,15 +73,122 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                   ),
                   ),
                 ),
+                isLoading?
+                    Container(
+                      width:size.width,
+                      height:size.height-240,
+                      alignment: Alignment.center,
+                      child: Center(child: CircularProgressIndicator()),
+                    ):
                 Container(
                   width:size.width,
-                  height: size.height-100,
+                  child:expeditions.isEmpty?
+                  Container(
+                    child: Text("Aucun colis n'a été trouvé"),
+                  ):
+                  Column(
+                    children: [
+                      SizedBox(height: 20,),
+                      Container(
+                        width: size.width*.95,
+                        height: 100,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15),
+                            color: Color(0xFFECFDF5),
+                            boxShadow: [
+                              BoxShadow(
+                                  color: Color(0xFF01792E).withOpacity(0.2),
+                                  spreadRadius: 2,
+                                  blurRadius: 20,
+                                  offset: Offset(0, 3)),
+                            ]
+                        ),
+                        child: Stack(
+                          children: [
+                            Positioned(
+                              right:0,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFD2F9E1),
+                                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topRight: Radius.circular(15))
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              child: Container(
+                                width: 36,
+                                height: 36,
+                                decoration: BoxDecoration(
+                                    color: Color(0xFFD2F9E1),
+                                    borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomLeft: Radius.circular(15))
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 15),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(height: 20,),
+                                  PopInWidget(
+                                    duration: Duration(milliseconds: 1500),
+                                    child: Container(
+                                        width: 60,
+                                        height: 60,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(100),
+                                            gradient: LinearGradient(
+                                                colors: [
+                                                   Color(0xFF39CF7B),
+                                                   Color(0xFF00A163)
+                                                ]
+                                            )
+                                        ),
+                                        child: Center(child: Icon(FontAwesomeIcons.box,color: Colors.white,size: 30,))
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text("Total expéditions"
+                                        ,style: TextStyle(color:Color(0xFF3D6F2E),
+                                            fontWeight: FontWeight.bold,fontSize: 24),),
+                                      SizedBox(height: 5,),
+                                      Text("${expeditions.length}",textAlign: TextAlign.center,
+                                        style: TextStyle(fontSize: 24,color:Color(0xFF01792E),fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20,)
 
-                  child: ListView.builder(
-                      itemCount: expeditions.length,
-                      itemBuilder: (context,index){
-                        return ExpeditionWidget(context:context,expedition: expeditions[index]);
-                      }),
+                                ],
+                              ),
+                            ),
+                            Column(
+                              children: [
+                                SizedBox(height: 20,),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        width:size.width,
+                        height:size.height-240,
+                        child: ListView.builder(
+                            itemCount: expeditions.length,
+                            itemBuilder: (context,index){
+                              return ExpeditionWidget(context:context,expedition: expeditions[index]);
+                            }),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             );

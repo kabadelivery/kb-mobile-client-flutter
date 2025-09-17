@@ -6,7 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../localizations/AppLocalizations.dart';
 import '../../../../utils/_static_data/KTheme.dart';
+import '../widget/contact.dart';
 import '../widget/expedition_type_box.dart';
 
 class KabaExpeditionHomePage extends StatefulWidget {
@@ -33,7 +35,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
             children: [
               Container(
                 width:MediaQuery.of(context).size.width,
-                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 30),
+                padding: EdgeInsets.only(left: 20,right: 20,bottom: 10,top: 60),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(bottomLeft: Radius.circular(20),bottomRight: Radius.circular(20)),
                   color: KColors.primaryColor
@@ -58,10 +60,10 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                     Row(
                       children: [
                         IconButton(onPressed: (){
-                          contactPhone(phoneNumber: "22892109474");
+                          showBottomContactSheet(context: context);
                         }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
                         IconButton(onPressed: (){
-                          contactWhatsApp(phoneNumber: "22892109474", message: "");
+                          contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
                         }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                         MaterialButton(
                           elevation: 0,
@@ -131,35 +133,51 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  width:120,
-                                  margin: EdgeInsets.only(left: 2),
-                                  height: 35,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: KColors.primaryColor,
-                                    borderRadius: BorderRadius.circular(50),
-                                    border: Border.all(color: Colors.grey.shade300,width: .5)
-                                  ),
-                                  child: Text("International",style: TextStyle(color: Colors.white,fontSize: 14,fontFamily: 'Inter'),),
-                                ),
-                                Container(
-                                  width:120,
-                                  margin: EdgeInsets.only(right: 2),
-                                  height: 35,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
+                                GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      selectedType = ExpeditionType.international;
+                                    });
+                                  },
+                                  child: Container(
+                                    width:120,
+                                    margin: EdgeInsets.only(left: 2),
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: selectedType== ExpeditionType.international?KColors.primaryColor:Colors.white,
                                       borderRadius: BorderRadius.circular(50),
-                                      border: Border.all(color: Colors.white,width: .5)
+                                     ),
+                                    child: Text("International",style: TextStyle(color:selectedType== ExpeditionType.international? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
                                   ),
-                                  child: Text("National",style: TextStyle(color: Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
+                                ),
+                                GestureDetector(
+                                  onTap: (){
+                                    setState(() {
+                                      selectedType = ExpeditionType.national;
+                                    });
+                                  },
+                                  child: Container(
+                                    width:120,
+                                    margin: EdgeInsets.only(right: 2),
+                                    height: 35,
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                        color: selectedType== ExpeditionType.national?KColors.primaryColor:Colors.white,
+                                        borderRadius: BorderRadius.circular(50),
+                                        border: Border.all(color: Colors.white,width: .5),
+
+                                    ),
+                                    child: Text("National",style: TextStyle(color: selectedType== ExpeditionType.national? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
+                                  ),
                                 )
                               ],
                             ),
                           ),
                           SizedBox(height: 20,),
-                          ExpeditionInternationalBox(context:context),
+                          selectedType== ExpeditionType.international?
+                          ExpeditionInternationalBox(context:context)
+                              : ExpeditionNationalBox(context:context),
                         ],
                       ),
                     ),

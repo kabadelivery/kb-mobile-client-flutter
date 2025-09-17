@@ -1,3 +1,4 @@
+import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
 import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
 import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
@@ -75,9 +76,7 @@ class _ExpeditionState extends State<Expedition> {
     });
     return Scaffold(
         backgroundColor: Colors.white,
-        body: isLoading?
-        Center(child: CircularProgressIndicator())
-        :Container(
+        body:Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -346,6 +345,32 @@ class _ExpeditionState extends State<Expedition> {
                  PickUpOptions(),
                  SizedBox(height: 10,),
                  Container(
+                   width: 330,
+                    decoration: BoxDecoration(
+                      color: KabaExpeditionColor.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(15),
+                      border: Border.all(color: KabaExpeditionColor.primary.withOpacity(1),width: .5),
+
+                    ),
+                    padding: EdgeInsets.all(15),
+                    child: Row(
+                      children: [
+                        Icon(FontAwesomeIcons.infoCircle,color: KabaExpeditionColor.primary,size: 15,),
+                        SizedBox(width: 10,),
+                        Flexible(
+                          child: Text(  createExpedition.adresseDestination==null ?"Choisissez une adresse de destination":
+                              createExpedition.adresseOrigine! ==null ?"Choisissez une adresse de origine":
+                                 createExpedition.telephoneOrigine==null?"Entrez votre numéro de téléphone":
+                                              createExpedition.methodeCollecte==null? "Choisissez une méthode de collecte":
+                                                  createExpedition.colis==null?"Choisissez une adresse de destination":
+                                                  "Vérifiez vos champs ou votre connexion internet"
+                            ,style:
+                          TextStyle(color: KabaExpeditionColor.primary),),
+                        ),
+                      ],
+                    ),
+                 ),
+                 Container(
                    width: 350,
                    child: MaterialButton(
                      color: KabaExpeditionColor.primary,
@@ -355,32 +380,44 @@ class _ExpeditionState extends State<Expedition> {
                      ),
                      elevation: 0,
                      onPressed: ()async{
-                       await Future.delayed(Duration(milliseconds: 500));
-                       CustomerModel customer = await CustomerUtils.getCustomer();
-                       CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-                        await createExpeditionUseCase(
-                         body: createExpedition,
-                         customer: customer,
-                       ).then((expedition){
-
-
-                         Navigator.of(context).push(PageRouteBuilder(
-                             pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
-                               expedition:expedition
-                             ),
-                             transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                               var begin = Offset(1.0, 0.0);
-                               var end = Offset.zero;
-                               var curve = Curves.ease;
-                               var tween = Tween(begin: begin, end: end);
-                               var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                               return SlideTransition(
-                                   position: tween.animate(curvedAnimation),
-                                   child: child
-                               );
-                             }
-                         ));
+                       setState(() {
+                         isLoading = true;
                        });
+                      try{
+                        await Future.delayed(Duration(milliseconds: 500));
+                        CustomerModel customer = await CustomerUtils.getCustomer();
+                        CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
+                        ExpeditionModel expeditionModel = await createExpeditionUseCase.call(
+                          body: createExpedition,
+                          customer: customer,
+                        );
+                        expeditionModel.colis = createExpedition.colis;
+
+                        Navigator.of(context).push(PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
+
+                                expedition:expeditionModel
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              var begin = Offset(1.0, 0.0);
+                              var end = Offset.zero;
+                              var curve = Curves.ease;
+                              var tween = Tween(begin: begin, end: end);
+                              var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                              return SlideTransition(
+                                  position: tween.animate(curvedAnimation),
+                                  child: child
+                              );
+                            }
+                        ));
+                      }catch(e){
+                        setState(() {
+                          isLoading = false;
+                        });
+                        CherryToast.error(
+                          title: Text("Expedition impossible a créer, veuillez réessayer",style: TextStyle(color: Colors.black87),),
+                        ).show(context);
+                      }
                      },
                      child: Container(
                        child: Row(
@@ -388,7 +425,7 @@ class _ExpeditionState extends State<Expedition> {
                          children: [
                            Icon(Icons.check_circle_outline_rounded,color: Colors.white,),
                            SizedBox(width: 10,),
-                           Text("Continuer et Négocier ?",style: TextStyle(color: Colors.white,),),
+                           Text(isLoading?"Création en cours...":"Continuer et Négocier ?",style: TextStyle(color: Colors.white,),),
                            ],
                        ),
                      ),

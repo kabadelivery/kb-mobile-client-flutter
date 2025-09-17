@@ -7,3 +7,4 @@ const String GET_USER_EXPEDITION_LINK = ServerConfig.kaba_expedition+"/expeditio
 const String CREATE_A_NEGOTIATION_LINK = ServerConfig.kaba_expedition+"/negotiations";
 const String CREATE_EXPEDITION_LINK = ServerConfig.kaba_expedition+"/expeditions";
 const String UPLOAD_IMAGE = ServerConfig.kaba_expedition+"/uploads/proof-image";
+const String PAY_EXPEDITION = ServerConfig.kaba_expedition+"/payments/init";
