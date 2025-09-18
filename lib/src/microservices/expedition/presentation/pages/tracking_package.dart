@@ -31,6 +31,9 @@ class _TrackingPackagesState extends State<TrackingPackages> {
   void initState() {
     super.initState();
     expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+    setState(() {
+      isLoading = true;
+    });
     expeditionBloc.add(GetUserExpeditionEvent());
   }
 
@@ -68,7 +71,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                     children: [
                       Icon(Icons.arrow_back_sharp,color: Colors.white,size: 19,),
                       SizedBox(width: 10,),
-                     Text("Suivi du colis",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)
+                     Text("Suivi du colis",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16),)
                     ],
                   ),
                   ),
@@ -80,11 +83,34 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                       alignment: Alignment.center,
                       child: Center(child: CircularProgressIndicator()),
                     ):
+                error?Container(
+                  width:size.width,
+                  height:size.height-240,
+                  alignment: Alignment.center,
+                  child: MaterialButton(
+                    color: KabaExpeditionColor.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(color: KabaExpeditionColor.primary)
+                    ),
+                    onPressed:(){
+                      setState(() {
+                        error=false;
+                        isLoading=true;
+                      });
+                      expeditionBloc.add(GetUserExpeditionEvent());
+                    },
+                    child: Text("Réessayer",style: TextStyle(color: Colors.white),),
+
+                  ),
+                ):
                 Container(
                   width:size.width,
+
+                  alignment: Alignment.center,
                   child:expeditions.isEmpty?
                   Container(
-                    child: Text("Aucun colis n'a été trouvé"),
+                    child: Text("Aucun colis pour le moment"),
                   ):
                   Column(
                     children: [

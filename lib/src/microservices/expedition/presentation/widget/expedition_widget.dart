@@ -21,6 +21,11 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
   "LIVRAISON_AU_DESTINATAIRE"
   ];
   int indexOfStatus = status.indexOf(expedition.status)+1;
+  if(expedition.status == "REJETEE"){
+     status = [
+      "REJETEE",
+    ];
+  }
   return Container(
     margin: const EdgeInsets.all(12),
     padding: const EdgeInsets.all(12),
@@ -113,7 +118,9 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
                                       expedition.status==ExpeditionStatus.NEGOCIATION.value?"Negotiation":
                                           expedition.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?"Récupération effectuée":
                                               expedition.status==ExpeditionStatus.EN_ATTENTE.value?"Demande faite":
-                                              expedition.status==ExpeditionStatus.ACCEPTEE.value?"Accepté"
+                                              expedition.status==ExpeditionStatus.ACCEPTEE.value?"Acceptée"
+                                                  :
+                                              expedition.status==ExpeditionStatus.REJETEE.value?"Rejetée"
                                                   :"Status inconnu"
                   }",
                   style: TextStyle(color: Colors.white, fontSize: 12),

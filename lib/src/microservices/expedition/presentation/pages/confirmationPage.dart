@@ -303,7 +303,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                               borderRadius: BorderRadius.circular(10)
                             ),
                             onPressed: (){
-                              Navigator.of(context).push(PageRouteBuilder(
+                              Navigator.of(context).pushReplacement(PageRouteBuilder(
                                   pageBuilder: (context, animation, secondaryAnimation) => KabaExpeditionHomePage(),
                                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                     var begin = Offset(1.0, 0.0);

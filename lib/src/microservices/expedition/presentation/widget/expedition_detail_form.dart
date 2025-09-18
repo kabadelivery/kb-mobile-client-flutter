@@ -45,7 +45,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
   String thirdImagePath = "";
   TextEditingController _weight = TextEditingController();
   String? selected_departure_town="Lomé";
-  String selected_arrival_town ="Accra";
+  String? selected_arrival_town =null;
   double? estimation_price =null;
   List<Map<String,String>> map_of_town_arrival= [];
   List<Map<String,String>> map_of_town_departure= [];
@@ -82,20 +82,23 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
           Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
           if (!map_of_town_departure.any((m) => m["name"] == line.depart!.nom)) {
             map_of_town_departure.add(lineDepartureMap);
-
           }
           if (!map_of_town_arrival.any((m) => m["name"] == line.arrivee!.nom)) {
             map_of_town_arrival.add(lineArrivalMap);
-
           }
         }
+        if(selected_arrival_town==null && map_of_town_arrival!=null && map_of_town_arrival.isNotEmpty){
+          selected_arrival_town = map_of_town_arrival[0]['name'];
+          BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: selected_arrival_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
+          BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: selected_departure_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
+        }
+
       }
     }
     if(state is PackagesUpdatedState){
       if(state.index==widget.index){
         packageModel = state.packages[widget.index];
         debugPrint("PackageModel: ${packageModel.toJson()}");
-
           registeredAddressChoosed = registeredAddressChoosed;
           gpsAddressChoosed = gpsAddressChoosed;
           try{
@@ -109,12 +112,18 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
       }
     }
     return Container(
-      width: 330,
+      width: 350,
       height: expanded?null:60,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Colors.white,
-          border: Border.all(color: Colors.grey.shade400,width: 0.5),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.4),
+              spreadRadius: 1,
+              blurRadius: 10,
+              offset: Offset(0, 5), )
+          ]
         ),
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -223,7 +232,14 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               setState(() {
                                 selected_departure_town = value;
                               });
-                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town).first.id!));
+                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
+                              if(_weight.text.isNotEmpty){
+                                BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                                    departureTown: selected_departure_town!,
+                                    arrivalTown: selected_arrival_town!,
+                                    weight: double.parse(_weight.text),
+                                    availableLines: availableLines));
+                              }
                             },
                           ),
                         ),
@@ -244,7 +260,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropdownButton<String>(
-                            hint: Text("Sélectionner la ville de départ"),
+                            hint: Text("Sélectionner la ville d'arrivé"),
                             value: selected_arrival_town,
                             isExpanded: true,
                             elevation: 16,
@@ -269,7 +285,14 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               setState(() {
                                 selected_arrival_town = value!;
                               });
-                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.arrivee!.nom==selected_arrival_town).first.id!));
+                              BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.arrivee!.nom==selected_arrival_town && element.depart!.nom==selected_departure_town).first.id!));
+                              if(_weight.text.isNotEmpty){
+                                BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                                    departureTown: selected_departure_town!,
+                                    arrivalTown: selected_arrival_town!,
+                                    weight: double.parse(_weight.text),
+                                    availableLines: availableLines));
+                              }
                             },
                           ),
                         ),
@@ -284,7 +307,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                 ),
                 SizedBox(height: 10,),
                 Container(
-                  width: 330,
+                  width: 350,
                   height: 50,
                   padding:EdgeInsets.symmetric(horizontal:10),
                   child: TextFormField(
@@ -352,8 +375,6 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             estimation_price = 0;
                           }
                           return Container(
-
-                            width: 200,
                             decoration: BoxDecoration(
                               color: KabaExpeditionColor.primary.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(5),
@@ -361,19 +382,16 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             ),
                             padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                                         child: Row(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Row(
+                                            Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
+                                            SizedBox(width: 5,),
+                                            state is EstimationLoading?
+                                            Text('Calcul en cours...')
+                                            :Row(
                                               children: [
-                                                Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
-                                                SizedBox(width: 5,),
-                                                state is EstimationLoading?
-                                                Text('Calcul en cours...')
-                                                :Row(
-                                                  children: [
-                                                    Text("Coût estimé :",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
-                                                    Text("${_weight.text.isNotEmpty?estimation_price:"0" } FCFA", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
-                                                  ],
-                                                )
+                                                Text("Coût estimé :",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                                Text("${_weight.text.isNotEmpty?estimation_price:"0" } FCFA", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                                               ],
                                             )
                                           ],
@@ -457,7 +475,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                 ),
                 //Recipient address
                 Container(
-                  width: 330,
+                  width: 350,
                   padding: EdgeInsets.all(10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -492,9 +510,9 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       ),
                       SizedBox(height: 10,),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(height: 5,),
+
                           GestureDetector(
                             onTap: ()async{
                               CustomerModel? customer = await CustomerUtils.getCustomer();
@@ -531,7 +549,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               }
                             },
                             child: Container(
-                              width:145,
+
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color:gpsAddressChoosed? KabaExpeditionColor.primary:  Colors.white,
@@ -548,7 +566,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 10,),
+
                           GestureDetector(
                             onTap: ()async{
                               Map results = await Navigator.of(context).push(PageRouteBuilder(
@@ -576,7 +594,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               }
                             },
                             child: Container(
-                              width:155,
+
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color: registeredAddressChoosed ? KabaExpeditionColor.primary:Colors.white,
@@ -584,6 +602,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                 border: Border.all(color: KabaExpeditionColor.primary.withOpacity(0.5),width: 0.5)
                               ),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
                                   Icon(Icons.save_outlined,size: 20,color:registeredAddressChoosed?Colors.white: KabaExpeditionColor.primary,),
                                   SizedBox(width: 10,),
@@ -594,6 +613,29 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           ),
                         ],
                       ),
+                      packageModel.recipientAddress!=null?
+                      Column(
+                        children: [
+                          SizedBox(height: 10,),
+                          Container(
+                            width: 330,
+                            decoration: BoxDecoration(
+                              color: KabaExpeditionColor.primary.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(7),
+                              border: Border.all(color: KabaExpeditionColor.primary.withOpacity(1),width: .5),
+                            ),
+                            child:Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.location_on_outlined,size: 20,color: KabaExpeditionColor.primary,),
+                                  Flexible(child: Text("${packageModel.recipientAddress!.name}",maxLines: 3,softWrap: true,overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary))),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ):Container()
                     ],
                   ),
                 ),
@@ -928,6 +970,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
     "16:00 - 18:00"
   ];
   String? selectedTime = null;
+  DeliveryAddressModel? addressSelected =null;
   TextEditingController _senderPhoneNumber = TextEditingController();
   @override
   void initState(){
@@ -970,12 +1013,18 @@ class _PickUpOptionsState extends State<PickUpOptions> {
             selectedTime = state.hour;
           }
         return Container(
-          width: 330,
+          width: 350,
           padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15),
             color: Colors.white,
-            border: Border.all(color: Colors.grey.shade400,width: 0.5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.4),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: Offset(0, 5), )
+              ]
           ),
           child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1100,8 +1149,8 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                           position: tween.animate(curvedAnimation), child: child);
                                     }));
                                 if (results != null && results.containsKey('selection')){
-                                  DeliveryAddressModel address = results['selection'] as DeliveryAddressModel;
-                                  BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: "REGISTERED",coords:address.location));
+                                  addressSelected = results['selection'] as DeliveryAddressModel;
+                                  BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: "REGISTERED",coords:addressSelected!.location));
                                 }
                               },
                               child: Container(
@@ -1153,7 +1202,10 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                       position: tween.animate(curvedAnimation), child: child);
                                 }));
                             if (results != null && results.containsKey('selection')){
-                              DeliveryAddressModel address = results['selection'] as DeliveryAddressModel;
+                              addressSelected = results['selection'] as DeliveryAddressModel;
+                              setState(() {
+                                addressSelected = results['selection'] as DeliveryAddressModel;
+                              });
                               BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: "ADD",coords:address.location));
 
                             }
@@ -1174,6 +1226,29 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                             ),
                           ),
                         ),
+                        addressSelected!=null?
+                        Column(
+                          children: [
+                            SizedBox(height: 10,),
+                            Container(
+                              width: 330,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(7),
+                                border: Border.all(color: KabaExpeditionColor.primary.withOpacity(1),width: .5),
+                              ),
+                              child:Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.location_on_outlined,size: 20,color: KabaExpeditionColor.primary,),
+                                    Flexible(child: Text("${addressSelected!.name}",maxLines: 3,softWrap: true,overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary))),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ):Container(),
                         SizedBox(height:10),
                         Text("📅 Planification de la récupération",style: TextStyle(fontSize: 13,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
                         SizedBox(height:10),
@@ -1183,8 +1258,13 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                           onTap: ()async{
                             DateTime? result = await chooseDate(context: context);
                             if(result!=null){
-                              if(result.isAfter(DateTime.now())){
-                                BlocProvider.of<ExpeditionBloc>(context).add(chooseFetchDateEvent(date: result));
+                              final now = DateTime.now();
+                              final today = DateTime(now.year, now.month, now.day);
+
+                              if (!result.isBefore(today)) {
+                                BlocProvider.of<ExpeditionBloc>(context).add(
+                                  chooseFetchDateEvent(date: result),
+                                );
                               }else{
                                 CherryToast.error(
                                   toastPosition: Position.center,
@@ -1195,7 +1275,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                             }
                           },
                           child: Container(
-                            width: 330,
+                            width: 350,
                             padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
@@ -1213,7 +1293,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                         SizedBox(height:10),
                         GestureDetector(
                           child: Container(
-                            width: 330,
+                            width: 350,
                             padding: EdgeInsets.only(left:10,right:10,top: 0),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
@@ -1394,7 +1474,7 @@ class PackageSelector extends StatelessWidget {
                       child: const Icon(FontAwesomeIcons.box, size: 16, color: Colors.white),
                     ),
                     const SizedBox(width: 12),
-                    const Column(
+                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -1402,9 +1482,14 @@ class PackageSelector extends StatelessWidget {
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 2),
-                        Text(
-                          "Chaque colis peut avoir une destination différente",
-                          style: TextStyle(fontSize: 12, color: Colors.black54),
+                        Container(
+                          width: 220,
+                          child: Text(
+                            "Chaque colis peut avoir une destination différente",
+                            maxLines: 2,
+
+                            style: TextStyle(fontSize: 12, color: Colors.black54),
+                          ),
                         ),
                       ],
                     ),

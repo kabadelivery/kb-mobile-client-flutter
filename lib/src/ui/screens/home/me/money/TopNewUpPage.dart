@@ -107,8 +107,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     super.initState();
     if(widget.amount_to_send!=null && widget.amount_to_send!=0){
       _amountFieldController = new TextEditingController(text: widget.amount_to_send.toString());
-      _updateFromInitialAmountTotal();
-      _t
+
     }
     widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
@@ -149,6 +148,10 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         "${AppLocalizations.of(context)?.translate("mobile_money_top_up")}",
         "${AppLocalizations.of(context)?.translate("bank_card_top_up")}"
       ];
+    }
+    if(widget.transactionType== TransactionType.expedition){
+      _totalAmountFieldController!.text =
+      "${_getRealTotalAmountFromInitial()}";
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -917,6 +920,14 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
   void _updateFromInitialAmountTotal() {
     /* check which one has focus before updating */
+  if(widget.transactionType == TransactionType.expedition){
+    widget.fees = _getFeesFromAmount();
+    _feesFieldController!.text = "${widget.fees}";
+    _totalAmountFieldController!.removeListener(_updateFromTotal);
+    _totalAmountFieldController!.text =
+    "${_getRealTotalAmountFromInitial()}";
+    _totalAmountFieldController!.addListener(_updateFromTotal);
+  }else{
     setState(() {
       if (!_totalFocusNode!.hasFocus!) {
         // update fees
@@ -932,6 +943,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         xrint("total field has  focus ");
       }
     });
+  }
   }
 
   _getFeesFromAmount() {

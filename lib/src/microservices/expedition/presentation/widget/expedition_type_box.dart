@@ -64,7 +64,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
           ),
           GestureDetector(
             onTap: (){
-              Navigator.of(context).push(PageRouteBuilder(
+              Navigator.of(context).pushReplacement(PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) => Expedition(type: ExpeditionType.international),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     var begin = Offset(1.0, 0.0);

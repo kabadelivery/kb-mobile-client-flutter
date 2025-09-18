@@ -145,31 +145,29 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
      colis.quantite=1;
      return colis;
    }).toList();
-  var data ={
-    "ligneId":expedition.colis![0].ligneId,
-    "adresseOrigine": expedition.adresseOrigine,
-    "adresseDestination": expedition.adresseDestination,
-    "contactOrigine": expedition.telephoneOrigine,
-    "telephoneOrigine": expedition.telephoneOrigine,
-    "contactDestination":expedition.colis![0].recipientPhoneNumber,
-    "telephoneDestination": expedition.colis![0].recipientPhoneNumber,
-    "methodeLivraison":"International",
-    "methodeCollecte": expedition.methodeCollecte,
-    "colis": expedition.colis?.map((colis) {
-      return colis.toJson();
-    }).toList(),
-    "dateCollecte": expedition.dateCollecte,
-    "heureCollecte": expedition.heureCollecte,
-    "createdBy": {
-      "id":customer.phone_number,
-      "email": customer.email,
-      "password": "kaba_h0rnqu5edj",
-      "name": customer.phone_number,
-      "role": "CLIENT",
-      "createdAt": DateTime.now().toString(),
-      "updatedAt": DateTime.now().toString()
-    },
-  };
+   var data = {
+     "ligneId": expedition.colis![0].ligneId,
+     "adresseOrigine": expedition.adresseOrigine,
+     "adresseDestination": expedition.adresseDestination,
+     "contactOrigine": expedition.telephoneOrigine,
+     "telephoneOrigine": expedition.telephoneOrigine,
+     "contactDestination": expedition.colis![0].recipientPhoneNumber,
+     "telephoneDestination": expedition.colis![0].recipientPhoneNumber,
+     "methodeLivraison": "International",
+     "methodeCollecte": expedition.methodeCollecte,
+     "colis": expedition.colis?.map((colis) => colis.toJson()).toList(),
+     "dateCollecte": expedition.dateCollecte?.toIso8601String(),
+     "heureCollecte": expedition.heureCollecte,
+     "createdBy": {
+       "id": customer.phone_number,
+       "email": customer.email,
+       "password": "kaba_h0rnqu5edj",
+       "name": customer.phone_number,
+       "role": "CLIENT",
+       "createdAt": DateTime.now().toIso8601String(),
+       "updatedAt": DateTime.now().toIso8601String()
+     },
+   };
 
    var response = await dio.post(
      CREATE_EXPEDITION_LINK,

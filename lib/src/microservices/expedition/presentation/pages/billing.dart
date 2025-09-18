@@ -50,7 +50,7 @@ class _BillingPageState extends State<BillingPage> {
               child: Container(
                 width: MediaQuery.of(context).size.width,
                 padding:
-                EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+                EdgeInsets.only(left: 20, top: 60,bottom: 20),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(30),
@@ -208,7 +208,7 @@ class _BillingPageState extends State<BillingPage> {
                                   );
                                   CustomerModel customerToken = await CustomerUtils.getCustomer();
                                   await createNegociation.call(body: negotiationModel.toJson(), customerToken: customerToken.token!).then((_){
-                                    Navigator.of(context).push(PageRouteBuilder(
+                                    Navigator.of(context).pushReplacement(PageRouteBuilder(
                                         pageBuilder: (context, animation, secondaryAnimation) => Confirmationpage(),
                                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                           var begin = Offset(1.0, 0.0);
@@ -277,7 +277,7 @@ class _BillingPageState extends State<BillingPage> {
                     ],
                   ),
                   onPressed: (){
-                    Navigator.of(context).push(PageRouteBuilder(
+                    Navigator.of(context).pushReplacement(PageRouteBuilder(
                         pageBuilder: (context, animation, secondaryAnimation) => Confirmationpage(),
                         transitionsBuilder: (context, animation, secondaryAnimation, child) {
                           var begin = Offset(1.0, 0.0);

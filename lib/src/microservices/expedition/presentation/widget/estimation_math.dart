@@ -32,9 +32,11 @@ class _EstimationFormState extends State<EstimationForm> {
   List<LineModel>availableLines=[];
   bool error = false;
   EstimationBloc estimationBloc = EstimationBloc();
+  bool isLoading = false;
   @override
   void initState() {
     estimationBloc = BlocProvider.of<EstimationBloc>(context);
+    estimationBloc.add(InitEstimationEvent());
     estimationBloc.add(getAvailableLines());
     super.initState();
   }
@@ -73,6 +75,7 @@ class _EstimationFormState extends State<EstimationForm> {
         map_of_town_arrival.clear();
         map_of_town_departure.clear();
         error = false;
+        isLoading = false;
         for(LineModel line in state.lines){
           Map<String,String> lineDepartureMap =  {"id":"${line.id}","name":line.depart!.nom??"","country_code":line.depart!.pays!['code']??"",'country':line.depart!.pays!['nom']};
           Map<String,String> lineArrivalMap =  {"id":"${line.id}","name":line.arrivee!.nom??"","country_code":line.arrivee!.pays!['code']??"",'country':line.arrivee!.pays!['nom']};
@@ -86,7 +89,13 @@ class _EstimationFormState extends State<EstimationForm> {
         }
       }else{
         error = true;
+        isLoading = false;
       }
+    }
+    if(state is EstimationInitial){
+      estimation_price =null;
+      selected_departure_town="Lomé";
+      selected_arrival_town ="Accra";
     }
     return Container(
         width: 330,
@@ -256,6 +265,9 @@ class _EstimationFormState extends State<EstimationForm> {
                   error?
                 GestureDetector(
                 onTap: (){
+                  setState(() {
+                    isLoading=true;
+                  });
                  estimationBloc.add(getAvailableLines());
                 },
                 child: Container(
@@ -266,11 +278,7 @@ class _EstimationFormState extends State<EstimationForm> {
                 gradient: LinearGradient(
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
-                colors:_weight.text.isEmpty? [
-                Color(0xFFCC1E44).withOpacity(.5),
-                Color(0xFFB71B3E).withOpacity(.5),
-                Color(0xFFA11738).withOpacity(.5),
-                ]: [
+                colors:[
                 Color(0xFFCC1E44),
                 Color(0xFFB71B3E),
                 Color(0xFFA11738),
@@ -281,7 +289,7 @@ class _EstimationFormState extends State<EstimationForm> {
                 child:   Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                FormTitleWithIcon(title: 'Reéssayer', icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
+                FormTitleWithIcon(title: isLoading?"Recherche...":'Reéssayer', icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
                 ],
                 ),
                 ),

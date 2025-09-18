@@ -90,7 +90,7 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                     width: MediaQuery.of(context).size.width,
 
                     padding:
-                    EdgeInsets.only(left: 20, top: 50,bottom: 30),
+                    EdgeInsets.only(left: 20, top: 70,bottom: 20),
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(30),
@@ -118,7 +118,8 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                         boxShadow: [
                           BoxShadow(
                               color:  widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF01792E).withOpacity(0.2):
-                              Color(0xFFFFA358).withOpacity(0.2),
+                           widget.expeditionModel.status==ExpeditionStatus.REJETEE.value?KabaExpeditionColor.primary.withOpacity(0.2):
+                           Color(0xFFFFA358).withOpacity(0.2),
                               spreadRadius: 2,
                               blurRadius: 20,
                               offset: Offset(0, 3)),
@@ -133,7 +134,9 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                             height: 36,
                             decoration: BoxDecoration(
                                 color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFFD2F9E1)
-                                    :Color(0x6EE69027),
+
+                                    :  widget.expeditionModel.status==ExpeditionStatus.REJETEE.value?KabaExpeditionColor.primary.withOpacity(0.1):
+                                Color(0x6EE69027),
                                 borderRadius: BorderRadius.only(bottomLeft: Radius.circular(50),topRight: Radius.circular(15))
                             ),
                           ),
@@ -145,7 +148,8 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                             height: 36,
                             decoration: BoxDecoration(
                                 color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFFD2F9E1)
-                                    :Color(0x6EE69027),
+                                    :  widget.expeditionModel.status==ExpeditionStatus.REJETEE.value?KabaExpeditionColor.primary.withOpacity(0.1):
+                                Color(0x6EE69027),
                                 borderRadius: BorderRadius.only(topRight: Radius.circular(50),bottomLeft: Radius.circular(15))
                             ),
                           ),
@@ -198,7 +202,8 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                                   child: Text("Merci d’avoir choisi KABA Expédition",textAlign: TextAlign.center,
 
                                     style: TextStyle(fontSize: 14,color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF01792E)
-                                    :Color(0xFF894B00)),
+
+                                    :  widget.expeditionModel.status==ExpeditionStatus.REJETEE.value?KabaExpeditionColor.primary.withOpacity(1):Color(0xFF894B00)),
                                   )),
                               SizedBox(height: 20,),
 
