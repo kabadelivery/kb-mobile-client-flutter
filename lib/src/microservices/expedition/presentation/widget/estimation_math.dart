@@ -431,23 +431,25 @@ Widget  FormTitleWithIcon({required String title, required Icon icon,Color?textC
 }
 
 void showNegotiationDialog(BuildContext context) {
+
   showDialog(
+
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
       title: Row(
-        children: const [
+        children: [
           Icon(Icons.info_outline, color:KabaExpeditionColor.primary),
           SizedBox(width: 8),
           Text(
             "Négociation de prix",
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],
       ),
-      content: const Text(
+      content:  Text(
         "La négociation du prix n’est possible qu’après l’étape 2 (détails du colis).\n\n",
            style: TextStyle(fontSize: 14, height: 1.4),
       ),

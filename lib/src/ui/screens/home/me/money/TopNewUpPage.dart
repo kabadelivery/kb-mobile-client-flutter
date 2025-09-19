@@ -62,7 +62,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   TextEditingController? _phoneNumberFieldController;
   TextEditingController? _amountFieldController;
   TextEditingController? _totalAmountFieldController;
-
   String operator = "---";
 
   bool isOperatorOk = false;
@@ -105,10 +104,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   @override
   void initState() {
     super.initState();
-    if(widget.amount_to_send!=null && widget.amount_to_send!=0){
-      _amountFieldController = new TextEditingController(text: widget.amount_to_send.toString());
 
-    }
     widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
     _totalAmountFieldController = new TextEditingController(text: "0");
@@ -130,6 +126,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       momoPaymentModes.add({"name":"Orange money","id":"orange_money","logo":"assets/images/png/orange_money_logo.png"});
       momoPaymentModes.add({"name":"MTN","id":"mtn","logo":"assets/images/jpg/mtn_logo.jpg"});
       momoPaymentModes.add({"name":"Wave","id":"wave","logo":"assets/images/png/wave_logo.png"});
+    }
+    if(widget.amount_to_send!=null && widget.amount_to_send!=0){
+      _amountFieldController = new TextEditingController(text: widget.amount_to_send.toString());
     }
   }
 
