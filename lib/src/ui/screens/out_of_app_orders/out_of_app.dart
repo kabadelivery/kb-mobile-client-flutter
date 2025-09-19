@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -136,61 +137,77 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               ref,
               AppLocalizations.of(context)!.translate('out_of_app_explanation'),
               "https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json"
-              ):Container(),  
+              ):Container(),
               SizedBox(height: 10,),
             Container(
-                width: size.width,
-                height: 105.0*products.length,
-                child:
-            ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-                itemCount: products.length,
-                itemBuilder: (context,index){
-                  Map<String,dynamic> product = products[index];
-                  if(products.length!=0){
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 15),
-                          child: OutOfAppProduct(
-                              context,
-                              ref,
-                              index,
-                              product['image']??File(''),
-                              product['name'],
-                              product['price'],
-                              product['quantity']));
-                  }
-                  else{
-                    return Text('Aucun produit');
-                  }
-                }
-                )
-            ),
-
-            SizedBox(
-              height: 10,
-            ),
-            InkWell(
-              onTap: (){
-                showOutOfAppProductForm(context);
-              },
-              child:  Container(
-
+              padding:EdgeInsets.all(15),
+                width: size.width*.8,
                 decoration: BoxDecoration(
-                  color: KColors.primaryColor,
-                  borderRadius: BorderRadius.circular(5)
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.4),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: Offset(0, 5)),
+                  ]
                 ),
-                child:Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Text("${AppLocalizations.of(context)!.translate('add_product')}"
-                  ,style:TextStyle(color: Colors.white)
-                  ),
+                child:
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: KColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Icon(FontAwesomeIcons.box,color: Colors.white,size: 20,),
+                    ),
+                    SizedBox(width: 10,),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                            "Ma commande",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 17,)),
+                        Text('${products.length} ${products.length>1?"produits sélectionnés":"produit sélectionné"}')
+                      ],
+                    )
+                  ],
+                ),
+                SizedBox(height: 10,),
+                products.isNotEmpty
+                    ? Column(
+                  children: products.map((product) {
+                    int index = products.indexOf(product);
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      child: OutOfAppProductItem(
+                        context,
+                        ref,
+                        index,
+                        product['image'] ?? File(''),
+                        product['name'],
+                        product['price'],
+                        product['quantity'],
+                      ),
+                    );
+                  }).toList(),
                 )
-              ),
+                    : const Center(
+                  child: Text('Aucun produit'),
+                ),
+
+              ],
+            )
             ),
-            SizedBox(
-              height: 10,
-            ),
-        
             products.isNotEmpty ?
             Column(
               children: [
@@ -205,44 +222,12 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
             outOfAppScreenState.showLoading==false?
               Column(
                 children: [
-
+                  PurchaseAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
                 locationState.selectedOrderAddress!.isEmpty ? Column(
                   children: [
                     ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
-
-                    additionnalInfoState.can_add_address_info==null?
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SizedBox(height: 20,),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('add_address_additionnal_info')}",
-                            style: TextStyle(
-
-                                fontSize: 16,
-                                color: Colors.grey.shade700)),
-                        SizedBox(height: 10,),
-                        CanAddAdditionnInfo(context,ref),
-                      ],
-                    ):  additionnalInfoState.can_add_address_info==true?
-                    AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info):Container(),
-                    SizedBox(height: 10,),
                   ],    
                 ):Container(),
-                 locationState.selectedOrderAddress!.isNotEmpty ?   Column(
-                  children: [
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('order_address')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: KColors.new_black)),
-                
-                    BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0])
-                  ],
-                ): Container()
-                ,
                  SizedBox(height: 10,),
                 locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0):Container(),
                 locationState.is_shipping_address_picked==true ?   Column(

@@ -22,7 +22,37 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
   );
   return Consumer(
     builder: (context, ref, child) {
-      return Column(
+      return  type==2?
+      TextField(
+        controller: _infoController,
+        onChanged: (value) {bv
+          ref.read(additionnalInfoProvider.notifier).setAdditionnalAddressInfo(value);
+          _infoController.text = ref.watch(additionnalInfoProvider).additionnal_address_info;
+        },
+        decoration: InputDecoration(
+          hintText: "Ex : Pharmacie Vigueur, en face de...",
+          filled: true,
+          fillColor: const Color(0xFFF2F3F4),
+          contentPadding:
+          const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide.none,
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(24),
+            borderSide: BorderSide.none,
+          ),
+        ),
+        style: TextStyle(
+          color: Colors.grey.shade500 ,
+        ),
+      ):
+      Column(
         children: [
           Container(
 
@@ -31,20 +61,13 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: TextField(
+              child:
+              TextField(
                 controller: _infoController,
                 maxLines: 4,
                 onChanged: (value) {
-                  if (type == 1) {
                     ref.read(additionnalInfoProvider.notifier).setAdditionnalInfo(value);
                     _infoController.text = ref.watch(additionnalInfoProvider).additionnal_info;
-                  } else if (type == 2) {
-                    ref.read(additionnalInfoProvider.notifier).setAdditionnalAddressInfo(value);
-                    _infoController.text = ref.watch(additionnalInfoProvider).additionnal_address_info;
-                  }
-
-                  // Déplacer le curseur à la fin du texte
-
                 },
                 style: TextStyle(fontSize: 13),
                 decoration: InputDecoration(
