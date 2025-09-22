@@ -13,7 +13,7 @@ abstract class ExpeditionRepository {
     required Map<String, dynamic> queryParameters,
     required String customerToken,
   });
-  Future<ExpeditionModel> createAnExpedition({
+  Future<List<ExpeditionModel>> createAnExpedition({
     required CreateExpedition expedition,
     required CustomerModel customer,
   });
@@ -56,7 +56,7 @@ class ExpeditionRepositoryImpl implements ExpeditionRepository {
   }
 
   @override
-  Future<ExpeditionModel> createAnExpedition({
+  Future<List<ExpeditionModel>> createAnExpedition({
     required CreateExpedition expedition,
     required CustomerModel customer,
   }) {

@@ -114,66 +114,66 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           Container(
                               width: 270,
                               child: Text("Choisissez votre destination et expédiez en toute sécurité",style: TextStyle(fontSize: 13,color: Colors.black87,fontFamily: 'Inter'),)),
-                          SizedBox(height: 10,),
-                          Container(
-                            width: 270,
-                            height: 40,
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(50),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.shade300,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
-                                  )
-                                ],
-                                border: Border.all(color: Colors.grey.shade300,width: .5)
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      selectedType = ExpeditionType.international;
-                                    });
-                                  },
-                                  child: Container(
-                                    width:120,
-                                    margin: EdgeInsets.only(left: 2),
-                                    height: 35,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: selectedType== ExpeditionType.international?KColors.primaryColor:Colors.white,
-                                      borderRadius: BorderRadius.circular(50),
-                                     ),
-                                    child: Text("International",style: TextStyle(color:selectedType== ExpeditionType.international? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      selectedType = ExpeditionType.national;
-                                    });
-                                  },
-                                  child: Container(
-                                    width:120,
-                                    margin: EdgeInsets.only(right: 2),
-                                    height: 35,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                        color: selectedType== ExpeditionType.national?KColors.primaryColor:Colors.white,
-                                        borderRadius: BorderRadius.circular(50),
-                                        border: Border.all(color: Colors.white,width: .5),
-
-                                    ),
-                                    child: Text("National",style: TextStyle(color: selectedType== ExpeditionType.national? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                          //SizedBox(height: 10,),
+                          //                           Container(
+                          //                             width: 270,
+                          //                             height: 40,
+                          //                             decoration: BoxDecoration(
+                          //                                 color: Colors.white,
+                          //                                 borderRadius: BorderRadius.circular(50),
+                          //                                 boxShadow: [
+                          //                                   BoxShadow(
+                          //                                     color: Colors.grey.shade300,
+                          //                                     blurRadius: 5,
+                          //                                     offset: Offset(0, 3),
+                          //                                   )
+                          //                                 ],
+                          //                                 border: Border.all(color: Colors.grey.shade300,width: .5)
+                          //                             ),
+                          //                             child: Row(
+                          //                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          //                               children: [
+                          //                                 GestureDetector(
+                          //                                   onTap: (){
+                          //                                     setState(() {
+                          //                                       selectedType = ExpeditionType.international;
+                          //                                     });
+                          //                                   },
+                          //                                   child: Container(
+                          //                                     width:120,
+                          //                                     margin: EdgeInsets.only(left: 2),
+                          //                                     height: 35,
+                          //                                     alignment: Alignment.center,
+                          //                                     decoration: BoxDecoration(
+                          //                                       color: selectedType== ExpeditionType.international?KColors.primaryColor:Colors.white,
+                          //                                       borderRadius: BorderRadius.circular(50),
+                          //                                      ),
+                          //                                     child: Text("International",style: TextStyle(color:selectedType== ExpeditionType.international? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
+                          //                                   ),
+                          //                                 ),
+                          //                                 GestureDetector(
+                          //                                   onTap: (){
+                          //                                     setState(() {
+                          //                                       selectedType = ExpeditionType.national;
+                          //                                     });
+                          //                                   },
+                          //                                   child: Container(
+                          //                                     width:120,
+                          //                                     margin: EdgeInsets.only(right: 2),
+                          //                                     height: 35,
+                          //                                     alignment: Alignment.center,
+                          //                                     decoration: BoxDecoration(
+                          //                                         color: selectedType== ExpeditionType.national?KColors.primaryColor:Colors.white,
+                          //                                         borderRadius: BorderRadius.circular(50),
+                          //                                         border: Border.all(color: Colors.white,width: .5),
+                          //
+                          //                                     ),
+                          //                                     child: Text("National",style: TextStyle(color: selectedType== ExpeditionType.national? Colors.white:Colors.black87,fontSize: 14,fontFamily: 'Inter'),),
+                          //                                   ),
+                          //                                 )
+                          //                               ],
+                          //                             ),
+                          //                           ),
                           SizedBox(height: 20,),
                           selectedType== ExpeditionType.international?
                           ExpeditionInternationalBox(context:context)

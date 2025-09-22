@@ -402,20 +402,22 @@ class _ExpeditionState extends State<Expedition> {
                            setState(() {
                              isLoading = true;
                            });
-                           try{
+
                              await Future.delayed(Duration(milliseconds: 500));
                              CustomerModel customer = await CustomerUtils.getCustomer();
                              CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-                             ExpeditionModel expeditionModel = await createExpeditionUseCase.call(
+                            List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
                                body: createExpedition,
                                customer: customer,
                              );
-                             expeditionModel.colis = createExpedition.colis;
-
-                             Navigator.of(context).pushReplacement(PageRouteBuilder(
+                           expeditionModels = expeditionModels.map((exp) {
+                             exp.colis = createExpedition.colis;
+                             return exp;
+                           }).toList();
+                           Navigator.of(context).pushReplacement(PageRouteBuilder(
                                  pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
 
-                                     expedition:expeditionModel
+                                     expedition:expeditionModels
                                  ),
                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                    var begin = Offset(1.0, 0.0);
@@ -429,26 +431,16 @@ class _ExpeditionState extends State<Expedition> {
                                    );
                                  }
                              ));
-                           }catch(e){
-                             setState(() {
-                               isLoading = false;
-                             });
-                             debugPrint("XXX ${e.toString()}");
-                             CherryToast.error(
-                               title: Text("Expedition impossible a créer, veuillez réessayer",style: TextStyle(color: Colors.black87),),
-                             ).show(context);
-                           }
                          }else{
                            setState(() {
                            });
                          }
-
                        },
                        child: Container(
                          child: Row(
                            mainAxisAlignment: MainAxisAlignment.center,
                            children: [
-                             Icon(Icons.check_circle_outline_rounded,color: Colors.white,),
+                             Icon(Icons.check_circle_outline_rounded,color: Colors.white),
                              SizedBox(width: 10,),
                              Text(isLoading?"Création en cours...":"Continuer et Négocier ?",style: TextStyle(color: Colors.white,),),
                              ],

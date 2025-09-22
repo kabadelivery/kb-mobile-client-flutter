@@ -28,7 +28,7 @@ abstract class ExpeditionRemoteDataSource {
     required String customer_token,
   });
 
-  Future<ExpeditionModel> createAnExpedition({
+  Future<List<ExpeditionModel>> createAnExpedition({
     required CreateExpedition expedition,
     required CustomerModel customer,
   });
@@ -136,10 +136,12 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
     }
   }
  @override
- Future<ExpeditionModel> createAnExpedition({
+ Future<List<ExpeditionModel>> createAnExpedition(
+ {
    required CreateExpedition expedition,
    required CustomerModel customer,
- }) async {
+ }
+ ) async {
    final dio = _dioWithToken(customer.token!);
    expedition.colis = expedition.colis?.map((colis) {
      colis.quantite=1;
@@ -168,7 +170,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
        "updatedAt": DateTime.now().toIso8601String()
      },
    };
-
    var response = await dio.post(
      CREATE_EXPEDITION_LINK,
      data: data,
@@ -181,27 +182,35 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
    );
    if (response.statusCode == 200 || response.statusCode == 201) {
      final data = response.data;
-     debugPrint("XXX ${data['colis']}");
-     return ExpeditionModel(
-       id: data['id'],
-       ligneId: data['ligneId'],
-       adresseOrigine: data['adresseOrigine'],
-       adresseDestination: data['adresseDestination'],
-       contactOrigine: data['contactOrigine'],
-       telephoneOrigine: data['telephoneOrigine'],
-       contactDestination: data['contactDestination'],
-       telephoneDestination: data['telephoneDestination'],
-       methodeLivraison: data['methodeLivraison'],
-       methodeCollecte: data['methodeCollecte'],
-       colis:(data['colis'] as List)
-           .map((colis) {
-             return PackageModel.fromJson(colis as Map<String, dynamic>);
-           })
-           .toList(),
-       createdBy: CreatedByModel.fromJson(data['createdBy']),
-       createdAt:  DateTime.parse(data['createdAt']),
-       updatedAt:  DateTime.parse(data['updatedAt']),
-     );
+     debugPrint("XXX data $data");
+     late final List<dynamic> newData;
+     if (data is List) {
+       newData = data;
+     } else if (data is Map) {
+       newData = [data];
+     } else {
+       throw Exception("❌ Unexpected data format: $data");
+     }
+     return newData.map((el) {
+       return ExpeditionModel(
+         id: el['id'].toString(),
+         ligneId: el['ligneId'],
+         adresseOrigine: el['adresseOrigine'],
+         adresseDestination: el['adresseDestination'],
+         contactOrigine: el['contactOrigine'],
+         telephoneOrigine: el['telephoneOrigine'],
+         contactDestination: el['contactDestination'],
+         telephoneDestination: el['telephoneDestination'],
+         methodeLivraison: el['methodeLivraison'],
+         methodeCollecte: el['methodeCollecte'],
+         colis: (el['colis'] as List)
+             .map((colis) => PackageModel.fromJson(colis as Map<String, dynamic>))
+             .toList(),
+         createdBy: CreatedByModel.fromJson(el['createdBy']),
+         createdAt: DateTime.parse(el['createdAt']),
+         updatedAt: DateTime.parse(el['updatedAt']),
+       );
+     }).toList();
    } else {
      throw Exception("❌ Failed to create expedition: ${response.data}");
    }

@@ -41,7 +41,7 @@ String handleExpeditionFormMessage(CreateExpedition createExpedition) {
       return "Votre colis numéro $numero doit avoir une description";
     }
 
-    if (colis.adresseDestination == null && colis.adresseDestination==null) {
+    if (colis.adresseDestination == null && colis.recipientAddress==null) {
       return "Votre colis numéro $numero doit avoir une adresse de destination";
     }
 
@@ -52,10 +52,6 @@ String handleExpeditionFormMessage(CreateExpedition createExpedition) {
 
     if (colis.arrivalTown == null) {
       return "Votre colis numéro $numero doit avoir une ville d’arrivée";
-    }
-
-    if (colis.recipientAddress == null) {
-      return "Votre colis numéro $numero doit avoir une adresse de destinataire";
     }
 
     if (colis.recipientPhoneNumber == null) {

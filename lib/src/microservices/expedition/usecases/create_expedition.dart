@@ -7,7 +7,7 @@ import '../domain/expedition/repo.dart';
 class CreateExpeditionUseCase {
   final ExpeditionRepository repository;
   CreateExpeditionUseCase(this.repository);
-  Future<ExpeditionModel> call({
+  Future<List<ExpeditionModel>> call({
     required CreateExpedition body,
     required CustomerModel customer,
   }) {
