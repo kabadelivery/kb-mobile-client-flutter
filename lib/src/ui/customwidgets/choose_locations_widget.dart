@@ -84,8 +84,8 @@ Widget PurchaseAddress(BuildContext context,
     WidgetRef ref,
     int type,
     GlobalKey poweredByKey,
-    int shipping_address_type,int order_type){
-  bool _sendGps=false;
+    int shipping_address_type,int order_type)
+{
   final products = ref.watch(productListProvider);
   final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
   final orderBillingState = ref.watch(orderBillingStateProvider);
@@ -160,14 +160,14 @@ Widget PurchaseAddress(BuildContext context,
             Transform.scale(
               scale: 1.05,
               child: Switch(
-                value: _sendGps,
+                value: locationState.selectedOrderAddress!.isNotEmpty,
                 onChanged: (v) async{
                   if(v==true){
                     await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
-                    _sendGps=locationState.is_order_address_picked!;
+                    locationState.is_order_address_picked!;
                   }else{
                     locationNotifier.pickOrderAddress(null);
-                    _sendGps=locationState.is_order_address_picked!;
+                   locationState.is_order_address_picked = false;
                   }
                 },
                 activeColor: Colors.white,
@@ -182,7 +182,7 @@ Widget PurchaseAddress(BuildContext context,
         locationState.selectedOrderAddress!.isNotEmpty ?   Column(
           children: [
             const SizedBox(height: 18),
-            BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0])
+            BuildOrderAddress(context,ref,locationState.selectedOrderAddress!.last)
           ],
         ): Container(),
         const SizedBox(height: 18),
@@ -197,12 +197,143 @@ Widget PurchaseAddress(BuildContext context,
 
         const SizedBox(height: 10),
         AdditionnalInfo(context,ref,2,additionnalInfoState.additionnal_address_info),
-        // manual text field styled rounded (hint like the design)
 
       ],
     ),
   );
 }
+Widget ShippingAddress(BuildContext context,
+    WidgetRef ref,
+    int type,
+    GlobalKey poweredByKey,
+    int shipping_address_type,int order_type)
+{
+  final products = ref.watch(productListProvider);
+  final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+  final orderBillingState = ref.watch(orderBillingStateProvider);
+  final locationState = ref.watch(locationStateProvider);
+  final locationNotifier = ref.read(locationStateProvider.notifier);
+  final voucherState = ref.watch(voucherStateProvider);
+  final additionnalInfoState = ref.watch(additionnalInfoProvider);
+
+  return  Container(
+    // card container
+    width: MediaQuery.of(context).size.width*.8,
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.6),
+          blurRadius: 18,
+          offset: const Offset(0, 8),
+        )
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // header row: icon + texts + switch
+        Row(
+          children: [
+            // icon box (red with blue outline)
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: KColors.primaryColor,
+                borderRadius: BorderRadius.circular(10),
+
+              ),
+              child: const Icon(
+                Icons.home_outlined,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            // title + subtitle
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "Adresse de livraison",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    "L'endroit où le colis doit être livré",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            MaterialButton(onPressed: (){},
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: KColors.primaryColor,width: .5)
+              ),
+              color:locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor ,
+              elevation: 0,
+              padding: EdgeInsets.all(4),
+              minWidth: 100,
+              height: 30,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+              Icon(Icons.location_on_outlined,color: locationState.selectedShippingAddress!=null? KColors.primaryColor:Colors.white,),
+              Text("Position actuelle",style: TextStyle(color:locationState.selectedShippingAddress!=null? KColors.primaryColor: Colors.white,fontSize: 14),)
+            ],),
+            ),
+            MaterialButton(onPressed: ()async{
+              await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
+            },
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(color: KColors.primaryColor,width: .5),
+              ),
+              color: locationState.selectedShippingAddress!=null?KColors.primaryColor:Colors.white,
+              elevation: 0,
+              padding: EdgeInsets.all(4),
+              minWidth: 100,
+              height: 30,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.location_on_outlined,color:locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor,),
+                   Text("Adresse enrégistrées",style: TextStyle(color: locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor,fontSize: 14),)
+                ],),
+            ),
+          ],
+        ),
+        locationState.selectedShippingAddress!=null ?   Column(
+          children: [
+            const SizedBox(height: 18),
+            BuildOrderAddress(context,ref,locationState.selectedShippingAddress!)
+          ],
+        ): Container(),
+      ],
+    ),
+  );
+}
+
+
 Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressModel selectedAddress) {
   if (selectedAddress == null)
     return Container();

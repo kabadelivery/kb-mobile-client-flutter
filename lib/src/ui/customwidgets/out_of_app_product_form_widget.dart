@@ -260,7 +260,9 @@ class OutOfAppProductForm extends ConsumerWidget {
                           final voucherState = ref.watch(voucherStateProvider);
                           final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
                           return outOfAppScreenState.showLoading == false
-                              ? Column(
+                              ?
+
+                          Column(
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -405,6 +407,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                 ],
                               ),
                               SizedBox(height: 15),
+                              products!=null && products.isNotEmpty?
                               Container(
                                   width: size.width,
                                   alignment: Alignment.center,
@@ -432,8 +435,9 @@ class OutOfAppProductForm extends ConsumerWidget {
                                         }
                                       }
                                   )
-                              ),
+                              ):Container(),
                               SizedBox(height: 15),
+                              products!=null && products.isNotEmpty?
                               Container(
                                 width: size.width,
                                 height:50,
@@ -452,7 +456,7 @@ class OutOfAppProductForm extends ConsumerWidget {
                                         style: TextStyle(fontSize: 20,color:KColors.primaryColor,fontWeight: FontWeight.bold),)
                                     ],
                                 ),
-                              ),
+                              ):Container(),
                               SizedBox(height: 15),
                               products.length > 0
                                   ? InkWell(

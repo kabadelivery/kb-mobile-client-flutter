@@ -25,7 +25,7 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
       return  type==2?
       TextField(
         controller: _infoController,
-        onChanged: (value) {bv
+        onChanged: (value) {
           ref.read(additionnalInfoProvider.notifier).setAdditionnalAddressInfo(value);
           _infoController.text = ref.watch(additionnalInfoProvider).additionnal_address_info;
         },

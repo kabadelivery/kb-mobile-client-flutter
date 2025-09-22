@@ -208,6 +208,12 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               ],
             )
             ),
+            IconButton(
+              icon: Icon(Icons.add_circle, color: KColors.primaryColor, size: 40),
+              onPressed: () {
+                showOutOfAppProductForm(context);
+              },
+            ),
             products.isNotEmpty ?
             Column(
               children: [
@@ -223,33 +229,58 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               Column(
                 children: [
                   PurchaseAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
-                locationState.selectedOrderAddress!.isEmpty ? Column(
-                  children: [
-                    ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
-                  ],    
-                ):Container(),
                  SizedBox(height: 10,),
                 locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0):Container(),
-                locationState.is_shipping_address_picked==true ?   Column(
-                  children: [
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('shipping_address')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 14,
-                            color: KColors.new_black)),
-                
-                    BuildShippingAddress(context,ref,locationState.selectedShippingAddress!)
-                  ],
-                ): Container()
-                ,
+                  ShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0),
                   SizedBox(height: 10,),
-                  AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-                  SizedBox(height: 10,),
-                  AdditionnalInfoImage(context,ref),
-                  SizedBox(height: 10,),
-                  PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
-                  SizedBox(height: 10,),
+                  Container(
+                    padding: EdgeInsets.all(15),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(15)),
+
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.4),
+                              spreadRadius: 1,
+                              blurRadius: 10,
+                              offset: Offset(0, 5)),
+                        ]
+
+                    ),
+                    width: size.width*.8,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              width: 44,
+                              height: 44,
+                              decoration: BoxDecoration(
+                                color: KColors.primaryColor,
+                                borderRadius: BorderRadius.circular(10),
+
+                              ),
+                              child: const Icon(
+                                Icons.receipt_outlined,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                            SizedBox(width: 10,),
+                            Text("Infos supplémentaires",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),)
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+                        SizedBox(height: 10,),
+                        AdditionnalInfoImage(context,ref),
+                        SizedBox(height: 10,),
+                        PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
+                        SizedBox(height: 10,),
+                      ],
+                    ),
+                  ),
           
                 ],
               )  :Container()
