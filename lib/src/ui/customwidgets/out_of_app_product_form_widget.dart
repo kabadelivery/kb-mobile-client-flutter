@@ -680,22 +680,18 @@ Widget PhoneNumberForm(BuildContext context,String phoneNumber,WidgetRef ref) {
     builder: (context, ref, child) {
       final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
       final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
-
       if (outOfAppScreenState.phone_number?.isNotEmpty == true &&
           _phoneController.text.isEmpty) {
         _phoneController.text = outOfAppScreenState.phone_number;
       }
-
       return Padding(
         padding: const EdgeInsets.symmetric(vertical: 10.0),
-
           child: Column(
-
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0x42d2d2d2),
-                  borderRadius: BorderRadius.circular(5)
+                  color: Color(0x3dd0d0ff),
+                  borderRadius: BorderRadius.circular(15)
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -112,7 +112,8 @@ class _RatingReviewState extends State<RatingReview> {
                         image: DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
-                                Utils.inflateLink(widget.food!.pic!))),
+                                Utils.inflateLink(widget.food!.pic!))
+                        ),
                         borderRadius: BorderRadius.circular(100),
                         border: Border.all(
                           color: KColors.primaryColor,

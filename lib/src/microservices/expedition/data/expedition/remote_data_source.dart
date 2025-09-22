@@ -265,7 +265,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
         for (var e in data['data']) {
           if(e['createdBy']!=null)
           result.add(ExpeditionModel.fromJson(Map<String, dynamic>.from(e)));
-
         }
       }
       return result;

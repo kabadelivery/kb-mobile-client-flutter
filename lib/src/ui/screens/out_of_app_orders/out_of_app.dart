@@ -139,15 +139,21 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               "https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json"
               ):Container(),
               SizedBox(height: 10,),
+            IconButton(
+              icon: Icon(Icons.add_circle, color: KColors.primaryColor, size: 40),
+              onPressed: () {
+                showOutOfAppProductForm(context);
+              },
+            ),
             Container(
               padding:EdgeInsets.all(15),
-                width: size.width*.8,
+                width: 350,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                        color: Colors.grey.withOpacity(0.4),
+                        color: Colors.grey.withOpacity(0.3),
                         spreadRadius: 1,
                         blurRadius: 10,
                         offset: Offset(0, 5)),
@@ -158,6 +164,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
+
                 Row(
                   children: [
                     Container(
@@ -208,48 +215,34 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               ],
             )
             ),
-            IconButton(
-              icon: Icon(Icons.add_circle, color: KColors.primaryColor, size: 40),
-              onPressed: () {
-                showOutOfAppProductForm(context);
-              },
-            ),
             products.isNotEmpty ?
             Column(
               children: [
-                  outOfAppScreenState.isBillBuilt==true &&
-            outOfAppScreenState.showLoading==false?
-            ShowBilling(context,orderBillingState.orderBillConfiguration!):
-            outOfAppScreenState.showLoading==true?
-            MyLoadingProgressWidget()
-                :Container()
-            ,
-            SizedBox(height: 10,),
+            SizedBox(height: 20,),
             outOfAppScreenState.showLoading==false?
               Column(
                 children: [
                   PurchaseAddress(context,ref,order_address_type,poweredByKey,order_address_type,0),
-                 SizedBox(height: 10,),
-                locationState.is_shipping_address_picked==false ? ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0):Container(),
+                 SizedBox(height: 20,),
                   ShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,0),
-                  SizedBox(height: 10,),
+                  SizedBox(height: 20,),
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.all(Radius.circular(15)),
-
                         boxShadow: [
                           BoxShadow(
-                              color: Colors.grey.withOpacity(0.4),
+                              color: Colors.grey.withOpacity(0.3),
                               spreadRadius: 1,
                               blurRadius: 10,
                               offset: Offset(0, 5)),
                         ]
 
                     ),
-                    width: size.width*.8,
+                    width: 350,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -268,11 +261,15 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                               ),
                             ),
                             SizedBox(width: 10,),
-                            Text("Infos supplémentaires",style: TextStyle(fontWeight: FontWeight.w600,fontSize: 16),)
+                            Text("Infos supplémentaires",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),)
                           ],
                         ),
                         SizedBox(height: 10,),
+                        Text("Instructions particulières",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color:Colors.black54),),
+                        SizedBox(height: 10,),
                         AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
+                        SizedBox(height: 10,),
+                        Text("Image du magasin/ordonnance (optionnel)",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color:Colors.black54),),
                         SizedBox(height: 10,),
                         AdditionnalInfoImage(context,ref),
                         SizedBox(height: 10,),
@@ -286,17 +283,68 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               )  :Container()
               ],
             ):Container(),
-            SizedBox(key: poweredByKey, height: 25),
-            outOfAppScreenState.isBillBuilt==true &&
-                outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),
+            SizedBox(height: 20,),
+            Container(
+              width: 350,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  BuildSubSpace(context,ref),
+                  BuildCouponSpace(context,ref),
+                ],
+              ),
+            ),
+            orderBillingState.orderBillConfiguration!=null?
+            Column(
+            children: [
+              SizedBox(height: 20),
+              SubscriptionCard(priceSaved: orderBillingState.orderBillConfiguration!.shipping_pricing!,)
+            ],
+          ):Container(),
+          voucherState.selectedVoucher!=null?    Column(
+            children: [
+              SizedBox(height: 20,),
+              Container(
+                    width: 370,
+                    child: BuildVoucherSpace(context,ref)),
+            ],
+          ):Container(),
             SizedBox(height: 20,),
             outOfAppScreenState.isBillBuilt==true &&
                 outOfAppScreenState.showLoading==false?
             Container(
+                width: 350,
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(15)),
+
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 10,
+                          offset: Offset(0, 5)),
+                    ]
+                ),
+
+                child: ShowBilling(context,orderBillingState.orderBillConfiguration!)):
+            outOfAppScreenState.showLoading==true?
+            MyLoadingProgressWidget()
+                :Container()
+            ,
+            SizedBox(height: 20,),
+            Container(
+              width: 350,
               decoration: BoxDecoration(
-                  color: KColors.primaryColor.withAlpha(30),
-                  borderRadius: BorderRadius.all(Radius.circular(5))),
-              margin: EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
+                  gradient: LinearGradient(
+                      begin: Alignment.topRight,
+                      end: Alignment.bottomLeft,
+                      colors: [
+                        Color(0xff730920),
+                        KColors.primaryColor,]),
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+
               child: InkWell(
                 onTap: () async {
                   int type_of_order = 4; // Default
@@ -332,14 +380,11 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(Icons.directions_bike,
-                                color: KColors.primaryColor),
-                            SizedBox(width: 5),
                             Text(
                                 "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                                 style: TextStyle(
                                   fontSize: 18,
-                                  color: KColors.primaryColor,
+                                  color:Colors.white,
                                   fontWeight: FontWeight.w500,
                                 )),
                           ],
@@ -348,8 +393,8 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                       ]),
                 ),
               ),
-            ):
-            Container()
+            ),
+            SizedBox(height: 40,),
           ],
         ),
       ),

@@ -77,10 +77,27 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
         : Container()),
     Container(),
     /* content */
-    Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+    Row(mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+      Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: KColors.primaryColor,
+          borderRadius: BorderRadius.circular(10),
+
+        ),
+        child: const Icon(
+          Icons.receipt_outlined,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+      SizedBox(width: 10),
       Text(
           "${AppLocalizations.of(context)!.translate('invoice_bill')}",
-          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))
     ]),
     SizedBox(height: 10),
     Row(
@@ -89,7 +106,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
           Text(
               "${AppLocalizations.of(context)!.translate('order_amount')}",
               style: TextStyle(
-                  fontWeight: FontWeight.normal, fontSize: 12)),
+                  fontWeight: FontWeight.normal, fontSize: 14)),
           /* check if there is promotion on Commande */
           Row(
             children: <Widget>[
@@ -111,7 +128,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
                       ? "${_orderBillConfiguration?.promotion_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
                       : "${_orderBillConfiguration?.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12)),
+                      fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           )
         ]),
@@ -122,7 +139,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
           Text(
               "${AppLocalizations.of(context)!.translate('delivery_amount')}",
               style: TextStyle(
-                  fontWeight: FontWeight.normal, fontSize: 12)),
+                  fontWeight: FontWeight.normal, fontSize: 14)),
           /* check if there is promotion on Livraison */
           Row(
             children: <Widget>[
@@ -136,7 +153,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
                   style: TextStyle(
                       fontWeight: FontWeight.normal,
                       color: Colors.grey,
-                      fontSize: 12)),
+                      fontSize: 14)),
               SizedBox(width: 5),
               /* montant livraison promotion */
               Text(
@@ -146,7 +163,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
                       ? "${_orderBillConfiguration?.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
                       : "${_orderBillConfiguration?.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12)),
+                      fontWeight: FontWeight.bold, fontSize: 14)),
             ],
           )
         ]),
@@ -167,7 +184,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
               Text(
                   "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 12)),
+                      fontWeight: FontWeight.bold, fontSize: 14)),
 
             ],
           )
@@ -185,7 +202,7 @@ Widget ShowBilling(BuildContext context,OrderBillConfiguration _orderBillConfigu
             "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
             style: TextStyle(
 
-                fontSize: 12,
+                fontSize: 14,
                 color: Colors.black)),
       ),
 

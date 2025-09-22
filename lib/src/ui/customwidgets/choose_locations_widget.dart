@@ -96,14 +96,14 @@ Widget PurchaseAddress(BuildContext context,
 
   return  Container(
     // card container
-    width: MediaQuery.of(context).size.width*.8,
+    width: 350,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(18),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.6),
+          color: Colors.grey.withOpacity(0.2),
           blurRadius: 18,
           offset: const Offset(0, 8),
         )
@@ -218,14 +218,14 @@ Widget ShippingAddress(BuildContext context,
 
   return  Container(
     // card container
-    width: MediaQuery.of(context).size.width*.8,
+    width: 350,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
       color: Colors.white,
       borderRadius: BorderRadius.circular(18),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.6),
+          color: Colors.grey.withOpacity(0.3),
           blurRadius: 18,
           offset: const Offset(0, 8),
         )
@@ -322,10 +322,10 @@ Widget ShippingAddress(BuildContext context,
             ),
           ],
         ),
-        locationState.selectedShippingAddress!=null ?   Column(
+        locationState.is_shipping_address_picked!=null && locationState.selectedShippingAddress!=null?   Column(
           children: [
             const SizedBox(height: 18),
-            BuildOrderAddress(context,ref,locationState.selectedShippingAddress!)
+            BuildShippingAddress(context,ref,locationState.selectedShippingAddress!)
           ],
         ): Container(),
       ],
@@ -339,8 +339,10 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
     return Container();
   else
     return Container(
-      color: Colors.grey[200],
-      margin: EdgeInsets.only(left: 20, right: 20),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
       padding: EdgeInsets.all(10),
       child: Stack(
         children: [
@@ -358,6 +360,7 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
                 SizedBox(height: 5),
                 Container(
                   width: MediaQuery.of(context).size.width * 0.7,
+
                   child: Row(children: <Widget>[
                     Expanded(
                         child: Text(
@@ -371,7 +374,7 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
                 )
               ]),
           Positioned(
-              top: 5,
+              top: 0,
               right: 0,
               child: InkWell(
                   child: Container(

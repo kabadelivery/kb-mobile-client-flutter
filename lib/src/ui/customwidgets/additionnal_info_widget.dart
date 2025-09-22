@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:KABA/src/state_management/out_of_app_order/additionnal_info_state.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
 import '../../localizations/AppLocalizations.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
@@ -54,10 +56,11 @@ Widget AdditionnalInfo(BuildContext context, WidgetRef ref, int type, String tex
       ):
       Column(
         children: [
-          Container(
 
+          Container(
             decoration: BoxDecoration(
-              color: Color(0x42d2d2d2),
+              color: Color(0x3dd0d0ff),
+              borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -130,11 +133,10 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
                  }
               }:null,
             child: Container(
-  height: 70,
-
+  height: 100,
   alignment: Alignment.center,
   decoration: BoxDecoration(
-    color: Color.fromARGB(47, 202, 160, 67),
+    color: Colors.white,
     borderRadius: BorderRadius.circular(5),
     image: selectedImage != null
         ? DecorationImage(
@@ -149,7 +151,7 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
       // Dark overlay
       if (selectedImage != null)
         Container(
-          height: 70,
+          height: 100,
           width: size.width * 0.92,
           decoration: BoxDecoration(
             color: Colors.black.withOpacity(0.5), // Adjust opacity as needed
@@ -158,28 +160,39 @@ Widget AdditionnalInfoImage(BuildContext context, WidgetRef ref) {
         ),
 
       // Icon and Text
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          BouncingWidget(
-            duration: Duration(milliseconds: 400),
-            scaleFactor: 2,
-            onPressed: () {  },
-            child: Icon(Icons.camera_alt, color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(255, 255, 255, 255)),
-          ),
-          SizedBox(height: 5),
-          Text(
-
-            "${AppLocalizations.of(context)!.translate(outOfAppScreenState.order_type!=5&&outOfAppScreenState.order_type!=6?'choose_additionnal_image':'choose_an_image')}",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color:ref.watch(additionnalInfoProvider).image==null? Color.fromARGB(199, 165, 115, 23):Color.fromARGB(197, 255, 255, 255),
+      DottedBorder(
+        options: RoundedRectDottedBorderOptions(
+          dashPattern: [4,8],
+          strokeWidth: 1,
+          color: KColors.primaryColor,
+          radius: Radius.circular(10),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            BouncingWidget(
+              duration: Duration(milliseconds: 400),
+              scaleFactor: 2,
+              onPressed: () {  },
+              child: Icon(Icons.file_upload_outlined
+                  , color:
+                  Color.fromARGB(44, 212, 247, 255)),
             ),
-          ),
-        ],
+            SizedBox(height: 5),
+            Text(
+              "${AppLocalizations.of(context)!.translate(outOfAppScreenState.order_type!=5&&outOfAppScreenState.order_type!=6?'choose_additionnal_image':'choose_an_image')}",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.w400,
+                color:ref.watch(additionnalInfoProvider).image==null?
+                Colors.black54:
+                Color.fromARGB(197, 255, 255, 255),
+              ),
+            ),
+          ],
+        ),
       ),
     ],
   ),
