@@ -92,7 +92,7 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
     districtState.districts=widget.districts;
     districtState.isLoading=false;
 
-    if(locationState.is_order_address_picked! && locationState.is_shipping_address_picked!){
+    if((locationState.is_order_address_picked!=null&& locationState.is_order_address_picked! )! && (locationState.is_shipping_address_picked!=null && locationState.is_shipping_address_picked!)){
       if(locationState.selectedOrderAddress![0].id==(locationState.selectedShippingAddress!.id)){
 
         Fluttertoast.showToast(
@@ -243,94 +243,136 @@ class _ShippingPackageOrderPageState extends ConsumerState<ShippingPackageOrderP
                     SizedBox(height: 10,),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?
-                    ShowBilling(context,orderBillingState.orderBillConfiguration!):
+                    Container(
+                      padding: EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: KColors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.3),
+                                spreadRadius: 1,
+                                blurRadius: 10,
+                                offset: Offset(0, 5), // changes position of shadow
+                              ),
+                            ]
+
+                        ),
+                        child: ShowBilling(context,orderBillingState.orderBillConfiguration!)):
                     outOfAppScreenState.showLoading==true?
                     MyLoadingProgressWidget()
                         :Container(),
-                    ((outOfAppScreenState.order_type == shipping_package_type && additionnalInfoState.additionnal_info.isNotEmpty && outOfAppScreenState.showLoading==false))
-                    ? Column(
-                      children: [
-                      Column(
-                          children: [
-                            SizedBox(height: 10,),
-                             (locationState.selectedOrderAddress!.isEmpty)?
+                    SizedBox(height: 10,),
+                    Container(
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Color(0xff2ddc7e),width: .5),
+                          color:Color(0x7cd9ffea),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+
+                      ),
+                      child: Column(
+                        children: [
+                          ((outOfAppScreenState.order_type == shipping_package_type && additionnalInfoState.additionnal_info.isNotEmpty && outOfAppScreenState.showLoading==false))
+                          ? Column(
+                            children: [
                             Column(
-                              children: [
-                                ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,shipping_package_type),
-                                SizedBox(height: 10,),
-                              ],
-                            ):Container(),
-                            (locationState.is_order_address_picked==true)?
-                             locationState.selectedOrderAddress!.isNotEmpty ?
-                            Column(
-                              children: [
-                                Text(
-                                    "${AppLocalizations.of(context)!.translate('fecthing_package_address')}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                        color: KColors.new_black)),
-                                BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0]),
-                              ],
-                            ):Container():Container(),
-                          ],
+                                children: [
+                                  SizedBox(height: 10,),
+                                   (locationState.selectedOrderAddress!.isEmpty)?
+                                  Column(
+                                    children: [
+                                      ChooseShippingAddress(context,ref,order_address_type,poweredByKey,order_address_type,shipping_package_type),
+                                      SizedBox(height: 10,),
+                                    ],
+                                  ):Container(),
+                                  (locationState.is_order_address_picked==true)?
+                                   locationState.selectedOrderAddress!.isNotEmpty ?
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "${AppLocalizations.of(context)!.translate('fecthing_package_address')}",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 16,
+                                              color: KColors.new_black))
+                                              ,SizedBox(height: 10,),
+                                      BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0]),
+                                    ],
+                                  ):Container():Container(),
+                                ],
 
 
-                        )
+                              )
 
-                        ,SizedBox(height: 10,),
-                        locationState.is_shipping_address_picked==true ?
-                        Column(
-                          children: [
-                            Text(
-                                "${AppLocalizations.of(context)!.translate('shipping_address')}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                    color: KColors.new_black)),
-                            BuildShippingAddress(context,ref,locationState.selectedShippingAddress!),
-                          ],
-                        ):
-                        ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,shipping_package_type),
-                        SizedBox(height: 20,),
-                        additionnalInfoState.can_add_address_info==null?
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text(
-                                "${AppLocalizations.of(context)!.translate('add_district_info')}",
-                                style: TextStyle(
+                              ,SizedBox(height: 10,),
+                              locationState.is_shipping_address_picked==true ?
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                      "${AppLocalizations.of(context)!.translate('shipping_address')}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16,
+                                          color: KColors.new_black))
+                                  ,SizedBox(height: 10,),
+                                  BuildShippingAddress(context,ref,locationState.selectedShippingAddress!),
+                                ],
+                              ):
+                              ChooseShippingAddress(context,ref,shipping_address_type,poweredByKey,shipping_address_type,shipping_package_type),
+                              SizedBox(height: 20,),
+                              additionnalInfoState.can_add_address_info==null?
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                      "${AppLocalizations.of(context)!.translate('add_district_info')}",
+                                      style: TextStyle(
 
-                                    fontSize: 16,
-                                    color: Colors.grey.shade700)),
-                            SizedBox(height: 10,),
-                            CanAddAdditionnInfo(context,ref),
-                          ],
-                        ):
-                        additionnalInfoState.can_add_address_info==true && outOfAppScreenState.isBillBuilt==false?
-                        Column(
-                          children: [
-                            DistrictSelectionWidget(),
-                            SizedBox(height: 20,),
+                                          fontSize: 16,
+                                          color: Colors.grey.shade700)),
+                                  SizedBox(height: 10,),
+                                  CanAddAdditionnInfo(context,ref),
+                                ],
+                              ):
+                              additionnalInfoState.can_add_address_info==true && outOfAppScreenState.isBillBuilt==false?
+                              Column(
+                                children: [
+                                  DistrictSelectionWidget(),
+                                  SizedBox(height: 20,),
 
-                          ],
-                        ):Container(),
-                      ],
-                    ) : Container(),
+                                ],
+                              ):Container(),
+                            ],
+                          ) : Container(),
+                        ],
+                      ),
+                    ),
                     additionnalInfoState.can_add_address_info==true?
                     AdditionnalInfo(context,ref,address_additionnal_info_type,additionnalInfoState.additionnal_address_info)
                         :Container(),
                     SizedBox(height: 10,),
                 additionnalInfoState.additionnal_info.isNotEmpty?
-                Column(
-                            children: [
-                              PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
-                              SizedBox(height: 10),
-                              PackageAmountForm(context,outOfAppScreenState.package_amount,ref),
-                              SizedBox(height: 10,),
-                            ],
-                          ):Container(),
+                        Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                              color: Color(0x30d5d5ff),
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              border: Border.all(color: Color(0xff5e5eff),width: .5)
+
+                          ),
+                          child: Column(
+                              children: [
+                                PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
+                                SizedBox(height: 10),
+                                PackageAmountForm(context,outOfAppScreenState.package_amount,ref),
+                                SizedBox(height: 10,),
+                              ],
+                            ),
+                        ):Container(),
                     SizedBox(key: poweredByKey, height: 25),
                     outOfAppScreenState.isBillBuilt==true &&
                         outOfAppScreenState.showLoading==false?BuildCouponSpace(context,ref):Container(),

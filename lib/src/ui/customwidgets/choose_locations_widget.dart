@@ -32,12 +32,16 @@ Widget ChooseShippingAddress(
   return     InkWell(
       splashColor: Colors.white,
       child: Container(
-
           padding: EdgeInsets.only(top: 10, bottom: 10),
           decoration: BoxDecoration(
               shape: BoxShape.rectangle,
+              border: Border.all(
+                  color: type==1?
+                  KColors.mBlue.withAlpha(30):
+                  Colors.green.withAlpha(60),
+                  width: 1),
               borderRadius:
-              BorderRadius.all(Radius.circular(5)),
+              BorderRadius.all(Radius.circular(15)),
               color: type==1?
               KColors.mBlue.withAlpha(30):
               Colors.green.withAlpha(60)

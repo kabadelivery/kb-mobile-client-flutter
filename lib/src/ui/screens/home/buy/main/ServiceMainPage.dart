@@ -54,6 +54,7 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../out_of_app_orders/out_of_app_pres.dart';
 import '../../../out_of_app_orders/pharmacy.dart';
 import '../../../rating/rating_article.dart';
 import '../../../rating/rating_delivery.dart';
@@ -810,7 +811,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           }else{
                             await Permission.camera.status;
                             Navigator.of(context).push(PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => OutOfAppOrderPage(),
+                                pageBuilder: (context, animation, secondaryAnimation) => OutOfAppPres(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                   var begin = Offset(1.0, 0.0);
                                   var end = Offset.zero;

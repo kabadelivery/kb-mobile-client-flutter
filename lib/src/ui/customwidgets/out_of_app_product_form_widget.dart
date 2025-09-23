@@ -649,7 +649,7 @@ Widget PackageAmountForm(BuildContext context,String amount,WidgetRef ref) {
             children: [
               Container(
                 decoration: BoxDecoration(
-                  color: Color(0x42d2d2d2),
+                  color: Color(0x3dd0d0ff),
                   borderRadius: BorderRadius.circular(5)
                 ),
                 child: Padding(
