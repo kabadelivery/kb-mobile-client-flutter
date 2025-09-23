@@ -480,8 +480,11 @@ class SubscriptionCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFFFFDADF),
-            Color(0xFFFFECD5)], // dégradé doux
+          colors:
+          [
+            Color(0xFFFFDADF),
+            Color(0xFFFFECD5)
+          ], // dégradé doux
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -497,7 +500,7 @@ class SubscriptionCard extends StatelessWidget {
               Icon(Icons.emoji_objects, color: KColors.primaryColor),
               SizedBox(width: 8),
               Text(
-                "Vous avez économisé sur votre livraison !",
+                "Vous économisez sur votre livraison !",
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -513,7 +516,7 @@ class SubscriptionCard extends StatelessWidget {
             TextSpan(
               children: [
                 TextSpan(
-                  text: "Cette livraison vous a coûté ",
+                  text: "Cette livraison vous coutêra ",
                   style: TextStyle(fontSize: 14, color: Colors.black87),
                 ),
                 TextSpan(

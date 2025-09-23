@@ -45,7 +45,7 @@ Widget OutOfAppProduct(
         children: [
           Container(
             height: 90,
-            width: size.width*.7,
+            width: size.width*.78,
             padding:  EdgeInsets.symmetric(vertical: 0.0,horizontal: 15),
             decoration: BoxDecoration(
               boxShadow: [
@@ -96,12 +96,12 @@ Widget OutOfAppProduct(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    InkWell(
-                        onTap: (){
-
+                    MaterialButton(
+                        minWidth: 0,
+                        onPressed: (){
+                          ref.read(productListProvider.notifier).decreaseQuantity(name, amount: 1);
                         },
                         child: Text("-",style: TextStyle(fontSize: 20,color:Colors.black87,fontWeight: FontWeight.bold),)),
-                    SizedBox(width: 10,),
                     Container(
                       width: 30,
                       height: 30,
@@ -113,10 +113,10 @@ Widget OutOfAppProduct(
                       alignment: Alignment.center,
                       child: Text(quantity.toString(),style: TextStyle(fontSize: 20,color:Colors.black87,fontWeight: FontWeight.bold),),
                     ),
-                    SizedBox(width: 10,),
-                    InkWell(
-                         onTap: (){
-
+                    MaterialButton(
+                        minWidth: 0,
+                         onPressed: (){
+                           ref.read(productListProvider.notifier).increaseQuantity(name, amount: 1);
                          },
                         child: Text("+",style: TextStyle(fontSize: 20,color:Colors.black87,fontWeight: FontWeight.bold),)),
                   ],

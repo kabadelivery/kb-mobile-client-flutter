@@ -76,7 +76,7 @@ Widget ChooseShippingAddress(
                     ))
               ])),
       onTap: () async{
-       await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
+       await PickShippingAddress(context,ref,poweredByKey,shipping_address_type,false);
       });
 }
 //ConsumerState<OutOfAppOrderPage>
@@ -86,24 +86,20 @@ Widget PurchaseAddress(BuildContext context,
     GlobalKey poweredByKey,
     int shipping_address_type,int order_type)
 {
-  final products = ref.watch(productListProvider);
-  final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
-  final orderBillingState = ref.watch(orderBillingStateProvider);
   final locationState = ref.watch(locationStateProvider);
   final locationNotifier = ref.read(locationStateProvider.notifier);
-  final voucherState = ref.watch(voucherStateProvider);
   final additionnalInfoState = ref.watch(additionnalInfoProvider);
-
   return  Container(
     // card container
     width: 350,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
+      border: Border.all(color: Colors.grey,width: .5),
       color: Colors.white,
       borderRadius: BorderRadius.circular(18),
       boxShadow: [
         BoxShadow(
-          color: Colors.grey.withOpacity(0.2),
+          color: Colors.grey.withOpacity(0.3),
           blurRadius: 18,
           offset: const Offset(0, 8),
         )
@@ -163,7 +159,7 @@ Widget PurchaseAddress(BuildContext context,
                 value: locationState.selectedOrderAddress!.isNotEmpty,
                 onChanged: (v) async{
                   if(v==true){
-                    await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
+                    await PickShippingAddress(context,ref,poweredByKey,shipping_address_type,false);
                     locationState.is_order_address_picked!;
                   }else{
                     locationNotifier.pickOrderAddress(null);
@@ -208,14 +204,15 @@ Widget ShippingAddress(BuildContext context,
     GlobalKey poweredByKey,
     int shipping_address_type,int order_type)
 {
-  final products = ref.watch(productListProvider);
-  final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
-  final orderBillingState = ref.watch(orderBillingStateProvider);
   final locationState = ref.watch(locationStateProvider);
-  final locationNotifier = ref.read(locationStateProvider.notifier);
-  final voucherState = ref.watch(voucherStateProvider);
-  final additionnalInfoState = ref.watch(additionnalInfoProvider);
-
+  bool isLocationPicked=  false;
+  try{
+    isLocationPicked=(locationState.selectedShippingAddress!.name=="Choose your actual position"||
+        locationState.selectedShippingAddress!.name=="Choisir votre position actuelle"||
+        locationState.selectedShippingAddress!.name=="选择实际位置");
+  }catch(e){
+    isLocationPicked=false;
+  }
   return  Container(
     // card container
     width: 350,
@@ -284,12 +281,14 @@ Widget ShippingAddress(BuildContext context,
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            MaterialButton(onPressed: (){},
+            MaterialButton(onPressed: ()async{
+              await PickShippingAddress(context,ref,poweredByKey,shipping_address_type,true);
+            },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
                 side: BorderSide(color: KColors.primaryColor,width: .5)
               ),
-              color:locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor ,
+              color:isLocationPicked?KColors.primaryColor:Colors.white  ,
               elevation: 0,
               padding: EdgeInsets.all(4),
               minWidth: 100,
@@ -297,18 +296,18 @@ Widget ShippingAddress(BuildContext context,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-              Icon(Icons.location_on_outlined,color: locationState.selectedShippingAddress!=null? KColors.primaryColor:Colors.white,),
-              Text("Position actuelle",style: TextStyle(color:locationState.selectedShippingAddress!=null? KColors.primaryColor: Colors.white,fontSize: 14),)
+              Icon(Icons.location_on_outlined,color: isLocationPicked?Colors.white:KColors.primaryColor),
+              Text("Position actuelle",style: TextStyle(color:isLocationPicked? KColors.white: KColors.primaryColor,fontSize: 14),)
             ],),
             ),
             MaterialButton(onPressed: ()async{
-              await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
+              await PickShippingAddress(context,ref,poweredByKey,shipping_address_type,false);
             },
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
                 side: BorderSide(color: KColors.primaryColor,width: .5),
               ),
-              color: locationState.selectedShippingAddress!=null?KColors.primaryColor:Colors.white,
+              color: locationState.selectedShippingAddress!=null && !isLocationPicked?KColors.primaryColor:Colors.white,
               elevation: 0,
               padding: EdgeInsets.all(4),
               minWidth: 100,
@@ -316,13 +315,13 @@ Widget ShippingAddress(BuildContext context,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.location_on_outlined,color:locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor,),
-                   Text("Adresse enrégistrées",style: TextStyle(color: locationState.selectedShippingAddress!=null?Colors.white: KColors.primaryColor,fontSize: 14),)
+                  Icon(Icons.location_on_outlined,color:locationState.selectedShippingAddress!=null && !isLocationPicked?Colors.white: KColors.primaryColor,),
+                   Text("Adresse enrégistrées",style: TextStyle(color: locationState.selectedShippingAddress!=null && !isLocationPicked?Colors.white: KColors.primaryColor,fontSize: 14),)
                 ],),
             ),
           ],
         ),
-        locationState.is_shipping_address_picked!=null && locationState.selectedShippingAddress!=null?   Column(
+        locationState.is_shipping_address_picked!=null && locationState.selectedShippingAddress!=null && !isLocationPicked?   Column(
           children: [
             const SizedBox(height: 18),
             BuildShippingAddress(context,ref,locationState.selectedShippingAddress!)
@@ -335,6 +334,9 @@ Widget ShippingAddress(BuildContext context,
 
 
 Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressModel selectedAddress) {
+  final locationState= ref.watch(locationStateProvider);
+  final locationNotifier= ref.read(locationStateProvider.notifier);
+
   if (selectedAddress == null)
     return Container();
   else
@@ -385,8 +387,8 @@ Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressM
                       padding: EdgeInsets.all(8)),
                   onTap: () {
                     /* remove address */
-                    ref.read(locationStateProvider.notifier).pickShippingAddress(null);
-                    ref.read(locationStateProvider.notifier).setShippingAddressPicked(false);
+                    locationState.is_shipping_address_picked=(null);
+                    locationState.selectedShippingAddress=(null);
                     ref.read(orderBillingStateProvider.notifier).setOrderBillConfiguration(null);
                     ref.read(outOfAppScreenStateProvier.notifier).setIsBillBuilt(false);
                     ref.read(outOfAppScreenStateProvier.notifier).setShowLoading(false);

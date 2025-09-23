@@ -27,7 +27,25 @@ class OutOfAppProductNotifier extends StateNotifier<List<Map<String,dynamic>>>{
       state[index] = product;
     }
   }
-
+  void increaseQuantity(String name, {int amount = 1}) {
+    final index = state.indexWhere((element) => element['name'] == name);
+    if (index != -1) {
+      final updatedList = List<Map<String, dynamic>>.from(state);
+      updatedList[index]['quantity'] =
+          (updatedList[index]['quantity'] ?? 1) + amount;
+      state = updatedList;
+    }
+  }
+  void decreaseQuantity(String name, {int amount = 1}) {
+    final index = state.indexWhere((element) => element['name'] == name);
+    if (index != -1) {
+      final updatedList = List<Map<String, dynamic>>.from(state);
+      final current = updatedList[index]['quantity'] ?? 0;
+      updatedList[index]['quantity'] =
+          (current - amount).clamp(1, double.infinity).toInt();
+      state = updatedList;
+    }
+  }
 }
 
 final productListProvider = StateNotifierProvider.autoDispose<OutOfAppProductNotifier,List<Map<String,dynamic>>>(

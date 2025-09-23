@@ -54,6 +54,7 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../out_of_app_orders/pharmacy.dart';
 import '../../../rating/rating_article.dart';
 import '../../../rating/rating_delivery.dart';
 import '../../_home/InfoPage.dart';
@@ -990,6 +991,52 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('expedition')}",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                        color: KColors.new_black)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () async{
+                          if (StateContainer.of(context).loggingState == 0){
+                            NotLoggedInPopUp(context);
+                          }else{
+                            await Permission.camera.status;
+                            Navigator.of(context).push(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => PharmacyPage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/6c75e766-9015-479d-8ac2-d33783ae527c/kDstCBf7V4.json")),
+                                SizedBox(width: 9),
+                                Text(
+                                    "Pharmacy",
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,

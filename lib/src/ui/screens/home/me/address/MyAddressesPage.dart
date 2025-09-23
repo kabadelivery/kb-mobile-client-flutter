@@ -61,7 +61,38 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+  void _getActualPositioAddress(){
 
+    setState(() {
+      isLoading =true;
+    });
+    CustomerUtils.getCustomer().then((customer)async {
+      await determinePosition().then((value)async{
+        DeliveryAddressModel old_address  =DeliveryAddressModel();
+        for(DeliveryAddressModel adr in widget.data!){
+          if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
+            old_address=adr;
+            break;
+          }
+        }
+        DeliveryAddressModel address = DeliveryAddressModel(
+          id: old_address.id,
+          name:"${AppLocalizations.of(context)!.translate('choose_actual_location')}",
+          location: "${value.latitude}:${value.longitude}",
+          phone_number:customer!.phone_number.toString(),
+          user_id: customer.id.toString(),
+          description: "${AppLocalizations.of(context)!.translate('this_location')}",
+          quartier: "unknown",
+          near: "near unknown",
+        );
+        AddressApiProvider api = AddressApiProvider();
+        Map jsonData = await api.updateOrCreateAddress(address,customer) as Map;
+        DeliveryAddressModel choosedAddres = jsonData["address"];
+        _pickedAddress(choosedAddres);
+      });
+    });
+
+  }
   @override
   void initState() {
     widget.presenter!.addressView = this;
@@ -90,6 +121,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         });
       });
     }
+   if(widget.address_type==5){
+     WidgetsBinding.instance.addPostFrameCallback((_){
+       _getActualPositioAddress();
+     });
+   }
   }
 
   @override
@@ -156,7 +192,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       ),
                     ]),
                     SizedBox(width: 10),
-                 Text(
+                    Text(
                         "${AppLocalizations.of(context)!.translate('choose_actual_location')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -166,36 +202,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                         )) 
                   ])),
           onTap: () {
-            setState(() {
-              isLoading =true;
-            });
-            CustomerUtils.getCustomer().then((customer)async {
-              await determinePosition().then((value)async{
-                DeliveryAddressModel old_address  =DeliveryAddressModel();
-                for(DeliveryAddressModel adr in widget.data!){
-                  if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
-                    old_address=adr;
-                    break;
-                  }
-                }
-                DeliveryAddressModel address = DeliveryAddressModel(
-                  id: old_address.id,
-                  name:"${AppLocalizations.of(context)!.translate('choose_actual_location')}",
-                  location: "${value.latitude}:${value.longitude}",
-                  phone_number:customer!.phone_number.toString(),
-                  user_id: customer.id.toString(),
-                  description: "${AppLocalizations.of(context)!.translate('this_location')}",
-                  quartier: "unknown",
-                  near: "near unknown",
-                );
-                AddressApiProvider api = AddressApiProvider();
-                Map jsonData = await api.updateOrCreateAddress(address,customer) as Map;
-                DeliveryAddressModel choosedAddres = jsonData["address"];
-                _pickedAddress(choosedAddres);
-              });
-            });
+            _getActualPositioAddress();
+          }
 
-          }):Container(),
+          ):Container(),
+          widget.address_type==5?Center(child: CircularProgressIndicator()):
           Container(
               height: MediaQuery.of(context).size.height,
               margin: EdgeInsets.only(top: 80),
@@ -206,7 +217,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       : hasSystemError
                           ? _buildSysErrorPage()
                           : _buildDeliveryAddressesList())),
-          Positioned(
+          widget.address_type==5?Container():   Positioned(
             bottom: 0,
             right: 0,
             left: 0,
