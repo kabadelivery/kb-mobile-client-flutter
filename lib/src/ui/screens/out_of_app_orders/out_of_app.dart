@@ -20,11 +20,13 @@ import '../../../state_management/out_of_app_order/additionnal_info_state.dart';
 import '../../../state_management/out_of_app_order/location_state.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
+import '../../../state_management/out_of_app_order/subscription.dart';
 import '../../../utils/_static_data/KTheme.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchShippingPrice.dart';
 import '../../../utils/functions/OutOfAppOrder/launchOrder.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../../utils/functions/Utils.dart';
+import '../../../utils/functions/subscribe_with_code.dart';
 import '../../../xrint.dart';
 import '../../customwidgets/MyLoadingProgressWidget.dart';
 import '../../customwidgets/additionnal_info_widget.dart';
@@ -50,7 +52,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
   int address_additionnal_info_type=2;
   int out_of_app_order_type=3;
   int out_of_app_order_type_without_address=4;
-
+  TextEditingController _codeController = TextEditingController();
   GlobalKey poweredByKey = GlobalKey();
   void showOutOfAppProductForm() {
     showDialog(
@@ -78,7 +80,8 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
     final locationState = ref.watch(locationStateProvider);
     final locationNotifier = ref.read(locationStateProvider.notifier);
     final voucherState = ref.watch(voucherStateProvider);
-    final additionnalInfoState = ref.watch(additionnalInfoProvider); 
+    final additionnalInfoState = ref.watch(additionnalInfoProvider);
+    final subscription = ref.watch(subscriptionStateProvider);
 
    if(locationState.selectedOrderAddress==null){
      locationState.selectedOrderAddress = [];
@@ -339,24 +342,118 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                     :Container()
                 ,
                 SizedBox(height: 20,),
-                Container(
+                orderBillingState.orderBillConfiguration!=null?    Container(
                   width: 350,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      BuildSubSpace(context,ref),
+                     subscription.isSelected?
+                         Container(
+                           width: 180,
+                           child: TextField(
+                             controller: _codeController,
+                              onChanged: (value){
+                                ref.watch(subscriptionStateProvider.notifier).setCode(value);
+                              },
+                              decoration: InputDecoration(
+                                hintText: "Code de l'abonnement",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey,
+                                    width: 1
+                                  )
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: Colors.grey,
+                                        width: 1
+                                    )
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide(
+                                        color: KColors.primaryColor,
+                                        width: 1
+                                    )
+                                )),
+                           ),
+                         )
+                         : BuildSubSpace(context,ref),
                       BuildCouponSpace(context,ref),
                     ],
                   ),
-                ),
+                ):Container(),
+                SizedBox(height: 10,),
+           subscription.isSelected==true?
+           Container(
+                  width: 350,
+                 child: Row(
+                   children: [
+                     MaterialButton(
+                         shape: RoundedRectangleBorder(
+                           borderRadius: BorderRadius.circular(10),
+
+                         ),
+                         color: KColors.primaryColor,
+                         elevation: 0,
+                         height: 45,
+                         minWidth: 100,
+                         onPressed: ()async{
+                           if(subscription.isSelected && _codeController.text.isNotEmpty){
+                             ref.read(subscriptionStateProvider.notifier).setLoading(true);
+                            Map<String,dynamic> result = await subscribeByCode(code: _codeController.text);
+                            if(result!=null){
+                              if(result['success']!=null && result['success']==true){
+                                ref.read(subscriptionStateProvider.notifier).setCode(_codeController.text);
+                                ref.read(subscriptionStateProvider.notifier).setRevoked(false);
+                                ref.read(subscriptionStateProvider.notifier).setSelected(true);
+                                ref.read(subscriptionStateProvider.notifier).setAdded(true);
+                                ref.read(subscriptionStateProvider.notifier).setLoading(false);
+                                ref.read(subscriptionStateProvider.notifier).setError(false);
+                              }else{
+                                ref.read(subscriptionStateProvider.notifier).setLoading(false);
+                                ref.read(subscriptionStateProvider.notifier).setError(true);
+                              }
+                            }
+                           }
+                         },
+                         child: subscription.isLoading?Text("En cours...",style: TextStyle(color: Colors.white,fontSize: 12)):
+                         Text(subscription.isError?"Réessayez": "Ajouter",style: TextStyle(color: Colors.white,fontSize: 16))
+                     ),
+                      SizedBox(width: 10,),
+                      MaterialButton(
+                      onPressed: (){
+                        ref.read(subscriptionStateProvider.notifier).setSelected(false);
+                        ref.read(subscriptionStateProvider.notifier).setRevoked(true);
+                        ref.read(subscriptionStateProvider.notifier).setCode("");
+                        _codeController.text="";
+
+                      },
+                      padding: EdgeInsets.all(0),
+                      minWidth: 45,
+                      height: 45,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: Colors.grey,
+                          width: 1
+                        )
+                        ),
+                        child: Icon(Icons.close,color: Colors.grey,size: 20),
+                      ),
+                   ],
+                 ),
+               ):Container(),
                 orderBillingState.orderBillConfiguration!=null?
                 Column(
                 children: [
                   SizedBox(height: 20),
-                  SubscriptionCard(priceSaved: orderBillingState.orderBillConfiguration!.shipping_pricing!,)
+                 subscription.isAdded? SubscriptionCard(priceSaved: orderBillingState.orderBillConfiguration!.shipping_pricing!,):Container(),
                 ],
               ):Container(),
-              voucherState.selectedVoucher!=null?    Column(
+              voucherState.selectedVoucher!=null? Column(
                 children: [
                   SizedBox(height: 20,),
                   Container(
@@ -366,7 +463,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               ):Container(),
 
                 SizedBox(height: 20,),
-                Container(
+                orderBillingState.orderBillConfiguration!=null?Container(
                   width: 350,
                   decoration: BoxDecoration(
                       gradient: LinearGradient(
@@ -425,7 +522,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                           ]),
                     ),
                   ),
-                ),
+                ):Container(),
                 SizedBox(height: 40,),
               ],
             ),

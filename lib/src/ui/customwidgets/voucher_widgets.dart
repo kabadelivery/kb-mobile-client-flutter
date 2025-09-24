@@ -13,6 +13,7 @@ import '../../state_management/out_of_app_order/location_state.dart';
 import '../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
+import '../../state_management/out_of_app_order/subscription.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
@@ -440,7 +441,7 @@ Widget BuildSubSpace(BuildContext context, WidgetRef ref){
     direction: ShimmerDirection.fromLTRB(),
     child: GestureDetector(
       onTap: () async {
-
+        ref.read(subscriptionStateProvider.notifier).setSelected(true);
       },
       child: Container(
         width: 160,

@@ -16,7 +16,9 @@ import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/pages/homepage.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/page_holder.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
@@ -29,6 +31,8 @@ import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app_pres.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/pharmacy.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -888,13 +892,14 @@ class _HomePageState extends State<HomePage> {
             /* convert from hexadecimal to decimal */
             widget.argument = int.parse("${pathSegments[1]}");
             // check if restaurant is out of app or colis
-            if (pathSegments[1] == "795") {
+            if (pathSegments[1] == "hors_appli") {
               if (StateContainer.of(context).loggingState == 0) {
                 NotLoggedInPopUp(context);
               } else {
-                _jumpToPage(context, OutOfAppOrderPage());
+                _jumpToPage(context, OutOfAppPres());
               }
-            } else if (pathSegments[1] == "794") {
+            }
+            else if (pathSegments[1] == "colis") {
               List<Map<String, dynamic>> districts = [];
               List<Map<String, dynamic>> cachedDistricts =
                   await CustomerUtils.getCachedDistricts();
@@ -917,7 +922,30 @@ class _HomePageState extends State<HomePage> {
                       districts: districts,
                     ));
               }
-            } else {
+            }
+            else if (pathSegments[1] == "chine") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, WelcomeToKabaChine());
+              }
+            }
+            else if (pathSegments[1] == "expedition") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, KabaExpeditionHomePage());
+              }
+            }
+            else if (pathSegments[1] == "pharmacy") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, PharmacyPage());
+              }
+            }
+
+            else {
               _jumpToPage(
                   context,
                   ShopDetailsPage(
