@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
+import '../../../../utils/functions/analytics.dart';
 import '../../../kaba_chine/core/utils.dart';
 import '../../core/utils.dart';
 
@@ -64,6 +65,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
           ),
           GestureDetector(
             onTap: (){
+              logButtonPress("expedition_international_start");
               Navigator.of(context).pushReplacement(PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) => Expedition(type: ExpeditionType.international),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
