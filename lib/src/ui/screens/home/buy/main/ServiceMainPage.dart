@@ -47,6 +47,7 @@ import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
+import '../../../../../utils/functions/analytics.dart';
 import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
@@ -234,6 +235,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         icon: Icon(Icons.all_inclusive, color: Colors.white),
                         label: Text("Skip all"),
                         onPressed: ()async{
+                          logButtonPress("Bouton skip pour la notation");
                           await deleteRatePendingFromCache();
                         },
                       ),

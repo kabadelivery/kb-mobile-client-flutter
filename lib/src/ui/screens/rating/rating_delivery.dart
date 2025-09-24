@@ -11,6 +11,7 @@ import '../../../models/DeliveryRatingPending.dart';
 import '../../../resources/order_api_provider.dart';
 import '../../../utils/Enums/DeliveryRatingType.dart';
 import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/functions/analytics.dart';
 import '../../../utils/functions/new_rating_feature.dart';
 import '../../customwidgets/rating_widget.dart';
 
@@ -75,6 +76,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 }else{
                   await removeSingleRatePendingFromCache(widget.deliveryRatingPending.command_id.toString());
                 }
+                logButtonPress("Bouton skip pour la notation");
                 Navigator.pop(context);
               },
               child: Container(
