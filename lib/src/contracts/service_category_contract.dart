@@ -133,6 +133,9 @@ class ServiceMainPresenter implements ServiceMainContract {
   try {
       List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
       List<DeliveryRatingPending>? deliveriesRatingPending=[];
+      if(deliveriesRatingPending==null || deliveriesRatingPending.isEmpty){
+        _serviceMainView.showOrderRating([]);
+      }
       CustomerModel customer = await CustomerUtils.getCustomer();
       for(DeliveryRatingPending orderRating in ordersRating??[]){
         try{

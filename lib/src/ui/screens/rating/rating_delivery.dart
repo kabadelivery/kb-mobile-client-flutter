@@ -64,11 +64,32 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 ),
               ),
             ),
-
+            Positioned(
+              right: 10,
+                top: 10,
+                child:
+            GestureDetector(
+              onTap: ()async{
+                if(widget.deleteAll){
+                  await  deleteRatePendingFromCache();
+                }else{
+                  await removeSingleRatePendingFromCache(widget.deliveryRatingPending.command_id.toString());
+                }
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text("Skip", style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+            )),
             // Moved this out of Container and into Stack
             Positioned(
               top: 40,
-              left: 100,
+              left: 120,
               child: Container(
                 width: 120,
                 height: 120,
@@ -99,7 +120,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
             ),
             // Bottom section
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.25,
+              top:170,
               left: 0,
               right: 0,
               child: Column(
@@ -110,14 +131,14 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                        Text(
                         "${AppLocalizations.of(context)!.translate("delivery_person")}",
                         style: TextStyle(fontWeight: FontWeight.normal,
-                            fontSize: 10,
+                            fontSize: 16,
                             color: Colors.black87),
                       ),
                       const SizedBox(width: 5),
                       Text(
                         livreurName,
                         style: const TextStyle(fontWeight: FontWeight.bold,
-                        fontSize: 10, color: Colors.black87),
+                        fontSize: 16, color: Colors.black87),
 
                       ),
                     ],
@@ -245,7 +266,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       );
                     },
                   ),
-
+                  SizedBox(height: 20,),
                    Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(

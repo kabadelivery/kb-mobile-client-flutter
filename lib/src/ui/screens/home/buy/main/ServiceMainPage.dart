@@ -47,6 +47,7 @@ import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
+import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -101,7 +102,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -115,11 +115,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
-    if (deliveriesRatingPending.isEmpty) return;
     if (deliveriesRatingPending.length == 1) {
-
       _showRatingDialog(deliveriesRatingPending.first, true);
-    } else {
+    }  else if(deliveriesRatingPending.length > 1) {
       final choice = await _askUserChoice(context);
       if (choice == "one") {
         final latest = deliveriesRatingPending.reduce((a, b) {
@@ -143,6 +141,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     }
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      isLoading = false;
+    });
   }
   Future<String?> _askUserChoice(BuildContext context) {
     return showDialog<String>(
@@ -217,6 +219,25 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         onPressed: () => Navigator.pop(context, "all"),
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+
+                        icon: Icon(Icons.all_inclusive, color: Colors.white),
+                        label: Text("Skip all"),
+                        onPressed: ()async{
+                          await deleteRatePendingFromCache();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -228,7 +249,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
 
   Future<Map<String,dynamic>?> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
-
     return showDialog(
       context: context,
       builder: (context) {
@@ -325,6 +345,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
+          setState(() {
+            isLoading = true;
+          });
           this.widget.presenter!.showOrderRating();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _getLastKnowLocation(jumpToBuyPageDetails: false);
