@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionPlansSheet.dart';
+import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -85,8 +87,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   bool isPayAtDeliveryLoading = false;
   bool isPreorderLoading = false;
   bool isPayNowLoading = false;
-
+  bool showCodeInput = false;
   bool checkIsRestaurantOpenConfigIsLoading = true;
+  TextEditingController codeController = TextEditingController();
 
   TextEditingController? _addInfoController;
 
@@ -1689,7 +1692,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       return;
     }
 
-    return Container(
+    return Container() ;
+    
+    
+     /* Container(
       margin: EdgeInsets.only(left: 15, right: 15),
       padding: const EdgeInsets.only(
                   top: 15, bottom: 15, left: 0.5, right: 12), // Adjust padding
@@ -1783,8 +1789,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ])
                   : Container())
         ],
-      ),
-    );
+      ), 
+    );*/
   }
 
   /* pre order button */
@@ -2488,7 +2494,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   child: ElevatedButton(
                     onPressed: () {
                       setState(() {
-                       // showCodeInput = !showCodeInput; // 👈 toggle visibility
+                        showCodeInput = !showCodeInput; // 👈 toggle visibility
                       });
                     },
                     style: ElevatedButton.styleFrom(
@@ -2508,9 +2514,46 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ),
                 ),
               ],
-            )
+            ),
+         
             
-          ),
+        )
+          ,
+
+          if (showCodeInput) ...[
+              SizedBox(height: 12),
+              Container(
+                padding: EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.red[50],
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: Colors.red.shade200),
+                ),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: codeController,
+                      decoration: InputDecoration(
+                        hintText: 'Entrez le code ici',
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        // 👉 handle validation logic here
+                        SubscriptionSuccessSheet.show(context);
+                        print("Code entré: ${codeController.text}");
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                      ),
+                      child: Text('Valider'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
             
             Container(
               margin: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
@@ -2648,7 +2691,14 @@ _buildInvoiceRow(
                SizedBox(height: 11),
                 ElevatedButton(
               onPressed: () {
-                // 👉 handle order confirmation logic here
+                 showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // occupe plus d’espace
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => const SubscriptionPlansSheet(),
+    );
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,

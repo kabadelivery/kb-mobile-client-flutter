@@ -219,7 +219,7 @@ class ClientPersonalApiProvider {
         };
       };
       String? device_token = await FirebaseMessaging.instance.getToken();
-      var response =
+      var response = 
           await dio.post(Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
               data: json.encode({
                 "nickname": nickname,

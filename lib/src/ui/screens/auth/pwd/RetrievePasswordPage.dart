@@ -1,6 +1,8 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/auth/login/ForgottenPasswordOTP.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPnewPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
@@ -59,15 +61,12 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
   }
 
-  void _jumpToRecoverPage() {
+  void _jumpToOTPPage() {
     Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(
-          presenter: RecoverPasswordPresenter(RecoverPasswordView()),
-          is_a_process: true,
-        ),
+        builder: (context) =>ForgotenPasswordOTP()
       ),
     );
   }
@@ -115,7 +114,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: _jumpToRecoverPage,
+                  onPressed: _jumpToOTPPage,
                   child: const Text(
                     "Recevoir le Code",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

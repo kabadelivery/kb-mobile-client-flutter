@@ -17,6 +17,7 @@ import 'package:KABA/src/utils/_static_data/Vectors.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -176,7 +177,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                               "Email",
                               style: TextStyle(
                                 color: !isPhoneSelected
-                                    ? KColors.primaryColor
+                                    ? Colors.white
                                     : Colors.black87,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -195,11 +196,20 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   controller: _loginFieldController,
                   enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
-                    prefixIcon: const Padding(
-                      padding: EdgeInsets.only(left: 8, right: 4),
-                      child: Text("🇹🇬 +228 ",
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold)),
+                    prefixIcon: Padding(
+                      padding: const EdgeInsets.only(left: 8, right: 4),
+                      child: CountryCodePicker(
+                onChanged: (code) {
+                  debugPrint("New country selected: ${code.dialCode}");
+                },
+                initialSelection: 'TG', // default to Togo
+                favorite: const ['+228', 'TG'], // keep Togo as favorite
+                showFlag: true,
+                textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                showCountryOnly: false,
+                showOnlyCountryWhenClosed: false,
+                alignLeft: false,
+              ) ,
                     ),
                     prefixIconConstraints:
                         const BoxConstraints(minWidth: 0, minHeight: 0),
@@ -220,15 +230,19 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                             
                             ) */
               ] else ...[
-                TextFormField(
+               TextFormField(
                   controller: _loginFieldController,
+                  enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
+                   
+                    prefixIconConstraints:
+                        const BoxConstraints(minWidth: 0, minHeight: 0),
                     hintText: "Entrez votre email",
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  keyboardType: TextInputType.emailAddress,
+                  keyboardType: TextInputType.text,
                 ),
               ],
               SizedBox(height: 20),
@@ -243,7 +257,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     ),
                   ),
                   onPressed: () {
-                     _launchConnexion();
+                     _checklogin();
                   },
                   child: const Text(
                     "Continuer →",
@@ -280,7 +294,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               ),
               ),
               SizedBox(height: 40),
-              Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.cover,height: 275, ),
+              Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.fitWidth,height: 275, ),
               ]
             ),
           ),
@@ -342,6 +356,52 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   }
 
+
+
+   Future _checklogin() async {
+
+    String login = _loginFieldController.text;
+
+    // control login stuff
+    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+      /* login error */
+      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
+      return;
+    }
+    
+    /* // 1. get password
+    var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return RetrievePasswordPage(type: 0);
+        }
+    )); */
+
+   // if (results != null && results.containsKey('code') && results.containsKey('type')) 
+      String _mCode = '0000';
+//      int type = results['type'];
+      showLoading(true);
+      if (Utils.isCode(_mCode)) {
+        /* check if it's important to send another sms according to the time lapsed after the last sending
+      * 1. check last time sent message, if before 5 minutes, then dont send,
+      * 2. otherwise send
+      *  */
+        CustomerUtils.getLastValidOtp(username: login).then((otp) {
+          if ("no".compareTo(otp!) == 0) {
+
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
+              widget.autoLogin = true;
+              this.widget.presenter!.login(false, login, _mCode, widget.version!);
+            } else
+              this.widget.presenter!.login(true, login, _mCode, widget.version!);
+
+          } else {
+            this.widget.presenter!.login(false, login, _mCode, widget.version!);
+          }
+        });
+      }
+    
+  }
+
   Future _launchConnexion() async {
 
     String login = _loginFieldController.text;
@@ -352,7 +412,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
     }
-
+    
     // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
@@ -659,21 +719,23 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   void accountNoExist(String login) {
-    _showDialog(
+    /* _showDialog(
         icon: Icon(Icons.pan_tool, color: Colors.red),
         message: "${AppLocalizations.of(context)!.translate('sorry')}, ${_loginFieldController.text} ${AppLocalizations.of(context)!.translate('account_no_exists')} ?",
         isYesOrNo: true,
         actionIfYes: () => _moveToRegisterPage(login)
-    );
+    ); */
+    _moveToRegisterPage(login) ;
   }
 
   @override
   void loginPasswordError() {
-    _showDialog(
+    /* _showDialog(
       icon: Icon(Icons.error, color: Colors.red),
       message: "${AppLocalizations.of(context)!.translate('password_wrong')}",
       isYesOrNo: false,
-    );
+    ); */
+    _launchConnexion();
   }
 
   @override

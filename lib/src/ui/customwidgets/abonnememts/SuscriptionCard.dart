@@ -42,31 +42,7 @@ class SubscriptionCard extends StatelessWidget {
     this.partageable = true,  
   }) : super(key: key);
   
-
-  int? selectedIndex; // 👈 track selection
- final items = [
-      ListItem(
-        title: 'PorteFeuille KABA',
-        subtitle: 'Solde : 150 000 FCFA',
-        icon: Icons.account_balance_wallet,
-      ),
-      ListItem(
-        title: 'Mobile Money',
-        subtitle: 'Mix , Moov Money , Wave , Orange',
-        icon: Icons.smartphone,
-      ),
-      ListItem(
-        title: 'Carte Bancaire',
-        subtitle: 'Visa , Mastercard , PayPal..',
-        icon: Icons.credit_card,
-      ),
-    ];
-
-      
-
-  
-  
-
+ // 👈 track selection
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -250,7 +226,8 @@ class SubscriptionCard extends StatelessWidget {
 
  
 
-Future<void> sendPayment(BuildContext context) async {
+/* Future<void> sendPayment(BuildContext context) async {
+
   final url = Uri.parse("https://eb866e86b8d4.ngrok-free.app/new_abonnement"); // 👈 replace with your endpoint
 
   final data = {
@@ -284,7 +261,7 @@ Future<void> sendPayment(BuildContext context) async {
     );
   }
 }
-
+ */
 
 
 }

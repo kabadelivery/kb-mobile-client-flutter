@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -157,6 +156,24 @@ class Utils {
     bool res = regex.hasMatch(phone_no);
     return res;
   }
+
+
+  
+
+/// Validate if a phone number is correct for a given country.
+/// [isoCode] must be the 2-letter country code (e.g., "TG", "FR", "DE").
+ /* static Future<bool?> isValidPhoneNumber(String isoCode, String phoneNumber) async {
+    try {
+      return await PhoneNumberUtil.isValidPhoneNumber(
+        phoneNumber: phoneNumber,
+        isoCode: isoCode,
+      );
+    } catch (e) {
+      print("Phone validation error: $e");
+      return false;
+    }
+  } */
+
 
   static bool isPhoneNumber_Tgcel(String phone_no) {
     if (phone_no == null || phone_no.length == 0) return false;

@@ -1,6 +1,7 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
-
+import 'package:KABA/src/StateContainer.dart';
 class SingleSelectList extends StatefulWidget {
   final List<ListItem> items;
   final int? initialIndex;
@@ -37,8 +38,8 @@ class _SingleSelectListState extends State<SingleSelectList> {
           content = Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _buildLogo("assets/images/png/tmoney_logo.png", "TMoney"),
-              _buildLogo("assets/images/png/moov_africa_logo.png", "Moov"),
+              _buildLogo("assets/images/png/tmoney_logo.png", "Mix"),
+              _buildLogo("assets/images/png/moov_africa_logo.png", "Flooz"),
               _buildLogo("assets/images/jpg/mtn_logo.jpg", "MTN"),
               _buildLogo("assets/images/png/wave_logo.png", "Wave"),
             ],
@@ -57,14 +58,14 @@ class _SingleSelectListState extends State<SingleSelectList> {
           content = Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: const [
+              children:  [
                 Text(
                   "Votre Solde",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
                 Text(
-                  "12,500 CFA",
+                  "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
                   style: TextStyle(
                       fontSize: 24,
                       color: Colors.green,
@@ -170,7 +171,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
             duration: const Duration(milliseconds: 180),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: isSelected ? KColors.primaryColor : Colors.white,
+              color: isSelected ?Color(0xFFFFE8ED) : Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected ? KColors.primaryColor : Colors.grey.shade300,
@@ -187,7 +188,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
             child: Row(
               children: [
                 Icon(item.icon,
-                    color: isSelected ? Colors.white : Colors.grey[700]),
+                    color: isSelected ? KColors.primaryColor : Colors.grey[700]),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -198,7 +199,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
-                          color: isSelected ? Colors.white : Colors.black,
+                          color: isSelected ? KColors.primaryColor : Colors.black,
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -207,7 +208,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
                         style: TextStyle(
                           fontSize: 13,
                           color: isSelected
-                              ? Colors.white70
+                              ? Colors.black
                               : Colors.grey.shade600,
                         ),
                       ),

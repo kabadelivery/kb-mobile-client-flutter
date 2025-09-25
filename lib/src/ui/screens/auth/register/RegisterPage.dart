@@ -42,6 +42,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
+   String userlogin = "kokougomgom@gmail.com" ; 
+
   List<String>? _loginFieldHint;
 
   String? _nicknameFieldHint;
@@ -51,17 +53,22 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   List<int> _loginMaxLength = [8,100];
 
-  TextEditingController _loginFieldController = new TextEditingController();
-  TextEditingController _codeFieldController = new TextEditingController();
+  
+  TextEditingController passwordFieldController = new TextEditingController();
   TextEditingController _nicknameFieldController = new TextEditingController();
+  TextEditingController secondpassController = new TextEditingController();
   TextEditingController _whatsappPhonenumberController = new TextEditingController();
-
+  TextEditingController  _codeFieldController = new TextEditingController(); 
   bool isCodeSent = false;
   bool isLoginError = false;
   bool isEmailError = false;
   bool isCodeError = false;
   bool isNicknameError = false;
   bool isWhaNumberError = false;
+
+
+  
+
 
   /* circle loading progressing */
   bool isCodeSending = false;
@@ -99,14 +106,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "${AppLocalizations.of(context)!.translate('nickname')}";
     _whatsappPhoneNumberHint = "${AppLocalizations.of(context)!.translate('whatsapp_number_hint')}";
 
-    if (widget.login != null && _loginFieldController != null) {
+   /*  if (widget.login != null && _loginFieldController != null) {
       if (Utils.isEmailValid(widget.login!)) {
           _handleRadioValueChange(1);
       } else {
         _handleRadioValueChange(0);
       }
       _loginFieldController?.text = widget.login!;
-    }
+    } */
 
 
 
@@ -173,7 +180,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
               // Username
               TextField(
-               // controller: usernameController,
+                controller: _nicknameFieldController,
                 decoration: InputDecoration(
                   hintText: "Nom d'utilisateur",
                   prefixIcon: const Icon(Icons.person_outline),
@@ -186,7 +193,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
               // Password
               TextField(
-               // controller: passwordController,
+                controller: passwordFieldController,
                // obscureText: _obscurePassword,
                 decoration: InputDecoration(
                   hintText: "Mot de passe",
@@ -209,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
               // Confirm Password
               TextField(
-                //controller: confirmPasswordController,
+                controller: secondpassController,
                 //obscureText: _obscureConfirmPassword,
                 decoration: InputDecoration(
                   hintText: "Confirmer le mot de passe",
@@ -263,7 +270,53 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                   icon: const Icon(Icons.arrow_back),
                   label: const Text("Retour"),
                 ),
-              )
+              ),
+               SizedBox(height: 15),
+                    /* (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
+                    SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
+                        height: 15, width: 15) : Container(),
+
+                    SizedBox(height: 10),
+                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
+                        "TTT",
+                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:<Widget>[
+                          isCodeSent ?
+                          SizedBox(width: 80,
+                              child: Container(
+                                  padding: EdgeInsets.all(14),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
+//                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
+                          ) : Container(),
+                          isCodeSent ? SizedBox(width:20) : Container(),
+                          /* OutlinedButton(
+                              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
+                              child: Row(
+                            children: <Widget>[
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              /* stream builder, that shows that the code is been sent */
+                              isCodeSent == false &&  isCodeSending ? Row(
+                                children: <Widget>[
+                                  SizedBox(width: 10),
+                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                ],
+                              ) : Container(),
+                            ],
+                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}), */
+                        ]),
+                    SizedBox(height: 30),
+                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text("FRD", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        SizedBox(width: 10),
+                        (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
+                      ],
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
+                    SizedBox(height: 50),
             ],
           ),
         ),
@@ -280,19 +333,21 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       /* clean the content */
       if (isCodeSent)
         return;
-      this._registerModeRadioValue = value!;
-      this._loginFieldController.text = "";
-      this._codeFieldController.text = "";
+     
+
+     this.passwordFieldController.text = "" ; 
+      this._nicknameFieldController.text = "";
+      this.secondpassController.text = "";
     });
   }
 
-  void _sendCodeAction() {
+  Future<void> _sendCodeAction() async {
 
     /* logins */
-    String login = _loginFieldController.text;
+    String login = userlogin;
     /* check the fields */
-    if (_registerModeRadioValue == 0) {
-      /* phone number */
+   
+      /* /* phone number */
       String phoneNumber = login;
       if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
         setState(() {
@@ -300,7 +355,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         });
         return;
       }
-    } else {
+     else {
       /* email */
       String email = login;
       if (!Utils.isEmailValid(email)) {
@@ -309,7 +364,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         });
         return;
       }
-    }
+    } */
 
     /* nicknames */
     String _nickname = _nicknameFieldController.text;
@@ -328,7 +383,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
     this.widget.presenter!.sendVerificationCode(login);
 
-
+      
    /*
     if (_registerModeRadioValue == 0) {
       // phone number
@@ -340,6 +395,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}");
     }*/
   }
+
+  /* Future<void> _verifyotp() async {
+
+   var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+} */
 
   void mDialog(String message) {
     _showDialog(
@@ -415,7 +478,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         /* if code sent, do something else,  */
         isCodeSent = true;
         this._requestId = prefs.getString("request_id");
-        _loginFieldController.text = prefs.getString("login")!;
+        
         _nicknameFieldController.text = prefs.getString("nickname")!;
         _registerModeRadioValue = register_type;
       });
@@ -533,14 +596,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         isAccountRegistering = true;
       });
 
-      String whatsapp_number = "${countryDialCode?.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
+      String whatsapp_number = "${countryDialCode.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
 
       xrint("whatsappNo ${whatsapp_number}");
 
       /* launch create account request, and if success*/
       this.widget.presenter!.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
-          phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
-          email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
+          phone_number: Utils.isPhoneNumber_TGO(userlogin) ? userlogin : "",
+          email: Utils.isEmailValid(userlogin) ? userlogin : "",
           request_id: this._requestId, whatsapp_number: whatsapp_number
       );
     }
@@ -614,25 +677,37 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
   }
 
-  _checkCodeAndCreateAccount() {
+  _checkCodeAndCreateAccount() async {
 
-    /* check request id and the code */
-    String _code = _codeFieldController.text;
+    var codetyped =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+
+   if (codetyped != null && codetyped.containsKey('code') && codetyped.containsKey('type')){
+     String _code = codetyped['code'];
+    
     if (Utils.isCode(_code)) {
       setState(() {
         isCodeSending = false;
       });
       this.widget.presenter!.checkVerificationCode(
-          _codeFieldController.text, this._requestId??"");
+          codetyped['code'], this._requestId??"");
     } else {
       mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
+
+   }
+
+    /* check request id and the code */
+     
+   
   }
 
 
 
   void _showDialog(
-      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -653,14 +728,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
             actions:
             isYesOrNo ? <Widget>[
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
+                style: ButtonStyle(side: WidgetStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
+                style: ButtonStyle(side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                   child: new Text(
                     "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -696,7 +771,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
      _initialSelection = value.code!;
   }
   
-  void showReceiveCodeBottomSheet(BuildContext context) {
+  void showReceiveCodeBottomSheet (BuildContext context) {
   showModalBottomSheet(
     context: context,
     shape: const RoundedRectangleBorder(
@@ -738,14 +813,13 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
-                onPressed: () {
-              // close the bottom sheet
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => VerificationPage(),
-                ),
-              );
+                onPressed: () async {
+                  
+           isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};
+
+            _checkCodeAndCreateAccount();
+           
+               
             },
                 child: const Text(
                   "Recevoir le Code",
@@ -762,3 +836,5 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
 
 }
+
+

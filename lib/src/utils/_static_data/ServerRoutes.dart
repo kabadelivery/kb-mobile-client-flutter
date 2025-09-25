@@ -98,8 +98,7 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/api/restaurant/v2/get";
 
   /* user login */
-  // static const String LINK_USER_LOGIN =  ServerConfig.SERVER_ADDRESS_SECURE+
-  //     "/mobile/api/login_check";
+  static const String LINK_USER_LOGIN =  ServerConfig.SERVER_ADDRESS_SECURE+ "/mobile/api/login_check";
 
   static const String LINK_USER_LOGIN_V2 =
       ServerConfig.SERVER_ADDRESS_SECURE + "/api/user/login/v2";
