@@ -385,7 +385,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                       child: Column(
                         children: <Widget>[
 //                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
-                          Image.asset(  "assets/images/png/Iconeabo.png",  width: 40,  height: 40) ,
+                          Image.asset("assets/images/png/Iconeabo.png",  width: 40,  height: 40) ,
                           SizedBox(height: 5),
                           Center(
                             child: Center(

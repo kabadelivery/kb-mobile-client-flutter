@@ -45,6 +45,7 @@ import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../../../utils/functions/permissions.dart';
+import '../../../../customwidgets/header.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -327,139 +328,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
               position: tween.animate(curvedAnimation), child: child);
         }));
   }
-  Future<void> _callCustomerCare() async {
-//    Toast.show("call customer care", context);
-    const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-    }
-  }
-  _jumpToWhatsapp() async {
-    final link = WhatsAppUnilink(
-      phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
-      text: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}",
-    );
-    await launch('$link');
-  }
 
-  _showBottomContactSheet() {
-    showMaterialModalBottomSheet(
-      backgroundColor: Colors.transparent,
-      expand: false,
-      context: context,
-      builder: (context) => Container(
-          width: 335,
-          height: 155,
-          margin: EdgeInsets.all(20),
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          child: Column(
-            children: [
-              Container(
-                  width:335 ,
-                  height: 50,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: KColors.primaryColor,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(10),
-                        topRight: Radius.circular(10)),
-                  ),
-                  child: Text("${AppLocalizations.of(context)!.translate('contact_our_customer_service')}",style: TextStyle(color: Colors.white,fontSize: 14))),
-              InkWell(
-                onTap: () => {_callCustomerCare()},
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('phone_call')}",
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: KColors.new_black,
-                                fontWeight: FontWeight.w500)),
-                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
-                      ]),
-                ),
-              ),
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  color: KColors.new_gray,
-                  height: 1),
-              InkWell(
-                onTap: () => {_jumpToWhatsapp()},
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: KColors.new_black,
-                                fontWeight: FontWeight.w500)),
-                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
-                        Container(
-                            width: 20,
-                            height: 20,
-                            child: Image.asset(ImageAssets.whatsapp)),
-                      ]),
-                ),
-              ),
-            ],
-          )),
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: KColors.primaryColor,
-          centerTitle: true,
-          leading: IconButton(
-              icon: SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: SvgPicture.asset(
-                    VectorsData.kaba_icon_svg,
-                    color: Colors.white,
-                  )),
-              onPressed: () {
-                _jumpToInfoPage();
-              }),
-            actions: <Widget>[
-            InkWell(
-            onTap: () => _showBottomContactSheet(),
-                child: Container(
-                width: 70,
-                height: 42,
-                child: IconButton(
-                icon: Icon(Icons.phone, color: Colors.white),
-                onPressed: () => _showBottomContactSheet(),
-                ),
-                ),
-    ),
-            ],
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('buy')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
-        ),
+      appBar: AppBar(
+        backgroundColor: KColors.primaryColor,
+        toolbarHeight: 1,
+      ),
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.dark,
@@ -504,7 +380,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             SingleChildScrollView(
               child: Column(
                 children: [
-
+                  Header(context),
                   /* hint */
                   SizedBox(height: 20),
                   StateContainer.of(context).location == null
