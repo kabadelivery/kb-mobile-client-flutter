@@ -355,4 +355,7 @@ class ServerRoutes {
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =
       ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
+
+  static const String LINK_GET_SKIP_NOTATION_STATUS =
+      ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
 }

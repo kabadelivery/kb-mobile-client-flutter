@@ -18,7 +18,8 @@ import '../../customwidgets/rating_widget.dart';
 class RatingDelivery extends StatefulWidget {
   final DeliveryRatingPending deliveryRatingPending;
   final bool deleteAll;
-  const RatingDelivery({required this.deliveryRatingPending, required this.deleteAll, super.key});
+  final bool canSkip;
+  const RatingDelivery({required this.deliveryRatingPending, required this.deleteAll, required this.canSkip, super.key});
   @override
   State<RatingDelivery> createState() => _RatingDeliveryState();
 }
@@ -65,6 +66,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 ),
               ),
             ),
+           if(! widget.canSkip)
             Positioned(
               right: 10,
                 top: 10,
@@ -88,7 +90,6 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 child: Text("Skip", style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 16)),
                 ),
             )),
-            // Moved this out of Container and into Stack
             Positioned(
               top: 40,
               left: 120,

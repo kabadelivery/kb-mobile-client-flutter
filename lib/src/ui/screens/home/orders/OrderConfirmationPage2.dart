@@ -1605,16 +1605,102 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       isYesOrNo: false,
     );
   }*/
-
   void _showOrderSuccessDialog() {
-    /* save the order, in spending ... */
     _playMusicForSuccess();
-    _showDialog(
-      okBackToHome: true,
-      iccon: VectorsData.delivery_nam,
-      message:
-      "${AppLocalizations.of(context)!.translate('order_congratz_praise')}",
-      isYesOrNo: false,
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          insetPadding: EdgeInsets.symmetric(horizontal: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icône carrée avec couleur principale
+                Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        KColors.primaryColor,
+                        KColors.primaryColor.withOpacity(.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.delivery_dining, // tu peux remplacer par Image.asset
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Titre en gras
+                Text('Félicitations pour avoir passé votre commande avec succès !',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Description
+                Text("Veuillez garder votre téléphone à  côté pour être informé en temps réel sur l’état de votre commande",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Bouton "Parfait !"
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      "Parfait !",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 

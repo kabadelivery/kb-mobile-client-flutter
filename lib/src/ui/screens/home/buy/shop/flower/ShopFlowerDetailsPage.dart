@@ -478,58 +478,143 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
       // not logged in... show dialog and also go there
       showDialog<void>(
         context: context,
-        barrierDismissible: false, // user must tap button!
+        barrierDismissible: false,
         builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-                "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  /* add an image*/
-                  // location_permission
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            insetPadding: EdgeInsets.symmetric(horizontal: 24),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Icône carrée avec gradient
                   Container(
-                      height: 100,
-                      width: 100,
-                      decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
-                          image: new DecorationImage(
-                        fit: BoxFit.fitHeight,
-                        image: new AssetImage(ImageAssets.login_description),
-                      ))),
-                  SizedBox(height: 10),
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          KColors.primaryColor,
+                          KColors.primaryColor.withOpacity(.7),
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.shopping_cart_outlined,
+                        color: Colors.white,
+                        size: 40,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Titre
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        "Connexion requise",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+
+                    ],
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Description
                   Text(
-                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_place_order")}",
-                      textAlign: TextAlign.center)
+                    AppLocalizations.of(context)!.translate(
+                        "please_login_before_going_forward_description_place_order"),
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black54,
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  // Bouton principal "Se connecter"
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFD13457),
+                        elevation: 0,
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      icon: Icon(Icons.person, color: Colors.white),
+                      label: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.translate('login'),
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          const SizedBox(width: 6),
+                          Icon(Icons.arrow_forward, color: Colors.white),
+                        ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage(
+                              presenter: LoginPresenter(LoginView()),
+                              fromOrderingProcess: true,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(height: 10),
+
+                  // Bouton secondaire "Pas maintenant"
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(vertical: 14),
+                        side: BorderSide(color: Colors.grey.shade300),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(context)!.translate('not_now'),
+                        style: TextStyle(color: Colors.black87, fontSize: 16),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ),
                 ],
               ),
             ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                    "${AppLocalizations.of(context)!.translate('not_now')}"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child:
-                    Text("${AppLocalizations.of(context)!.translate('login')}"),
-                onPressed: () {
-                  /* */
-                  /* jump to login page... */
-                  Navigator.of(context).pop();
-
-                  Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(LoginView()),
-                          fromOrderingProcess: true)));
-                },
-              )
-            ],
           );
         },
       );
+
+
     } else {
       Navigator.of(context).push(PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>

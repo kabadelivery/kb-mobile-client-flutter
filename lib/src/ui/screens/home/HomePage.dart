@@ -696,62 +696,143 @@ class _HomePageState extends State<HomePage> {
     ];
     if (value == 2 || value == 3) {
       if (StateContainer.of(context).loggingState == 0) {
-        // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: false,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                  "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    // location_permission
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.symmetric(horizontal: 24),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [KColors.primaryColor, KColors.primaryColor.withOpacity(.7)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.shield_outlined,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-                            image: new DecorationImage(
-                          fit: BoxFit.fitHeight,
-                          image: new AssetImage(ImageAssets.login_description),
-                        ))),
-                    SizedBox(height: 10),
+                    // Titre
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Accès sécurisé ",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Text("KABA",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: KColors.primaryColor,
+                            )),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Description
                     Text(
-                        "${AppLocalizations.of(context)!.translate(msg[value % 2])}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14))
+                      "Vous devez vous connecter pour avoir accès à votre compte KABA",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:Color(0xFFD13457),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: Icon(Icons.person, color: Colors.white),
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Se connecter",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            Icon(Icons.arrow_forward, color: Colors.white),
+                          ],
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  LoginPage(presenter: LoginPresenter(LoginView())),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Bouton secondaire "Pas maintenant"
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Pas maintenant",
+                          style: TextStyle(color: Colors.black87, fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('not_now')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('login')}"),
-                  onPressed: () {
-                    /* */
-                    /* jump to login page... */
-                    Navigator.of(context).pop();
-
-                    Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            LoginPage(presenter: LoginPresenter(LoginView()))));
-                  },
-                )
-              ],
             );
           },
         );
+
       } else {
         /* zwitch */
         setState(() {
