@@ -15,6 +15,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/customwidgets/header.dart';
 import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
@@ -158,33 +159,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          toolbarHeight: 1,
           backgroundColor: KColors.primaryColor,
-          centerTitle: true,
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: menuChoiceAction,
-              itemBuilder: (BuildContext context) {
-                return popupMenus!.map((String menuName) {
-                  return PopupMenuItem<String>(
-                      value: menuName, child: Text(menuName));
-                }).toList();
-              },
-            )
-          ],
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('account')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
         ),
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -222,6 +198,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     widget.customerData = data;
     return SingleChildScrollView(
       child: Column(children: <Widget>[
+        Header(context),
         /* top-up & xof */
         GestureDetector(
           onTap: () => _jumpToPage(

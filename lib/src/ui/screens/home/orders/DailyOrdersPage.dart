@@ -5,6 +5,7 @@ import 'package:KABA/src/contracts/daily_order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/MyNewOrderWidget.dart';
+import 'package:KABA/src/ui/customwidgets/header.dart';
 import 'package:KABA/src/ui/screens/home/orders/LastOrdersPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -165,38 +166,13 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     return Scaffold(
         backgroundColor: Colors.white,
       appBar: AppBar(
-        actions: <Widget>[
-          InkWell(
-            onTap: () => _showBottomContactSheet(),
-            child: Container(
-              width: 70,
-              height: 42,
-              child: IconButton(
-                icon: Icon(Icons.phone, color: Colors.white),
-                onPressed: () => _showBottomContactSheet(),
-              ),
-            ),
-          ),
-        ],
-        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        toolbarHeight: 1,
         backgroundColor: KColors.primaryColor,
-         centerTitle: true,
-        title: Row(mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('orders')}"),
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ],
-        ),
       ),
 
         body: Column(
           children: [
+            Header(context),
             //choose type
             SizedBox(height: 10,),
             Padding(
