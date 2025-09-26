@@ -102,102 +102,113 @@ Future<void> _initializeLocalNotifications() async {
 
   await flutterLocalNotificationsPlugin.initialize(settings);
 }
+class NotificationHandler {
+  static String? lastMessageId;
+}
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
-  // Parse safely your payload
-  try {
-    final Map<String, dynamic> data = message.data;
-    final notificationRaw = data["notification"];
-    final decodedNotification = jsonDecode(notificationRaw);
-
-    final title = decodedNotification["title"];
-    final body = decodedNotification["body"];
-    final imageUrl = decodedNotification["image_link"];
-    final destination = jsonDecode(decodedNotification["destination"]);
-
-    final destinationString = jsonEncode(destination); // For payload
-
-    // Download image
-    String? imagePath;
-    if (imageUrl != null && imageUrl.isNotEmpty) {
-      try {
-        final response = await http.get(Uri.parse(imageUrl));
-        final directory = await getApplicationDocumentsDirectory();
-        final filePath = '${directory.path}/notif_image.jpg';
-        final file = File(filePath);
-        await file.writeAsBytes(response.bodyBytes);
-        imagePath = filePath;
-      } catch (e) {
-        print("❌ Erreur lors du téléchargement de l'image : $e");
-      }
-    }
-    if (kDebugMode) {
-      FirebaseMessaging.instance.subscribeToTopic('kaba_testeurs');
-      xrint('Subscribed to kaba_testeurs (debug only)');
-    } else {
-      xrint('Not in debug mode — skipping topic subscription');
-    }
-    // Init plugin (important in background)
-    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
-    const InitializationSettings initSettings = InitializationSettings(
-      android: androidInit,
-      iOS: iosInit,
-    );
-    await flutterLocalNotificationsPlugin.initialize(initSettings);
-
-    // Notification style
-    final BigPictureStyleInformation? bigPictureStyle = imagePath != null
-        ? BigPictureStyleInformation(
-      FilePathAndroidBitmap(imagePath),
-      contentTitle: title,
-      summaryText: body,
-      htmlFormatContentTitle: true,
-      htmlFormatSummaryText: true,
-    )
-        : null;
-
-
-    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      AppConfig.CHANNEL_ID,
-      AppConfig.CHANNEL_NAME,
-      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-      importance: Importance.max,
-      priority: Priority.high,
-      styleInformation: bigPictureStyle,
-      enableLights: true,
-      showWhen: true,
-      largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
-    );
-    final iOSAttachment = DarwinNotificationAttachment(imagePath!);
-
-    final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
-      attachments: [iOSAttachment],
-      categoryIdentifier: "plainCategory",
-      threadIdentifier: "thread1",
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-      sound: "default",
-    );
-     final NotificationDetails notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iOSPlatformChannelSpecifics,
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000,
-      title,
-      body,
-      notificationDetails,
-      payload: destinationString,
-    );
-
-  } catch (e) {
-    print("❌ Erreur dans _firebaseMessagingBackgroundHandler : $e");
+  if (message.messageId != null &&
+      message.messageId == NotificationHandler.lastMessageId) {
+    print("Skipping duplicate background message: ${message.messageId}");
+    return;
   }
+  NotificationHandler.lastMessageId = message.messageId;
+  // Parse safely your payload
+  final Map<String, dynamic> data = message.data;
+  final notificationRaw = data["notification"];
+  final decodedNotification = jsonDecode(notificationRaw);
+
+  final title = decodedNotification["title"];
+  final body = decodedNotification["body"];
+  final imageUrl = decodedNotification["image_link"];
+  final destination = jsonDecode(decodedNotification["destination"]);
+
+  final destinationString = jsonEncode(destination); // For payload
+
+  // Download image if available
+  String? imagePath;
+  if (imageUrl != null && imageUrl.isNotEmpty) {
+    try {
+      final response = await http.get(Uri.parse(imageUrl));
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/notif_image.jpg';
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+      imagePath = filePath;
+    } catch (e) {
+      print("Erreur lors du téléchargement de l'image : $e");
+    }
+  }
+
+  if (kDebugMode) {
+    FirebaseMessaging.instance.subscribeToTopic('kaba_testeurs');
+    xrint('Subscribed to kaba_testeurs (debug only)');
+  } else {
+    xrint('Not in debug mode — skipping topic subscription');
+  }
+
+  // Init plugin (important in background)
+  const AndroidInitializationSettings androidInit =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+  const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+  const InitializationSettings initSettings =
+  InitializationSettings(android: androidInit, iOS: iosInit);
+  await flutterLocalNotificationsPlugin.initialize(initSettings);
+
+  // Notification style for Android
+  final BigPictureStyleInformation? bigPictureStyle = (imagePath != null)
+      ? BigPictureStyleInformation(
+    FilePathAndroidBitmap(imagePath),
+    contentTitle: title,
+    summaryText: body,
+    htmlFormatContentTitle: true,
+    htmlFormatSummaryText: true,
+  )
+      : null;
+
+  final AndroidNotificationDetails androidDetails =
+  AndroidNotificationDetails(
+    AppConfig.CHANNEL_ID,
+    AppConfig.CHANNEL_NAME,
+    channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+    importance: Importance.max,
+    priority: Priority.high,
+    styleInformation: bigPictureStyle,
+    enableLights: true,
+    showWhen: true,
+    largeIcon:
+    (imagePath != null) ? FilePathAndroidBitmap(imagePath) : null,
+  );
+
+  // Notification style for iOS
+  final List<DarwinNotificationAttachment> iOSAttachments = [];
+  if (imagePath != null) {
+    iOSAttachments.add(DarwinNotificationAttachment(imagePath));
+  }
+
+  final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+    attachments: iOSAttachments,
+    categoryIdentifier: "plainCategory",
+    threadIdentifier: "thread1",
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+    sound: "default",
+  );
+
+  final NotificationDetails notificationDetails = NotificationDetails(
+    android: androidDetails,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  await flutterLocalNotificationsPlugin.show(
+    DateTime.now().millisecondsSinceEpoch ~/ 1000,
+    title,
+    body,
+    notificationDetails,
+    payload: destinationString,
+  );
 }
 
 class MyApp extends StatefulWidget {

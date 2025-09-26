@@ -113,9 +113,9 @@ Widget OfficesWidget(
                         Row(
                           children: [
                             Container(
-                                margin: EdgeInsets.symmetric(horizontal: 10),
+                                margin: EdgeInsets.symmetric(horizontal: 0),
                                 height: 1,
-                                width: 20,
+                                width: 10,
                                 color: Colors.grey),
                             Transform.rotate(
                               angle: 110,
