@@ -14,15 +14,18 @@ import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/DeliveryRatingPending.dart';
+import '../utils/functions/new_rating_feature.dart';
+
 class OrderConfirmationContract {
 
 //  void login (String password, String phoneCode){}
 //  Map<ShopProductModel, int> food_selected, adds_on_selected;
   void checkOpeningStateOf(CustomerModel customer, ShopModel restaurant) {}
-  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {}
+  Future<void> payAtDelivery(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint,ShopModel restaurant) async {}
   void computeBilling (ShopModel restaurant, CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel address, VoucherModel voucher, bool useKabaPoint){}
-  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint)async{}
-  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end)async{}
+  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint,ShopModel restaurant)async{}
+  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end,ShopModel restaurant)async{}
 }
 
 class OrderConfirmationView {
@@ -37,7 +40,6 @@ class OrderConfirmationView {
   void inflateBillingConfiguration1(OrderBillConfiguration configuration) {}
   void inflateBillingConfiguration2(OrderBillConfiguration configuration) {}
   void showLoading(bool isLoading) {}
-
   void isPurchasing(bool isPurchasing) {}
   void sorryDemoAccountAlert() {}
 }
@@ -77,7 +79,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 
 
   @override
-  Future<void> payAtDelivery(CustomerModel? customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel? voucher, bool useKabaPoint) async {
+  Future<void> payAtDelivery(CustomerModel? customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel? voucher, bool useKabaPoint,ShopModel restaurant) async {
 
     if(voucher == null){
       voucher = null;
@@ -85,32 +87,62 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     if (isWorking)
       return;
     isWorking = true;
-    try {
+      Map data = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+      try{
+        if(data["error"]==0){
+          debugPrint("order data ${data}");
+          DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+          List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
 
-      int error = await provider.launchOrder(true, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
-      _orderConfirmationView.launchOrderResponse(error);
-    } catch (_) {
-      /* login failure */
-      xrint("error ${_}");
-      if (_ == -2) {
-        _orderConfirmationView.systemError();
-      } else {
-        _orderConfirmationView.networkError();
+          deliveryRatingPending.foods=foods;
+          deliveryRatingPending.restaurant = restaurant;
+          deliveryRatingPending.address = selectedAddress;
+          print("address ${deliveryRatingPending.address!.toJson()}");
+            if(deliveriesRatingPending!=null){
+            deliveriesRatingPending.add(deliveryRatingPending);
+            saveRatePendingInCache(json.encode(deliveriesRatingPending.map((DeliveryRatingPending e) => e.toJson()).toList()));
+
+          }
+          else{
+            saveRatePendingInCache(json.encode([deliveryRatingPending].map((DeliveryRatingPending e) => e.toJson()).toList()));
+          }
+        }
+      }catch(_){
+        xrint(_.toString());
       }
-      _orderConfirmationView.launchOrderResponse(-1);
-    }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
+
     isWorking = false;
   }
 
-  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint) async {
+  Future<void> payNow(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, VoucherModel voucher, bool useKabaPoint,ShopModel restaurant) async {
 
     if (isWorking)
       return;
     isWorking = true;
     try {
       _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
-      _orderConfirmationView.launchOrderResponse(error);
+      Map data = await provider.launchOrder(false, customer, foods, selectedAddress, mCode, infos, voucher, useKabaPoint);
+      try{
+        if(data["error"]==0){
+          debugPrint("order data ${data}");
+          DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+          List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+          deliveryRatingPending.foods=foods;
+          deliveryRatingPending.restaurant = restaurant;
+          deliveryRatingPending.address = selectedAddress;
+          if(deliveriesRatingPending!=null){
+            deliveriesRatingPending.add(deliveryRatingPending);
+            saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
+          }
+          else{
+            saveRatePendingInCache(json.encode([deliveryRatingPending].map((e) => e.toJson()).toList()));
+          }
+        }
+      }catch(_){
+
+      }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
     } catch (_) {
       /* login failure */
       xrint("error ${_}");
@@ -124,7 +156,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = false;
   }
 
-  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end) async {
+  Future<void> payPreorder(CustomerModel customer, Map<ShopProductModel, int> foods, DeliveryAddressModel selectedAddress, String mCode, String infos, String start, String end,ShopModel restaurant) async {
 
 
     if (isWorking)
@@ -132,8 +164,23 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
     isWorking = true;
     try {
 //      _orderConfirmationView.isPurchasing(true);
-      int error = await provider.launchPreorderOrder(customer, foods, selectedAddress, mCode, infos, start, end);
-      _orderConfirmationView.launchOrderResponse(error);
+      Map data = await provider.launchPreorderOrder(customer, foods, selectedAddress, mCode, infos, start, end);
+      if(data["error"]==0){
+        debugPrint("order data ${data}");
+        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending(command_id:data["data"]['command_id']);
+        List<DeliveryRatingPending>? deliveriesRatingPending =  await getRatePendingFromCache();
+        deliveryRatingPending.foods=foods;
+        deliveryRatingPending.restaurant = restaurant;
+        deliveryRatingPending.address = selectedAddress;
+        if(deliveriesRatingPending!=null){
+          deliveriesRatingPending.add(deliveryRatingPending);
+          saveRatePendingInCache(json.encode(deliveriesRatingPending.map((e) => e.toJson()).toList()));
+        }
+        else{
+          saveRatePendingInCache(json.encode([deliveryRatingPending].map((e) => e.toJson()).toList()));
+        }
+      }
+      _orderConfirmationView.launchOrderResponse(data["error"]);
     } catch (_) {
       /* login failure */
       xrint("error ${_}");

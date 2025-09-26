@@ -280,8 +280,6 @@ class ServerRoutes {
   static const String LINK_CHECK_SPONSORSHIP_ENABLED =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/user/sponsoring/enabled/check";
 
-  static const String LINK_SEND_ORDER_FEEDBACK =
-      ServerConfig.SERVER_ADDRESS + "/mobile/api/command/delivery/rate";
 
   static const String LINK_TOPUP_FEES_RATE =
       ServerConfig.SERVER_ADDRESS_SECURE + "/api/fees/get";
@@ -353,5 +351,8 @@ class ServerRoutes {
   static const String KKIAPAY_STORE_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/store";
   static const String KKIAPAY_CONFIRM_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/confirm";
 
-
+  static const String LINK_GET_DELIVERY_RATING_PENDING =
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
+  static const String LINK_SEND_ORDER_FEEDBACK =
+      ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
 }

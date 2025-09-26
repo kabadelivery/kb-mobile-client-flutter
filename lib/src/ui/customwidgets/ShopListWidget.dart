@@ -13,7 +13,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../utils/functions/show_tutorials.dart';
 import '../../xrint.dart';
-
+import 'notation.dart';
 class ShopListWidget extends StatefulWidget {
   ShopModel? shopModel;
 
@@ -150,54 +150,13 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                   mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                       SizedBox(width: 5),
-                                                      Container(
-                                                         decoration: BoxDecoration(
-                                                            color: KColors
-                                                                .primaryYellowColor
-                                                                .withAlpha(20),
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        20)),
-                                                        padding:
-                                                            EdgeInsets.symmetric(
-                                                                vertical: 5,
-                                                                horizontal: 10),
-                                                        child: Row(
-                                                          children: [
-                                                            Icon(
-                                                              FontAwesomeIcons
-                                                                  .solidStar,
-                                                              color: KColors
-                                                                  .primaryYellowColor,
-                                                              size: 12,
-                                                            ),
-                                                            SizedBox(width: 5),
-                                                            Text(
-                                                                "${widget?.shopModel?.stars}"
-                                                                            .length >
-                                                                        3
-                                                                    ? "${widget?.shopModel?.stars}"
-                                                                        .substring(
-                                                                            0, 3)
-                                                                    : "${widget?.shopModel?.stars}",
-                                                                maxLines: 1,
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .start,
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                                style: TextStyle(
-                                                                    fontSize: 12,
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500)),
-                                                          ],
-                                                        ),
-                                                      ),
+                                            Notation(text:"${widget?.shopModel?.stars}"
+                                                         .length >
+                                                         3
+                                                         ? "${widget?.shopModel?.stars}"
+                                                         .substring(
+                                                         0, 3)
+                                                         : "${widget?.shopModel?.stars}")
                                                      ]),
                                             )
                                             : SizedBox(width: 60),

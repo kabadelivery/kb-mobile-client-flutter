@@ -40,7 +40,7 @@ class VoucherPresenter implements VoucherContract {
     isWorking = true;
     _voucherView.showLoading(true);
     try {
-      List<VoucherModel> deliverVouchers = await provider.loadVouchers(customer:customer!, restaurantId: restaurantId, foodsId: foodsId!, pick:pick);
+      List<VoucherModel> deliverVouchers = await provider.loadVouchers(customer:customer, restaurantId: restaurantId, foodsId: foodsId??[], pick:pick);
       // also get the restaurant entity here.
       _voucherView.showLoading(false);
       _voucherView.inflateVouchers(deliverVouchers);

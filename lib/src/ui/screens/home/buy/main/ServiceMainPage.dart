@@ -24,11 +24,12 @@ import 'package:KABA/src/utils/_static_data/LottieAssets.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/utils/recustomlib/place_picker_removed_nearbyplaces.dart'
-    as Pp;
+as Pp;
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -39,7 +40,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
+import '../../../../../blocs/rating/rating_bloc.dart';
 import '../../../../../microservices/kaba_chine/presentation/page_holder.dart';
+import '../../../../../models/DeliveryRatingPending.dart';
 import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
@@ -48,6 +51,8 @@ import '../../../../../utils/functions/permissions.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../rating/rating_article.dart';
+import '../../../rating/rating_delivery.dart';
 import '../../_home/InfoPage.dart';
 
 class ServiceMainPage extends StatefulWidget {
@@ -83,7 +88,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
   bool? hasSystemError;
 
   DeliveryAddressModel? _selectedAddress;
-
+  PageController _pageController = PageController();
   late SharedPreferences prefs;
 
   bool isPickLocation = false;
@@ -96,8 +101,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-
-
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -108,6 +111,177 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasNetworkError = false;
     isLoading = false;
   }
+
+  @override
+  void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
+    if (deliveriesRatingPending.isEmpty) return;
+    if (deliveriesRatingPending.length == 1) {
+
+      _showRatingDialog(deliveriesRatingPending.first, true);
+    } else {
+      final choice = await _askUserChoice(context);
+      if (choice == "one") {
+        final latest = deliveriesRatingPending.reduce((a, b) {
+          final idA = int.tryParse(a.command_id.toString()) ?? 0;
+          final idB = int.tryParse(b.command_id.toString()) ?? 0;
+          return idA > idB ? a : b;
+        });
+        xrint("address of del ${latest.address!.toJson()}");
+        _showRatingDialog(latest,true);
+      } else if (choice == "all") {
+        for (final delivery in deliveriesRatingPending) {
+          await Future.delayed(Duration(seconds: 1));
+          context.read<RatingBloc>().add(initialEvent());
+          _pageController = PageController(initialPage: 0);
+          Map<String, dynamic>? result =await _showRatingDialog(delivery,false);
+          if(result!=null && result['def_close']==true)
+            return;
+          else
+            continue;
+
+        }
+      }
+    }
+  }
+  Future<String?> _askUserChoice(BuildContext context) {
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              color: Colors.white,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.shopping_bag, size: 50, color: KColors.primaryColor),
+                const SizedBox(height: 15),
+                Text(
+                  "${AppLocalizations.of(context)!.translate("multiple_orders_detected")}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "${AppLocalizations.of(context)!.translate("rate_orders_question")}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.black54,
+                  ),
+                ),
+                const SizedBox(height: 25),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: Color(0xffffdae3),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: Icon(Icons.check_circle, color: KColors.primaryColor),
+                        label: Text("${AppLocalizations.of(context)!.translate("rate_orders_one")}", style: TextStyle(color: KColors.primaryColor)),
+                        onPressed: () => Navigator.pop(context, "one"),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+
+                        icon: Icon(Icons.all_inclusive, color: Colors.white),
+                        label: Text("${AppLocalizations.of(context)!.translate("rate_orders_all")}"),
+                        onPressed: () => Navigator.pop(context, "all"),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<Map<String,dynamic>?> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          insetPadding: const EdgeInsets.all(20),
+          backgroundColor: Colors.transparent,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              color: Colors.white,
+              height: 600,
+              width: 410,
+              child: BlocSelector<RatingBloc, RatingState, RatingState>(
+                selector: (state) => state,
+                builder: (context, state) {
+                  debugPrint('state $state');
+                  if (state is NextPageState && _pageController.page == 0) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (_pageController.hasClients) {
+                        _pageController.nextPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    });
+                  }
+                  if (state is PreviousPageState) {
+                   WidgetsBinding.instance.addPostFrameCallback((_) {
+                     if(_pageController.hasClients){
+                       _pageController.previousPage(
+                         duration: const Duration(milliseconds: 300),
+                         curve: Curves.easeInOut,
+                       );
+                     }
+                   });
+                   delivery = state.deliveryRatingPending;
+                  }
+                  return  PageView(
+                    controller: _pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      RatingDelivery(deliveryRatingPending: delivery,deleteAll: deleteAll),
+                      RatingArticle(deliveryRatingPending: delivery,canRateFood: delivery.articles!.length>1?false:true, deleteAll: deleteAll,),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void checkVersion(
       String code, int force, String cl_en, String cl_fr, String cl_zh) {
@@ -150,6 +324,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
+          this.widget.presenter!.showOrderRating();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _getLastKnowLocation(jumpToBuyPageDetails: false);
           });
@@ -433,19 +608,19 @@ class ServiceMainPageState extends State<ServiceMainPage>
               onPressed: () {
                 _jumpToInfoPage();
               }),
-            actions: <Widget>[
+          actions: <Widget>[
             InkWell(
-            onTap: () => _showBottomContactSheet(),
-                child: Container(
+              onTap: () => _showBottomContactSheet(),
+              child: Container(
                 width: 70,
                 height: 42,
                 child: IconButton(
-                icon: Icon(Icons.phone, color: Colors.white),
-                onPressed: () => _showBottomContactSheet(),
+                  icon: Icon(Icons.phone, color: Colors.white),
+                  onPressed: () => _showBottomContactSheet(),
                 ),
-                ),
-    ),
-            ],
+              ),
+            ),
+          ],
           title: Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -470,10 +645,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       child: isLoading!
                           ? Center(child: MyLoadingProgressWidget())
                           : (hasNetworkError!
-                              ? Center(child: MyLoadingProgressWidget())
-                              : hasSystemError!
-                                  ? _buildSysErrorPage()
-                                  : _buildServicePage())),
+                          ? Center(child: MyLoadingProgressWidget())
+                          : hasSystemError!
+                          ? _buildSysErrorPage()
+                          : _buildServicePage())),
                 ))));
   }
 
@@ -509,33 +684,33 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   SizedBox(height: 20),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
-                          onTap: () {
-                            showPlacePicker(context);
-                          },
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                  child: Text(
-                                "${AppLocalizations.of(context)!.translate("current_address_tile_hint")}",
-                                textAlign: TextAlign.center,
-                                style:
-                                    TextStyle(color: Colors.grey, fontSize: 12),
-                              )),
-                              Container(
-                                height: 40,
-                                width: 40,
-                                child:
-                                    Lottie.asset(LottieAssets.hint_direction),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                            ],
-                          ),
-                        )
+                    onTap: () {
+                      showPlacePicker(context);
+                    },
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 10,
+                        ),
+                        Expanded(
+                            child: Text(
+                              "${AppLocalizations.of(context)!.translate("current_address_tile_hint")}",
+                              textAlign: TextAlign.center,
+                              style:
+                              TextStyle(color: Colors.grey, fontSize: 12),
+                            )),
+                        Container(
+                          height: 40,
+                          width: 40,
+                          child:
+                          Lottie.asset(LottieAssets.hint_direction),
+                        ),
+                        SizedBox(
+                          width: 10,
+                        ),
+                      ],
+                    ),
+                  )
                       : Container(),
                   GestureDetector(
                     onTap: () {
@@ -545,62 +720,62 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       children: [
                         StateContainer?.of(context)?.location == null
                             ? Container(
-                                margin: EdgeInsets.only(
-                                    left: 20, right: 20, top: 20, bottom: 15),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 10, horizontal: 15),
-                                decoration: BoxDecoration(
-                                    color: KColors.mBlue.withAlpha(10),
-                                    borderRadius: BorderRadius.circular(5)),
-                                width: MediaQuery.of(context).size.width,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Container(
-                                            child: Icon(Icons.location_on,
-                                                color: KColors.mBlue, size: 15),
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: KColors.mBlue
-                                                    .withAlpha(30)),
-                                            padding: EdgeInsets.all(5)),
-                                        SizedBox(width: 10),
-                                        Text(
-                                            Utils.capitalize(
-                                                "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w500,
-                                                color: Colors.grey)),
-                                      ],
-                                    ),
-                                    Container(
-                                        child: Icon(Icons.add,
-                                            color: KColors.primaryColor,
-                                            size: 15),
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: KColors.primaryColor
-                                                .withAlpha(30)),
-                                        padding: EdgeInsets.all(5)),
-                                  ],
-                                ),
-                              )
+                          margin: EdgeInsets.only(
+                              left: 20, right: 20, top: 20, bottom: 15),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 15),
+                          decoration: BoxDecoration(
+                              color: KColors.mBlue.withAlpha(10),
+                              borderRadius: BorderRadius.circular(5)),
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                      child: Icon(Icons.location_on,
+                                          color: KColors.mBlue, size: 15),
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: KColors.mBlue
+                                              .withAlpha(30)),
+                                      padding: EdgeInsets.all(5)),
+                                  SizedBox(width: 10),
+                                  Text(
+                                      Utils.capitalize(
+                                          "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey)),
+                                ],
+                              ),
+                              Container(
+                                  child: Icon(Icons.add,
+                                      color: KColors.primaryColor,
+                                      size: 15),
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: KColors.primaryColor
+                                          .withAlpha(30)),
+                                  padding: EdgeInsets.all(5)),
+                            ],
+                          ),
+                        )
                             : getCurrentTile(),
                         isPickLocation
                             ? Positioned(
-                                top: 35,
-                                right: 70,
-                                child: SizedBox(
-                                    height: 15,
-                                    width: 15,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.green,
-                                      strokeWidth: 2,
-                                    )))
+                            top: 35,
+                            right: 70,
+                            child: SizedBox(
+                                height: 15,
+                                width: 15,
+                                child: CircularProgressIndicator(
+                                  color: Colors.green,
+                                  strokeWidth: 2,
+                                )))
                             : Container()
                       ],
                     ),
@@ -608,7 +783,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   InkWell(
                       child: SearchStatelessWidget(
                           title:
-                              "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
+                          "${AppLocalizations.of(context)!.translate("what_want_buy")}"),
                       onTap: () {
                         _jumpToSearchPage("all");
                       }),
@@ -628,7 +803,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                             await Permission.camera.status;
+                            await Permission.camera.status;
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => OutOfAppOrderPage(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -647,16 +822,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                  color: KColors.buy_category_button_bg,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                               Container(
-                                   width: 40,
-                                   height: 40,
-                                   child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/0b8428d8-5220-452a-929c-da6701e5c25b/3xLtR3XYdy.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('out_of_app')}",
@@ -680,12 +855,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             if(cachedDistricts != null && cachedDistricts.isNotEmpty){
                               districts = cachedDistricts;
                             }else{
-                          try{
-                            districts  = await showLoadingDialog(context);
-                            xrint("districts $districts");
-                          }catch(e) {
-                            xrint("error $e");
-                          }
+                              try{
+                                districts  = await showLoadingDialog(context);
+                                xrint("districts $districts");
+                              }catch(e) {
+                                xrint("error $e");
+                              }
                             }
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => ShippingPackageOrderPage(districts: districts),
@@ -706,16 +881,16 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                  color: KColors.buy_category_button_bg,
-                        borderRadius: BorderRadius.all(Radius.circular(5))),
+                              color: KColors.buy_category_button_bg,
+                              borderRadius: BorderRadius.all(Radius.circular(5))),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Row(
                               children: [
-                               Container(
-                                   width: 40,
-                                   height: 40,
-                                   child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
+                                Container(
+                                    width: 40,
+                                    height: 40,
+                                    child: Lottie.network("https://lottie.host/acceab2f-6b56-4702-b133-7ba13a9c1766/jrGYvITPDT.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('package')}",
@@ -775,46 +950,46 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         ),
                       ),
                     ]..addAll(widget.available_services
-                        !.map((e) => BuyCategoryWidget(e,
-                            available: true,
-                            mDialog: mDialog,
-                            showPlacePicker: showPlacePicker))
+                    !.map((e) => BuyCategoryWidget(e,
+                        available: true,
+                        mDialog: mDialog,
+                        showPlacePicker: showPlacePicker))
                         .toList()),
                   ),
                   SizedBox(height: 30),
                   widget.coming_soon_services!.length! > 0
                       ? Opacity(
-                          opacity: 0.5,
-                          child: Container(
-                            child: Column(children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                      padding: EdgeInsets.only(left: 30),
-                                      child: Text(
-                                          "${AppLocalizations.of(context)!.translate('coming_soon')}")),
-                                ],
-                              ),
-                              GridView(
-                                physics: BouncingScrollPhysics(),
-                                padding: const EdgeInsets.all(20),
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisSpacing: 10,
-                                  mainAxisSpacing: 10,
-                                  crossAxisCount: 2,
-                                  childAspectRatio: 2.7,
-                                ),
-                                shrinkWrap: true,
-                                children: []..addAll(widget.coming_soon_services
-                                    !.map((e) => BuyCategoryWidget(e,
-                                        available: false, mDialog: mDialog))
-                                    .toList()),
-                              ),
-                            ]),
+                    opacity: 0.5,
+                    child: Container(
+                      child: Column(children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                                padding: EdgeInsets.only(left: 30),
+                                child: Text(
+                                    "${AppLocalizations.of(context)!.translate('coming_soon')}")),
+                          ],
+                        ),
+                        GridView(
+                          physics: BouncingScrollPhysics(),
+                          padding: const EdgeInsets.all(20),
+                          gridDelegate:
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisSpacing: 10,
+                            mainAxisSpacing: 10,
+                            crossAxisCount: 2,
+                            childAspectRatio: 2.7,
                           ),
-                        )
+                          shrinkWrap: true,
+                          children: []..addAll(widget.coming_soon_services
+                          !.map((e) => BuyCategoryWidget(e,
+                              available: false, mDialog: mDialog))
+                              .toList()),
+                        ),
+                      ]),
+                    ),
+                  )
                       : Container(),
                   SizedBox(height: 160)
                 ],
@@ -830,7 +1005,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         'https://dev.kaba-delivery.com/downloads/lottie/currentThemeLottie.json',
                         width: 160,
                         height: 160, errorBuilder: (BuildContext context,
-                            Object error, StackTrace? stackTrace) {
+                        Object error, StackTrace? stackTrace) {
                       return Container();
                     }),
                   ),
@@ -872,7 +1047,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             actions: <Widget>[
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context)!.translate('refuse')}"),
+                Text("${AppLocalizations.of(context)!.translate('refuse')}"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   _jumpToPage(
@@ -881,13 +1056,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           context: context,
                           type: type,
                           foodProposalPresenter:
-                              RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
+                          RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
                           restaurantListPresenter: RestaurantListPresenter(RestaurantListView())));
                 },
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context)!.translate('accept')}"),
+                Text("${AppLocalizations.of(context)!.translate('accept')}"),
                 onPressed: () {
                   // SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs!.setString("_has_accepted_gps", "ok");
@@ -920,7 +1095,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
+          CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
@@ -979,10 +1154,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   void _showDialog(
       {String? svgIcons,
-      Icon? icon,
-      var message,
-      bool isYesOrNo = false,
-      Function? actionIfYes}) {
+        Icon? icon,
+        var message,
+        bool isYesOrNo = false,
+        Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -993,8 +1168,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons!,
-                        )
+                    svgIcons!,
+                  )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -1003,40 +1178,40 @@ class ServiceMainPageState extends State<ServiceMainPage>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ]
                 : <Widget>[
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ]);
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]);
       },
     );
   }
@@ -1107,7 +1282,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
           await Geolocator.requestPermission();
         } else {
           bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
+          await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
             await Geolocator.openLocationSettings();
           } else {
