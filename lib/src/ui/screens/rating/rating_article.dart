@@ -95,7 +95,7 @@ void initState() {
             // Moved this out of Container and into Stack
             Positioned(
               top: 40,
-              left: 100,
+              left: 120,
               child: Container(
                 width: 120,
                 height: 120,
@@ -125,7 +125,7 @@ void initState() {
             ),
             // Bottom section
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.25,
+              top:170,
               left: 0,
               right: 0,
               child: Column(
@@ -204,6 +204,7 @@ void initState() {
                   ):Container(
                    height:  105,
                  ),
+                  SizedBox(height: 30,),
                   Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(

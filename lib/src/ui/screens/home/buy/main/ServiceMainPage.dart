@@ -50,7 +50,10 @@ import '../../../../../utils/_static_data/ServerConfig.dart';
 import '../../../../../utils/_static_data/Vectors.dart';
 import '../../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
+import '../../../../../utils/functions/analytics.dart';
+import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
+import '../../../../../utils/functions/skipEndpoint.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -106,7 +109,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -120,12 +122,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
-    if (deliveriesRatingPending.isEmpty) return;
+    bool canSkip = await CanSkipEndpoint();
     if (deliveriesRatingPending.length == 1) {
-
-      _showRatingDialog(deliveriesRatingPending.first, true);
-    } else {
-      final choice = await _askUserChoice(context);
+      _showRatingDialog(deliveriesRatingPending.first, true,canSkip);
+    }  else if(deliveriesRatingPending.length > 1) {
+      final choice = await _askUserChoice(context,canSkip);
       if (choice == "one") {
         final latest = deliveriesRatingPending.reduce((a, b) {
           final idA = int.tryParse(a.command_id.toString()) ?? 0;
@@ -133,13 +134,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
           return idA > idB ? a : b;
         });
         xrint("address of del ${latest.address!.toJson()}");
-        _showRatingDialog(latest,true);
+        _showRatingDialog(latest,true,canSkip);
       } else if (choice == "all") {
         for (final delivery in deliveriesRatingPending) {
           await Future.delayed(Duration(seconds: 1));
           context.read<RatingBloc>().add(initialEvent());
           _pageController = PageController(initialPage: 0);
-          Map<String, dynamic>? result =await _showRatingDialog(delivery,false);
+          Map<String, dynamic>? result =await _showRatingDialog(delivery,false,canSkip);
           if(result!=null && result['def_close']==true)
             return;
           else
@@ -148,8 +149,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }
       }
     }
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      isLoading = false;
+    });
   }
-  Future<String?> _askUserChoice(BuildContext context) {
+  Future<String?> _askUserChoice(BuildContext context,bool canSkip) {
     return showDialog<String>(
       context: context,
       barrierDismissible: false,
@@ -216,12 +221,31 @@ class ServiceMainPageState extends State<ServiceMainPage>
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-
                         icon: Icon(Icons.all_inclusive, color: Colors.white),
                         label: Text("${AppLocalizations.of(context)!.translate("rate_orders_all")}"),
                         onPressed: () => Navigator.pop(context, "all"),
                       ),
                     ),
+                    const SizedBox(width: 10),
+                    !canSkip ? Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 0,
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+
+                        icon: Icon(Icons.all_inclusive, color: Colors.white),
+                        label: Text("Skip all"),
+                        onPressed: ()async{
+                          logButtonPress("Bouton skip pour la notation");
+                          await deleteRatePendingFromCache();
+                        },
+                      ),
+                    ):Container(),
                   ],
                 ),
               ],
@@ -232,8 +256,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     );
   }
 
-  Future<Map<String,dynamic>?> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll) {
-
+  Future<Map<String,dynamic>?> _showRatingDialog(DeliveryRatingPending delivery,bool deleteAll,bool canSkip) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -275,7 +298,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     controller: _pageController,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      RatingDelivery(deliveryRatingPending: delivery,deleteAll: deleteAll),
+                      RatingDelivery(deliveryRatingPending: delivery,deleteAll: deleteAll,canSkip:canSkip),
                       RatingArticle(deliveryRatingPending: delivery,canRateFood: delivery.articles!.length>1?false:true, deleteAll: deleteAll,),
                     ],
                   );
@@ -330,6 +353,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
+          setState(() {
+            isLoading = true;
+          });
           this.widget.presenter!.showOrderRating();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _getLastKnowLocation(jumpToBuyPageDetails: false);

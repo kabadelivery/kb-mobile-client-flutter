@@ -355,4 +355,5 @@ class ServerRoutes {
   static const String LINK_SEND_ORDER_FEEDBACK =
       ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
   static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_subscription + "/dashboard/sharedCodeSuscriber";
+  static const String LINK_GET_SKIP_NOTATION_STATUS = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
 }
