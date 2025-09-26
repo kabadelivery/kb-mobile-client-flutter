@@ -105,16 +105,13 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       ) async {
     emit(ExpeditionLoading());
 
-    try{
+
       CustomerModel customerModel = await CustomerUtils.getCustomer();
       GetUserExpedition getUserExpeditionUseCase = GetUserExpedition(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
       final expeditions = await getUserExpeditionUseCase(
         customerToken: customerModel.token!,
       );
       emit(UserExpeditionsLoaded(expeditions: expeditions,error: false));
-    }catch(e){
-      emit(UserExpeditionsLoaded(expeditions: [],error: true));
-    }
 
   }
 

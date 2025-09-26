@@ -1,3 +1,4 @@
+import 'package:KABA/src/microservices/expedition/core/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
@@ -29,8 +30,8 @@ void NotLoggedInPopUp(BuildContext context) {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      KColors.primaryColor,
-                      KColors.primaryColor.withOpacity(.7),
+                     KabaExpeditionColor.primary,
+                      Color(0xFFE6335A)
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
