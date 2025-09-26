@@ -101,7 +101,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];

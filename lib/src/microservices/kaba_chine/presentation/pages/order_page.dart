@@ -192,7 +192,8 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
           ),
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.start,
+
           children: [
             Expanded(
               child: Column(
@@ -201,21 +202,21 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
                 children: [
                   Text(
                     AppLocalizations.of(context)!.translate('delivery_request'),
-                    textAlign: TextAlign.center, // centrer le texte
+                    textAlign: TextAlign.start, // centrer le texte
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 17,
+                      fontSize: 15,
                     ),
                     softWrap: true,
                     overflow: TextOverflow.visible,
-                    maxLines: 2, // éviter un texte trop haut
+                    maxLines: 3, // éviter un texte trop haut
                   ),
                   const SizedBox(height: 10),
                   Text(
                     "${AppLocalizations.of(context)!.translate('your_customer_code')}: $customercode",
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.white, fontSize: 14),
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
                     softWrap: true,
                   ),
                 ],

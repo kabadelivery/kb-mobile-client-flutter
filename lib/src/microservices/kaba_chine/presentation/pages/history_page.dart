@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../localizations/AppLocalizations.dart';
 import '../../core/utils.dart';
 import '../../data/order/delivery_model.dart';
 import '../../functions/getRandomDecoys.dart';
@@ -76,7 +77,7 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Historique de livraison",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
+                    Text("${AppLocalizations.of(context)!.translate("delivery_history")}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
                     SizedBox(height: 10),
                     Icon(Icons.history,color: Colors.white,size: 30,)
 
@@ -121,7 +122,7 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            "Réessayer",
+            "${AppLocalizations.of(context)!.translate("retry")}",
             style: TextStyle(
               color: Colors.white,
               fontSize: 16,
@@ -137,7 +138,7 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
             if(deliveryHistory.isEmpty) {
               return Center(
                 child: Text(
-                  "Aucune livraison trouvée",
+                  "${AppLocalizations.of(context)!.translate("no_delivery_found")}",
                   style: TextStyle(
                     color: Colors.black54,
                     fontSize: 16,

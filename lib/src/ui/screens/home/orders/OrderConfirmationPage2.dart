@@ -1714,7 +1714,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         onTap: ()async {
           Navigator.of(context).pop();
           await  _payPreorder(false);
-
         },
         child: Card(
           child: Container(
@@ -1764,7 +1763,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   /* order and pay now */
   _buildOrderNowButton(bool pay_now_button_pressed) {
     return StatefulBuilder(
-
         builder: (context, setState) {
           return Container(
             child: InkWell(
