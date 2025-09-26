@@ -11,13 +11,15 @@ import '../../../models/DeliveryRatingPending.dart';
 import '../../../resources/order_api_provider.dart';
 import '../../../utils/Enums/DeliveryRatingType.dart';
 import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/functions/analytics.dart';
 import '../../../utils/functions/new_rating_feature.dart';
 import '../../customwidgets/rating_widget.dart';
 
 class RatingDelivery extends StatefulWidget {
   final DeliveryRatingPending deliveryRatingPending;
   final bool deleteAll;
-  const RatingDelivery({required this.deliveryRatingPending, required this.deleteAll, super.key});
+  final bool canSkip;
+  const RatingDelivery({required this.deliveryRatingPending, required this.deleteAll, required this.canSkip, super.key});
   @override
   State<RatingDelivery> createState() => _RatingDeliveryState();
 }
@@ -64,11 +66,33 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 ),
               ),
             ),
-
-            // Moved this out of Container and into Stack
+           if(! widget.canSkip)
+            Positioned(
+              right: 10,
+                top: 10,
+                child:
+            GestureDetector(
+              onTap: ()async{
+                if(widget.deleteAll){
+                  await  deleteRatePendingFromCache();
+                }else{
+                  await removeSingleRatePendingFromCache(widget.deliveryRatingPending.command_id.toString());
+                }
+                logButtonPress("Bouton skip pour la notation");
+                Navigator.pop(context);
+              },
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Text("Skip", style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 16)),
+                ),
+            )),
             Positioned(
               top: 40,
-              left: 100,
+              left: 120,
               child: Container(
                 width: 120,
                 height: 120,
@@ -99,7 +123,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
             ),
             // Bottom section
             Positioned(
-              top: MediaQuery.of(context).size.height * 0.25,
+              top:170,
               left: 0,
               right: 0,
               child: Column(
@@ -110,14 +134,14 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                        Text(
                         "${AppLocalizations.of(context)!.translate("delivery_person")}",
                         style: TextStyle(fontWeight: FontWeight.normal,
-                            fontSize: 10,
+                            fontSize: 16,
                             color: Colors.black87),
                       ),
                       const SizedBox(width: 5),
                       Text(
                         livreurName,
                         style: const TextStyle(fontWeight: FontWeight.bold,
-                        fontSize: 10, color: Colors.black87),
+                        fontSize: 16, color: Colors.black87),
 
                       ),
                     ],
@@ -245,7 +269,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       );
                     },
                   ),
-
+                  SizedBox(height: 20,),
                    Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(

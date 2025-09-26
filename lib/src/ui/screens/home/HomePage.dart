@@ -204,10 +204,6 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     get_token();
 
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getLastKnowLocation(jumpToBuyPageDetails: false);
-    });
     homeWelcomePage = HomeWelcomeNewPage(
         key: homeKey,
         presenter: HomeWelcomePresenter(HomeWelcomeView()),
@@ -691,62 +687,143 @@ class _HomePageState extends State<HomePage> {
     ];
     if (value == 2 || value == 3) {
       if (StateContainer.of(context).loggingState == 0) {
-        // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          barrierDismissible: false,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                  "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    // location_permission
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-//                      border: new Border.all(color: Colors.white, width: 2),
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.symmetric(horizontal: 24),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [KColors.primaryColor, KColors.primaryColor.withOpacity(.7)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.shield_outlined,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
 
-                            image: new DecorationImage(
-                          fit: BoxFit.fitHeight,
-                          image: new AssetImage(ImageAssets.login_description),
-                        ))),
-                    SizedBox(height: 10),
+                    // Titre
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Accès sécurisé ",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Text("KABA",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: KColors.primaryColor,
+                            )),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Description
                     Text(
-                        "${AppLocalizations.of(context)!.translate(msg[value % 2])}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14))
+                      "Vous devez vous connecter pour avoir accès à votre compte KABA",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:Color(0xFFD13457),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: Icon(Icons.person, color: Colors.white),
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Se connecter",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            Icon(Icons.arrow_forward, color: Colors.white),
+                          ],
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  LoginPage(presenter: LoginPresenter(LoginView())),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Bouton secondaire "Pas maintenant"
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Pas maintenant",
+                          style: TextStyle(color: Colors.black87, fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('not_now')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('login')}"),
-                  onPressed: () {
-                    /* */
-                    /* jump to login page... */
-                    Navigator.of(context).pop();
-
-                    Navigator.of(context).push(new MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            LoginPage(presenter: LoginPresenter(LoginView()))));
-                  },
-                )
-              ],
             );
           },
         );
+
       } else {
         /* zwitch */
         setState(() {
@@ -1416,13 +1493,7 @@ class _HomePageState extends State<HomePage> {
       StateContainer.of(context).location_asked = true;
     else
       return;
-    if (mounted) {
-      _getLastKnowLocation();
-      if (widget.hasGps == false &&
-          StateContainer?.of(context)?.location != null) {
-        xrint("init -- 1");
-      } else {}
-    }
+
   }
 }
 
@@ -1451,21 +1522,34 @@ NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
 
 Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   String groupKey = "tg.tmye.kaba.brave.one";
-  final String bigPictureUrl = notificationItem.image_link.toString();
-  final directory = await getApplicationDocumentsDirectory();
-  final filePath = '${directory.path}/bigImage.jpg';
-  final response = await http.get(Uri.parse(bigPictureUrl));
-  final file = File(filePath);
-  await file.writeAsBytes(response.bodyBytes);
+  final String? bigPictureUrl = notificationItem.image_link?.toString();
 
-  final BigPictureStyleInformation bigPictureStyleInformation =
-  BigPictureStyleInformation(
+  String? filePath;
+  if (bigPictureUrl != null && bigPictureUrl.isNotEmpty) {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      filePath = '${directory.path}/bigImage.jpg';
+      final response = await http.get(Uri.parse(bigPictureUrl));
+      final file = File(filePath);
+      await file.writeAsBytes(response.bodyBytes);
+    } catch (e) {
+      debugPrint("Failed to download notification image: $e");
+      filePath = null;
+    }
+  }
+
+  // Android style information
+  final BigPictureStyleInformation? bigPictureStyleInformation =
+  (filePath != null)
+      ? BigPictureStyleInformation(
     FilePathAndroidBitmap(filePath),
-    contentTitle: notificationItem?.title,
-    summaryText: notificationItem?.body,
+    contentTitle: notificationItem.title,
+    summaryText: notificationItem.body,
     htmlFormatContentTitle: true,
     htmlFormatSummaryText: true,
-  );
+  )
+      : null;
+
   final androidPlatformChannelSpecifics = AndroidNotificationDetails(
     AppConfig.CHANNEL_ID,
     AppConfig.CHANNEL_NAME,
@@ -1474,13 +1558,17 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     priority: Priority.max,
     ticker: notificationItem.title,
     styleInformation: bigPictureStyleInformation,
-    largeIcon: filePath != null ? FilePathAndroidBitmap(filePath) : null,
+    largeIcon: (filePath != null) ? FilePathAndroidBitmap(filePath) : null,
   );
 
-  final iOSAttachment = DarwinNotificationAttachment(filePath);
+  // iOS style information
+  final List<DarwinNotificationAttachment> iOSAttachments = [];
+  if (filePath != null) {
+    iOSAttachments.add(DarwinNotificationAttachment(filePath));
+  }
 
   final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
-    attachments: [iOSAttachment],
+    attachments: iOSAttachments,
     categoryIdentifier: "plainCategory",
     threadIdentifier: "thread1",
     presentAlert: true,
@@ -1488,10 +1576,18 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
     presentSound: true,
     sound: "default",
   );
+
   var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics);
-  return flutterLocalNotificationsPlugin!.show(notificationItem.hashCode,
-      notificationItem?.title, notificationItem?.body, platformChannelSpecifics,
-      payload: notificationItem?.destination?.toSpecialString());
+    android: androidPlatformChannelSpecifics,
+    iOS: iOSPlatformChannelSpecifics,
+  );
+
+  return flutterLocalNotificationsPlugin!.show(
+    notificationItem.hashCode,
+    notificationItem.title,
+    notificationItem.body,
+    platformChannelSpecifics,
+    payload: notificationItem.destination?.toSpecialString(),
+  );
 }
+

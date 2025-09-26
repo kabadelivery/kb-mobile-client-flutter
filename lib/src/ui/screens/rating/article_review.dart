@@ -93,7 +93,7 @@ class _RatingReviewState extends State<RatingReview> {
                 // Moved this out of Container and into Stack
                 Positioned(
                   top: 80,
-                  left: 100,
+                  left: 120,
                   child: Container(
                     width: 120,
                     height: 120,
@@ -124,13 +124,17 @@ class _RatingReviewState extends State<RatingReview> {
                 ),
                 // Bottom section
                 Positioned(
-                  top: MediaQuery.of(context).size.height * 0.30,
+                  top: 200,
                   left: 0,
                   right: 0,
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Text(
+
                         widget.food.name!,
+                        textAlign: TextAlign.center,
                         style: const TextStyle(fontWeight: FontWeight.bold,
                             fontSize: 12, color: Colors.black87),
 

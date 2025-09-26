@@ -20,19 +20,12 @@ Widget Notation({required String text,int? count, ShopProductModel? food}) {
         ),
      ],
   ):Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      Icon(Icons.thumb_up_alt_outlined, color: KColors.primaryColor, size: 18) ,
+      Text('${text.substring(2,3)=="0"?text.substring(0,1):note.toStringAsFixed(1)}/5',style: TextStyle(color: KColors.primaryColor,fontSize: 12,fontWeight: FontWeight.bold),),
       SizedBox(width: 4,),
-      Container(
-        height: 30,
-        width: 30,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: KColors.primaryColor,
-            borderRadius: BorderRadius.circular(50)
-        ),
-        child: Text('${text.substring(2,3)=="0"?text.substring(0,1):note.toStringAsFixed(1)}/5',style: TextStyle(color: Colors.white,fontSize: 10,fontWeight: FontWeight.bold),),
-      )
+      Icon(Icons.star, color: KColors.primaryColor, size: 18) ,
     ],
   );
 }

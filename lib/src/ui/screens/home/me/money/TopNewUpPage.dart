@@ -10,6 +10,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -69,7 +70,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   var isLaunching = false;
 
   double euroRatio = 657.60;
-
+  bool textActionSemoaAvailable=false;
+  String textActionSemoa="";
   String feesDescription = "";
   bool isGetFeesLoading = false;
   FocusNode? _totalFocusNode, _amountFocusNode;
@@ -266,7 +268,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                 ): Container(),
                 SizedBox(height: 5),
                 Container(
-
                   width:MediaQuery.of(context).size.width*0.9,
                   height: 40,
                   decoration: BoxDecoration(
@@ -305,6 +306,18 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                   return GestureDetector(
 
                                     onTap: () {
+                                      if(momoPaymentModes[index]['id'] == "orange_money"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('orange_payment_not_available')}");
+                                        return;
+                                      }
+                                      if(momoPaymentModes[index]['id'] == "mtn"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('mtn_payment_not_available')}");
+                                        return;
+                                      }
+                                      if(momoPaymentModes[index]['id'] == "wave"){
+                                        mDialog("${AppLocalizations.of(context)!.translate('wave_payment_not_available')}");
+                                        return;
+                                      }
                                       setState(() {
                                         momo_picked_id = momoPaymentModes[index]['id'];
                                         dropdownValue = momoPaymentModes[index]['name'];
@@ -531,6 +544,24 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                         ]),
                   ),
                 ]),
+                SizedBox(height: 10),
+                widget.selectedPosition!=1 && textActionSemoaAvailable==true?
+                Container(
+                  width:MediaQuery.of(context).size.width*0.9,
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: KColors.primaryColor.withOpacity(0.3), width: 1),
+                      borderRadius: BorderRadius.circular(10)
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(child: Text("$textActionSemoa",style: TextStyle(color: KColors.primaryColor, fontSize: 12),)),
+
+                    ],
+                  ),
+                ):Container(),
                 SizedBox(height: 10),
                 isGetFeesLoading
                     ? SizedBox(
@@ -953,7 +984,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     else
       amount_ = double.parse(amount);
 
-    return ((_getFees().toDouble() * amount_.toDouble()) ~/ 100);
+    return ((amount_.toDouble() * _getFees()) / 100).round();
   }
 
   _getFeesFromTotal() {
@@ -1113,6 +1144,14 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
           Navigator.of(context).pop({"success": true,"code":result['code']});
         }
       }catch(_){
+        setState(() {
+          showLoading(false);
+        });
+        CherryToast.error(
+          title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+          description: Text("${AppLocalizations.of(context)!.translate('system_error')}"),
+          autoDismiss: true,
+        ).show(context);
         launch_other_payment=true;
       }
     }
@@ -1120,7 +1159,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       Navigator.of(context).pop();
       return;
     }
-    if(launch_other_payment){
+    /*
+    *     if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
       kkiapayProvider.launchKkiapayPayment(
         context,
@@ -1130,7 +1170,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         feesAmount: _getFees(), typeOfTransaction: 'momo',
         );
     }
-
+*/
   }
   void launchNewCardTopUp()async{
     setState(() {
@@ -1178,11 +1218,20 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               firstPaymentMethod = firstGroup[0];
             }
           }
+
           if (firstPaymentMethod != null) {
             String actionUrl = firstPaymentMethod['action'] ?? '';
             String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
             String description = firstPaymentMethod['description'] ?? '';
-            if (actionUrl.isNotEmpty) {
+            if(firstPaymentMethod['gateway'].toString().contains("Ecobank-Semoa")){
+              setState(() {
+                textActionSemoaAvailable=true;
+                textActionSemoa = firstPaymentMethod!['action'];
+                showLoading(false);
+                return;
+              });
+            }
+            if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
               final uri = Uri.parse(actionUrl);
               if (await canLaunchUrl(uri)) {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
@@ -1190,23 +1239,23 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               } else {
                 launch_other_payment=true;
               }
-            } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text('URL de paiement non disponible pour $gatewayName'),
-                  backgroundColor: Colors.orange,
-                  duration: Duration(seconds: 3),
-                ),
-              );
             }
-
           }
         }
     }else{
+        CherryToast.error(
+          title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+          description: Text("${AppLocalizations.of(context)!.translate('system_error')}"),
+          autoDismiss: true,
+        ).show(context);
+        setState(() {
+          showLoading(false);
+        });
       launch_other_payment=true;
       }
     }
-    if(launch_other_payment){
+    /*
+    * if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
       String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
       kkiapayProvider.launchKkiapayPayment(
@@ -1220,7 +1269,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       setState(() {
         showLoading(true);
       });
-    }
+    }*/
     }
   _onSwitch(int i) {
     setState(() {
