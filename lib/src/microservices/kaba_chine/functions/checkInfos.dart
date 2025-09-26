@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../core/utils.dart';
 import '../data/order/delivery_model.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 
@@ -49,24 +52,45 @@ void showInstructionsPopup(BuildContext context) {
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
-
         title: Text(
           AppLocalizations.of(context)!.translate('order'),
-          style: const TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
         ),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("• "+AppLocalizations.of(context)!.translate('order')),
+              _buildIconPoint(Icons.shopping_cart, AppLocalizations.of(context)!.translate('order')),
               const SizedBox(height: 8),
-              Text("• "+AppLocalizations.of(context)!.translate('warehouse_instruction')),
+              _buildIconPoint(Icons.warehouse, AppLocalizations.of(context)!.translate('warehouse_instruction')),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: GestureDetector(
+                  onTap: () {
+                    showAddressPopup(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      color: KabaChineColors.primary,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('click_here'),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 8),
-              Text("• "+AppLocalizations.of(context)!.translate('delivery_request')),
+              _buildIconPoint(Icons.local_shipping, AppLocalizations.of(context)!.translate('delivery_request')),
               const SizedBox(height: 8),
-              Text("• "+AppLocalizations.of(context)!.translate('customer_service')),
+              _buildIconPoint(Icons.support_agent, AppLocalizations.of(context)!.translate('customer_service')),
               const SizedBox(height: 8),
-              Text("• "+AppLocalizations.of(context)!.translate('office_address')),
+              _buildIconPoint(Icons.location_city, AppLocalizations.of(context)!.translate('office_address')),
             ],
           ),
         ),
@@ -84,6 +108,102 @@ void showInstructionsPopup(BuildContext context) {
         ],
       );
     },
+  );
+}
+Widget _buildIconPoint(IconData icon, String text) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: Colors.blue, size: 20),
+      const SizedBox(width: 8),
+      Expanded(
+        child: Text(
+          text,
+          style: const TextStyle(color: Colors.black87, fontSize: 14),
+        ),
+      ),
+    ],
+  );
+}
+void showAddressPopup(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        backgroundColor: Colors.grey.shade100.withOpacity(0.95), // gris clair transparent
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+               "${AppLocalizations.of(context)!.translate('address')}",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              _buildAddressRow(context, Icons.location_on, "${AppLocalizations.of(context)!.translate('location')}", "${AppLocalizations.of(context)!.translate('city_china')}"),
+              const SizedBox(height: 12),
+
+              _buildAddressRow(context, Icons.home, "${AppLocalizations.of(context)!.translate('address')}",  "${AppLocalizations.of(context)!.translate('adresse_china')}"),
+              const SizedBox(height: 12),
+
+              _buildAddressRow(context, Icons.person, "${AppLocalizations.of(context)!.translate('name')}", "${AppLocalizations.of(context)!.translate('name_adresse_china')}"),
+              const SizedBox(height: 12),
+
+              _buildAddressRow(context, Icons.phone, "${AppLocalizations.of(context)!.translate('contact')}", "(86) 18688424896"),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
+
+Widget _buildAddressRow(BuildContext context, IconData icon, String title, String value) {
+  return Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Icon(icon, color: Colors.blue, size: 20),
+      const SizedBox(width: 8),
+      Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: const TextStyle(color: Colors.black54),
+            ),
+          ],
+        ),
+      ),
+      IconButton(
+        icon: const Icon(Icons.copy, color: Colors.blue, size: 20),
+        onPressed: () {
+          Clipboard.setData(ClipboardData(text: value));
+          Fluttertoast.showToast(msg: '${AppLocalizations.of(context)!.translate('copied_c')}', toastLength: Toast.LENGTH_SHORT, gravity: ToastGravity.CENTER);
+        },
+      ),
+    ],
   );
 }
 

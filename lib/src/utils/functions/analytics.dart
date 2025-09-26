@@ -1,4 +1,3 @@
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 Future<void> logButtonPress(String buttonName) async {

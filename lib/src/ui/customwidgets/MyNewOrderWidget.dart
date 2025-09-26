@@ -249,24 +249,22 @@ class _MyNewOrderWidgetState extends State<MyNewOrderWidget> {
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.center,
                                               children: [
-                                                Icon(
-                                                    widget?.command?.state == 2
-                                                        ? Icons.call
-                                                        : FontAwesomeIcons
-                                                            .solidStar,
+                                                widget?.command?.state == 2
+                                                    ?   Icon(
+                                                 Icons.call,
                                                     color: Colors.white,
-                                                    size: 16),
+                                                    size: 16):Container(),
                                                 SizedBox(width: 5),
-                                                Text(
-                                                    "${AppLocalizations.of(context)!.translate(widget?.command?.state == 2 ? 'call_me_shipper' : 'review')}",
+                                                widget?.command?.state == 2 ?  Text(
+                                                    "${AppLocalizations.of(context)!.translate( 'call_me_shipper')}",
                                                     style: TextStyle(
                                                         color: Colors.white,
-                                                        fontSize: 12)),
+                                                        fontSize: 12)):Container(),
                                               ],
                                             )),
                                         onTap: widget?.command?.state == 2
                                             ? () => _callShipper()
-                                            : () => _reviewOrder())
+                                            : null)
                                     : Container(),
                               ],
                             )

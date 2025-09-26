@@ -92,10 +92,11 @@ class _UserInformationPageState extends State<UserInformationPage> {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        Text("• "+AppLocalizations.of(context)!.translate('warehouse_instruction')+"...", style: TextStyle(
+                        Text("• "+AppLocalizations.of(context)!.translate('warehouse_instruction').substring(0,54)+"...", style: TextStyle(
                           color: Colors.white,
                           fontSize: 12,
                         ),),
+
                         const SizedBox(height: 5),
                        Container(
                           alignment: Alignment.center,

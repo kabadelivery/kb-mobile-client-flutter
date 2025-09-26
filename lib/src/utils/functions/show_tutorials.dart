@@ -15,14 +15,14 @@ void showCertificationTutorial({required BuildContext context}){
         ),
         backgroundColor: Colors.white,
         child: Container(
-          height: 300,
+          height: 310,
           width: MediaQuery.of(context).size.width*0.7,
 
           child: Stack(
             alignment: Alignment.bottomCenter,
             children: [
               Container(
-                height: MediaQuery.of(context).size.height*0.30,
+                height:205,
 
                 width: MediaQuery.of(context).size.width,
                 decoration: BoxDecoration(
@@ -67,7 +67,7 @@ void showCertificationTutorial({required BuildContext context}){
                                 AppLocalizations.of(context)!.translate('ok'),
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                               )),
                           TextButton(
@@ -93,11 +93,11 @@ void showCertificationTutorial({required BuildContext context}){
                                 AppLocalizations.of(context)!.translate('know_more'),
                                 style: TextStyle(
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: 14,
                                 ),
                               )),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),
