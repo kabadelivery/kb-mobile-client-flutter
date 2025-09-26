@@ -41,15 +41,16 @@ class MyAddressesPage extends StatefulWidget {
 
   List<DeliveryAddressModel> pureDeliveryAddresses = [];
   int? address_type;
+  DeliveryAddressModel? autoCreatAddress;
   MyAddressesPage(
       {Key? key,
       this.presenter,
       this.pick = false,
       this.gps_location /*6.33:3.44*/,
-      this.address_type
+      this.address_type,
+        this.autoCreatAddress
       })
       : super(key: key);
-
   @override
   _MyAddressesPageState createState() => _MyAddressesPageState();
 }
@@ -78,6 +79,13 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     if (widget.gps_location != null && "".compareTo(widget.gps_location!) != 0) {
       Timer.run(() {
         _createAddress().then((value) {
+          widget.gps_location = "";
+        });
+      });
+    }
+    if(widget.autoCreatAddress!=null){
+      Timer.run(() {
+        _createAddress(autoCreate: true).then((value) {
           widget.gps_location = "";
         });
       });
@@ -495,13 +503,18 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     if (widget.pick!) Navigator.of(context).pop({'selection': address});
   }
 
-  Future<void> _createAddress() async {
+  Future<void> _createAddress({bool? autoCreate}) async {
     // when come back update the thing.
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            EditAddressPage(
+        autoCreate==true?
+        EditAddressPage(
                 presenter: EditAddressPresenter(EditAddressView()),
-                gps_location: widget.gps_location),
+                address: widget.autoCreatAddress,
+                gps_location: widget.gps_location):
+        EditAddressPage(
+            presenter: EditAddressPresenter(EditAddressView()),
+            gps_location: widget.gps_location),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

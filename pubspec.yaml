@@ -248,6 +248,8 @@ flutter:
     - assets/images/png/wave_logo.png
     - assets/images/png/solimi_logo.png
     - assets/images/png/update.png
+    - assets/images/png/expedition_afrique.png
+    - assets/images/png/plane.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

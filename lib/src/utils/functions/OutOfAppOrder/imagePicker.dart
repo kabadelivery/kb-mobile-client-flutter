@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -168,4 +170,14 @@ Future<void> deleteCachedPickedImages() async {
       debugPrint('Failed to delete ${file.path}: $e');
     }
   }
+}
+Future<String> imageToBase64File(File imageFile) async {
+  List<int> imageBytes = await imageFile.readAsBytes();
+  String base64Image = base64Encode(imageBytes);
+  return base64Image;
+}
+Future<String> imageToBase64XFile(XFile imageFile) async {
+  List<int> imageBytes = await imageFile.readAsBytes();
+  String base64Image = base64Encode(imageBytes);
+  return base64Image;
 }

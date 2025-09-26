@@ -828,5 +828,6 @@
   "rate_orders_all": "All",
   "rate_orders_one": "Only one",
   "rate_orders_question": "Do you want to rate only the most recent or all your orders?",
-  "multiple_orders_detected": "Multiple orders detected"
+  "multiple_orders_detected": "Multiple orders detected",
+  "expedition": "Expedition"
 }

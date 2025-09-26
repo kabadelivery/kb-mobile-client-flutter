@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/estimation/estimation_bloc.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/history_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
@@ -84,6 +86,12 @@ Future<void> main() async {
               BlocProvider<RatingBloc>(
                 create: (context) => RatingBloc(),
               ),
+              BlocProvider<ExpeditionBloc>(
+                create: (context) => ExpeditionBloc(),
+              ),
+              BlocProvider<EstimationBloc>(
+                create: (context) => EstimationBloc(),
+              ),
         ], child: MyApp(appLanguage: appLanguage))))
     );
   });
@@ -115,29 +123,29 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
   NotificationHandler.lastMessageId = message.messageId;
   // Parse safely your payload
-  final Map<String, dynamic> data = message.data;
-  final notificationRaw = data["notification"];
-  final decodedNotification = jsonDecode(notificationRaw);
+  try {
+    final Map<String, dynamic> data = message.data;
+    final notificationRaw = data["notification"];
+    final decodedNotification = jsonDecode(notificationRaw);
 
-  final title = decodedNotification["title"];
-  final body = decodedNotification["body"];
-  final imageUrl = decodedNotification["image_link"];
-  final destination = jsonDecode(decodedNotification["destination"]);
+    final title = decodedNotification["title"];
+    final body = decodedNotification["body"];
+    final imageUrl = decodedNotification["image_link"];
+    final destination = jsonDecode(decodedNotification["destination"]);
 
-  final destinationString = jsonEncode(destination); // For payload
-
-  // Download image if available
-  String? imagePath;
-  if (imageUrl != null && imageUrl.isNotEmpty) {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/notif_image.jpg';
-      final file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-      imagePath = filePath;
-    } catch (e) {
-      print("Erreur lors du téléchargement de l'image : $e");
+    final destinationString = jsonEncode(destination); // For payload
+    String? imagePath;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      try {
+        final response = await http.get(Uri.parse(imageUrl));
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/notif_image.jpg';
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+        imagePath = filePath;
+      } catch (e) {
+        print("❌ Erreur lors du téléchargement de l'image : $e");
+      }
     }
   }
 
