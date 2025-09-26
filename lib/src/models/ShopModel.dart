@@ -23,7 +23,7 @@ class ShopModel {
   String? discount;
   String? location;
   String? category_id;
-  bool? is_certified;
+  bool is_certified=false;
   double distanceBetweenMeandRestaurant = 0;
 
   ShopModel(
@@ -79,7 +79,7 @@ class ShopModel {
     max_food = json['max_food'];
     location = json["location"];
     category_id = "${json["category_id"]}";
-    is_certified = json['certified'];
+    is_certified = json['certified']?? false;
   }
 
   Map toJson() => {
@@ -101,7 +101,7 @@ class ShopModel {
         "is_new": is_new,
         "location": location,
         "category_id": category_id,
-        "is_certified":is_certified
+        "is_certified":is_certified??false
       };
 
   @override

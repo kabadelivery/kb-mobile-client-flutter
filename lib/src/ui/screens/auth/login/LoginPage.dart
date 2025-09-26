@@ -470,45 +470,138 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
 
   void _askTerms() {
-
-    showDialog(barrierDismissible: false,
+    showDialog(
+      barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: SvgPicture.asset(
-                          VectorsData.terms_and_conditions
-                      )),
-                  SizedBox(height: 10),
-                  Text("${AppLocalizations.of(context)!.translate('accept_terms_and_conditions')}", textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          insetPadding: EdgeInsets.symmetric(horizontal: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icône document dans carré blanc
+                Container(
+                  height: 80,
+                  width: 80,
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color:Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Container(
+                    height: 60,
+                    width: 60,
+                    decoration: BoxDecoration(
+                      color: KColors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.description_outlined,
+                        color: KColors.primaryColor,
+                        size: 40,
+                      ),
+                    ),
+                  )
+                ),
+
+                const SizedBox(height: 20),
+
+                // Texte principal avec "KABA" coloré
+                RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: AppLocalizations.of(context)!.translate(
+                            'accept_terms_and_conditions') + " ",
+                      ),
+                      TextSpan(
+                        text: "KABA",
+                        style: TextStyle(
+                          color: KColors.primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      TextSpan(
+                        text: " ?",
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                // Bouton principal "OUI"
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: Color(0xFFD13456),
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('yes'),
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    onPressed: () async {
+                      SharedPreferences prefs =
+                      await SharedPreferences.getInstance();
+                      prefs.setBool("_is_ok_with_terms", true).then((value) {
+                        Navigator.of(context).pop();
+                      });
+                    },
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Bouton secondaire "CONSULTER"
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      side: BorderSide(color: Colors.grey.shade300),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    icon: Icon(Icons.visibility, color: KColors.primaryColor),
+                    label: Text(
+                      AppLocalizations.of(context)!.translate('see'),
+                      style: TextStyle(
+                          color: KColors.primaryColor, fontSize: 16),
+                    ),
+                    onPressed: () {
+                      _seeTermsAndConditions();
+                    },
+                  ),
+                ),
+              ],
             ),
-            actions: <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('yes')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () async {
-                  //
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  prefs.setBool("_is_ok_with_terms", true).then((value) {
-                    // dismiss
-                    Navigator.of(context).pop();
-                  });
-                },
-              ),
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('see')}", style: TextStyle(color: KColors.mBlue)),
-                onPressed: () {
-                  _seeTermsAndConditions();
-                },
-              ),
-            ]
+          ),
         );
       },
     );
