@@ -38,8 +38,6 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
       "https://thumbs.dreamstime.com/b/experienced-african-american-man-pharmacist-white-coat-working-modern-pharmacy-experienced-african-american-man-pharmacist-153724866.jpg", // use the link from image1
       "https://static.vecteezy.com/system/resources/previews/010/417/055/non_2x/african-american-pharmacist-working-in-drugstore-at-hospital-pharmacy-african-healthcare-photo.jpg",
     ];
-
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
