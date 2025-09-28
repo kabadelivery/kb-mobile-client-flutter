@@ -7,9 +7,11 @@ import 'package:KABA/src/utils/functions/topups.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart'; 
  import 'dart:convert';
  import 'package:http/http.dart' as http;
+ import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
  // 👈 import your SingleSelectList file
 
 class SubscriptionBottomSheet extends StatefulWidget {
@@ -18,6 +20,10 @@ class SubscriptionBottomSheet extends StatefulWidget {
   final String price;
   final String currency;
   final Color accentColor;
+  final String livraisons ; 
+  final String validite ;
+  final String rayon ;
+  final String min ; 
 
   const SubscriptionBottomSheet({
     Key? key,
@@ -26,6 +32,10 @@ class SubscriptionBottomSheet extends StatefulWidget {
     required this.price,
     required this.currency,
     required this.accentColor,
+     required this.livraisons,
+    required this.validite,
+    required this.rayon,
+    required this.min,
   }) : super(key: key);
 
   @override
@@ -39,7 +49,7 @@ class SubscriptionBottomSheet extends StatefulWidget {
     required String title,
     required String price,
     required String currency,
-    required Color accentColor,
+    required Color accentColor, required String livraison, required String validite, required String rayon, required String min,
   }) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
@@ -54,6 +64,10 @@ class SubscriptionBottomSheet extends StatefulWidget {
         price: price,
         currency: currency,
         accentColor: accentColor,
+         livraisons: livraison, 
+         validite: validite,
+         min: min,
+         rayon: rayon,
       ),
     );
   }
@@ -62,6 +76,8 @@ class SubscriptionBottomSheet extends StatefulWidget {
 class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
    int? customerId;
    String? customer_phone = '' ;
+
+  
 
   int? selectedIndex;
   String? selectedMethodLabel;
@@ -91,6 +107,8 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+     double number = double.parse(widget.price);
+     String formatted = NumberFormat("#,###").format(number);
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.9,
@@ -136,7 +154,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         Text(widget.title,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text("${widget.price} ${widget.currency}",
+                        Text(formatted+""+ "${widget.currency}",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -145,25 +163,25 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Row(children: const [
+                    Row(children:  [
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 6),
-                      Text("10 livraisons"),
+                      Text(widget.livraisons+" Livraisons"),
                     ]),
-                    Row(children: const [
+                    Row(children:  [
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 6),
-                      Text("Valide 25 jours"),
+                      Text("Valide ${widget.livraisons} jours"),
                     ]),
-                    Row(children: const [
+                    Row(children:  [
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 6),
-                      Text("Rayon de 3Kms"),
+                      Text("Rayon de ${widget.rayon} Kms"),
                     ]),
-                    Row(children: const [
+                    Row(children:  [
                       Icon(Icons.check_circle, color: Colors.green),
                       SizedBox(width: 6),
-                      Text("Min. 1000 F"),
+                      Text("Min. ${widget.min} F"),
                     ]),
                   ],
                 ),
@@ -190,7 +208,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Prix de base"),
-                        Text("${widget.price}"),
+                        Text("${formatted}"),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -200,7 +218,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Total a Payer"),
-                        Text("${widget.price}",style: TextStyle(color: KColors.primaryColor),),
+                        Text("${formatted}",style: TextStyle(color: KColors.primaryColor),),
                       ],
                     )
                   ,
@@ -339,7 +357,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 ) async {
   try {
     final response = await http.post(
-      Uri.parse('https://0c137bece99a.ngrok-free.app/dashboard/new_abonnement'),
+      Uri.parse(ServerRoutes.KABA_ABONNEMENT_NEW_ABONNEMENT),
       body: {
         "user_id": userid,
         "subscription_id": suscription_id,
@@ -438,7 +456,7 @@ class PaymentProcessor {
     }
     if(!launch_other_payment){
       try {
-    Map result = await provider.launchTopUp(customer, user_phone_number!, price.toString(), 0.0);
+    Map result = await provider.launchTopUp(customer, user_phone_number!, price.toString(), 0.0 , 2);
     debugPrint('result $result');
 
     if (result != null && result['error'] == 0) {
@@ -517,7 +535,7 @@ class PaymentProcessor {
         'user_id': customer?.id,
         'fees': '',
         'details': 'Paiement pour Abonnement',
-        'transaction_motif_id': 2,
+        'transaction_motif_id': 2
       };
       Map result = await provider.launchStoreSemoaTransaction(customer, semoaStoreData);
       debugPrint('paymentsMethods: $paymentsMethods');

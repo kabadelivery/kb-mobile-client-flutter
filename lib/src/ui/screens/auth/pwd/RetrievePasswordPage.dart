@@ -222,9 +222,13 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
               ],
             ),
           ),
-          const SizedBox(height: 50),
-          Image.asset("assets/images/background/Patternlogin.png",
-              fit: BoxFit.cover, height: 290),
+          const SizedBox(height: 131),
+                  Image.asset(
+  "assets/images/background/Patternlogin.png",
+  width: double.infinity,
+  height: 275,
+  fit: BoxFit.cover, // scales and crops to cover the width
+),
         ],
       ),
     );

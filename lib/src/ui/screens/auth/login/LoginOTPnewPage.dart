@@ -21,9 +21,12 @@ class VerificationPage extends StatefulWidget {
 }
 
 class _VerificationPageState extends State<VerificationPage> {
-  final TextEditingController passwordController = TextEditingController();
+ 
   bool _obscurePassword = true;
   String errorMessage = "";
+
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
 
   List<String>? retrievePasswordTitle;
 
@@ -45,8 +48,8 @@ class _VerificationPageState extends State<VerificationPage> {
   }
 
   void _submitCode() {
-    String enteredPassword = passwordController.text.trim();
-
+   String enteredPassword = _controllers.map((c) => c.text).join();
+     print(" MDP : "+enteredPassword) ;
     if (enteredPassword.isEmpty) {
       setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
       return;
@@ -164,14 +167,15 @@ class _VerificationPageState extends State<VerificationPage> {
                   ],
                 ),
                 const SizedBox(height: 40),
-                const Text("Entrez votre mot de passe",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
+                 const Text(
+                "Entrez le code de vérification",
+                style: TextStyle(fontSize: 16, color: Colors.black87),
+              ),
                 const SizedBox(height: 20),
 
                 // ✅ Password Field
-                TextField(
-                  controller: passwordController,
+                /* TextField(
+                  controller: _controllers,
                   obscureText: _obscurePassword,
                   decoration: InputDecoration(
                     hintText: "Mot de passe",
@@ -185,7 +189,19 @@ class _VerificationPageState extends State<VerificationPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                ),
+                ), */
+                Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: List.generate(4, (index) => _buildOtpField(index)),
+              ),
+              const SizedBox(height: 20),
+
+              const Text(
+                "Un code vous a été envoyé par SMS via le numéro de téléphone que vous avez renseigné.\nCe code expire dans 3 minutes pour votre sécurité.",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.black54, fontSize: 13),
+              ),
+              const SizedBox(height: 30),
 
                 if (errorMessage.isNotEmpty) ...[
                   const SizedBox(height: 10),
@@ -206,7 +222,7 @@ class _VerificationPageState extends State<VerificationPage> {
                       ),
                     ),
                     onPressed: _submitCode,
-                    child: const Text("Se connecter",
+                    child: const Text("Creer Un Compte",
                         style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
@@ -226,6 +242,30 @@ class _VerificationPageState extends State<VerificationPage> {
           Image.asset("assets/images/background/Patternlogin.png",
               fit: BoxFit.cover, height: 290),
         ],
+      ),
+    );
+  }
+  
+  Widget _buildOtpField(int index) {
+    return SizedBox(
+      width: 60,
+      child: TextField(
+        controller: _controllers[index],
+        keyboardType: TextInputType.number,
+        textAlign: TextAlign.center,
+        maxLength: 1,
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+        decoration: InputDecoration(
+          counterText: "",
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
+        ),
+        onChanged: (value) {
+          if (value.isNotEmpty && index < 3) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
       ),
     );
   }

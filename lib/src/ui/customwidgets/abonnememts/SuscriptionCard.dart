@@ -6,13 +6,16 @@ import 'package:KABA/src/ui/screens/home/me/abonnement/kaba_abonnements_actif.da
 import 'package:KABA/src/ui/screens/home/orders/fake-orderpage/NewDesignOrderPage.dart';
 import 'package:flutter/material.dart';
  import 'dart:convert';
+ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class SubscriptionCard extends StatelessWidget {
 
   final int id_pack ;
   final String title;
   final String price;
+  double convertprice = 0 ;
   final String currency;
   final Color borderColor;
   final Color accentColor;
@@ -32,6 +35,7 @@ class SubscriptionCard extends StatelessWidget {
     required this.id_pack,
     required this.title,
     required this.price,
+  
     this.currency = "CFA",
     required this.borderColor,
     required this.accentColor,
@@ -45,10 +49,13 @@ class SubscriptionCard extends StatelessWidget {
  // 👈 track selection
   @override
   Widget build(BuildContext context) {
+    double number = double.parse(price);
+   String formatted = NumberFormat("#,###").format(number);
+
     return Container(
-      margin: const EdgeInsets.all(8),
+      margin:  title=="VIC" ? const EdgeInsets.only(left: 35) :  const EdgeInsets.all(8) ,
       padding: const EdgeInsets.all(16),
-      width: width.toDouble() == 0 ? 170 : width.toDouble(),
+      width: title=="VIC" ? 300 : 170,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -72,7 +79,8 @@ class SubscriptionCard extends StatelessWidget {
            Container(
            // borderRadius: BorderRadius.circular(4),
             color: accentColor.withOpacity(0.1),
-            child:Icon(Icons.shield_outlined, color: accentColor, size: 18),
+            child:Icon(  title == "BASIC"  ? Icons.shield_outlined : title == "BASIC+" ? Icons.bolt_outlined : title == "VIC" ? Icons.verified_outlined : Icons.shield_outlined
+             ,color: accentColor, size: 18),
            ),
            SizedBox(width: 6),
            Text(
@@ -92,7 +100,7 @@ class SubscriptionCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                price,
+                formatted,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -178,12 +186,42 @@ class SubscriptionCard extends StatelessWidget {
                     ),
                 ],
               ),
+              title == "VIC" ? Row(children: [
+                      
+                   Container(
+  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+  decoration: BoxDecoration(
+    color: Color(0xFFFFE8ED), // background color
+    border: Border.all(color: Colors.red, width: 1), // red border
+    borderRadius: BorderRadius.circular(6), // optional rounded corners
+  ),
+  child: Text(
+    title == "VIC"
+        ? " -5% de reduction sur montant commandes"
+        : "Partageable",
+    style: const TextStyle(
+      fontSize: 13,
+      color: KColors.primaryColor,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+)
+                    ],) : Row(children: [],),
+              title == "VIC" ? Row(children: [
+                      Icon(Icons.star_border_outlined, color: Color(0xFFD99507), size: 18),
+                       Text(
+                       title == "VIC" ? "  Bonus 7 Jours de Livraison gratuite" : "Partageable" ,
+                      style:
+                          const TextStyle(fontSize: 13, color: KColors.primaryColor,fontWeight: FontWeight.bold)
+                    )
+                    ],) : Row(children: [],)  ,
                Row(
                 children: [
                    Icon(Icons.groups_2_outlined, color: accentColor, size: 18),
                   const SizedBox(width: 6),
+                    
                    Text(
-                       partageable ? "Partageable" : "non partageable",
+                       title == "VIC" ? "Partagable (jusqu'a 03 Personnes)" : "Partageable" ,
                       style:
                           const TextStyle(fontSize: 13, color: Colors.black87,),
                     ),
@@ -209,8 +247,12 @@ class SubscriptionCard extends StatelessWidget {
       idPack:id_pack ,
       title: title,
       price: price.toString(),
+      livraison:livraisons , 
+      validite:validite , 
+      rayon:rayon ,
+      min:min ,
       currency: "CFA",
-      accentColor: Colors.red,
+      accentColor: accentColor,
     );
   },
               child: const Text(
@@ -228,9 +270,9 @@ class SubscriptionCard extends StatelessWidget {
 
 /* Future<void> sendPayment(BuildContext context) async {
 
-  final url = Uri.parse("https://eb866e86b8d4.ngrok-free.app/new_abonnement"); // 👈 replace with your endpoint
+  final url = Uri.parse("https://c7d355e6cbf7.ngrok-free.app/new_abonnement"); // 👈 replace with your endpoint
 
-  final data = {
+  final data = {0
     "user_id": "1958",
     "subscription_id": "12",
     "start_date": "2025-08-28",

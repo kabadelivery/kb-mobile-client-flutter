@@ -37,7 +37,7 @@ class _SubscriptionSuccessSheetState extends State<SubscriptionSuccessSheet> {
   Future<Map<String, dynamic>> fetchSubscriptionData() async {
     try {
       final response = await http.get(
-        Uri.parse("https://0c137bece99a.ngrok-free.app/dashboard/subscribeduser/39978"),
+        Uri.parse("https://c7d355e6cbf7.ngrok-free.app/dashboard/subscribeduser/39978"),
       );
 
       if (response.statusCode == 200) {

@@ -820,7 +820,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               widget.customer!,
               "${_phoneNumberFieldController!.text}",
               "${_amountFieldController!.text}",
-              _getFees());
+              _getFees(),
+              1 
+              );
         } else if (widget.selectedPosition == 2) {
           String amount = "${_amountFieldController!.text}";
           int _amount = int.parse(amount);
@@ -1076,7 +1078,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
     ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
     CustomerModel customer = await CustomerUtils.getCustomer();
     bool launch_other_payment = false;
-
+    int transaction_motif_id = 1 ;
     if(momo_picked_id!="flooz" && momo_picked_id!="t_money"){
       launch_other_payment=true;
     }
@@ -1089,7 +1091,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         Map result = await provider.launchTopUp(customer,
             _phoneNumberFieldController!.text,
             _amountFieldController!.text,
-            _getFees());
+            _getFees(),
+            transaction_motif_id ,
+            );
         debugPrint('result $result');
         if(result!=null && result['error']==0){
           Navigator.of(context).pop({"success": true,"code":result['code']});
@@ -1158,6 +1162,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
           'user_id': customer?.id,
           'fees': _getFees(),
           'details': 'Rechargement de carte',
+          'transaction_motif_id':1
         };
         Map result = await provider.launchStoreSemoaTransaction(customer,semoaStoreData);
         debugPrint('paymentsMethods: $paymentsMethods');

@@ -40,6 +40,8 @@ dependencies:
   provider: ^6.0.4
   shimmer_animation: ^2.0.0
   
+  
+  
   #  qr_code_scanner: ^0.7.0
   #  twitter_qr_scanner: any
 

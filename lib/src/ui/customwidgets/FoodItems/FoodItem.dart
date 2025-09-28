@@ -114,6 +114,7 @@ class _FoodGridState extends State<FoodGrid> {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
+                
               ),
               color: Colors.white,
               elevation: 3,

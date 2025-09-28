@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
-   String userlogin = "kokougomgom@gmail.com" ; 
+   String userlogin =  "" ; 
 
   List<String>? _loginFieldHint;
 
@@ -92,6 +92,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "";
     _whatsappPhoneNumberHint = "";
 
+    userlogin = widget.login ?? "" ; 
+
     this.widget.presenter!.registerView = this;
     /* retrieve state of the app */
     _retrieveRequestParams();
@@ -124,6 +126,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           backgroundColor: Colors.white,
@@ -167,16 +170,16 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                         //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
                       ],
                     ),
-                     SizedBox(height: 40),
+                     SizedBox(height: 20),
                       Center(
                         child: 
-                       Text("Creer votre Compte ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                       Text("Creer votre Compte avec ${widget.login} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
                       ),
-                      SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),
+                      
+                   /*  Container(margin: EdgeInsets.only(left:40, right: 40),
                     child:   
-                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-              const SizedBox(height: 40),
+                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)), */
+              const SizedBox(height: 20),
 
               // Username
               TextField(
@@ -250,7 +253,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     ),
                   ),
                  onPressed: () {
-                    showReceiveCodeBottomSheet(context);
+                     _sendCodeAction();
+                    
                  },
                    // Handle create account action,
                   child: const Text(
@@ -316,12 +320,17 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                         (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
-                    SizedBox(height: 50),
+                    SizedBox(height: 30),
             ],
           ),
         ),
       ),
-      Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.fill, )
+        Image.asset(
+  "assets/images/background/Patternlogin.png",
+  width: double.infinity,
+  height: 275,
+  fit: BoxFit.cover, // scales and crops to cover the width
+),
           ]
           
         )
@@ -368,20 +377,46 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
     /* nicknames */
     String _nickname = _nicknameFieldController.text;
+    String password = passwordFieldController.text;
+    String secondpassword = secondpassController.text ;
+    
+  
     /* check the fields */
-    if (_nickname.trim().length==0) {
+    if (_nickname.trim().length==0 || password.trim().length==0 || secondpassword.trim().length==0) {
       setState(() {
         isNicknameError = true;
       });
+       mDialog("❌ Un des champ est Vide !");
       return;
     }
 
+     if (_nickname.trim().length < 3  ) {
+      setState(() {
+        isNicknameError = true;
+      });
+       mDialog("❌ Le Nom doit contenir au moins 2 characteres");
+      return;
+    }
+
+    if (password != secondpassword) {
+  // Les mots de passe ne correspondent pas
+   mDialog("❌ Les deux mots de passe ne sont pas identiques");
+
+} else if (password.length < 4) {
+  // Mot de passe trop court
+   mDialog("❌ Le mot de passe doit contenir au moins 4 caractères");
+
+} else {
     setState(() {
       isCodeSending = true;
     });
     /* send request, to the server, and if ok, save request params and update fields. */
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-    this.widget.presenter!.sendVerificationCode(login);
+   
+    showReceiveCodeBottomSheet(context);
+}
+
+   
 
       
    /*
@@ -694,9 +729,11 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       this.widget.presenter!.checkVerificationCode(
           codetyped['code'], this._requestId??"");
     } else {
-      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}"+codetyped['code']);
     }
 
+   } else{
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}"+codetyped['code']);
    }
 
     /* check request id and the code */
@@ -815,8 +852,15 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                 ),
                 onPressed: () async {
                   
-           isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};
+          // 
 
+           Navigator.of(context).pop();
+           setState(() {
+      isCodeSending = true;
+    });
+            
+        this.widget.presenter!.sendVerificationCode(userlogin);
+      
             _checkCodeAndCreateAccount();
            
                

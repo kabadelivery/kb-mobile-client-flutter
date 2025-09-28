@@ -1026,17 +1026,20 @@ _searchAction();
         Padding(
   padding: const EdgeInsets.symmetric(horizontal: 16),
   child:  Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 1,
+            runSpacing: 1,
             children: _allFilters.map((filter) {
               final isSelected = _selectedFilter == filter;
               return ChoiceChip(
+
+                padding: EdgeInsets.symmetric(horizontal: 1),
                 label: Text("#$filter"),
                 selected: isSelected,
                 showCheckmark: false,
                 selectedColor: KColors.primaryColor,
                 backgroundColor: Colors.grey.shade200,
                 labelStyle: TextStyle(
+                  fontSize: 11 , 
                   color: isSelected ? Colors.white : Colors.black,
                   fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),

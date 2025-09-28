@@ -22,7 +22,7 @@ class _SubscriptionPlansSheetState extends State<SubscriptionPlansSheet> {
 
   /// ------------------- Fetch Available Plans -------------------
   Future<void> _fetchSubscriptionPlans() async {
-    final url = Uri.parse("https://0c137bece99a.ngrok-free.app/dashboard/packs");
+    final url = Uri.parse("https://c7d355e6cbf7.ngrok-free.app/dashboard/packs");
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

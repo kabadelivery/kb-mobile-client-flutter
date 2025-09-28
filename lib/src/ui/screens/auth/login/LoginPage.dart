@@ -294,7 +294,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               ),
               ),
               SizedBox(height: 40),
-              Image.asset("assets/images/background/Patternlogin.png", fit: BoxFit.fitWidth,height: 275, ),
+              Image.asset(
+  "assets/images/background/Patternlogin.png",
+  width: double.infinity,
+  height: 275,
+  fit: BoxFit.cover, // scales and crops to cover the width
+),
               ]
             ),
           ),

@@ -478,13 +478,19 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             : Container(),
         /* menu box */
 
+
+
+
         InkWell (
           onTap: () {
               Navigator.pop(context); // close the bottom sheet
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ChatPage(),
+                  builder: (context) => ChatPage(
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc1ODg5MjY5MH0.5f-Kj344ropznydjwJbEZx9xa7kPkJyqokg5gNo0vrE",
+                    receiverId: 5,
+                  ),
                 ),
               );
           },
