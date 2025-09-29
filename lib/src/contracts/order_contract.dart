@@ -223,7 +223,7 @@ class OrderConfirmationPresenter implements OrderConfirmationContract {
 //can_preorder = 0;
 
       Iterable lo = json.decode(response)["data"]["preorder"]["hours"];
-      List<DeliveryTimeFrameModel>? deliveryFrames = lo?.map((df) => DeliveryTimeFrameModel.fromJson(df))?.toList();
+      List<DeliveryTimeFrameModel>? deliveryFrames = lo.map((df) => DeliveryTimeFrameModel.fromJson(df)).toList();
 
       //    open_type = 0;
       //    can_preorder = 0;

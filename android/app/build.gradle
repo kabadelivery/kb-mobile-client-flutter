@@ -3,6 +3,7 @@ plugins {
     id 'kotlin-android'
     id 'dev.flutter.flutter-gradle-plugin'
 }
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -17,19 +18,16 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-    flutterVersionCode = '374'
+flutterVersionCode = '374'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-    flutterVersionName = '3.7.4'
-
-
+flutterVersionName = '3.7.4'
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
 if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
-
 
 android {
     namespace "tg.tmye.kaba.brave.one"
@@ -39,12 +37,12 @@ android {
         disable 'InvalidPackage'
         abortOnError false
     }
+
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '11'
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "tg.tmye.kaba.brave.one"
         minSdkVersion flutter.minSdkVersion
         targetSdkVersion 34
@@ -53,7 +51,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
         ndk {
-//            debugSymbolLevel 'FULL'
+            // debugSymbolLevel 'FULL'
         }
     }
 
@@ -73,11 +71,10 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
         coreLibraryDesugaringEnabled true
     }
-
 }
 
 flutter {
@@ -91,15 +88,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-//    implementation 'com.google.firebase:firebase-messaging:22.0.0'
     implementation "androidx.media:media:1.4.3"
     def multidex_version = "2.0.1"
     implementation "androidx.multidex:multidex:$multidex_version"
-    // huawei push kit
-//    implementation 'com.huawei.hms:push:6.1.0.300'
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
 }
 
 // ADD THIS AT THE BOTTOM
 apply plugin: 'com.google.gms.google-services'
-//apply plugin: 'com.huawei.agconnect'
+// apply plugin: 'com.huawei.agconnect'

@@ -94,17 +94,15 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         GetMessages getMessages = GetMessages(ChatRepositoryImpl(ChatRemoteDataSourceImpl(http.Client())));
         List<ChatMessageEntity> messages = await getMessages.call(conversationId: event.conversationId);
 
-        if(messages!=null){
-          if(messages.isNotEmpty){
-            messages.sort((a, b) {
-              final dateA = DateTime.tryParse(a.createdAt ?? '') ?? DateTime(1970);
-              final dateB = DateTime.tryParse(b.createdAt ?? '') ?? DateTime(1970);
-              return dateA.compareTo(dateB);
-            });
-            emit(getMessagesState(messages: messages, error: false));
-          }
+        if(messages.isNotEmpty){
+          messages.sort((a, b) {
+            final dateA = DateTime.tryParse(a.createdAt ?? '') ?? DateTime(1970);
+            final dateB = DateTime.tryParse(b.createdAt ?? '') ?? DateTime(1970);
+            return dateA.compareTo(dateB);
+          });
+          emit(getMessagesState(messages: messages, error: false));
         }
-      }
+            }
     });
   }
 }

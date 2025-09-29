@@ -15,7 +15,7 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../../StateContainer.dart';
 
 
@@ -40,6 +40,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   List<String> recoverModeHints = [""];
 
   String _loginFieldHint = "";
+    final TextEditingController passwordController = TextEditingController();
+  bool _obscurePassword = true;
+  String errorMessage = "";
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
@@ -56,6 +59,22 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   int timeDiff = 0;
 
   String? _requestId;
+  void _submitCode() {
+    String enteredPassword = passwordController.text.trim();
+
+    if (enteredPassword.isEmpty) {
+      setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
+      return;
+    }
+
+    if (enteredPassword.length < 4) {
+      setState(() => errorMessage = "Le mot de passe doit contenir au moins 4 caractères.");
+      return;
+    }
+
+    // ✅ Simulate navigation with collected password (old behavior)
+   // Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
+  }
 
   @override
   void initState() {
@@ -125,27 +144,83 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
         ),
         backgroundColor: Colors.white,
         body: Container(
+          padding:EdgeInsets.all(20),
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
             child:Center(
               child: Column(
+                
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 30),
-                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
-                    SizedBox(height: 10),
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    const SizedBox(height: 40),
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size: 25),
+                    SizedBox(width: 20),
+                    Text("Connexion",
+                        style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
+                  ],
+                ),
+                 const SizedBox(height: 40),
+                const Text("Votre numero de Telephone",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 20),
+
+                // ✅ Password Field
+                TextField(
+                  controller: _loginFieldController,
+                  
+                  decoration: InputDecoration(
+                    hintText: "90 00 00 01",
+                    prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
+                    /* suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          color: KColors.primaryColor),
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    ), */
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+
+                if (errorMessage.isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                ],
+
+                const SizedBox(height: 30),
+
+                // ✅ Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onPressed: _submitCode,
+                    child: const Text("Se connecter",
+                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+
+                    /* Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child: TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.new_black)),
                             decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
+                        )),*/
 
                     SizedBox(height: 30),
-                    SizedBox(height: 10),
+                    SizedBox(height: 10), 
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(

@@ -3,7 +3,6 @@ import '../../data/order/DeliveryStatusUpdate.dart';
 import '../../data/order/data_remote_source.dart';
 import '../../data/order/delivery_model.dart';
 import '../../data/order/payment_info_model.dart';
-import '../../data/order/payment_model.dart';
 
 abstract class DeliveryRepository {
   Future<Delivery> createDeliveryRequest(Delivery delivery);

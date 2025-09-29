@@ -56,12 +56,8 @@ class OrderDetailsPresenter implements OrderDetailsContract {
     try {
       CommandModel commandModel = await provider.loadOrderFromId(customerModel, orderId,is_out_of_app_order:is_out_of_app_order);
       _orderDetailsView.showLoading(false);
-      if (commandModel != null) {
-        _orderDetailsView.inflateOrderDetails(commandModel);
-      } else {
-        _orderDetailsView.systemError();
-      }
-    } catch(_,stackTrace) {
+      _orderDetailsView.inflateOrderDetails(commandModel);
+        } catch(_) {
       /* Food failure */
       _orderDetailsView.showLoading(false);
       xrint("error ${_}");

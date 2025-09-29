@@ -23,7 +23,6 @@ class RatingDelivery extends StatefulWidget {
   @override
   State<RatingDelivery> createState() => _RatingDeliveryState();
 }
-
 class _RatingDeliveryState extends State<RatingDelivery> {
   String livreurName = "";
   String livreurImage = "https://images.icon-icons.com/3560/PNG/512/delivery_courier_man_people_avatar_shipping_icon_225197.png";

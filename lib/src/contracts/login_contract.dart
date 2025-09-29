@@ -1,8 +1,6 @@
 /* login contract */
-import 'dart:convert';
 
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
-import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/xrint.dart';
 
 class LoginContract {

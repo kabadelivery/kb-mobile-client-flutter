@@ -15,10 +15,12 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/AdModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:KABA/src/ui/screens/home/ImagesPreviewPage.dart';
 import 'package:KABA/src/ui/screens/home/_home/InfoPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
+import 'package:KABA/src/ui/screens/home/me/abonnement/kaba_abonnements.dart';
 import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/me/money/TopNewUpPage.dart';
@@ -323,7 +325,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 //                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
                           Icon(Icons.account_balance_wallet,
                               color: KColors.mBlue, size: 40),
-                          SizedBox(height: 10),
+                          SizedBox(height: 5),
                           Center(
                             child: Center(
                               child: Row(
@@ -333,7 +335,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     "${AppLocalizations.of(context)!.translate('balance')}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.w500,
-                                        fontSize: 13),
+                                        fontSize: 12),
                                   )
                                 ],
                               ),
@@ -359,11 +361,46 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                 FontAwesomeIcons.solidCreditCard,
                                 color: CommandStateColor.delivered,
                               )),
-                          SizedBox(height: 10),
+                          SizedBox(height: 5),
                           Text(
                             "${AppLocalizations.of(context)!.translate('top_up')}",
                             style: TextStyle(
-                                fontWeight: FontWeight.w500, fontSize: 13),
+                                fontWeight: FontWeight.w500, fontSize: 12),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                 Expanded(
+                  flex: 1,
+                  child: InkWell(
+                     onTap: () => _jumpToPage(
+                        context,
+                        Kaba_abonnement( presenter: TransactionPresenter(TransactionView()))
+                        
+                        ), 
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+                          Image.asset(  "assets/images/png/Iconeabo.png",  width: 40,  height: 40) ,
+                          SizedBox(height: 5),
+                          Center(
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.translate('suscription')}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12),
+                                  )
+                                ],
+                              ),
+                            ),
                           )
                         ],
                       ),
@@ -441,12 +478,22 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             : Container(),
         /* menu box */
 
-        InkWell(
-          onTap: () => _jumpToPage(
-              context,
-              CustomerCareChatPage(
-                  presenter:
-                      CustomerCareChatPresenter(CustomerCareChatView()))),
+
+
+
+        InkWell (
+          onTap: () {
+              Navigator.pop(context); // close the bottom sheet
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc1ODg5MjY5MH0.5f-Kj344ropznydjwJbEZx9xa7kPkJyqokg5gNo0vrE",
+                    receiverId: 5,
+                  ),
+                ),
+              );
+          },
           child: Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.symmetric(vertical: 20),
@@ -1218,7 +1265,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       ),
     );
 
-    if (results != null && results.containsKey('check_balance')) {
+    if (results.containsKey('check_balance')) {
 //      bool check_balance =  results['check_balance'];
       debugPrint("link : ${results}");
 
@@ -1399,6 +1446,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       }
       return null;
     }
+    return null;
   }
 
   void mDialog(String message) {
@@ -1413,7 +1461,6 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       {String? svgIcons,
       Icon? icon,
       var message,
-      bool okBackToHome = false,
       bool isYesOrNo = false,
       Function? actionIfYes}) {
     showDialog(
@@ -1438,7 +1485,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 ? <Widget>[
                     OutlinedButton(
                       style: ButtonStyle(
-                          side: MaterialStateProperty.all(
+                          side: WidgetStateProperty.all(
                               BorderSide(color: Colors.grey, width: 1))),
                       child: new Text(
                           "${AppLocalizations.of(context)!.translate('refuse')}",
@@ -1449,7 +1496,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     ),
                     OutlinedButton(
                       style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
+                          side: WidgetStateProperty.all(BorderSide(
                               color: KColors.primaryColor, width: 1))),
                       child: new Text(
                           "${AppLocalizations.of(context)!.translate('accept')}",
@@ -1506,7 +1553,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
             actions: <Widget>[
               OutlinedButton(
                 style: ButtonStyle(
-                    side: MaterialStateProperty.all(
+                    side: WidgetStateProperty.all(
                         BorderSide(color: Colors.grey, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context)!.translate('refuse')}",
@@ -1517,7 +1564,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               ),
               OutlinedButton(
                 style: ButtonStyle(
-                    side: MaterialStateProperty.all(
+                    side: WidgetStateProperty.all(
                         BorderSide(color: KColors.primaryColor, width: 1))),
                 child: new Text(
                     "${AppLocalizations.of(context)!.translate('accept')}",
@@ -1537,7 +1584,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
   _seeProfilePicture() {
     List<AdModel> slider = [
-      AdModel(pic: "${widget?.customerData?.profile_picture}")
+      AdModel(pic: "${widget.customerData?.profile_picture}")
     ];
 
     Navigator.of(context).push(PageRouteBuilder(
