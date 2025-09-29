@@ -1,6 +1,9 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/topup_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/data/expedition/remote_data_source.dart';
+import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
+import 'package:KABA/src/microservices/expedition/usecases/payExpediton.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
@@ -33,6 +36,7 @@ class TopNewUpPage extends StatefulWidget {
   TransactionType? transactionType;
   Map<String,dynamic>? additionnal_infos;
 
+
   var total = 0;
 
   var fees = 0;
@@ -45,8 +49,9 @@ class TopNewUpPage extends StatefulWidget {
   double? fees_momo = 4.0;
 
   int? selectedPosition = 1;
+  int? amount_to_send=0;
 
-  TopNewUpPage({Key? key, this.presenter,this.transactionType,this.additionnal_infos}) : super(key: key);
+  TopNewUpPage({Key? key, this.amount_to_send, this.presenter,this.transactionType,this.additionnal_infos}) : super(key: key);
 
   CustomerModel? customer;
 
@@ -58,7 +63,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   TextEditingController? _phoneNumberFieldController;
   TextEditingController? _amountFieldController;
   TextEditingController? _totalAmountFieldController;
-
   String operator = "---";
 
   bool isOperatorOk = false;
@@ -102,6 +106,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
   @override
   void initState() {
     super.initState();
+
     widget.presenter!.topUpView = this;
     _phoneNumberFieldController = new TextEditingController();
     _totalAmountFieldController = new TextEditingController(text: "0");
@@ -124,6 +129,9 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       momoPaymentModes.add({"name":"MTN","id":"mtn","logo":"assets/images/jpg/mtn_logo.jpg"});
       momoPaymentModes.add({"name":"Wave","id":"wave","logo":"assets/images/png/wave_logo.png"});
     }
+    if(widget.amount_to_send!=null && widget.amount_to_send!=0){
+      _amountFieldController = new TextEditingController(text: widget.amount_to_send.toString());
+    }
   }
 
   @override
@@ -141,6 +149,10 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         "${AppLocalizations.of(context)?.translate("mobile_money_top_up")}",
         "${AppLocalizations.of(context)?.translate("bank_card_top_up")}"
       ];
+    }
+    if(widget.transactionType== TransactionType.expedition){
+      _totalAmountFieldController!.text =
+      "${_getRealTotalAmountFromInitial()}";
     }
     return Scaffold(
       backgroundColor: Colors.white,
@@ -267,7 +279,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                      Text("${AppLocalizations.of(context)!.translate('choose_your_payment_method')}",style: TextStyle(color: Colors.black87, fontSize: 12),),
-
                     ],
                   ),
                 ),
@@ -278,7 +289,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                              width: MediaQuery.of(context).size.width*0.95,
-                              height: (momoPaymentModes.length / 4).ceil() * 60.0,
+                              height: (momoPaymentModes.length / 4).ceil() * 65.0,
                               child: GridView.builder(
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
@@ -485,7 +496,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                     : Container(),
                 Column(children: [
                   /* amount you wanna get paid */
-                  Container(
+                widget.transactionType == TransactionType.expedition?Container():
+                Container(
                     color: Colors.white,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Column(
@@ -700,6 +712,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                       }
                       else if(widget.transactionType == TransactionType.kaba_chine)
                         kabaChinePay();
+                      else if(widget.transactionType == TransactionType.expedition)
+                        ExpeditionPay();
                     },
                     child: Container(
                       child: Row(
@@ -938,6 +952,14 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
   void _updateFromInitialAmountTotal() {
     /* check which one has focus before updating */
+  if(widget.transactionType == TransactionType.expedition){
+    widget.fees = _getFeesFromAmount();
+    _feesFieldController!.text = "${widget.fees}";
+    _totalAmountFieldController!.removeListener(_updateFromTotal);
+    _totalAmountFieldController!.text =
+    "${_getRealTotalAmountFromInitial()}";
+    _totalAmountFieldController!.addListener(_updateFromTotal);
+  }else{
     setState(() {
       if (!_totalFocusNode!.hasFocus!) {
         // update fees
@@ -953,6 +975,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         xrint("total field has  focus ");
       }
     });
+  }
   }
 
   _getFeesFromAmount() {
@@ -1061,6 +1084,32 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                  widget.additionnal_infos!['delivery_id'].toString(),
                 dropdownValue=="Flooz"?"FLOOZ":"TMONEY"
             );
+
+    setState(() {
+      if(data!=null){
+        Navigator.of(context).pop({"success": data['success'],"code":data['code']});
+      }else{
+        Navigator.of(context).pop({"success": false});
+      }
+      showLoading(false);
+    });
+  }
+  void ExpeditionPay()async{
+    setState(() {
+      showLoading(true);
+
+    });
+    PayExpedition payExpedition = PayExpedition(
+        ExpeditionRepositoryImpl(
+            ExpeditionRemoteDataSourceImpl()));
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    Map data=await payExpedition.call(
+        customer,
+        _phoneNumberFieldController!.text,
+        widget.amount_to_send.toString(),
+        widget.additionnal_infos!['delivery_id'].toString(),
+        dropdownValue=="Flooz"?"FLOOZ":"TMONEY"
+    );
 
     setState(() {
       if(data!=null){

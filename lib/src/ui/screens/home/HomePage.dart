@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -16,7 +15,9 @@ import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/pages/homepage.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/microservices/kaba_chine/presentation/page_holder.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
@@ -30,6 +31,8 @@ import 'package:KABA/src/ui/screens/home/me/address/MyAddressesPage.dart';
 import 'package:KABA/src/ui/screens/home/me/customer/care/CustomerCareChatPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderNewDetailsPage.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/out_of_app_pres.dart';
+import 'package:KABA/src/ui/screens/out_of_app_orders/pharmacy.dart';
 import 'package:KABA/src/ui/screens/out_of_app_orders/shipping_package.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -614,11 +617,6 @@ class _HomePageState extends State<HomePage> {
   //  //get device token
   void get_token() async {
     String? token = await FirebaseMessaging.instance.getToken();
-    FirebaseMessaging.instance.subscribeToTopic('testeurs_kaba').then((_) {
-      print('✅ Subscribed to topic: testeurs_kaba');
-    }).catchError((error) {
-      print('❌ Failed to subscribe to topic: $error');
-    });
     print('Device token $token');
   }
 
@@ -695,16 +693,143 @@ class _HomePageState extends State<HomePage> {
     ];
     if (value == 2 || value == 3) {
       if (StateContainer.of(context).loggingState == 0) {
-        // not logged in... show dialog and also go there
         showDialog<void>(
           context: context,
-          barrierDismissible: true , // user must tap button!
+          barrierDismissible: false,
           builder: (BuildContext context) {
-            
-            return const Modal_2_connect();
-            
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              insetPadding: EdgeInsets.symmetric(horizontal: 24),
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                     Container(
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [KColors.primaryColor, KColors.primaryColor.withOpacity(.7)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.shield_outlined,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Titre
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          "Accès sécurisé ",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                        Text("KABA",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: KColors.primaryColor,
+                            )),
+                      ],
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Description
+                    Text(
+                      "Vous devez vous connecter pour avoir accès à votre compte KABA",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor:Color(0xFFD13457),
+                          elevation: 0,
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        icon: Icon(Icons.person, color: Colors.white),
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Se connecter",
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                            Icon(Icons.arrow_forward, color: Colors.white),
+                          ],
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  LoginPage(presenter: LoginPresenter(LoginView())),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    // Bouton secondaire "Pas maintenant"
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(vertical: 14),
+                          side: BorderSide(color: Colors.grey.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          "Pas maintenant",
+                          style: TextStyle(color: Colors.black87, fontSize: 16),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
           },
         );
+
       } else {
         /* zwitch */
         setState(() {
@@ -846,13 +971,14 @@ class _HomePageState extends State<HomePage> {
             /* convert from hexadecimal to decimal */
             widget.argument = int.parse("${pathSegments[1]}");
             // check if restaurant is out of app or colis
-            if (pathSegments[1] == "795") {
+            if (pathSegments[1] == "hors_appli") {
               if (StateContainer.of(context).loggingState == 0) {
                 NotLoggedInPopUp(context);
               } else {
-                _jumpToPage(context, OutOfAppOrderPage());
+                _jumpToPage(context, OutOfAppPres());
               }
-            } else if (pathSegments[1] == "794") {
+            }
+            else if (pathSegments[1] == "colis") {
               List<Map<String, dynamic>> districts = [];
               List<Map<String, dynamic>> cachedDistricts =
                   await CustomerUtils.getCachedDistricts();
@@ -875,7 +1001,30 @@ class _HomePageState extends State<HomePage> {
                       districts: districts,
                     ));
               }
-            } else {
+            }
+            else if (pathSegments[1] == "chine") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, WelcomeToKabaChine());
+              }
+            }
+            else if (pathSegments[1] == "expedition") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, KabaExpeditionHomePage());
+              }
+            }
+            else if (pathSegments[1] == "pharmacy") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, PharmacyPage());
+              }
+            }
+
+            else {
               _jumpToPage(
                   context,
                   ShopDetailsPage(

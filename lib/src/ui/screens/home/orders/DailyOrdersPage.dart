@@ -153,7 +153,8 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
   }
   @override
   void dispose() {
-    mainTimer!.cancel();
+    if(mainTimer!=null)
+      mainTimer!.cancel();
     super.dispose();
   }
 

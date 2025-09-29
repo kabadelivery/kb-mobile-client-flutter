@@ -41,15 +41,16 @@ class MyAddressesPage extends StatefulWidget {
 
   List<DeliveryAddressModel> pureDeliveryAddresses = [];
   int? address_type;
+  DeliveryAddressModel? autoCreatAddress;
   MyAddressesPage(
       {Key? key,
       this.presenter,
       this.pick = false,
       this.gps_location /*6.33:3.44*/,
-      this.address_type
+      this.address_type,
+        this.autoCreatAddress
       })
       : super(key: key);
-
   @override
   _MyAddressesPageState createState() => _MyAddressesPageState();
 }
@@ -60,7 +61,38 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+  void _getActualPositioAddress(){
 
+    setState(() {
+      isLoading =true;
+    });
+    CustomerUtils.getCustomer().then((customer)async {
+      await determinePosition().then((value)async{
+        DeliveryAddressModel old_address  =DeliveryAddressModel();
+        for(DeliveryAddressModel adr in widget.data!){
+          if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
+            old_address=adr;
+            break;
+          }
+        }
+        DeliveryAddressModel address = DeliveryAddressModel(
+          id: old_address.id,
+          name:"${AppLocalizations.of(context)!.translate('choose_actual_location')}",
+          location: "${value.latitude}:${value.longitude}",
+          phone_number:customer!.phone_number.toString(),
+          user_id: customer.id.toString(),
+          description: "${AppLocalizations.of(context)!.translate('this_location')}",
+          quartier: "unknown",
+          near: "near unknown",
+        );
+        AddressApiProvider api = AddressApiProvider();
+        Map jsonData = await api.updateOrCreateAddress(address,customer) as Map;
+        DeliveryAddressModel choosedAddres = jsonData["address"];
+        _pickedAddress(choosedAddres);
+      });
+    });
+
+  }
   @override
   void initState() {
     widget.presenter!.addressView = this;
@@ -82,6 +114,18 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         });
       });
     }
+    if(widget.autoCreatAddress!=null){
+      Timer.run(() {
+        _createAddress(autoCreate: true).then((value) {
+          widget.gps_location = "";
+        });
+      });
+    }
+   if(widget.address_type==5){
+     WidgetsBinding.instance.addPostFrameCallback((_){
+       _getActualPositioAddress();
+     });
+   }
   }
 
   @override
@@ -148,7 +192,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       ),
                     ]),
                     SizedBox(width: 10),
-                 Text(
+                    Text(
                         "${AppLocalizations.of(context)!.translate('choose_actual_location')}",
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
@@ -158,36 +202,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                         )) 
                   ])),
           onTap: () {
-            setState(() {
-              isLoading =true;
-            });
-            CustomerUtils.getCustomer().then((customer)async {
-              await determinePosition().then((value)async{
-                DeliveryAddressModel old_address  =DeliveryAddressModel();
-                for(DeliveryAddressModel adr in widget.data!){
-                  if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
-                    old_address=adr;
-                    break;
-                  }
-                }
-                DeliveryAddressModel address = DeliveryAddressModel(
-                  id: old_address.id,
-                  name:"${AppLocalizations.of(context)!.translate('choose_actual_location')}",
-                  location: "${value.latitude}:${value.longitude}",
-                  phone_number:customer!.phone_number.toString(),
-                  user_id: customer.id.toString(),
-                  description: "${AppLocalizations.of(context)!.translate('this_location')}",
-                  quartier: "unknown",
-                  near: "near unknown",
-                );
-                AddressApiProvider api = AddressApiProvider();
-                Map jsonData = await api.updateOrCreateAddress(address,customer) as Map;
-                DeliveryAddressModel choosedAddres = jsonData["address"];
-                _pickedAddress(choosedAddres);
-              });
-            });
+            _getActualPositioAddress();
+          }
 
-          }):Container(),
+          ):Container(),
+          widget.address_type==5?Center(child: CircularProgressIndicator()):
           Container(
               height: MediaQuery.of(context).size.height,
               margin: EdgeInsets.only(top: 80),
@@ -198,7 +217,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       : hasSystemError
                           ? _buildSysErrorPage()
                           : _buildDeliveryAddressesList())),
-          Positioned(
+          widget.address_type==5?Container():   Positioned(
             bottom: 0,
             right: 0,
             left: 0,
@@ -495,13 +514,18 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     if (widget.pick!) Navigator.of(context).pop({'selection': address});
   }
 
-  Future<void> _createAddress() async {
+  Future<void> _createAddress({bool? autoCreate}) async {
     // when come back update the thing.
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            EditAddressPage(
+        autoCreate==true?
+        EditAddressPage(
                 presenter: EditAddressPresenter(EditAddressView()),
-                gps_location: widget.gps_location),
+                address: widget.autoCreatAddress,
+                gps_location: widget.gps_location):
+        EditAddressPage(
+            presenter: EditAddressPresenter(EditAddressView()),
+            gps_location: widget.gps_location),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

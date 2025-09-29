@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/EvenementModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
@@ -482,4 +483,50 @@ class AppApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+  getcommandDeliveryManRate({required CustomerModel customer, required String command_id})async{
+
+    var dio = Dio();
+
+    dio.options
+      ..headers = {
+        ...Utils.getHeadersWithToken(customer!.token!),
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+        'Content-Type': 'application/json', // Adjust if needed
+      }
+      ..connectTimeout = 90000;
+    final url = Uri.parse(ServerRoutes.LINK_GET_DELIVERY_RATING_PENDING)
+        .replace(queryParameters: {
+      '_': DateTime.now().millisecondsSinceEpoch.toString()
+    })
+        .toString();
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return validateSSL(cert, host, port);
+      };
+    };
+    var _data = json.encode({
+      'command_id': command_id
+    });
+    var response = await dio.post(url, data: _data);
+    xrint("001 _ " + response.data.toString());
+    if (response.statusCode == 200) {
+        Map<String,dynamic>? data =json.decode(response.data)["data"];
+        if(json.decode(response.data)['error']==0) {
+          DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending
+              .fromJson(data!);
+          return deliveryRatingPending;
+        }else{
+          DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
+          deliveryRatingPending.command_id=0;
+          return deliveryRatingPending;
+        }
+    } else {
+      throw Exception(-1);
+    }
+  }
+
 }

@@ -320,14 +320,5 @@ dio.options
       xrint("XXX fetchShippingPriceRange error : $e");
     }
   }
-  Future<String> imageToBase64File(File imageFile) async {
-    List<int> imageBytes = await imageFile.readAsBytes();
-    String base64Image = base64Encode(imageBytes);
-    return base64Image;
-  }
-  Future<String> imageToBase64XFile(XFile imageFile) async {
-    List<int> imageBytes = await imageFile.readAsBytes();
-    String base64Image = base64Encode(imageBytes);
-    return base64Image;
-  }
+
 }

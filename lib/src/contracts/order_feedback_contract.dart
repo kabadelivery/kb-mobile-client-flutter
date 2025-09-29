@@ -4,10 +4,11 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/order_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
 
+import '../models/DeliveryRatingPending.dart';
+
 class OrderFeedbackContract {
 
   void loadOrderDetailsForFeedback(CustomerModel customer, int orderId) {}
-  void sendFeedback(CustomerModel customer, int orderId, int rating, String message){}
 }
 
 class OrderFeedbackView {
@@ -39,35 +40,6 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
     provider = new OrderApiProvider();
   }
 
-  @override
-  Future<void> sendFeedback(CustomerModel customer, int orderId, int rating, String message) async {
-
-    //
-    _orderFeedbackView.sendFeedBackLoading(true);
-    if (isWorking)
-      return;
-    isWorking = true;
-    try {
-      int errorCode = await provider.sendFeedback(customer, orderId, rating, message);
-      _orderFeedbackView.sendFeedBackLoading(false);
-      if (errorCode == 0) {
-        _orderFeedbackView.sendFeedbackSuccess();
-      } else {
-        _orderFeedbackView.sendFeedbackError(errorCode);
-      }
-    } catch(_) {
-      /* Food failure */
-      _orderFeedbackView.sendFeedBackLoading(false);
-      xrint("error ${_}");
-      if (_ == -2) {
-        _orderFeedbackView.sendFeedbackError(-1);
-      } else {
-        _orderFeedbackView.sendFeedbackError(-1);
-      }
-      isWorking = false;
-    }
-    isWorking = false;
-  }
 
   @override
   Future<void> loadOrderDetailsForFeedback(CustomerModel customer, int orderId) async {

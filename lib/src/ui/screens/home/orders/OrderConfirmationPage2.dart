@@ -66,9 +66,10 @@ class OrderConfirmationPage2 extends StatefulWidget {
   ShopModel? restaurant;
 
   int? orderTimeRangeSelected = 0;
+  DeliveryAddressModel ? address;
 
   OrderConfirmationPage2(
-      {Key? key, this.presenter, this.foods, this.addons, this.restaurant})
+      {Key? key, this.presenter, this.foods, this.addons, this.restaurant,this.address})
       : super(key: key);
 
   @override
@@ -114,7 +115,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
       // check opening state of the restaurant
-      widget.presenter!.checkOpeningStateOf(customer!, widget.restaurant!);
+      widget.presenter!.checkOpeningStateOf(customer!, widget.restaurant!).then((_){
+        if(widget.address!=null){
+          _pickDeliveryAddress(address: widget.address);
+        }
+      });
     });
 
     /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
@@ -166,44 +171,44 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 )),
         // check if the restaurant is open before showing anything.
         body: (isPayAtDeliveryLoading == true ||
-                isPayNowLoading == true ||
-                isPreorderLoading == true)
+            isPayNowLoading == true ||
+            isPreorderLoading == true)
             ? Container(
-                height: MediaQuery.of(context).size.height,
-                child: Center(
-                    child: Container(
-                  padding: EdgeInsets.all(20),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        // loading page.
-                        SizedBox(
-                            child: MyLoadingProgressWidget(),
-                            height: 80,
-                            width: 80),
-                        SizedBox(height: 30),
-                        Text(
-                          "${AppLocalizations.of(context)!.translate('processing_payment')}",
-                          textAlign: TextAlign.center,
-                        )
-                      ]),
-                )),
-              )
+          height: MediaQuery.of(context).size.height,
+          child: Center(
+              child: Container(
+                padding: EdgeInsets.all(20),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      // loading page.
+                      SizedBox(
+                          child: MyLoadingProgressWidget(),
+                          height: 80,
+                          width: 80),
+                      SizedBox(height: 30),
+                      Text(
+                        "${AppLocalizations.of(context)!.translate('processing_payment')}",
+                        textAlign: TextAlign.center,
+                      )
+                    ]),
+              )),
+        )
             : (checkIsRestaurantOpenConfigIsLoading
-                ? Center(child: MyLoadingProgressWidget())
-                : (_checkOpenStateError ||
-                        (_orderBillConfiguration != null &&
-                            _orderBillConfiguration.open_type! >= 0 &&
-                            _orderBillConfiguration.open_type! <= 3)
-                    ? _buildOrderConfirmationPage2()
-                    : ErrorPage(
-                        onClickAction: () => widget.presenter!
-                            .checkOpeningStateOf(
-                                widget.customer!, widget.restaurant!)))));
+            ? Center(child: MyLoadingProgressWidget())
+            : (_checkOpenStateError ||
+            (_orderBillConfiguration != null &&
+                _orderBillConfiguration.open_type! >= 0 &&
+                _orderBillConfiguration.open_type! <= 3)
+            ? _buildOrderConfirmationPage2()
+            : ErrorPage(
+            onClickAction: () => widget.presenter!
+                .checkOpeningStateOf(
+                widget.customer!, widget.restaurant!)))));
   }
 
-  Future _pickDeliveryAddress() async {
+  Future _pickDeliveryAddress({DeliveryAddressModel? address}) async {
     setState(() {
 //      _orderBillConfiguration = null;
       _orderBillConfiguration.isBillBuilt = false;
@@ -212,24 +217,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     });
 
     /* jump and get it */
-    Map results = await Navigator.of(context).push(PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(
-                pick: true, presenter: AddressPresenter(AddressView())),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          var begin = Offset(1.0, 0.0);
-          var end = Offset.zero;
-          var curve = Curves.ease;
-          var tween = Tween(begin: begin, end: end);
-          var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
-          return SlideTransition(
-              position: tween.animate(curvedAnimation), child: child);
-        }));
-
-    if (results != null && results.containsKey('selection')) {
+    if(address!=null){
       setState(() {
-        _selectedAddress = results['selection'];
+        _selectedAddress =address;
       });
       /* update / refresh this page */
       this.widget.presenter!.orderConfirmationView = this;
@@ -244,9 +234,42 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           Scrollable.ensureVisible(poweredByKey.currentContext!);
         });
       });
+    }else{
+      Map results = await Navigator.of(context).push(PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              MyAddressesPage(
+                  pick: true, presenter: AddressPresenter(AddressView())),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            var begin = Offset(1.0, 0.0);
+            var end = Offset.zero;
+            var curve = Curves.ease;
+            var tween = Tween(begin: begin, end: end);
+            var curvedAnimation =
+            CurvedAnimation(parent: animation, curve: curve);
+            return SlideTransition(
+                position: tween.animate(curvedAnimation), child: child);
+          }));
+
+      if (results != null && results.containsKey('selection') || address!=null) {
+        setState(() {
+          _selectedAddress = results['selection'];
+        });
+        /* update / refresh this page */
+        this.widget.presenter!.orderConfirmationView = this;
+        CustomerUtils.getCustomer().then((customer) {
+          widget.customer = customer;
+
+          // launch request for retrieving the delivery prices and so on.
+          widget.presenter!.computeBilling(widget.restaurant!, widget.customer!,
+              widget.foods!, _selectedAddress!, _selectedVoucher, _usePoint);
+          showLoading(true);
+          Future.delayed(Duration(seconds: 1), () {
+            Scrollable.ensureVisible(poweredByKey.currentContext!);
+          });
+        });
+      }
     }
   }
-
   _buildAddress(DeliveryAddressModel? selectedAddress) {
     if (selectedAddress == null)
       return Container();
@@ -311,83 +334,83 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         margin: EdgeInsets.only(left: 20, right: 20),
         child: Column(
             children: List.generate(eligible_vouchers.length, (index) {
-          if (eligible_vouchers[index].id == _selectedVoucher?.id ||
-              eligible_vouchers[index].use_count! -
+              if (eligible_vouchers[index].id == _selectedVoucher?.id ||
+                  eligible_vouchers[index].use_count! -
                       eligible_vouchers[index].already_used_count! ==
-                  0)
-            return Container(
-                /* padding: EdgeInsets.only(
+                      0)
+                return Container(
+                  /* padding: EdgeInsets.only(
                     right: 10,
                     left: 10,
                     top: index == 0 ? 10 : 0,
                     bottom: index == eligible_vouchers.length - 1 ? 10 : 0)*/
                 );
-          return Container(
-            padding: EdgeInsets.only(
-                right: 10,
-                left: 10,
-                top: index == 0 ? 10 : 5,
-                bottom: index == eligible_vouchers.length - 1 ? 10 : 5),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(children: [
-                          Container(
-                              child: Text(
-                                "${eligible_vouchers[index].value} ${eligible_vouchers[index].type == 1 ? "F" : "%"} OFF",
-                                style: TextStyle(
-                                    color: KColors.primaryColor,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w600),
+              return Container(
+                padding: EdgeInsets.only(
+                    right: 10,
+                    left: 10,
+                    top: index == 0 ? 10 : 5,
+                    bottom: index == eligible_vouchers.length - 1 ? 10 : 5),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(children: [
+                              Container(
+                                  child: Text(
+                                    "${eligible_vouchers[index].value} ${eligible_vouchers[index].type == 1 ? "F" : "%"} OFF",
+                                    style: TextStyle(
+                                        color: KColors.primaryColor,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  padding: EdgeInsets.only(
+                                      left: 10, right: 10, top: 5, bottom: 5),
+                                  decoration: BoxDecoration(
+                                      color: KColors.primaryColor.withAlpha(30),
+                                      borderRadius: BorderRadius.circular(30))),
+                              SizedBox(
+                                width: 10,
                               ),
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 10, top: 5, bottom: 5),
-                              decoration: BoxDecoration(
-                                  color: KColors.primaryColor.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(30))),
-                          SizedBox(
-                            width: 10,
-                          ),
-                          Text(
-                              "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context)!.translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context)!.translate('voucher_type_delivery')}" : "${AppLocalizations.of(context)!.translate('voucher_type_all')}")}",
+                              Text(
+                                  "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context)!.translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context)!.translate('voucher_type_delivery')}" : "${AppLocalizations.of(context)!.translate('voucher_type_all')}")}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14,
+                                      color: KColors.new_black))
+                            ]),
+                            SizedBox(height: 5),
+                            Text(eligible_vouchers[index].trade_name!,
+                                style: TextStyle(color: Colors.grey, fontSize: 12))
+                          ]),
+                      GestureDetector(
+                        onTap: () {
+                          debugPrint("is new user ${is_new_user}");
+                          if(is_new_user){
+                            mToast("${AppLocalizations.of(context)!.translate('cannot_use_voucher')}");
+                          }else
+                            _selectVoucher(
+                                has_voucher: true, voucher: eligible_vouchers[index]);
+                        },
+                        child: Container(
+                          child: Text(
+                              "${AppLocalizations.of(context)!.translate('voucher_use')}",
                               style: TextStyle(
-                                  fontWeight: FontWeight.w600,
                                   fontSize: 14,
-                                  color: KColors.new_black))
-                        ]),
-                        SizedBox(height: 5),
-                        Text(eligible_vouchers[index].trade_name!,
-                            style: TextStyle(color: Colors.grey, fontSize: 12))
-                      ]),
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint("is new user ${is_new_user}");
-                      if(is_new_user){
-                        mToast("${AppLocalizations.of(context)!.translate('cannot_use_voucher')}");
-                      }else
-                      _selectVoucher(
-                          has_voucher: true, voucher: eligible_vouchers[index]);
-                    },
-                    child: Container(
-                      child: Text(
-                          "${AppLocalizations.of(context)!.translate('voucher_use')}",
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: KColors.primaryColor,
-                              fontWeight: FontWeight.w600)),
-                      padding: EdgeInsets.only(
-                          left: 10, right: 10, top: 5, bottom: 5),
-                      decoration: BoxDecoration(
-                          color: KColors.primaryColor.withAlpha(30),
-                          borderRadius: BorderRadius.circular(5)),
-                    ),
-                  )
-                ]),
-          );
-        })),
+                                  color: KColors.primaryColor,
+                                  fontWeight: FontWeight.w600)),
+                          padding: EdgeInsets.only(
+                              left: 10, right: 10, top: 5, bottom: 5),
+                          decoration: BoxDecoration(
+                              color: KColors.primaryColor.withAlpha(30),
+                              borderRadius: BorderRadius.circular(5)),
+                        ),
+                      )
+                    ]),
+              );
+            })),
       );
   }
 
@@ -537,14 +560,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             child: Column(children: <Widget>[
               (_orderBillConfiguration!.remise! > 0 && !_isPreorder()
                   ? Container(
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(
-                                      NetworkImages.kaba_promotion_gif)))))
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                              Utils.inflateLink(
+                                  NetworkImages.kaba_promotion_gif)))))
                   : Container()),
               Container(),
               /* content */
@@ -567,7 +590,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant commande normal */
                         Text(
                             _orderBillConfiguration!.command_pricing! >
-                                    _orderBillConfiguration!.promotion_pricing!
+                                _orderBillConfiguration!.promotion_pricing!
                                 ? "(${_orderBillConfiguration!.command_pricing})"
                                 : "",
                             style: TextStyle(
@@ -578,7 +601,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant commande promotion */
                         Text(
                             _orderBillConfiguration!.command_pricing! >
-                                    _orderBillConfiguration!.promotion_pricing!
+                                _orderBillConfiguration!.promotion_pricing!
                                 ? "${_orderBillConfiguration!.promotion_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
                                 : "${_orderBillConfiguration!.command_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
@@ -600,8 +623,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant livraison normal */
                         Text(
                             _orderBillConfiguration!.shipping_pricing! >
-                                    _orderBillConfiguration!
-                                        .promotion_shipping_pricing!
+                                _orderBillConfiguration!
+                                    .promotion_shipping_pricing!
                                 ? "(${_orderBillConfiguration!.shipping_pricing})"
                                 : "",
                             style: TextStyle(
@@ -612,8 +635,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         /* montant livraison promotion */
                         Text(
                             _orderBillConfiguration!.shipping_pricing! >
-                                    _orderBillConfiguration!
-                                        .promotion_shipping_pricing!
+                                _orderBillConfiguration!
+                                    .promotion_shipping_pricing!
                                 ? "${_orderBillConfiguration!.promotion_shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}"
                                 : "${_orderBillConfiguration!.shipping_pricing} ${AppLocalizations.of(context)!.translate('currency')}",
                             style: TextStyle(
@@ -624,27 +647,27 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 10),
               //additional_fees
               _orderBillConfiguration!.additional_fees_total_price != 0 ||
-                      _orderBillConfiguration!.additional_fees_total_price !=
-                          null
+                  _orderBillConfiguration!.additional_fees_total_price !=
+                      null
                   ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('additional_fees')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                    /* check if there is promotion on Livraison */
+                    Row(
                       children: <Widget>[
-                          Text(
-                              "${AppLocalizations.of(context)!.translate('additional_fees')}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 12)),
-                          /* check if there is promotion on Livraison */
-                          Row(
-                            children: <Widget>[
-                              /* montant livraison promotion */
-                              Text(
-                                  "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12)),
-                            ],
-                          )
-                        ])
+                        /* montant livraison promotion */
+                        Text(
+                            "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
+                      ],
+                    )
+                  ])
                   : Container(),
               SizedBox(height: 10),
               Container(
@@ -661,21 +684,21 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 10),
               _orderBillConfiguration!.remise! > 0
                   ? Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                          Text(
-                              "${AppLocalizations.of(context)!.translate('discount')}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: Colors.grey)),
-                          /* montrer le discount s'il y'a lieu */
-                          Text("-${_orderBillConfiguration!.remise!}%",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12,
-                                  color: CommandStateColor.delivered)),
-                        ])
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('discount')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: Colors.grey)),
+                    /* montrer le discount s'il y'a lieu */
+                    Text("-${_orderBillConfiguration!.remise!}%",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color: CommandStateColor.delivered)),
+                  ])
                   : Container(),
               SizedBox(height: 10),
               Center(
@@ -702,14 +725,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 10),
               ((_orderBillConfiguration!.remise! > 0 && !_isPreorder())
                   ? Container(
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(
-                                      NetworkImages.kaba_promotion_gif)))))
+                  height: 40.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.rectangle,
+                      image: new DecorationImage(
+                          fit: BoxFit.cover,
+                          image: CachedNetworkImageProvider(
+                              Utils.inflateLink(
+                                  NetworkImages.kaba_promotion_gif)))))
                   : Container()),
             ]),
           ));
@@ -773,7 +796,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 //      Center(child: Icon(Icons.add_circle, color: Colors.white)),
       Center(
         child:
-            Text("-50%", style: TextStyle(fontSize: 40, color: Colors.white)),
+        Text("-50%", style: TextStyle(fontSize: 40, color: Colors.white)),
       )
     ]);
   }
@@ -794,48 +817,48 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   borderRadius: BorderRadius.all(Radius.circular(5))),
               child: Column(
                   children: [
-                Container(
-                  margin: EdgeInsets.only(left: 10, top: 10, bottom: 5),
-                  child: Row(children: [
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('order_summary')}",
-                        style: TextStyle(
-                            color: Colors.grey,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 13))
-                  ]),
-                )
-              ]..addAll(_buildFoodList())),
-            ))
-            // restaurant is closed and we can't do nothing
-            ..addAll((_orderBillConfiguration.hasCheckedOpen == true &&
-                    _orderBillConfiguration.can_preorder == 0 &&
-                    _orderBillConfiguration.open_type! != 1)
-                ? <Widget>[
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            margin:
-                                EdgeInsets.only(top: 40, right: 20, left: 20),
-                            decoration: BoxDecoration(
-                                color: KColors.primaryColor,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            padding: EdgeInsets.all(10),
-                            child: Text(
-                                "Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white))),
-                        SizedBox(height: 10),
-                        SizedBox(
-                            height: 120,
-                            child: SvgPicture.asset(
-                              VectorsData.closed_shop_svg,
-                            ))
-                      ],
+                    Container(
+                      margin: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                      child: Row(children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('order_summary')}",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13))
+                      ]),
                     )
-                  ]
+                  ]..addAll(_buildFoodList())),
+            ))
+          // restaurant is closed and we can't do nothing
+            ..addAll((_orderBillConfiguration.hasCheckedOpen == true &&
+                _orderBillConfiguration.can_preorder == 0 &&
+                _orderBillConfiguration.open_type! != 1)
+                ? <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                      margin:
+                      EdgeInsets.only(top: 40, right: 20, left: 20),
+                      decoration: BoxDecoration(
+                          color: KColors.primaryColor,
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(5))),
+                      padding: EdgeInsets.all(10),
+                      child: Text(
+                          "Sorry,the restaurant is closed right now. Please come back later or contact our Customer Care. \nThank you",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.white))),
+                  SizedBox(height: 10),
+                  SizedBox(
+                      height: 120,
+                      child: SvgPicture.asset(
+                        VectorsData.closed_shop_svg,
+                      ))
+                ],
+              )
+            ]
                 : <Widget>[
                     _cookingTimeEstimation(),
                     SizedBox(height: 10),
@@ -972,52 +995,36 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 onTap: (){
                  // showBillingPopUp();
                 },
-               /*  child: Container(
-                  width: MediaQuery.of(context).size.width - 20,
-                    height: 40,
-                     alignment: Alignment.center,
-                     decoration: BoxDecoration(
-                      color: KColors.primaryColor,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                    ),
-                    child: Text("${AppLocalizations.of(context)!.translate('see_bill')}",style: TextStyle(color: Colors.white,fontSize: 16),
-                    )
-                ), */
               ):Container(),
-                    //NEW USER VOUCHER
-                    is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
-                    _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
-                    _usePoint ? Container() : SizedBox(height: 15),
-                    isConnecting
-                        ? Center(child: MyLoadingProgressWidget())
-                        : Container(),
+              //NEW USER VOUCHER
+              is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
+              _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
+              _usePoint ? Container() : SizedBox(height: 15),
+              isConnecting
+                  ? Center(child: MyLoadingProgressWidget())
+                  : Container(),
 
-                    Center(
-                        child: InkWell(
-                      onTap: () => _jumpToRecoverPage(),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8, bottom: 20.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(FontAwesomeIcons.questionCircle,
-                                color: Colors.grey),
-                            SizedBox(width: 5),
-                            Text(
-                                "${AppLocalizations.of(context)!.translate('lost_your_password')}",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
-                          ],
-                        ),
+              Center(
+                  child: InkWell(
+                    onTap: () => _jumpToRecoverPage(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 20.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.questionCircle,
+                              color: Colors.grey),
+                          SizedBox(width: 5),
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('lost_your_password')}",
+                              style: TextStyle(
+                                  fontSize: 12, color: Colors.grey)),
+                        ],
                       ),
-                    )),
-                    SizedBox(height: 20),
-                     Row(
-              children: [
-                Text("hI"),
-              ],
-            ),
-                  ])),
+                    ),
+                  )),
+              SizedBox(height: 20)
+            ])),
     );
   }
 
@@ -1078,7 +1085,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   void inflateBillingConfiguration(OrderBillConfiguration configuration) {
     setState(() {
       _orderBillConfiguration = configuration;
-       });
+    });
 
     showLoading(false);
   }
@@ -1090,75 +1097,75 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       // pay at arrival button
       _orderBillConfiguration!.pay_at_delivery == true
           ? // pay at delivery and not having ongoing delivery right now.
-          Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        side: BorderSide(color: Colors.transparent)),
-                    padding: EdgeInsets.only(
-                        top: 10, bottom: 10, right: 10, left: 10),
-                    color: KColors.mBlue,
-                    splashColor: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(Icons.directions_bike, color: Colors.white,size:14),
-                        SizedBox(width: 5),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('pay_at_delivery')}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    onPressed: () {}),
-              ],
-            )
+      Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  side: BorderSide(color: Colors.transparent)),
+              padding: EdgeInsets.only(
+                  top: 10, bottom: 10, right: 10, left: 10),
+              color: KColors.mBlue,
+              splashColor: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  Icon(Icons.directions_bike, color: Colors.white,size:14),
+                  SizedBox(width: 5),
+                  Text(
+                      "${AppLocalizations.of(context)!.translate('pay_at_delivery')}",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+              onPressed: () {}),
+        ],
+      )
           : Container(
-              child: Text(
-                  "${AppLocalizations.of(context)!.translate('cant_pay_at_delivery')}")),
+          child: Text(
+              "${AppLocalizations.of(context)!.translate('cant_pay_at_delivery')}")),
       SizedBox(height: 20),
       // pay immediately button
       _orderBillConfiguration!.account_balance! != null &&
-              _orderBillConfiguration.prepayed! &&
-              _orderBillConfiguration!.account_balance! >
-                  _orderBillConfiguration!.total_pricing!
+          _orderBillConfiguration.prepayed! &&
+          _orderBillConfiguration!.account_balance! >
+              _orderBillConfiguration!.total_pricing!
           ? Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                MaterialButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        side: BorderSide(color: Colors.transparent)),
-                    padding: EdgeInsets.only(
-                        top: 10, bottom: 10, right: 10, left: 10),
-                    color: KColors.primaryColor,
-                    splashColor: Colors.white,
-                    child: Row(
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
-                        SizedBox(width: 10),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('pay_now')}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                    onPressed: _payNow()),
-              ],
-            )
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          MaterialButton(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(8)),
+                  side: BorderSide(color: Colors.transparent)),
+              padding: EdgeInsets.only(
+                  top: 10, bottom: 10, right: 10, left: 10),
+              color: KColors.primaryColor,
+              splashColor: Colors.white,
+              child: Row(
+                children: <Widget>[
+                  Icon(FontAwesomeIcons.moneyBill, color: Colors.white),
+                  SizedBox(width: 10),
+                  Text(
+                      "${AppLocalizations.of(context)!.translate('pay_now')}",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold)),
+                ],
+              ),
+              onPressed: _payNow()),
+        ],
+      )
           : Container(
-              child: Text(
-              "${AppLocalizations.of(context)!.translate('cant_prepay_balance_insufficient')}",
-              style: TextStyle(
-                  fontSize: 16,
-                  color: KColors.primaryColor,
-                  fontWeight: FontWeight.bold),
-            )),
+          child: Text(
+            "${AppLocalizations.of(context)!.translate('cant_prepay_balance_insufficient')}",
+            style: TextStyle(
+                fontSize: 16,
+                color: KColors.primaryColor,
+                fontWeight: FontWeight.bold),
+          )),
       SizedBox(height: 50)
     ]);
   }
@@ -1337,7 +1344,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 _selectedVoucher??VoucherModel(),
-                _usePoint);
+                _usePoint,
+                widget.restaurant!);
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
@@ -1355,14 +1363,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         _showDialog(
           iccon: VectorsData.questions, // untrustful
           message:
-              "${AppLocalizations.of(context)!.translate('sorry_email_account_no_pay_delivery')}",
+          "${AppLocalizations.of(context)!.translate('sorry_email_account_no_pay_delivery')}",
           isYesOrNo: false,
         );
       } else {
         _showDialog(
           iccon: VectorsData.questions, // untrustful
           message:
-              "${AppLocalizations.of(context)!.translate('sorry_ongoing_order')}",
+          "${AppLocalizations.of(context)!.translate('sorry_ongoing_order')}",
           isYesOrNo: false,
         );
       }
@@ -1373,7 +1381,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _showDialog(
           iccon: VectorsData.questions,
           message:
-              "${AppLocalizations.of(context)!.translate('prevent_pay_at_delivery')}",
+          "${AppLocalizations.of(context)!.translate('prevent_pay_at_delivery')}",
           isYesOrNo: true,
           actionIfYes: () => _payAtDelivery(true));
       return;
@@ -1409,7 +1417,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 _selectedVoucher,
-                _usePoint);
+                _usePoint,
+                widget.restaurant!
+            );
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
           }
@@ -1431,7 +1441,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _showDialog(
           icon: Icon(Icons.error),
           message:
-              "${AppLocalizations.of(context)!.translate('choose_delivery_frame')}");
+          "${AppLocalizations.of(context)!.translate('choose_delivery_frame')}");
       return;
     }
 
@@ -1439,7 +1449,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       _showDialog(
           iccon: VectorsData.questions,
           message:
-              "${AppLocalizations.of(context)!.translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start!, dayz: dayz)} ${AppLocalizations.of(context)!.translate('between')} ${Utils.timeStampToHourMinute(selectedFrame.start!)} ${AppLocalizations.of(context)!.translate('and')} ${Utils.timeStampToHourMinute(selectedFrame.end!)}",
+          "${AppLocalizations.of(context)!.translate('food_will_be_delivered_on')} ${Utils.timeStampToDayDate(selectedFrame.start!, dayz: dayz)} ${AppLocalizations.of(context)!.translate('between')} ${Utils.timeStampToHourMinute(selectedFrame.start!)} ${AppLocalizations.of(context)!.translate('and')} ${Utils.timeStampToHourMinute(selectedFrame.end!)}",
           isYesOrNo: true,
           actionIfYes: () => _payPreorder(true));
       return;
@@ -1475,7 +1485,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 _mCode,
                 _addInfoController!.text!,
                 selectedFrame.start!,
-                selectedFrame.end!
+                selectedFrame.end!,
+                widget.restaurant!
             );
           } else {
             mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
@@ -1487,12 +1498,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   void _showDialog(
       {String? iccon,
-      Icon? icon,
-      var message,
-      bool okBackToHome = false,
-      bool isYesOrNo = false,
-      Function? actionIfYes,
-      String? asset_png = null}) {
+        Icon? icon,
+        var message,
+        bool okBackToHome = false,
+        bool isYesOrNo = false,
+        Function? actionIfYes,
+        String? asset_png = null}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1503,19 +1514,19 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   width: 80,
                   child: asset_png != null
                       ? Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              // shape: BoxShape.circle,
-                              image: new DecorationImage(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                        // shape: BoxShape.circle,
+                          image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: new AssetImage(asset_png),
                           )))
                       : (icon == null
-                          ? SvgPicture.asset(
-                              iccon!,
-                            )
-                          : icon)),
+                      ? SvgPicture.asset(
+                    iccon!,
+                  )
+                      : icon)),
               SizedBox(height: 10),
               Text(message,
                   textAlign: TextAlign.center,
@@ -1523,54 +1534,54 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ]
                 : <Widget>[
-                    //
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        if (!okBackToHome) {
-                          Navigator.of(context).pop();
-                        } else {
-                          StateContainer.of(context)
-                              .updateTabPosition(tabPosition: 2);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              new MaterialPageRoute(
-                                  settings:
-                                      RouteSettings(name: HomePage.routeName),
-                                  builder: (BuildContext context) =>
-                                      HomePage()),
-                              (r) => false);
-                        }
-                      },
-                    ),
-                  ]);
+              //
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  if (!okBackToHome) {
+                    Navigator.of(context).pop();
+                  } else {
+                    StateContainer.of(context)
+                        .updateTabPosition(tabPosition: 2);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        new MaterialPageRoute(
+                            settings:
+                            RouteSettings(name: HomePage.routeName),
+                            builder: (BuildContext context) =>
+                                HomePage()),
+                            (r) => false);
+                  }
+                },
+              ),
+            ]);
       },
     );
   }
@@ -1620,43 +1631,43 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       switch (errorCode) {
         case 300:
           message =
-              "${AppLocalizations.of(context)!.translate('300_wrong_password')}";
+          "${AppLocalizations.of(context)!.translate('300_wrong_password')}";
           break;
         case 301: // restaurant doesnt exist
           message =
-              "${AppLocalizations.of(context)!.translate('301_server_issue')}";
+          "${AppLocalizations.of(context)!.translate('301_server_issue')}";
           break;
         case 302:
           message =
-              "${AppLocalizations.of(context)!.translate('302_unable_pay_at_arrival')}";
+          "${AppLocalizations.of(context)!.translate('302_unable_pay_at_arrival')}";
           break;
         case 303:
           message =
-              "${AppLocalizations.of(context)!.translate('303_unable_online_payment')}";
+          "${AppLocalizations.of(context)!.translate('303_unable_online_payment')}";
           break;
         case 304:
           message =
-              "${AppLocalizations.of(context)!.translate('304_address_error')}";
+          "${AppLocalizations.of(context)!.translate('304_address_error')}";
           break;
         case 305:
           message =
-              "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
+          "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
           break;
         case 306:
           message =
-              "${AppLocalizations.of(context)!.translate('306_account_error')}";
+          "${AppLocalizations.of(context)!.translate('306_account_error')}";
           break;
         case 307:
           message =
-              "${AppLocalizations.of(context)!.translate('307_unable_preorder')}";
+          "${AppLocalizations.of(context)!.translate('307_unable_preorder')}";
           break;
         case 308:
           message =
-              "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
+          "${AppLocalizations.of(context)!.translate('305_308_balance_insufficient')}";
           break;
         default:
           message =
-              "${AppLocalizations.of(context)!.translate('309_system_error')}";
+          "${AppLocalizations.of(context)!.translate('309_system_error')}";
       }
       _showDialog(
         icon: Icon(FontAwesomeIcons.exclamationTriangle, color: Colors.red),
@@ -1673,16 +1684,102 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       isYesOrNo: false,
     );
   }*/
-
   void _showOrderSuccessDialog() {
-    /* save the order, in spending ... */
     _playMusicForSuccess();
-    _showDialog(
-      okBackToHome: true,
-      iccon: VectorsData.delivery_nam,
-      message:
-          "${AppLocalizations.of(context)!.translate('order_congratz_praise')}",
-      isYesOrNo: false,
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          insetPadding: EdgeInsets.symmetric(horizontal: 24),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icône carrée avec couleur principale
+                Container(
+                  height: 80,
+                  width: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        KColors.primaryColor,
+                        KColors.primaryColor.withOpacity(.7),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.delivery_dining, // tu peux remplacer par Image.asset
+                      color: Colors.white,
+                      size: 40,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Titre en gras
+                Text('Félicitations pour avoir passé votre commande avec succès !',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                // Description
+                Text("Veuillez garder votre téléphone à  côté pour être informé en temps réel sur l’état de votre commande",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.black54,
+                    height: 1.4,
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                // Bouton "Parfait !"
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      elevation: 0,
+                      padding: EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    child: Text(
+                      "Parfait !",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                            (Route<dynamic> route) => false,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -1716,78 +1813,78 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         children: <Widget>[
           _orderBillConfiguration.open_type! == 0
               ? Container(
-                  decoration: BoxDecoration(
-                      color: KColors.mBlue,
-                      borderRadius: BorderRadius.all(Radius.circular(5))),
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('sorry_restaurant_close')}\n\n${AppLocalizations.of(context)!.translate('open_time')} ${_orderBillConfiguration.working_hour}\n\n${AppLocalizations.of(context)!.translate('try_preordering')}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white)))
+              decoration: BoxDecoration(
+                  color: KColors.mBlue,
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                  "${AppLocalizations.of(context)!.translate('sorry_restaurant_close')}\n\n${AppLocalizations.of(context)!.translate('open_time')} ${_orderBillConfiguration.working_hour}\n\n${AppLocalizations.of(context)!.translate('try_preordering')}",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white)))
               : Container(),
           _orderBillConfiguration.open_type! == 1
               ? Row(children: <Widget>[
-                  Radio(
-                      value: 0,
-                      groupValue: widget.orderOrPreorderChoice,
-                      onChanged: _handleOrderTypeRadioValueChange),
-                  Expanded(
-                      child: Container(
-                          child: Text(
-                              "${AppLocalizations.of(context)!.translate('order_get_delivered_now_hint')}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: widget.orderOrPreorderChoice == 0
-                                      ? KColors.primaryColor
-                                      : Colors.grey,
-                                  fontSize: widget.orderOrPreorderChoice == 0
-                                      ? 12
-                                      : 12)))),
-                ])
+            Radio(
+                value: 0,
+                groupValue: widget.orderOrPreorderChoice,
+                onChanged: _handleOrderTypeRadioValueChange),
+            Expanded(
+                child: Container(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('order_get_delivered_now_hint')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: widget.orderOrPreorderChoice == 0
+                                ? KColors.primaryColor
+                                : Colors.grey,
+                            fontSize: widget.orderOrPreorderChoice == 0
+                                ? 12
+                                : 12)))),
+          ])
               : Container(),
           SizedBox(height: 10),
           _orderBillConfiguration.can_preorder == 1 &&
-                  _orderBillConfiguration.open_type! == 1
+              _orderBillConfiguration.open_type! == 1
               ? Row(children: <Widget>[
-                  Radio(
-                      value: 1,
-                      groupValue: widget.orderOrPreorderChoice,
-                      onChanged: _handleOrderTypeRadioValueChange),
-                  Expanded(
-                      child: Container(
-                          child: Text(
-                              "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  color: widget.orderOrPreorderChoice == 1
-                                      ? KColors.primaryColor
-                                      : Colors.grey,
-                                  fontSize: widget.orderOrPreorderChoice == 1
-                                      ? 12
-                                      : 12)))),
-                ])
+            Radio(
+                value: 1,
+                groupValue: widget.orderOrPreorderChoice,
+                onChanged: _handleOrderTypeRadioValueChange),
+            Expanded(
+                child: Container(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: widget.orderOrPreorderChoice == 1
+                                ? KColors.primaryColor
+                                : Colors.grey,
+                            fontSize: widget.orderOrPreorderChoice == 1
+                                ? 12
+                                : 12)))),
+          ])
               : (_orderBillConfiguration.can_preorder == 1 &&
-                      _orderBillConfiguration.open_type! != 1
-                  ? Row(children: <Widget>[
-                      Radio(
-                          value: 0,
-                          groupValue: widget.orderOrPreorderChoice,
-                          onChanged: _handleOrderTypeRadioValueChange),
-                      Expanded(
-                          child: Container(
-                              child: Text(
-                                  "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w400,
-                                      color: widget.orderOrPreorderChoice == 1
-                                          ? KColors.primaryColor
-                                          : KColors.new_black,
-                                      fontSize:
-                                          widget.orderOrPreorderChoice == 1
-                                              ? 12
-                                              : 12)))),
-                    ])
-                  : Container())
+              _orderBillConfiguration.open_type! != 1
+              ? Row(children: <Widget>[
+            Radio(
+                value: 0,
+                groupValue: widget.orderOrPreorderChoice,
+                onChanged: _handleOrderTypeRadioValueChange),
+            Expanded(
+                child: Container(
+                    child: Text(
+                        "${AppLocalizations.of(context)!.translate('preorder_now_hint')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: widget.orderOrPreorderChoice == 1
+                                ? KColors.primaryColor
+                                : KColors.new_black,
+                            fontSize:
+                            widget.orderOrPreorderChoice == 1
+                                ? 12
+                                : 12)))),
+          ])
+              : Container())
         ],
       ), 
     );*/
@@ -1799,8 +1896,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       child: InkWell(
         onTap: ()async {
           Navigator.of(context).pop();
-         await  _payPreorder(false);
-
+          await  _payPreorder(false);
         },
         child: Card(
           child: Container(
@@ -1825,7 +1921,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   Text(
                       "${AppLocalizations.of(context)!.translate('delivery_discount')} (-${_orderBillConfiguration.discount}%)",
                       style:
-                          TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                      TextStyle(fontSize: 14, color: KColors.primaryColor)),
                   SizedBox(height: 10),
                   Container(
                     child: Text(
@@ -1850,128 +1946,127 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   /* order and pay now */
   _buildOrderNowButton(bool pay_now_button_pressed) {
     return StatefulBuilder(
+        builder: (context, setState) {
+          return Container(
+            child: InkWell(
+              onTap: ()async{
+                setState(() {
+                  topup_button_pressed=false;
+                  pay_at_delivery_button_pressed=false;
+                  pay_now_button_pressed= true;
+                });
+                await Future.delayed(Duration(milliseconds: 400));
+                Navigator.of(context).pop();
+                _payNow();
+              },
+              child:AnimatedContainer(
+                duration: Duration(milliseconds: 300),
+                decoration: BoxDecoration(
+                    color: pay_now_button_pressed==false? KColors.primaryColor.withAlpha(30): KColors.primaryColor,
 
-      builder: (context, setState) {
-        return Container(
-          child: InkWell(
-            onTap: ()async{
-              setState(() {
-                topup_button_pressed=false;
-                pay_at_delivery_button_pressed=false;
-                pay_now_button_pressed= true;
-              });
-              await Future.delayed(Duration(milliseconds: 400));
-              Navigator.of(context).pop();
-              _payNow();
-            },
-            child:AnimatedContainer(
-              duration: Duration(milliseconds: 300),
-              decoration: BoxDecoration(
-                  color: pay_now_button_pressed==false? KColors.primaryColor.withAlpha(30): KColors.primaryColor,
+                    borderRadius: BorderRadius.all(Radius.circular(5))),
+                padding: EdgeInsets.all(10),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Icon(FontAwesomeIcons.wallet, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,size: 15),
+                          SizedBox(width: 10),
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('pay_now')}",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,
+                                  fontWeight: FontWeight.w500)),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        child: Text(
+                            "${AppLocalizations.of(context)!.translate('pay_with_kaba_balance')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 11, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,)),
 
-                  borderRadius: BorderRadius.all(Radius.circular(5))),
-              padding: EdgeInsets.all(10),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.wallet, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,size: 15),
-                        SizedBox(width: 10),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('pay_now')}",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,
-                                fontWeight: FontWeight.w500)),
-                      ],
-                    ),
-                    SizedBox(height: 5),
-                    Container(
-                      child: Text(
-                          "${AppLocalizations.of(context)!.translate('pay_with_kaba_balance')}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 11, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,)),
-
-                    ),
-                  ]),
+                      ),
+                    ]),
+              ),
             ),
-          ),
-        );
-      }
+          );
+        }
     );
   }
 
   /* order and pay at arrival */
   _buildOrderPayAtArrivalButton(bool pay_at_delivery_button_pressed) {
     return StatefulBuilder(
-      builder: (context, setState) {
-        return _orderBillConfiguration.pay_at_delivery == true
-            ? AnimatedContainer(
-          duration: Duration(milliseconds: 300),
-                decoration: BoxDecoration(
-                    color: pay_at_delivery_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      pay_now_button_pressed = false;
-                      topup_button_pressed = false;
-                      pay_at_delivery_button_pressed=true;
-                    });
+        builder: (context, setState) {
+          return _orderBillConfiguration.pay_at_delivery == true
+              ? AnimatedContainer(
+            duration: Duration(milliseconds: 300),
+            decoration: BoxDecoration(
+                color: pay_at_delivery_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  pay_now_button_pressed = false;
+                  topup_button_pressed = false;
+                  pay_at_delivery_button_pressed=true;
+                });
 
-                    WidgetsBinding.instance.addPostFrameCallback((_) async {
-                      await Future.delayed(Duration(milliseconds: 400));
-                      Navigator.of(context).pop();
-                      _payAtDelivery(false);
-                    });
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
-                    child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  await Future.delayed(Duration(milliseconds: 400));
+                  Navigator.of(context).pop();
+                  _payAtDelivery(false);
+                });
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(Icons.directions_bike,
-                                  color: pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,size: 16),
-                              SizedBox(width: 5),
-                              Text(
-                                  "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  )),
-                            ],
-                          ),
-                          SizedBox(height: 5),
-                          Container(
-                            child: Text(
-                                "${AppLocalizations.of(context)!.translate('pay_with_cash_at_delivery')}",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 10, color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white)),
-                            margin: EdgeInsets.only(left: 10, right: 10),
-                          ),
-                        ]),
-                  ),
-                ),
-              )
-            : Container(
-                child: Text(
-                    "${AppLocalizations.of(context)!.translate('cant_pay_at_delivery')}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white)),
-                decoration: BoxDecoration(
-                    color: KColors.primaryColor,
-                    borderRadius: BorderRadius.all(Radius.circular(5))),
-                padding: EdgeInsets.all(10),
-                margin: EdgeInsets.only(left: 20, right: 20),
-              );
-      }
+                          Icon(Icons.directions_bike,
+                              color: pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,size: 16),
+                          SizedBox(width: 5),
+                          Text(
+                              "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,
+                                fontWeight: FontWeight.w500,
+                              )),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        child: Text(
+                            "${AppLocalizations.of(context)!.translate('pay_with_cash_at_delivery')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10, color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white)),
+                        margin: EdgeInsets.only(left: 10, right: 10),
+                      ),
+                    ]),
+              ),
+            ),
+          )
+              : Container(
+            child: Text(
+                "${AppLocalizations.of(context)!.translate('cant_pay_at_delivery')}",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white)),
+            decoration: BoxDecoration(
+                color: KColors.primaryColor,
+                borderRadius: BorderRadius.all(Radius.circular(5))),
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.only(left: 20, right: 20),
+          );
+        }
     );
   }
 
@@ -1987,36 +2082,36 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     return Column(
         children: <Widget>[]..addAll(List.generate(
-              _orderBillConfiguration.deliveryFrames!.length, (index) {
-            return Container(
-                margin: const EdgeInsets.only(
-                    top: 8.0, bottom: 8, left: 16, right: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    // left date, time,
-                    // right checkbox
-                    Row(children: <Widget>[
-                      Container(
-                        child: Text(
-                            "${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames![index].start!, dayz: dayz)}",
-                            style: TextStyle(color: Colors.white)),
-                        padding: EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(5)),
-                            color: CommandStateColor.delivered),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                          "${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].start!)} - ${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].end!)}"),
-                    ]),
-                    Radio(
-                        value: index,
-                        groupValue: widget.orderTimeRangeSelected!,
-                        onChanged: _timeFrameCheckBoxOnChange),
-                  ],
-                ));
-          })));
+            _orderBillConfiguration.deliveryFrames!.length, (index) {
+          return Container(
+              margin: const EdgeInsets.only(
+                  top: 8.0, bottom: 8, left: 16, right: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  // left date, time,
+                  // right checkbox
+                  Row(children: <Widget>[
+                    Container(
+                      child: Text(
+                          "${Utils.timeStampToDayDate(_orderBillConfiguration.deliveryFrames![index].start!, dayz: dayz)}",
+                          style: TextStyle(color: Colors.white)),
+                      padding: EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          color: CommandStateColor.delivered),
+                    ),
+                    SizedBox(width: 10),
+                    Text(
+                        "${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].start!)} - ${Utils.timeStampToHourMinute(_orderBillConfiguration.deliveryFrames![index].end!)}"),
+                  ]),
+                  Radio(
+                      value: index,
+                      groupValue: widget.orderTimeRangeSelected!,
+                      onChanged: _timeFrameCheckBoxOnChange),
+                ],
+              ));
+        })));
   }
 
   _timeFrameCheckBoxOnChange(value) {
@@ -2049,47 +2144,47 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
         child: InkWell(
             child: Container(
-          child: Column(
-            children: <Widget>[
-              ListTile(
-                contentPadding: EdgeInsets.only(left: 10),
-                leading: Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.rectangle,
-                      borderRadius: BorderRadius.all(Radius.circular(5)),
-                      image: new DecorationImage(
-                          fit: BoxFit.cover,
-                          image: CachedNetworkImageProvider(
-                              Utils.inflateLink(food.pic!)))),
-                ),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Container(
-                      height: 30,
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    leading: Container(
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
-                          color: KColors.primaryColor.withAlpha(30),
-                          borderRadius: BorderRadius.all(Radius.circular(20))),
-                      padding: EdgeInsets.only(
-                          top: 5, bottom: 5, left: 10, right: 10),
-                      child: Row(children: <Widget>[
-                        SizedBox(width: 2),
-                        Text("${food?.price}",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: KColors.primaryColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                decoration: food.promotion != 0
-                                    ? TextDecoration.lineThrough
-                                    : TextDecoration.none)),
-                        SizedBox(width: 2),
-                        (food.promotion != 0
-                            ? Text("${food?.promotion_price}",
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                                  Utils.inflateLink(food.pic!)))),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: KColors.primaryColor.withAlpha(30),
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          padding: EdgeInsets.only(
+                              top: 5, bottom: 5, left: 10, right: 10),
+                          child: Row(children: <Widget>[
+                            SizedBox(width: 2),
+                            Text("${food?.price}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: food.promotion != 0
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none)),
+                            SizedBox(width: 2),
+                            (food.promotion != 0
+                                ? Text("${food?.promotion_price}",
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,
                                 textAlign: TextAlign.center,
@@ -2097,65 +2192,65 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     color: KColors.primaryColor,
                                     fontSize: 15,
                                     fontWeight: FontWeight.normal))
-                            : Container()),
-                        SizedBox(width: 3),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('currency')}",
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 1,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: KColors.primaryColor,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600)),
-                      ]),
-                    ),
-                    SizedBox(
-                      width: 5,
-                    ),
-                    quantity > 1
-                        ? Text(" X ${quantity}",
+                                : Container()),
+                            SizedBox(width: 3),
+                            Text(
+                                "${AppLocalizations.of(context)!.translate('currency')}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
+                          ]),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        quantity > 1
+                            ? Text(" X ${quantity}",
                             style: TextStyle(
                                 color: KColors.new_black,
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold))
-                        : Container(
-                            width: 24,
-                          )
-                  ],
-                ),
-                title: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("${Utils.capitalize(food.name!)}",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                            color: KColors.new_black,
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500)),
-                  ],
-                ),
-              ),
-              // add-up the buttons at the right side of it
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Container(
-                    // margin: EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      border: Border.all(color: Colors.transparent),
+                            : Container(
+                          width: 24,
+                        )
+                      ],
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("${Utils.capitalize(food.name!)}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: KColors.new_black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
+                      ],
                     ),
                   ),
+                  // add-up the buttons at the right side of it
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        // margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          border: Border.all(color: Colors.transparent),
+                        ),
+                      ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          ),
-        )));
+              ),
+            )));
   }
 
   @override
@@ -2232,9 +2327,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     new_user_voucher_amount =configuration.shipping_pricing! - configuration.promotion_shipping_pricing!;
     _orderBillConfiguration
         .total_preorder_pricing = (additionnal_fee_total + configuration.command_pricing!.toDouble() +
-            ((100 - int.parse(_orderBillConfiguration.discount!).toDouble()) *
-                configuration.shipping_pricing!.toDouble() /
-                100))
+        ((100 - int.parse(_orderBillConfiguration.discount!).toDouble()) *
+            configuration.shipping_pricing!.toDouble() /
+            100))
         .toInt();
 
     setState(() {
@@ -2258,10 +2353,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _isPreorderSelected() {
     if ((_orderBillConfiguration.can_preorder == 1 &&
-            _orderBillConfiguration.open_type! == 1) &&
+        _orderBillConfiguration.open_type! == 1) &&
         widget.orderOrPreorderChoice == 1) return true;
     if ((_orderBillConfiguration.can_preorder == 1 &&
-            _orderBillConfiguration.open_type! != 1) &&
+        _orderBillConfiguration.open_type! != 1) &&
         widget.orderOrPreorderChoice == 0) return true;
     return false;
   }
@@ -2277,8 +2372,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _isPreorder() {
     return ((widget.orderOrPreorderChoice == 1 &&
-            _orderBillConfiguration.open_type! == 1 &&
-            _orderBillConfiguration.can_preorder == 1) ||
+        _orderBillConfiguration.open_type! == 1 &&
+        _orderBillConfiguration.can_preorder == 1) ||
         (_orderBillConfiguration.can_preorder == 1 &&
             _orderBillConfiguration.open_type! != 1 &&
             widget.orderOrPreorderChoice == 0));
@@ -2320,19 +2415,19 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
+          CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
 
     if (results != null && results.containsKey('check_balance')) {
 //      bool check_balance =  results['check_balance'];
- //     String link = results['link'];
+      //     String link = results['link'];
       debugPrint("success: ${results['success']}");
       if (results['success'] == true) {
         // show a dialog that tells the user to check his balance after he has topup up.
-       // link = Uri.encodeFull(link);
-      //  _showDialog_(
+        // link = Uri.encodeFull(link);
+        //  _showDialog_(
         //             svgIcon: VectorsData.account_balance,
         //             message:
         //                 "${AppLocalizations.of(context)!.translate('please_check_balance')}");
@@ -2524,6 +2619,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               SizedBox(height: 12),
               Container(
                 padding: EdgeInsets.all(12),
+
                 decoration: BoxDecoration(
                   color: Colors.red[50],
                   borderRadius: BorderRadius.circular(8),
@@ -2805,7 +2901,7 @@ _buildInvoiceRow(
                                 _selectedVoucher = null;
                               });
                               this.widget.presenter!.orderConfirmationView =
-                                  this;
+                              this;
                               CustomerUtils.getCustomer().then((customer) {
                                 widget.customer = customer;
                                 // launch request for retrieving the delivery prices and so on.
@@ -2849,18 +2945,18 @@ _buildInvoiceRow(
     _showDialog(
       asset_png: ImageAssets.demo_icon, // untrustful
       message:
-          "${AppLocalizations.of(context)!.translate('demo_account_alert')}",
+      "${AppLocalizations.of(context)!.translate('demo_account_alert')}",
       isYesOrNo: false,
     );
   }
 
   _buildPointDiscountOption() {
     if (_orderBillConfiguration == null ||
-            _orderBillConfiguration!.kaba_point?.balance == null ||
-            _orderBillConfiguration!.kaba_point?.is_eligible == false ||
-            _isPreorderSelected()
-        // or if preorder
-        ) return Container();
+        _orderBillConfiguration!.kaba_point?.balance == null ||
+        _orderBillConfiguration!.kaba_point?.is_eligible == false ||
+        _isPreorderSelected()
+    // or if preorder
+    ) return Container();
 
     /* before we build the bill, we must know how much can you reduce your bill with*/
 
@@ -2903,7 +2999,7 @@ _buildInvoiceRow(
                 style: TextStyle(
                     fontSize: 12,
                     color: !_orderBillConfiguration.kaba_point!.can_be_used! &&
-                            _orderBillConfiguration.kaba_point!.is_eligible!
+                        _orderBillConfiguration.kaba_point!.is_eligible!
                         ? CommandStateColor.delivered
                         : Colors.grey)),
             margin: EdgeInsets.only(left: 10, right: 10),
@@ -2912,107 +3008,107 @@ _buildInvoiceRow(
           // appears only if you are eligible
           _orderBillConfiguration.kaba_point!.is_eligible!
               ? (_orderBillConfiguration.kaba_point!.can_be_used!
-                  ? InkWell(
-                      splashColor: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.only(top: 5, bottom: 5),
-                        child: Row(children: <Widget>[
-                          Flexible(
-                            fit: FlexFit.tight,
-                            flex: 2,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                SizedBox(width: 20),
-                                RichText(
-                                    text: TextSpan(
-                                  children: <TextSpan>[
-                                    TextSpan(
-                                        text:
-                                            "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold)),
-                                    TextSpan(
-                                        text:
-                                            "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
-                                        style: TextStyle(
-                                            color: KColors.primaryColor,
-                                            fontWeight: FontWeight.bold))
-                                  ],
-                                )),
+              ? InkWell(
+              splashColor: Colors.white,
+              child: Container(
+                padding: EdgeInsets.only(top: 5, bottom: 5),
+                child: Row(children: <Widget>[
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 2,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(width: 20),
+                        RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                    "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
+                                    style: TextStyle(
+                                        color: KColors.new_black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text:
+                                    "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
+                                    style: TextStyle(
+                                        color: KColors.primaryColor,
+                                        fontWeight: FontWeight.bold))
                               ],
-                            ),
-                          ),
-                          Flexible(
-                            fit: FlexFit.tight,
-                            flex: 1,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                FlutterSwitch(
-                                  disabled: isConnecting,
-                                  activeColor: KColors.primaryColor,
-                                  inactiveColor: Colors.grey,
-                                  width: 52.0,
-                                  height: 28.0,
-                                  valueFontSize: 9.0,
-                                  toggleSize: 20.0,
-                                  value: _usePoint,
-                                  borderRadius: 12.0,
-                                  padding: 2.5,
-                                  showOnOff: true,
-                                  activeText:
-                                      "${AppLocalizations.of(context)!.translate('yes')}",
-                                  inactiveText:
-                                      "${AppLocalizations.of(context)!.translate('no')}",
-                                  onToggle: (val) {
-                                    setState(() {
-                                      _usePoint = val;
-                                    });
+                            )),
+                      ],
+                    ),
+                  ),
+                  Flexible(
+                    fit: FlexFit.tight,
+                    flex: 1,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        FlutterSwitch(
+                          disabled: isConnecting,
+                          activeColor: KColors.primaryColor,
+                          inactiveColor: Colors.grey,
+                          width: 52.0,
+                          height: 28.0,
+                          valueFontSize: 9.0,
+                          toggleSize: 20.0,
+                          value: _usePoint,
+                          borderRadius: 12.0,
+                          padding: 2.5,
+                          showOnOff: true,
+                          activeText:
+                          "${AppLocalizations.of(context)!.translate('yes')}",
+                          inactiveText:
+                          "${AppLocalizations.of(context)!.translate('no')}",
+                          onToggle: (val) {
+                            setState(() {
+                              _usePoint = val;
+                            });
 
-                                    if (_usePoint && _selectedVoucher != null) {
-                                      // keep the old voucher
-                                      _oldSelectedVoucher = _selectedVoucher;
-                                      _selectedVoucher = null;
-                                    } else if (!_usePoint &&
-                                        _oldSelectedVoucher != null) {
-                                      _selectedVoucher = _oldSelectedVoucher;
-                                    }
+                            if (_usePoint && _selectedVoucher != null) {
+                              // keep the old voucher
+                              _oldSelectedVoucher = _selectedVoucher;
+                              _selectedVoucher = null;
+                            } else if (!_usePoint &&
+                                _oldSelectedVoucher != null) {
+                              _selectedVoucher = _oldSelectedVoucher;
+                            }
 
-                                    // according to what is there we can enable or disable
-                                    CustomerUtils.getCustomer()
-                                        .then((customer) {
-                                      widget.customer = customer;
-                                      widget.presenter!.computeBilling(
-                                          widget.restaurant!,
-                                          widget.customer!,
-                                          widget.foods!,
-                                          _selectedAddress!,
-                                          _selectedVoucher!,
-                                          _usePoint);
-                                      Future.delayed(Duration(seconds: 1), () {
-                                        Scrollable.ensureVisible(
-                                            poweredByKey.currentContext!);
-                                      });
-                                      showLoading(true);
-                                      //   Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
-                                      Future.delayed(
-                                          Duration(milliseconds: 500), () {
-                                        Scrollable.ensureVisible(
-                                            poweredByKey.currentContext!);
-                                      });
-                                    });
-                                  },
-                                ),
-                                SizedBox(width: 20)
-                              ],
-                            ),
-                          ),
-                        ]),
-                      ))
-                  : Container())
+                            // according to what is there we can enable or disable
+                            CustomerUtils.getCustomer()
+                                .then((customer) {
+                              widget.customer = customer;
+                              widget.presenter!.computeBilling(
+                                  widget.restaurant!,
+                                  widget.customer!,
+                                  widget.foods!,
+                                  _selectedAddress!,
+                                  _selectedVoucher!,
+                                  _usePoint);
+                              Future.delayed(Duration(seconds: 1), () {
+                                Scrollable.ensureVisible(
+                                    poweredByKey.currentContext!);
+                              });
+                              showLoading(true);
+                              //   Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+                              Future.delayed(
+                                  Duration(milliseconds: 500), () {
+                                Scrollable.ensureVisible(
+                                    poweredByKey.currentContext!);
+                              });
+                            });
+                          },
+                        ),
+                        SizedBox(width: 20)
+                      ],
+                    ),
+                  ),
+                ]),
+              ))
+              : Container())
               : Container(),
         ],
       ),
@@ -3021,88 +3117,88 @@ _buildInvoiceRow(
 
   void showBillingPopUp(){
     showDialog(
-      context: context,
-      builder: (BuildContext context) {
+        context: context,
+        builder: (BuildContext context) {
 
-        return AlertDialog(
-          scrollable: true,
+          return AlertDialog(
+            scrollable: true,
             content:StatefulBuilder(
 
-              builder: (context,setState) {
+                builder: (context,setState) {
 
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                    children:[
-                      SizedBox(height: 10),
-                      _orderBillConfiguration != null &&
-                          _orderBillConfiguration!.isBillBuilt == true
-                          ?
-                      // check if out of range before doing anything.
-                      _orderBillConfiguration!.out_of_range == true
-                          ? _buildOutOfRangePage()
-                          : (Column(children: <Widget>[
-                        /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
+                  return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children:[
+                        SizedBox(height: 10),
+                        _orderBillConfiguration != null &&
+                            _orderBillConfiguration!.isBillBuilt == true
+                            ?
+                        // check if out of range before doing anything.
+                        _orderBillConfiguration!.out_of_range == true
+                            ? _buildOutOfRangePage()
+                            : (Column(children: <Widget>[
+                          /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
                             && */
-                        _selectedVoucher == null
-                            ? _buildPointDiscountOption()
-                            : Container(),
+                          _selectedVoucher == null
+                              ? _buildPointDiscountOption()
+                              : Container(),
 
-                        SizedBox(height: 10),
-                        _buildBill(),
-                        SizedBox(height: 10),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          color: Colors.white,
-                          padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
-                          child: Column(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      "${AppLocalizations.of(context)!.translate('your_balance')}",
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w500)),
-                                  SizedBox(width: 10),
-                                  Text(
-                                      "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w600)),
-                                ],
-                              ),
-                              SizedBox(height: 5),
-                              InkWell(
-                                  onTap: ()async{
-                                  setState(() {
-                                  pay_now_button_pressed=false;
-                                  topup_button_pressed=true;
-                                  pay_at_delivery_button_pressed=false;
-                                  });
-                                  await Future.delayed(Duration(milliseconds: 400));
-                                  _topUpAccount();
-                                  setState((){
-                                    topup_button_pressed=false;
-                                  });
-                                  },
-                                  child:   AnimatedContainer(
-                                  duration: Duration(milliseconds: 300),
-                                  width: MediaQuery.of(context).size.width,
-                                  alignment:Alignment.center,
-                                  padding: EdgeInsets.only(
-                                      left: 15,
-                                      right: 15,
-                                      top: 10,
-                                      bottom: 10),
-                                  decoration: BoxDecoration(
-                                      color:topup_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(5))),
-                                  child:  Text(
+                          SizedBox(height: 10),
+                          _buildBill(),
+                          SizedBox(height: 10),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            color: Colors.white,
+                            padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
+                            child: Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                        "${AppLocalizations.of(context)!.translate('your_balance')}",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w500)),
+                                    SizedBox(width: 10),
+                                    Text(
+                                        "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                                        style: TextStyle(
+                                            color: KColors.primaryColor,
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600)),
+                                  ],
+                                ),
+                                SizedBox(height: 5),
+                                InkWell(
+                                    onTap: ()async{
+                                      setState(() {
+                                        pay_now_button_pressed=false;
+                                        topup_button_pressed=true;
+                                        pay_at_delivery_button_pressed=false;
+                                      });
+                                      await Future.delayed(Duration(milliseconds: 400));
+                                      _topUpAccount();
+                                      setState((){
+                                        topup_button_pressed=false;
+                                      });
+                                    },
+                                    child:   AnimatedContainer(
+                                      duration: Duration(milliseconds: 300),
+                                      width: MediaQuery.of(context).size.width,
+                                      alignment:Alignment.center,
+                                      padding: EdgeInsets.only(
+                                          left: 15,
+                                          right: 15,
+                                          top: 10,
+                                          bottom: 10),
+                                      decoration: BoxDecoration(
+                                          color:topup_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(5))),
+                                      child:  Text(
                                           "${AppLocalizations.of(context)!.translate('top_up')}"
                                               .toUpperCase(),
                                           style: TextStyle(
@@ -3111,45 +3207,45 @@ _buildInvoiceRow(
                                               fontWeight:
                                               FontWeight.w500)),
                                     )),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        _isPreorderSelected()
-                            ? SizedBox(height: 5)
+                          _isPreorderSelected()
+                              ? SizedBox(height: 5)
+                              : Container(),
+                          // purchase buttons are becoming cards.
+                          _isPreorderSelected()
+                              ? _buildPreOrderButton()
+                              : Container(),
+                          !_isPreorderSelected()
+                              ? SizedBox(height: 5)
+                              : Container(),
+                          !_isPreorderSelected()
+                              ? _buildOrderNowButton(pay_now_button_pressed)
+                              : Container(),
+                          !_isPreorderSelected()
+                              ? SizedBox(height: 10)
+                              : Container(),
+                          !_isPreorderSelected()
+                              ? _buildOrderPayAtArrivalButton(pay_at_delivery_button_pressed)
+                              : Container(),
+                          SizedBox(height: 15),
+                        ]))
                             : Container(),
-                        // purchase buttons are becoming cards.
-                        _isPreorderSelected()
-                            ? _buildPreOrderButton()
-                            : Container(),
-                        !_isPreorderSelected()
-                            ? SizedBox(height: 5)
-                            : Container(),
-                        !_isPreorderSelected()
-                            ? _buildOrderNowButton(pay_now_button_pressed)
-                            : Container(),
-                        !_isPreorderSelected()
-                            ? SizedBox(height: 10)
-                            : Container(),
-                        !_isPreorderSelected()
-                            ? _buildOrderPayAtArrivalButton(pay_at_delivery_button_pressed)
-                            : Container(),
-                        SizedBox(height: 15),
-                      ]))
-                          : Container(),
-                    ]
-                );
-              }
+                      ]
+                  );
+                }
             ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text('${AppLocalizations.of(context)!.translate('ok')}')
-                  )
-          ],
-        );
-      }
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('${AppLocalizations.of(context)!.translate('ok')}')
+              )
+            ],
+          );
+        }
 
     );
   }

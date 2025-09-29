@@ -1,0 +1,32 @@
+part of 'rating_bloc.dart';
+
+@immutable
+sealed class RatingEvent {}
+class RateDeliveryTypeEvent extends RatingEvent{
+  final DeliveryRatingType deliveryRatingType;
+  final int rating;
+
+  RateDeliveryTypeEvent({required this.deliveryRatingType, required this.rating});
+}
+class initialEvent extends RatingEvent {}
+class GetTotalRatingEvent extends RatingEvent {
+  final double totalRating;
+
+  GetTotalRatingEvent({required this.totalRating});
+}
+class sendDeliveryRatingPendingEvent extends RatingEvent {
+  final DeliveryRatingPending deliveryRatingPending;
+  sendDeliveryRatingPendingEvent({required this.deliveryRatingPending});
+}
+
+class nextPageEvent extends RatingEvent {
+
+}
+class previousPageEvent extends RatingEvent {
+  final DeliveryRatingPending deliveryRatingPending;
+  previousPageEvent({required this.deliveryRatingPending});
+}
+class showMoreReviewEvent extends RatingEvent {
+  final bool showMore;
+  showMoreReviewEvent({required this.showMore});
+}
