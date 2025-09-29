@@ -52,6 +52,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
+import '../../../customwidgets/header.dart';
 import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
 
@@ -158,33 +159,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          toolbarHeight: 1,
           backgroundColor: KColors.primaryColor,
-          centerTitle: true,
-          actions: [
-            PopupMenuButton<String>(
-              onSelected: menuChoiceAction,
-              itemBuilder: (BuildContext context) {
-                return popupMenus!.map((String menuName) {
-                  return PopupMenuItem<String>(
-                      value: menuName, child: Text(menuName));
-                }).toList();
-              },
-            )
-          ],
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('account')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
         ),
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -222,6 +198,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     widget.customerData = data;
     return SingleChildScrollView(
       child: Column(children: <Widget>[
+        Header(context),
         /* top-up & xof */
         GestureDetector(
           onTap: () => _jumpToPage(

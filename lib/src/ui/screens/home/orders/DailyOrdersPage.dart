@@ -26,6 +26,7 @@ import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import '../../../../utils/_static_data/AppConfig.dart';
 import '../../../../utils/_static_data/ImageAssets.dart';
 import '../../../../xrint.dart';
+import '../../../customwidgets/header.dart';
 
 class DailyOrdersPage extends StatefulWidget {
   CustomerModel? customer;
@@ -166,38 +167,12 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
     return Scaffold(
         backgroundColor: Colors.white,
       appBar: AppBar(
-        actions: <Widget>[
-          InkWell(
-            onTap: () => _showBottomContactSheet(),
-            child: Container(
-              width: 70,
-              height: 42,
-              child: IconButton(
-                icon: Icon(Icons.phone, color: Colors.white),
-                onPressed: () => _showBottomContactSheet(),
-              ),
-            ),
-          ),
-        ],
-        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+       toolbarHeight:1,
         backgroundColor: KColors.primaryColor,
-         centerTitle: true,
-        title: Row(mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('orders')}"),
-                style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white)),
-          ],
-        ),
       ),
-
         body: Column(
           children: [
+            Header(context),
             //choose type
             SizedBox(height: 10,),
             Padding(

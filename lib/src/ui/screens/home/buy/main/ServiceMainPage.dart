@@ -54,6 +54,7 @@ import '../../../../../utils/functions/analytics.dart';
 import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
 import '../../../../../utils/functions/skipEndpoint.dart';
+import '../../../../customwidgets/header.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -626,46 +627,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          toolbarHeight: 1,
           backgroundColor: KColors.primaryColor,
-          centerTitle: true,
-          leading: IconButton(
-              icon: SizedBox(
-                  height: 25,
-                  width: 25,
-                  child: SvgPicture.asset(
-                    VectorsData.kaba_icon_svg,
-                    color: Colors.white,
-                  )),
-              onPressed: () {
-                _jumpToInfoPage();
-              }),
-          actions: <Widget>[
-            InkWell(
-              onTap: () => _showBottomContactSheet(),
-              child: Container(
-                width: 70,
-                height: 42,
-                child: IconButton(
-                  icon: Icon(Icons.phone, color: Colors.white),
-                  onPressed: () => _showBottomContactSheet(),
-                ),
-              ),
-            ),
-          ],
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('buy')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
         ),
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -711,7 +674,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             SingleChildScrollView(
               child: Column(
                 children: [
-
+                  Header(context),
                   /* hint */
                   SizedBox(height: 20),
                   StateContainer.of(context).location == null

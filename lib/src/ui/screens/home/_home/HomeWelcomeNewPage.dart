@@ -69,6 +69,7 @@ import '../../../../StateContainer.dart';
 import '../../../../resources/out_of_app_order_api.dart';
 import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
 import '../../../../utils/functions/requestLocation.dart';
+import '../../../customwidgets/header.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
@@ -320,37 +321,9 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          actions: <Widget>[
-            InkWell(
-              onTap: () => _showBottomContactSheet(),
-              child: Container(
-                width: 70,
-                height: 42,
-                child: IconButton(
-                  icon: Icon(Icons.phone, color: Colors.white),
-                  onPressed: () => _showBottomContactSheet(),
-                ),
-              ),
-            ),
-          ],
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          title: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('home')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
+          toolbarHeight:1,
+          backgroundColor: KColors.primaryColor,
           ),
-          centerTitle: true,
-           backgroundColor: KColors.primaryColor,
-           systemOverlayStyle: SystemUiOverlayStyle.light,
-        ),
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: _buildHomeScreen(widget.data),
@@ -512,6 +485,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               key: PageStorageKey<String>("home_welcome_new"),
               addAutomaticKeepAlives: true,
               children: <Widget>[
+                Header(context),
                 /*top slide*/
                 Stack(
                   children: <Widget>[
