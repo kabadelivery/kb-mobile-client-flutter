@@ -2,12 +2,20 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
 
+import 'package:KABA/src/blocs/rating/rating_bloc.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/estimation/estimation_bloc.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/history_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
+import 'package:KABA/src/models/NotificationFDestination.dart';
+import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/ui/screens/rating/rating_article.dart';
+import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
@@ -49,7 +57,7 @@ Future<void> main() async {
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+      AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -75,13 +83,22 @@ Future<void> main() async {
               BlocProvider<ChatBloc>(
                 create: (context) => ChatBloc(),
               ),
-        ], child: MyApp(appLanguage: appLanguage))))
+              BlocProvider<RatingBloc>(
+                create: (context) => RatingBloc(),
+              ),
+              BlocProvider<ExpeditionBloc>(
+                create: (context) => ExpeditionBloc(),
+              ),
+              BlocProvider<EstimationBloc>(
+                create: (context) => EstimationBloc(),
+              ),
+            ], child: MyApp(appLanguage: appLanguage))))
     );
   });
 }
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    new FlutterLocalNotificationsPlugin();
+new FlutterLocalNotificationsPlugin();
 Future<void> _initializeLocalNotifications() async {
   const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/launcher_icon');
   const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
@@ -93,113 +110,100 @@ Future<void> _initializeLocalNotifications() async {
 
   await flutterLocalNotificationsPlugin.initialize(settings);
 }
-class NotificationHandler {
-  static String? lastMessageId;
-}
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-  if (message.messageId != null &&
-      message.messageId == NotificationHandler.lastMessageId) {
-    print("Skipping duplicate background message: ${message.messageId}");
-    return;
-  }
-  NotificationHandler.lastMessageId = message.messageId;
+
   // Parse safely your payload
-  final Map<String, dynamic> data = message.data;
-  final notificationRaw = data["notification"];
-  final decodedNotification = jsonDecode(notificationRaw);
+  try {
+    final Map<String, dynamic> data = message.data;
+    final notificationRaw = data["notification"];
+    final decodedNotification = jsonDecode(notificationRaw);
 
-  final title = decodedNotification["title"];
-  final body = decodedNotification["body"];
-  final imageUrl = decodedNotification["image_link"];
-  final destination = jsonDecode(decodedNotification["destination"]);
+    final title = decodedNotification["title"];
+    final body = decodedNotification["body"];
+    final imageUrl = decodedNotification["image_link"];
+    final destination = jsonDecode(decodedNotification["destination"]);
 
-  final destinationString = jsonEncode(destination); // For payload
-
-  // Download image if available
-  String? imagePath;
-  if (imageUrl != null && imageUrl.isNotEmpty) {
-    try {
-      final response = await http.get(Uri.parse(imageUrl));
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/notif_image.jpg';
-      final file = File(filePath);
-      await file.writeAsBytes(response.bodyBytes);
-      imagePath = filePath;
-    } catch (e) {
-      print("Erreur lors du téléchargement de l'image : $e");
+    final destinationString = jsonEncode(destination); // For payload
+    String? imagePath;
+    if (imageUrl != null && imageUrl.isNotEmpty) {
+      try {
+        final response = await http.get(Uri.parse(imageUrl));
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/notif_image.jpg';
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+        imagePath = filePath;
+      } catch (e) {
+        print("❌ Erreur lors du téléchargement de l'image : $e");
+      }
     }
+    if (kDebugMode) {
+      FirebaseMessaging.instance.subscribeToTopic('kaba_testeurs');
+      xrint('Subscribed to kaba_testeurs (debug only)');
+    } else {
+      xrint('Not in debug mode — skipping topic subscription');
+    }
+    // Init plugin (important in background)
+    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidInit,
+      iOS: iosInit,
+    );
+    await flutterLocalNotificationsPlugin.initialize(initSettings);
+
+    // Notification style
+    final BigPictureStyleInformation? bigPictureStyle = imagePath != null
+        ? BigPictureStyleInformation(
+      FilePathAndroidBitmap(imagePath),
+      contentTitle: title,
+      summaryText: body,
+      htmlFormatContentTitle: true,
+      htmlFormatSummaryText: true,
+    )
+        : null;
+
+
+    final AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
+      AppConfig.CHANNEL_ID,
+      AppConfig.CHANNEL_NAME,
+      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.high,
+      styleInformation: bigPictureStyle,
+      enableLights: true,
+      showWhen: true,
+      largeIcon: imagePath != null ? FilePathAndroidBitmap(imagePath) : null,
+    );
+    final iOSAttachment = DarwinNotificationAttachment(imagePath!);
+
+    final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
+      attachments: [iOSAttachment],
+      categoryIdentifier: "plainCategory",
+      threadIdentifier: "thread1",
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: "default",
+    );
+    final NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      title,
+      body,
+      notificationDetails,
+      payload: destinationString,
+    );
+
+  } catch (e) {
+    print("❌ Erreur dans _firebaseMessagingBackgroundHandler : $e");
   }
-
-  if (kDebugMode) {
-    FirebaseMessaging.instance.subscribeToTopic('kaba_testeurs');
-    xrint('Subscribed to kaba_testeurs (debug only)');
-  } else {
-    xrint('Not in debug mode — skipping topic subscription');
-  }
-
-  // Init plugin (important in background)
-  const AndroidInitializationSettings androidInit =
-  AndroidInitializationSettings('@mipmap/ic_launcher');
-  const DarwinInitializationSettings iosInit = DarwinInitializationSettings();
-  const InitializationSettings initSettings =
-  InitializationSettings(android: androidInit, iOS: iosInit);
-  await flutterLocalNotificationsPlugin.initialize(initSettings);
-
-  // Notification style for Android
-  final BigPictureStyleInformation? bigPictureStyle = (imagePath != null)
-      ? BigPictureStyleInformation(
-    FilePathAndroidBitmap(imagePath),
-    contentTitle: title,
-    summaryText: body,
-    htmlFormatContentTitle: true,
-    htmlFormatSummaryText: true,
-  )
-      : null;
-
-  final AndroidNotificationDetails androidDetails =
-  AndroidNotificationDetails(
-    AppConfig.CHANNEL_ID,
-    AppConfig.CHANNEL_NAME,
-    channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-    importance: Importance.max,
-    priority: Priority.high,
-    styleInformation: bigPictureStyle,
-    enableLights: true,
-    showWhen: true,
-    largeIcon:
-    (imagePath != null) ? FilePathAndroidBitmap(imagePath) : null,
-  );
-
-  // Notification style for iOS
-  final List<DarwinNotificationAttachment> iOSAttachments = [];
-  if (imagePath != null) {
-    iOSAttachments.add(DarwinNotificationAttachment(imagePath));
-  }
-
-  final iOSPlatformChannelSpecifics = DarwinNotificationDetails(
-    attachments: iOSAttachments,
-    categoryIdentifier: "plainCategory",
-    threadIdentifier: "thread1",
-    presentAlert: true,
-    presentBadge: true,
-    presentSound: true,
-    sound: "default",
-  );
-
-  final NotificationDetails notificationDetails = NotificationDetails(
-    android: androidDetails,
-    iOS: iOSPlatformChannelSpecifics,
-  );
-
-  await flutterLocalNotificationsPlugin.show(
-    DateTime.now().millisecondsSinceEpoch ~/ 1000,
-    title,
-    body,
-    notificationDetails,
-    payload: destinationString,
-  );
 }
 
 class MyApp extends StatefulWidget {
@@ -219,7 +223,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final GlobalKey<NavigatorState> navigatorKey =
-      new GlobalKey<NavigatorState>();
+  new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -240,7 +244,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     /* precache logo of the splashPage */
     precacheImage(AssetImage(ImageAssets.kaba_main), context);
-
+    DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
     return ChangeNotifierProvider<AppLanguage>(
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
@@ -265,11 +269,11 @@ class _MyAppState extends State<MyApp> {
               navigatorKey: navigatorKey,
               onGenerateTitle: (BuildContext context) => "KABA",
               theme: ThemeData(
-                appBarTheme: AppBarTheme(
-                  iconTheme: IconThemeData(color: Colors.white),
-                ),
-          dialogTheme: DialogTheme(
-          backgroundColor: Colors.white),
+                  appBarTheme: AppBarTheme(
+                    iconTheme: IconThemeData(color: Colors.white),
+                  ),
+                  dialogTheme: DialogTheme(
+                      backgroundColor: Colors.white),
                   elevatedButtonTheme: ElevatedButtonThemeData(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: KColors.colorCustom, // couleur de fond
@@ -281,15 +285,15 @@ class _MyAppState extends State<MyApp> {
                   ),
                   useMaterial3: true,
                   colorScheme: ColorScheme.fromSeed(
-                      seedColor: Colors.white,
+                    seedColor: Colors.white,
                     primary: KColors.colorCustom,
                     brightness: Brightness.light,
                     onPrimary: Colors.white,
-                      secondary: KColors.colorCustom,
-                      onSecondary: Colors.white,
-                      surface: Colors.white,
+                    secondary: KColors.colorCustom,
+                    onSecondary: Colors.white,
+                    surface: Colors.white,
 
-                    
+
                   ),
                   scaffoldBackgroundColor: Colors.white,
                   primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
@@ -305,8 +309,9 @@ class _MyAppState extends State<MyApp> {
                   type: "shop",
                   restaurantListPresenter: RestaurantListPresenter()),*/
               // home: TestPage(),
-              home: SplashPage(
-                  analytics: widget.analytics, observer: widget.observer),
+
+              home:  //RatingArticle(deliveryRatingPending:deliveryRatingPending ,),
+              SplashPage(   analytics: widget.analytics, observer: widget.observer),
               // home: DeleteAccountSuccessfulPage(),
               // home: DeleteAccountFixPropositionPage(),
               /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),

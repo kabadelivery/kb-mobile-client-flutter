@@ -1,4 +1,5 @@
-  import 'package:flutter/cupertino.dart';
+  import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
@@ -20,11 +21,12 @@ Widget BuildExplanationSpace(BuildContext context,WidgetRef ref,String explanati
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
       padding: EdgeInsets.all(5),
-      height: 300,
+      height: 270,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-             color: Colors.transparent,
-        borderRadius: BorderRadius.all(Radius.circular(5))
+             color: KColors.primaryColor.withOpacity(.1),
+        border: Border.all(color: KColors.primaryColor.withOpacity(1),width: .5),
+        borderRadius: BorderRadius.all(Radius.circular(15))
       ),
       child:Column(
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -39,7 +41,7 @@ Widget BuildExplanationSpace(BuildContext context,WidgetRef ref,String explanati
           SharedPreferences prefs = await SharedPreferences.getInstance();
           await prefs.setBool('is_explanation_space_visible', false);
         },
-        child: Icon(Icons.close,color: Colors.grey,),
+        child: Icon(Icons.close,color: KColors.primaryColor,),
        ),
        ),
           Row(

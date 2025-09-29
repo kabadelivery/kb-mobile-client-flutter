@@ -1,0 +1,4 @@
+enum ExpeditionType {
+  national,
+  international,
+}

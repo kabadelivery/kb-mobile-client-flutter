@@ -46,19 +46,24 @@ class PickingAddressNotifier extends StateNotifier<PickingAdressState>{
   }
   pickOrderAddress(DeliveryAddressModel? order_address) {
     try {
-      final currentAddresses = state.selectedOrderAddress ?? [];
-      bool exists = currentAddresses.any((address) => address.id == order_address!.id);
-      if (!exists) {
+      if (order_address != null) {
         state = state.copyWith(
           is_order_address_picked: true,
-          selectedOrderAddress: [...currentAddresses, order_address!],
+          selectedOrderAddress: [order_address],
         );
-        xrint("Order address added: ${state.selectedOrderAddress}");
+        xrint("Order address set: ${state.selectedOrderAddress}");
+      } else {
+        state = state.copyWith(
+          is_order_address_picked: false,
+          selectedOrderAddress: [],
+        );
+        xrint("Order address cleared");
       }
     } catch (e) {
-      xrint('Error adding order_address: $e');
+      xrint('Error setting order_address: $e');
     }
   }
+
   deleteOrderAddress(DeliveryAddressModel? order_address, bool is_order_address_picked) {
     try {
     

@@ -13,6 +13,7 @@ import '../../state_management/out_of_app_order/location_state.dart';
 import '../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
+import '../../state_management/out_of_app_order/subscription.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
@@ -34,9 +35,8 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
     VoucherModel? voucherSelected = voucherState.selectedVoucher;
 
     xrint('VoucherModeler $voucherSelected');
-    if (voucherSelected == null) {
+
       return Column(children: <Widget>[
-        SizedBox(height: 10),
         /* do you have a voucher you want to use ? */
         InkWell(
           onTap: () async {
@@ -68,71 +68,43 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
             //Default value
             direction: ShimmerDirection.fromLTRB(),
             child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding:
-                    EdgeInsets.only(left: 10, right: 10, bottom: 10, top: 10),
-                margin: EdgeInsets.all(10),
+                width: 160,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   gradient: LinearGradient(
                       begin: Alignment.topRight,
                       end: Alignment.bottomLeft,
-                      colors: [KColors.primaryYellowColor, Colors.yellow]),
+                      colors: [
+                        Color(0xffff9100),
+                        KColors.primaryYellowColor,]),
                   borderRadius: BorderRadius.all(Radius.circular(10)),
                 ),
                 /* please choose a voucher. */
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+
                     children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.add, color: KColors.white),
-                            onPressed: () async {
-                              VoucherModel? voucher = await SelectVoucher(
-                                  context, ref, false, null);
-                              OrderBillConfiguration? orderBillConfiguration =
-                                  await getBillingForVoucher(
-                                      context, ref, voucher!);
+                      IconButton(
+                        icon: Icon(CupertinoIcons.tickets, color: KColors.white),
+                        onPressed: () async {
+                          VoucherModel? voucher = await SelectVoucher(
+                              context, ref, false, null);
+                          OrderBillConfiguration? orderBillConfiguration =
+                              await getBillingForVoucher(
+                                  context, ref, voucher!);
 
-                              if (orderBillConfiguration!.shipping_pricing ==
-                                  0) {
-                                showOutOfRangePopup(context);
-                                outOfAppNotifier.setIsBillBuilt(false);
-                                outOfAppNotifier.setShowLoading(false);
-                              } else {
-                                orderBillingNotifier.setOrderBillConfiguration(
-                                    orderBillConfiguration);
-                                outOfAppNotifier.setIsBillBuilt(true);
-                                outOfAppNotifier.setShowLoading(false);
-                              }
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(FontAwesomeIcons.ticketAlt,
-                                color: Colors.white),
-                            onPressed: () async {
-                              VoucherModel? voucher = await SelectVoucher(
-                                  context, ref, false, null);
-                              OrderBillConfiguration? orderBillConfiguration =
-                                  await getBillingForVoucher(
-                                      context, ref, voucher!);
-
-                              if (orderBillConfiguration!.shipping_pricing ==
-                                  0) {
-                                showOutOfRangePopup(context);
-                                outOfAppNotifier.setIsBillBuilt(false);
-                                outOfAppNotifier.setShowLoading(false);
-                              } else {
-                                orderBillingNotifier.setOrderBillConfiguration(
-                                    orderBillConfiguration);
-                                outOfAppNotifier.setIsBillBuilt(true);
-                                outOfAppNotifier.setShowLoading(false);
-                              }
-                            },
-                          )
-                        ],
+                          if (orderBillConfiguration!.shipping_pricing ==
+                              0) {
+                            showOutOfRangePopup(context);
+                            outOfAppNotifier.setIsBillBuilt(false);
+                            outOfAppNotifier.setShowLoading(false);
+                          } else {
+                            orderBillingNotifier.setOrderBillConfiguration(
+                                orderBillConfiguration);
+                            outOfAppNotifier.setIsBillBuilt(true);
+                            outOfAppNotifier.setShowLoading(false);
+                          }
+                        },
                       ),
                       Text(
                           "${AppLocalizations.of(context)!.translate('add_coupon')}",
@@ -142,100 +114,109 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
         ),
         _buildEligibleVoucher(context, ref, null)
       ]);
-    } else {
-      OrderBillConfiguration? orderBillConfiguration;
-//   _selectedVoucher
-      return Column(
-        children: [
-          Stack(
-            children: <Widget>[
-              Container(
-                  padding: EdgeInsets.only(top: 10),
-                  child: MyVoucherMiniWidget(
-                      voucher: voucherState.selectedVoucher,
-                      isForOrderConfirmation: true)),
-              Positioned(
-                  right: 10,
-                  top: 0,
-                  child: Center(
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.blue,
-//                borderRadius: BorderRadius.all(Radius.circular(10))
-                      ),
-                      child: Center(
-                        child: IconButton(
-                            icon: Icon(Icons.delete_forever,
-                                color: Colors.white, size: 20),
-                            onPressed: () async {
-                              List<Map<String, dynamic>> formData = [];
+    });
+}
+Widget BuildVoucherSpace(BuildContext context, WidgetRef ref) {
+  OrderBillConfiguration? orderBillConfiguration;
+  final voucherState = ref.watch(voucherStateProvider);
+  final voucherNotifier = ref.read(voucherStateProvider.notifier);
+  final orderBillingState = ref.watch(orderBillingStateProvider);
+  final orderBillingNotifier = ref.read(orderBillingStateProvider.notifier);
+  final locationState = ref.watch(locationStateProvider);
+  final locationNotifier = ref.read(locationStateProvider.notifier);
+  final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
+  final productState = ref.watch(productListProvider);
+  VoucherModel? voucherSelected = voucherState.selectedVoucher;
 
-                              for (int i = 0; i < productState.length; i++) {
-                                formData.add({
-                                  'name': productState[i]['name'],
-                                  'price': productState[i]['price'].toString(),
-                                  'quantity':
-                                      productState[i]['quantity'].toString(),
-                                  'image': ""
-                                });
-                              }
-                              outOfAppNotifier.setIsBillBuilt(false);
-                              outOfAppNotifier.setShowLoading(true);
-                              OutOfAppOrderApiProvider api =
-                                  OutOfAppOrderApiProvider();
-                              try {
-                                await api
-                                    .computeBillingAction(
-                                        orderBillingState.customer!,
-                                        locationState.selectedOrderAddress!,
-                                        formData,
-                                        locationState.selectedShippingAddress!,
-                                        null,
-                                        false)
-                                    .then((value) {
-                                  voucherNotifier.state.selectedVoucher = null;
-                                  if (orderBillConfiguration!
-                                          .shipping_pricing ==
-                                      0) {
-                                    showOutOfRangePopup(context);
-                                    outOfAppNotifier.setIsBillBuilt(false);
-                                    outOfAppNotifier.setShowLoading(false);
-                                  } else {
-                                    orderBillingNotifier
-                                        .setOrderBillConfiguration(
-                                            orderBillConfiguration);
-                                    outOfAppNotifier.setIsBillBuilt(true);
-                                    outOfAppNotifier.setShowLoading(false);
-                                  }
-                                });
-                              } catch (e) {
-                                Fluttertoast.showToast(
-                                    backgroundColor: Colors.black87,
-                                    textColor: Colors.white,
-                                    fontSize: 14,
-                                    toastLength: Toast.LENGTH_LONG,
-                                    msg: "🚨 " +
-                                        AppLocalizations.of(context)!.translate(
-                                            "impossible_to_load_bill") +
-                                        " 🚨");
+//   _selectedVoucher
+  return Column(
+    children: [
+      Stack(
+        children: <Widget>[
+          Container(
+              padding: EdgeInsets.only(top: 10),
+              child: MyVoucherMiniWidget(
+                  voucher: voucherState.selectedVoucher,
+                  isForOrderConfirmation: true)),
+          Positioned(
+              right: 10,
+              top: 0,
+              child: Center(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle, color: Colors.blue,
+//                borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+                  child: Center(
+                    child: IconButton(
+                        icon: Icon(Icons.delete_forever,
+                            color: Colors.white, size: 20),
+                        onPressed: () async {
+                          List<Map<String, dynamic>> formData = [];
+
+                          for (int i = 0; i < productState.length; i++) {
+                            formData.add({
+                              'name': productState[i]['name'],
+                              'price': productState[i]['price'].toString(),
+                              'quantity':
+                              productState[i]['quantity'].toString(),
+                              'image': ""
+                            });
+                          }
+                          outOfAppNotifier.setIsBillBuilt(false);
+                          outOfAppNotifier.setShowLoading(true);
+                          OutOfAppOrderApiProvider api =
+                          OutOfAppOrderApiProvider();
+                          try {
+                            await api
+                                .computeBillingAction(
+                                orderBillingState.customer!,
+                                locationState.selectedOrderAddress!,
+                                formData,
+                                locationState.selectedShippingAddress!,
+                                null,
+                                false)
+                                .then((value) {
+                              voucherNotifier.state.selectedVoucher = null;
+                              if (orderBillConfiguration!
+                                  .shipping_pricing ==
+                                  0) {
+                                showOutOfRangePopup(context);
                                 outOfAppNotifier.setIsBillBuilt(false);
                                 outOfAppNotifier.setShowLoading(false);
+                              } else {
+                                orderBillingNotifier
+                                    .setOrderBillConfiguration(
+                                    orderBillConfiguration);
+                                outOfAppNotifier.setIsBillBuilt(true);
+                                outOfAppNotifier.setShowLoading(false);
                               }
-                            }),
-                      ),
-                    ),
-                  )),
-            ],
-          ),
-          _buildEligibleVoucher(context, ref, orderBillConfiguration)
+                            });
+                          } catch (e) {
+                            Fluttertoast.showToast(
+                                backgroundColor: Colors.black87,
+                                textColor: Colors.white,
+                                fontSize: 14,
+                                toastLength: Toast.LENGTH_LONG,
+                                msg: "🚨 " +
+                                    AppLocalizations.of(context)!.translate(
+                                        "impossible_to_load_bill") +
+                                    " 🚨");
+                            outOfAppNotifier.setIsBillBuilt(false);
+                            outOfAppNotifier.setShowLoading(false);
+                          }
+                        }),
+                  ),
+                ),
+              )),
         ],
-      );
-    }
-  });
+      ),
+      _buildEligibleVoucher(context, ref, orderBillConfiguration)
+    ],
+  );
 }
-
 Widget _buildEligibleVoucher(BuildContext context, WidgetRef ref,
     OrderBillConfiguration? orderBillConfiguration) {
   final orderBillingNotifier = ref.read(orderBillingStateProvider.notifier);
@@ -446,4 +427,133 @@ Text("-${amount}F".toUpperCase(),style: TextStyle(color: Colors.amberAccent, fon
                             fontWeight: FontWeight.normal)),
                     SizedBox(height: 20),
                   ])))));
+}
+
+
+Widget BuildSubSpace(BuildContext context, WidgetRef ref){
+  return Shimmer(
+    duration: Duration(seconds: 2),
+    //Default value
+    color: Colors.white,
+    //Default value
+    enabled: true,
+    //Default value
+    direction: ShimmerDirection.fromLTRB(),
+    child: GestureDetector(
+      onTap: () async {
+        ref.read(subscriptionStateProvider.notifier).setSelected(true);
+      },
+      child: Container(
+        width: 160,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              colors: [
+                Color(0xff730920),
+                KColors.primaryColor,]),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: Icon(Icons.code, color: KColors.white),
+              onPressed: () async {},
+            ),
+            Text(
+                "Ajouter Code Abon.",
+                style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+class SubscriptionCard extends StatelessWidget {
+  final int priceSaved;
+  const SubscriptionCard({super.key,required this.priceSaved});
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 350,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors:
+          [
+            Color(0xFFFFDADF),
+            Color(0xFFFFECD5)
+          ], // dégradé doux
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: KColors.primaryColor, width: 0.5)
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Titre
+          Row(
+            children: const [
+              Icon(Icons.emoji_objects, color: KColors.primaryColor),
+              SizedBox(width: 8),
+              Text(
+                "Vous économisez sur votre livraison !",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: KColors.primaryColor,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          // Texte principal
+          const Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                  text: "Cette livraison vous coutêra ",
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+                TextSpan(
+                  text: "0 Franc",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                ),
+                TextSpan(
+                  text:
+                  " grâce à votre formule d'abonnement Kaba.",
+                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+
+          // Économie
+           Row(
+             children: [
+               Icon(FontAwesomeIcons.boltLightning, color: Colors.green,size: 12,),
+               Text(
+                "Économie : ${priceSaved} FCFA",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+                         ),
+             ],
+           ),
+        ],
+      ),
+    );
+  }
 }

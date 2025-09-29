@@ -16,7 +16,9 @@ class ShopProductModel {
   double? stars;
   int? promotion;
   bool? is_addon = false;
-
+  double? rating=3;
+  List<Map>? food_review_array = [];
+  int?review_count;
   /* restaurant entity */
   ShopModel? restaurant_entity;
 
@@ -33,7 +35,11 @@ class ShopProductModel {
       this.is_favorite,
       this.stars,
       this.promotion,
-      this.restaurant_entity});
+      this.restaurant_entity,
+      this.rating,
+      this.food_review_array,
+        this.review_count
+      });
 
   ShopProductModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -48,16 +54,23 @@ class ShopProductModel {
     menu_id = json['menu_id'];
     restaurant_id = json['restaurant_id'];
     description = json['description'];
-
+    review_count = json['review_count'];
     l = json["food_details_pictures"];
     food_details_pictures = l?.map((pic_link) => "${pic_link}")?.toList();
     // food_details_pictures = []..add(pic);
     is_favorite = json['is_favorite'];
     stars = json['stars'];
     promotion = json['promotion'];
-
+    rating = (json['rating'] != null) ? double.parse("${json['rating']}") : 3;
     try {
       restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
+    } catch (_) {
+      debugPrint(_.toString());
+    }
+    try {
+      food_review_array = (json['food_review_array'] as List?)
+          ?.map((e) => e as Map)
+          .toList();
     } catch (_) {
       debugPrint(_.toString());
     }
@@ -77,6 +90,9 @@ class ShopProductModel {
         "stars": stars,
         "promotion": promotion,
         "restaurant_entity": restaurant_entity,
+        "rating": rating,
+        "food_review_array": food_review_array,
+        "review_count":review_count
       };
 
   @override
@@ -94,7 +110,7 @@ class ShopProductModel {
     food.restaurant_id = 17;
     food.description = "Something worth it";
     food.is_favorite = 0;
-
+    food.stars = 3;
     return food;
   }
 }

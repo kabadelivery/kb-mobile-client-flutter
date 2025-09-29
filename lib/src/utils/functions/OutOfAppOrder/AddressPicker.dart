@@ -20,7 +20,7 @@ import '../CustomerUtils.dart';
 import 'package:geolocator/geolocator.dart';
 
 Future PickShippingAddress(BuildContext context, WidgetRef ref,
-    GlobalKey poweredByKey, int address_type) async {
+    GlobalKey poweredByKey, int address_type,bool is_actual_position) async {
   final locationState = ref.watch(locationStateProvider);
   final locationNotifier = ref.read(locationStateProvider.notifier);
   final outOfAppNotifier = ref.read(outOfAppScreenStateProvier.notifier);
@@ -38,7 +38,8 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
             MyAddressesPage(
                 pick: true,
                 presenter: AddressPresenter(AddressView()),
-                address_type: address_type),
+                address_type: is_actual_position?5:address_type  //address_type = 5 means  we only choose actual position
+            ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

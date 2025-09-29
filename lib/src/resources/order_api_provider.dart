@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/OrderBillConfiguration.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
@@ -72,7 +73,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> launchOrder(
+  Future<Map> launchOrder(
       bool isPayAtDelivery,
       CustomerModel? customer,
       Map<ShopProductModel, int> foods,
@@ -161,7 +162,7 @@ class OrderApiProvider {
 
       if (response.statusCode == 200) {
         // if ok, send true or false
-        return mJsonDecode(response.data)["error"];
+        return mJsonDecode(response.data);
       } else
         throw Exception(-1); // there is an error in your request
     } else {
@@ -235,8 +236,7 @@ class OrderApiProvider {
     }
   }
 
-  Future<int> sendFeedback(
-      CustomerModel customer, int orderId, int rating, String message) async {
+  Future<int> sendFeedback(CustomerModel customer,DeliveryRatingPending deliveryRatingPending) async {
     xrint("entered sendFeedback");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -250,11 +250,12 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+      xrint(deliveryRatingPending.toJson().toString());
+      Map<String?, dynamic> json = deliveryRatingPending.toJson();
+      json.remove("food");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_SEND_ORDER_FEEDBACK).toString(),
-          data: json.encode(
-              {"command_id": orderId, "rate": rating, "comment": message}));
-
+          data:json);
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return mJsonDecode(response.data)["error"];
@@ -360,11 +361,12 @@ class OrderApiProvider {
       xrint("001 _ " + response.data.toString());
       if (response.statusCode == 200) {
         // if ok, send true or false
-        return mJsonDecode(response.data)["error"];
+        return mJsonDecode(response.data);
       } else
         throw Exception(-1); // there is an error in your request
     } else {
       throw Exception(-2); // you have no right to do this
     }
   }
-}
+
+ }

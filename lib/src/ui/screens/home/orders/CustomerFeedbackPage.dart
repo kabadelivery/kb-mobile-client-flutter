@@ -238,46 +238,6 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
                         ),
 
                         SizedBox(height: 50),
-
-                        GestureDetector(
-                          onTap: () => _sendReview(),
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: KColors.primaryColor,
-                                borderRadius: BorderRadius.circular(5)),
-                            width: MediaQuery.of(context).size.width,
-                            padding: EdgeInsets.all(15),
-                            margin: EdgeInsets.only(left: 20, right: 20),
-                            child: Center(
-                                child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "${AppLocalizations.of(context)!.translate('submit')}"!
-                                      .toUpperCase(),
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 15,
-                                      color: Colors.white),
-                                ),
-                                isSendingFeedback
-                                    ? Row(
-                                        children: <Widget>[
-                                          SizedBox(width: 10),
-                                          SizedBox(
-                                              child: CircularProgressIndicator(
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.white)),
-                                              height: 15,
-                                              width: 15),
-                                        ],
-                                      )
-                                    : Container(),
-                              ],
-                            )),
-                          ),
-                        ),
                         SizedBox(
                           height: 30,
                         )
@@ -292,12 +252,7 @@ class _OrderFeedbackPageState extends State<OrderFeedbackPage>
     });
   }
 
-  _sendReview() {
-    String reviewMessage = _feedbackTextController.text;
-    int reviewStars = widget.rate!;
-    widget.presenter?.sendFeedback(
-        widget.customer!, widget.orderId!, reviewStars, reviewMessage);
-  }
+
 
   @override
   void inflateOrderDetails(CommandModel command) {

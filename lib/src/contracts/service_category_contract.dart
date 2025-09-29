@@ -1,9 +1,13 @@
+import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/ServiceMainEntity.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:geolocator/geolocator.dart';
+
+import '../models/CustomerModel.dart';
+import '../utils/functions/new_rating_feature.dart';
 
 class ServiceMainContract {
   void fetchServiceCategoryFromLocation(Position location) {}
@@ -18,6 +22,7 @@ class ServiceMainView {
 
   void networkError() {}
   void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
+  void showOrderRating (List<DeliveryRatingPending> deliveryRatingPending) {}
   void inflateServiceCategory(List<ServiceMainEntity> data) {}
 
 }
@@ -123,5 +128,36 @@ class ServiceMainPresenter implements ServiceMainContract {
       /* RestaurantReview failure */
       xrint("error ${_}");
     }
+  }
+  Future<void> showOrderRating() async {
+  try {
+      List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
+      List<DeliveryRatingPending>? deliveriesRatingPending=[];
+      if(deliveriesRatingPending==null || deliveriesRatingPending.isEmpty){
+        _serviceMainView.showOrderRating([]);
+      }
+      CustomerModel customer = await CustomerUtils.getCustomer();
+      for(DeliveryRatingPending orderRating in ordersRating??[]){
+        try{
+            DeliveryRatingPending deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+            deliveryRatingPending.foods=orderRating.foods;
+            deliveryRatingPending.restaurant=orderRating.restaurant;
+            deliveryRatingPending.address=orderRating.address;
+            if(deliveryRatingPending.command_id==0){
+              continue;
+            }else{
+              deliveriesRatingPending.add(deliveryRatingPending);
+            }
+        }catch(_){
+          xrint("error fetching rating for order ${orderRating.command_id} : ${_}");
+        }
+      }
+      if(deliveriesRatingPending!=null){
+        _serviceMainView.showOrderRating(deliveriesRatingPending);
+      }
+    } catch (_) {
+      xrint("error ${_}");
+    }
+
   }
 }
