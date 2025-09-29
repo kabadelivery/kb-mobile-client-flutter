@@ -12,6 +12,7 @@ import '../../models/CustomerModel.dart';
 import '../../models/DeliveryAddressModel.dart';
 import '../../models/OrderBillConfiguration.dart';
 import '../../resources/out_of_app_order_api.dart';
+import '../../state_management/out_of_app_order/additionnal_info_state.dart';
 import '../../state_management/out_of_app_order/products_state.dart';
 import '../../state_management/out_of_app_order/voucher_state.dart';
 import '../../utils/_static_data/KTheme.dart';
@@ -19,6 +20,7 @@ import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/OutOfAppOrder/AddressPicker.dart';
 import '../../utils/functions/Utils.dart';
 import '../../xrint.dart';
+import 'additionnal_info_widget.dart';
 import 'billing_widget.dart';
 Widget ChooseShippingAddress(
     BuildContext context,
@@ -77,7 +79,130 @@ Widget ChooseShippingAddress(
        await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
       });
 }
+//ConsumerState<OutOfAppOrderPage>
+Widget PurchaseAddress(BuildContext context,
+    WidgetRef ref,
+    int type,
+    GlobalKey poweredByKey,
+    int shipping_address_type,int order_type){
+  bool _sendGps=false;
+  final products = ref.watch(productListProvider);
+  final outOfAppScreenState = ref.watch(outOfAppScreenStateProvier);
+  final orderBillingState = ref.watch(orderBillingStateProvider);
+  final locationState = ref.watch(locationStateProvider);
+  final locationNotifier = ref.read(locationStateProvider.notifier);
+  final voucherState = ref.watch(voucherStateProvider);
+  final additionnalInfoState = ref.watch(additionnalInfoProvider);
 
+  return  Container(
+    // card container
+    width: MediaQuery.of(context).size.width*.8,
+    padding: const EdgeInsets.all(18),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(18),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.6),
+          blurRadius: 18,
+          offset: const Offset(0, 8),
+        )
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // header row: icon + texts + switch
+        Row(
+          children: [
+            // icon box (red with blue outline)
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: KColors.primaryColor,
+                borderRadius: BorderRadius.circular(10),
+
+              ),
+              child: const Icon(
+                Icons.location_on,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 12),
+            // title + subtitle
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "Adresse d'achat",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  SizedBox(height: 6),
+                  Text(
+                    "Envoyer position GPS",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // switch (styled)
+            Transform.scale(
+              scale: 1.05,
+              child: Switch(
+                value: _sendGps,
+                onChanged: (v) async{
+                  if(v==true){
+                    await PickShippingAddress(context,ref,poweredByKey,shipping_address_type);
+                    _sendGps=locationState.is_order_address_picked!;
+                  }else{
+                    locationNotifier.pickOrderAddress(null);
+                    _sendGps=locationState.is_order_address_picked!;
+                  }
+                },
+                activeColor: Colors.white,
+                activeTrackColor: KColors.primaryColor,
+                inactiveThumbColor: Colors.white,
+                inactiveTrackColor: Colors.grey.shade300,
+              ),
+            ),
+          ],
+        ),
+
+        locationState.selectedOrderAddress!.isNotEmpty ?   Column(
+          children: [
+            const SizedBox(height: 18),
+            BuildOrderAddress(context,ref,locationState.selectedOrderAddress![0])
+          ],
+        ): Container(),
+        const SizedBox(height: 18),
+        const Text(
+          "Saisir l'adresse manuellement",
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
+        const SizedBox(height: 10),
+        AdditionnalInfo(context,ref,2,additionnalInfoState.additionnal_address_info),
+        // manual text field styled rounded (hint like the design)
+
+      ],
+    ),
+  );
+}
 Widget  BuildShippingAddress(BuildContext context,WidgetRef ref,DeliveryAddressModel selectedAddress) {
   if (selectedAddress == null)
     return Container();
@@ -146,9 +271,11 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
     return Container();
   else
     return Container(
-      color: Colors.grey[200],
-      margin: EdgeInsets.only(left: 20, right: 20),
       padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: Colors.grey[200],
+        borderRadius: BorderRadius.circular(10),
+      ),
       child: Stack(
         children: [
           Column(
@@ -178,7 +305,7 @@ Widget  BuildOrderAddress(BuildContext context,WidgetRef ref,DeliveryAddressMode
                 )
               ]),
           Positioned(
-              top: 5,
+              top: 0,
               right: 0,
               child: InkWell(
                   child: Container(

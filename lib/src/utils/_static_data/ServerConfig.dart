@@ -17,7 +17,7 @@ class ServerConfig {
 
   //static const String ip_address = "nickel-specs-clinics-manufacturing.trycloudflare.com"; // dev server
   //static const String pay_ip_address = "8b5523ac7a6e.ngrok-free.app";
-  static const String stat_ip_address="65949e950264.ngrok-free.app";//dev
+  static const String stat_ip_address="65fd82667d4e.ngrok-free.app";//dev
 
   //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;

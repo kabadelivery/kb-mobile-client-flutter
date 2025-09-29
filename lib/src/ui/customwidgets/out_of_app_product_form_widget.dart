@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +26,7 @@ import '../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import '../../utils/functions/permissions.dart';
 import '../../xrint.dart';
 import 'billing_widget.dart';
+import 'out_of_app_product_widget.dart';
 
 class OutOfAppProductForm extends ConsumerWidget {
   @override
@@ -40,9 +42,8 @@ class OutOfAppProductForm extends ConsumerWidget {
 
     return Container(
       width: size.width,
-      height: 440,
       decoration: BoxDecoration(
-        color: Color(0x42d2d2d2),
+        color: Colors.white ,
         borderRadius: BorderRadius.circular(30),
       ),
       child: Padding(
@@ -84,46 +85,55 @@ class OutOfAppProductForm extends ConsumerWidget {
                                 }
                     }
                         : null,
-                    child: Container(
-                      height: 100,
-                      width: size.width,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Color(0x64d2d2d2),
-                        borderRadius: BorderRadius.circular(5),
-                        image: imagePath != null
-                            ? DecorationImage(
-                          image: FileImage(imagePath),
-                          fit: BoxFit.cover,
-                        )
-                            : null,
+                    child: DottedBorder(
+                      options: RoundedRectDottedBorderOptions(
+                        dashPattern: [4,8],
+                        strokeWidth: 1,
+                        color: KColors.primaryColor,
+                        radius: Radius.circular(10),
                       ),
-                      child: imagePath == null
-                          ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          BouncingWidget(
-                            duration: Duration(milliseconds: 400),
-                            scaleFactor: 2,
-                            onPressed: () {  },
-                            child: Icon(
-                              Icons.camera_alt,
-                              color: Color(0x868A8A8A),
+                      child: Container(
+                        height: 100,
+                        width: 100,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Color(0xFFF3DDE3),
+                          borderRadius: BorderRadius.circular(10),
+                          image: imagePath != null
+                              ? DecorationImage(
+                            image: FileImage(imagePath),
+                            fit: BoxFit.cover,
+                          )
+                              : null,
+                        ),
+                        child: imagePath == null
+                            ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            BouncingWidget(
+                              duration: Duration(milliseconds: 400),
+                              scaleFactor: 2,
+                              onPressed: () {  },
+                              child: Icon(
+                                Icons.camera_alt_outlined,
+                                color: Color(0xFFCD1F45),
+                                size: 30,
+                              ),
                             ),
-                          ),
-                          SizedBox(height: 5),
-                          Text(
-                            "${AppLocalizations.of(context)!.translate('choose_an_image')}",
-                            style: TextStyle(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey,
+                            SizedBox(height: 5),
+                            Text(
+                              "${AppLocalizations.of(context)!.translate('choose_an_image')}",
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: KColors.primaryColor,
+                              ),
                             ),
-                          ),
-                        ],
-                      )
-                          : Container(),
+                          ],
+                        )
+                            : Container(),
+                      ),
                     ),
                   );
                 },
@@ -134,14 +144,17 @@ class OutOfAppProductForm extends ConsumerWidget {
                   width: size.width,
                   alignment: Alignment.center,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Text(
+                      "${AppLocalizations.of(context)!.translate('product_name')}",style: TextStyle(fontSize: 15,color: Colors.black87,fontWeight: FontWeight.bold),),
+                      SizedBox(height: 10),
                       TextFormField(
                         focusNode: _nameFocusNode,
                         onFieldSubmitted: (_) {
-
                           FocusScope.of(context).requestFocus(_priceFocusNode);
-                          if(_priceController.text=="0"){
-                            _priceController.text="";
+                          if (_priceController.text == "0") {
+                            _priceController.text = "";
                           }
                         },
                         controller: _nameController,
@@ -149,15 +162,40 @@ class OutOfAppProductForm extends ConsumerWidget {
                           if (value!.isEmpty) {
                             return "${AppLocalizations.of(context)!.translate('enter_product_name')}";
                           }
-                          if (value!.length>30) {
+                          if (value.length > 30) {
                             return "${AppLocalizations.of(context)!.translate('name_too_long')}";
                           }
+                          return null;
                         },
+                        style: const TextStyle(fontSize: 14),
                         decoration: InputDecoration(
-                          labelText: "${AppLocalizations.of(context)!.translate('product_name')}",
+                          hintText: "Ex : Paracétamol 500mg",
+                          filled: true,
+                          fillColor: Color(0x9EECECEC),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 20,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15), // arrondi
+                            borderSide: BorderSide(width: .5,color: Colors.grey),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: BorderSide(width: 1,color: Colors.grey)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFD02245), // bordure rouge foncé quand focus
+                              width: 1.5,
+                            ),
+                          ),
                         ),
-                        style: TextStyle(fontSize: 13),
                       ),
+                      SizedBox(height: 10),
+                      Text("${AppLocalizations.of(context)!.translate('product_price')} (FCFA)",style: TextStyle(fontSize: 15,color: Color(
+                          0xFF424242),fontWeight: FontWeight.bold),),
                       SizedBox(height: 10),
                       TextFormField(
                         onFieldSubmitted: (_) {
@@ -174,7 +212,28 @@ class OutOfAppProductForm extends ConsumerWidget {
                         controller: _priceController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
-                          labelText: "${AppLocalizations.of(context)!.translate('product_price')}",
+
+                          filled: true,
+                          fillColor: Color(0x9EECECEC),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 16,
+                            horizontal: 20,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15), // arrondi
+                            borderSide: BorderSide(width: .5,color: Colors.grey),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(15),
+                              borderSide: BorderSide(width: 1,color: Colors.grey)
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(15),
+                            borderSide: const BorderSide(
+                              color: Color(0xFFD02245), // bordure rouge foncé quand focus
+                              width: 1.5,
+                            ),
+                          ),
                         ),
                         style: TextStyle(fontSize: 13),
                         validator: (value) {
@@ -203,60 +262,85 @@ class OutOfAppProductForm extends ConsumerWidget {
                           return outOfAppScreenState.showLoading == false
                               ? Column(
                             children: [
-                              Row(
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     "${AppLocalizations.of(context)!.translate('quantity')}:",
-                                    style: TextStyle(fontSize: 13),
+                                    style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                                   ),
                                   SizedBox(width: 10),
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xfff0dbe1),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        quantityNotifier.decrease();
-                                        print("decrease");
-                                      },
-                                      icon: Icon(
-                                        Icons.remove,
-                                        color: KColors.primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 50,
-                                    child: Center(
-                                      child: Text(
-                                        quantity.toString(),
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border:Border.all(width: .5, color:KColors.primaryColor),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            quantityNotifier.decrease();
+                                            print("decrease");
+                                          },
+                                          icon: Icon(
+                                            Icons.remove,
+                                            color: KColors.primaryColor,
+                                            size: 18,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: Color(0xfff0dbe1),
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                    child: IconButton(
-                                      onPressed: () {
-                                        quantityNotifier.increase();
-                                        print("increase $quantity");
-                                      },
-                                      icon: Icon(
-                                        Icons.add,
-                                        color: KColors.primaryColor,
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        width: 50,
+                                        height:50,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                         boxShadow: [
+                                           BoxShadow(
+                                             color: Colors.grey.withOpacity(0.5),
+                                             spreadRadius: 1,
+                                             blurRadius: 5,
+                                             offset: Offset(0, 3)),
+                                         ],
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            quantity.toString(),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 20,
+                                              color: Colors.black87
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      SizedBox(width: 20,),
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          border:Border.all(width: .5, color:KColors.primaryColor),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: IconButton(
+                                          onPressed: () {
+                                            quantityNotifier.increase();
+                                            print("increase $quantity");
+                                          },
+                                          icon: Icon(
+                                            Icons.add,
+                                            color: KColors.primaryColor,
+                                            size: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -284,20 +368,92 @@ class OutOfAppProductForm extends ConsumerWidget {
 
                                 },
                                 child: Container(
+                                  width: size.width,
                                   decoration: BoxDecoration(
                                     color: KColors.primaryColor,
-                                    borderRadius: BorderRadius.circular(5),
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
-                                    child: Text(
-                                      "${AppLocalizations.of(context)!.translate('add_product')}",
-                                      style: TextStyle(color: Colors.white),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.add, color: Colors.white,size: 20),
+                                        Text(
+                                          "${AppLocalizations.of(context)!.translate('add_product')}",
+                                          style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: 15),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Ma commande :",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: KColors.primaryColor,
+                                      borderRadius: BorderRadius.circular(50)
+                                    ),
+                                    padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
+                                    child: Text("${products.length} ${products.length>1?"produits":"produit"}",style: TextStyle(color:Colors.white,fontSize: 15,fontWeight: FontWeight.bold),),
+
+                                  )
+                                ],
+                              ),
+                              SizedBox(height: 15),
+                              Container(
+                                  width: size.width,
+                                  alignment: Alignment.center,
+                                  height: 105.0*products.length,
+                                  child: ListView.builder(
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: products.length,
+                                      itemBuilder: (context,index){
+                                        Map<String,dynamic> product = products[index];
+                                        if(products.length!=0){
+                                          return Container(
+                                            alignment: Alignment.center,
+                                              margin: EdgeInsets.only(bottom: 15),
+                                              child: OutOfAppProduct(
+                                                  context,
+                                                  ref,
+                                                  index,
+                                                  product['image']??File(''),
+                                                  product['name'],
+                                                  product['price'],
+                                                  product['quantity']));
+                                        }
+                                        else{
+                                          return Text('Aucun produit');
+                                        }
+                                      }
+                                  )
+                              ),
+                              SizedBox(height: 15),
+                              Container(
+                                width: size.width,
+                                height:50,
+                                decoration:BoxDecoration(
+                                  borderRadius:BorderRadius.circular(15),
+                                  color:KColors.primaryColor.withOpacity(.1),
+                                  border:Border.all(width: .5,color:KColors.primaryColor)
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 15),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Total",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                      Text("${products.map((el)=>el['price']*el['quantity']).reduce((a,b)=>a+b)} FCFA"
+                                      ,
+                                        style: TextStyle(fontSize: 20,color:KColors.primaryColor,fontWeight: FontWeight.bold),)
+                                    ],
+                                ),
+                              ),
+                              SizedBox(height: 15),
                               products.length > 0
                                   ? InkWell(
                                 onTap: () async {
@@ -351,15 +507,17 @@ class OutOfAppProductForm extends ConsumerWidget {
                                   Navigator.pop(context);
                                 },
                                 child: Container(
+                                  width: size.width,
                                   decoration: BoxDecoration(
-                                    color: Color(0xffeaa243),
-                                    borderRadius: BorderRadius.circular(5),
+                                    color: KColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(50),
                                   ),
+                                  alignment: Alignment.center,
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Text(
                                       "${AppLocalizations.of(context)!.translate('finalize')}",
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ),
