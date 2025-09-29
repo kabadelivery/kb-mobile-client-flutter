@@ -13,14 +13,11 @@ class ServerConfig {
     static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
     static const String kaba_chine ="https://148.230.85.247.nip.io";
     static const String kaba_abonnement = "https://ae2ec61d7d1c.ngrok-free.app";
-    static const String kaba_expedition ="https://31d4814539ac.ngrok-free.app";
+    static const String kaba_expedition ="https://5b729f1955db.ngrok-free.app";
   //LOCAL
-
   //static const String ip_address = "nickel-specs-clinics-manufacturing.trycloudflare.com"; // dev server
   //static const String pay_ip_address = "8b5523ac7a6e.ngrok-free.app";
   //static const String stat_ip_address="65fd82667d4e.ngrok-free.app";//dev
-  static const String kaba_subscription ="https://74e6da587045.ngrok-free.app";
-
   //static const String pay_ip_address = "pay.kaba-technology.com";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;
   static const String SERVER_ADDRESS = "https://" + ip_address;

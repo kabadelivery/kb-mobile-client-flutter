@@ -239,10 +239,13 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       debugPrint("XXX ${data[0]}");
       if (data is List) {
         for (var e in data) {
-          if(e['createdBy']!=null && jsonDecode(e['facturation']['details'])["colis"]!=null) {
+          debugPrint(
+              "XXX expedition ${e['facturation']}"
+          );
+          if(e['createdBy']!=null && e['facturation']!=null) {
             Map<String, dynamic> expedition = Map<String, dynamic>.from(e);
             ExpeditionModel expeditionModel = ExpeditionModel.fromJson(expedition);
-            final detailsJson = jsonDecode(expedition['facturation']['details']);
+            final detailsJson = expedition['facturation']['details'];
 
 
             final colisData = detailsJson['colis'][0];

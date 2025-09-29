@@ -254,7 +254,6 @@ class ServerRoutes {
   static const String LINK_CHECK_USER_ACCOUNT =
       ServerConfig.SERVER_ADDRESS_SECURE +
           "/mobile/api/user/username/valid/check";
-
   // money transfer interface
   static const String LINK_MONEY_TRANSFER =
       ServerConfig.SERVER_ADDRESS_SECURE + "/mobile/api/user/send/credit";
@@ -281,8 +280,6 @@ class ServerRoutes {
 
   static const String LINK_TOPUP_FEES_RATE =
       ServerConfig.SERVER_ADDRESS_SECURE + "/api/fees/get";
-
-  // static const String  LINK_TOPUP_FEES_RATE_V2 = ServerConfig.SERVER_ADDRESS_SECURE+"/api/fees/get/v2";
 
   static const String LINK_TOPUP_FEES_RATE_V3 =
       ServerConfig.SERVER_ADDRESS_SECURE + "/api/fees/get/v3";
@@ -335,8 +332,7 @@ class ServerRoutes {
   static const String LINK_OUT_OF_APP_CREATE_COMMAND =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/create";
   /* upload image */
-  static const String LINK_UPLOAD_PRODUCT_IMAGE =
-      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/image/upload";
+  static const String LINK_UPLOAD_PRODUCT_IMAGE = ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/out_of_app_order/image/upload";
   static const String FETCH_DISTRICTS = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/districts/get";
   static const String FETCH_SHIPPING_PRICE_RANGE = ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/out_of_app_order/shipping_price_range/get";
   static const String LINK_CHECK_IF_IS_NEW_USER= ServerConfig.SERVER_ADDRESS + "/api/user/is-new";
@@ -355,8 +351,7 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String LINK_GET_DELIVERY_RATING_PENDING =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
-  static const String LINK_SEND_ORDER_FEEDBACK =
-      ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
-  static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_subscription + "/dashboard/sharedCodeSuscriber";
+  static const String LINK_SEND_ORDER_FEEDBACK =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
+  static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_expedition + "/dashboard/sharedCodeSuscriber";
   static const String LINK_GET_SKIP_NOTATION_STATUS = ServerConfig.SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
 }

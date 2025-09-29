@@ -146,7 +146,7 @@ class KkiapayProvider {
     }
     final kkiapay = KKiaPay(
       amount: amount,
-      apikey: 'pk_896f1bf1c756c0fcaf6053ff27a01b5f581cac7f532d8038ff644b5e8008db51',
+      apikey: '8e0dfba3c74c9693a19f3e77cbd8998fe567428a',
       sandbox: false,
       callback: (response, ctx) => kkiapayCallback(context,response,paymentData ),
       reason: typeOfTransaction=="momo"?"Recharge Mobile Money":'Recharge carte bancaire',

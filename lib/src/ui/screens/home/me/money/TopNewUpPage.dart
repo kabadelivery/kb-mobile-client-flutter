@@ -306,18 +306,18 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                   return GestureDetector(
 
                                     onTap: () {
-                                      if(momoPaymentModes[index]['id'] == "orange_money"){
-                                        mDialog("${AppLocalizations.of(context)!.translate('orange_payment_not_available')}");
-                                        return;
-                                      }
-                                      if(momoPaymentModes[index]['id'] == "mtn"){
-                                        mDialog("${AppLocalizations.of(context)!.translate('mtn_payment_not_available')}");
-                                        return;
-                                      }
-                                      if(momoPaymentModes[index]['id'] == "wave"){
-                                        mDialog("${AppLocalizations.of(context)!.translate('wave_payment_not_available')}");
-                                        return;
-                                      }
+                                     // if(momoPaymentModes[index]['id'] == "orange_money"){
+                                      //                                         mDialog("${AppLocalizations.of(context)!.translate('orange_payment_not_available')}");
+                                      //                                         return;
+                                      //                                       }
+                                      //                                       if(momoPaymentModes[index]['id'] == "mtn"){
+                                      //                                         mDialog("${AppLocalizations.of(context)!.translate('mtn_payment_not_available')}");
+                                      //                                         return;
+                                      //                                       }
+                                      //                                       if(momoPaymentModes[index]['id'] == "wave"){
+                                      //                                         mDialog("${AppLocalizations.of(context)!.translate('wave_payment_not_available')}");
+                                      //                                         return;
+                                      //                                       }
                                       setState(() {
                                         momo_picked_id = momoPaymentModes[index]['id'];
                                         dropdownValue = momoPaymentModes[index]['name'];
@@ -1163,8 +1163,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       Navigator.of(context).pop();
       return;
     }
-    /*
-    *     if(launch_other_payment){
+       if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
       kkiapayProvider.launchKkiapayPayment(
         context,
@@ -1174,7 +1173,6 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
         feesAmount: _getFees(), typeOfTransaction: 'momo',
         );
     }
-*/
   }
   void launchNewCardTopUp()async{
     setState(() {

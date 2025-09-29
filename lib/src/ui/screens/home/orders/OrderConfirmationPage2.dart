@@ -803,7 +803,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   Widget _buildOrderConfirmationPage2() {
     /* we get this one ... then we tend to select and address to end the purchase. */
-
     return SingleChildScrollView(
 //      controller: _listController,
       child: Column(
