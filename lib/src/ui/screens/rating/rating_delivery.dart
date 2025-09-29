@@ -66,7 +66,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 ),
               ),
             ),
-           if(! widget.canSkip)
+           if(widget.canSkip)
             Positioned(
               right: 10,
                 top: 10,
