@@ -16,8 +16,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWelcomeContract {
 
-  Future? fetchHomePage (){}
-  Future? updateToken (CustomerModel customer) {}
+  Future? fetchHomePage (){
+    return null;
+  }
+  Future? updateToken (CustomerModel customer) {
+    return null;
+  }
 }
 
 class HomeWelcomeView {

@@ -53,12 +53,12 @@ class ServiceMainPresenter implements ServiceMainContract {
         if (pageJson != null) {
           Iterable lo = mJsonDecode(pageJson)["data"];
           List<ServiceMainEntity>? res = lo
-              ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
-              ?.toList();
+              .map((categorie) => ServiceMainEntity.fromJson(categorie))
+              .toList();
           /* order list by position */
           res!.sort((a, b) => (a.position! - b.position!));
           // also get the restaurant entity here.
-          if (!(res != null && res.length > 0)) {
+          if (!(res.length > 0)) {
             throw UnimplementedError();
           }
           _serviceMainView.inflateServiceCategory(res);
@@ -76,12 +76,12 @@ class ServiceMainPresenter implements ServiceMainContract {
             await provider.fetchServiceCategoryFromLocation(location!);
         Iterable lo = mJsonDecode(resJson)["data"];
         List<ServiceMainEntity>? res = lo
-            ?.map((categorie) => ServiceMainEntity.fromJson(categorie))
-            ?.toList();
+            .map((categorie) => ServiceMainEntity.fromJson(categorie))
+            .toList();
         /* order list by position */
         res!.sort((a, b) => (a.position! - b.position!));
         // also get the restaurant entity here.
-        if (!(res.length! > 0)) {
+        if (!(res.length > 0)) {
           throw UnimplementedError();
         }
 

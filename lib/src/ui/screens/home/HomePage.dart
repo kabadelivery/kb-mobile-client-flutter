@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/add_vouchers_contract.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -23,6 +22,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/models/ShopModel.dart';
+import 'package:KABA/src/ui/customwidgets/modals/Modal_2_connect.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/main/ServiceMainPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
@@ -64,6 +64,7 @@ import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
 import 'orders/DailyOrdersPage.dart';
+
 
 FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -630,6 +631,7 @@ class _HomePageState extends State<HomePage> {
       loginStuffChecked = 1;
     }
     return Scaffold(
+       
       body: pages![StateContainer.of(context)!.tabPosition!],
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 12.5,

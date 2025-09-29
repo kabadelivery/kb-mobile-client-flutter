@@ -8,6 +8,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
+import 'package:KABA/src/ui/customwidgets/modals/Modal_2_connect.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/message/ErrorPage.dart';

@@ -1,0 +1,2 @@
+C:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/android/app/.cxx/RelWithDebInfo/5c1l4f2g/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/android/app/.cxx/RelWithDebInfo/5c1l4f2g/x86_64/CMakeFiles/rebuild_cache.dir

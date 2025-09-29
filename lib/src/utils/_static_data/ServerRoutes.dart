@@ -97,8 +97,7 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/api/restaurant/v2/get";
 
   /* user login */
-  // static const String LINK_USER_LOGIN =  ServerConfig.SERVER_ADDRESS_SECURE+
-  //     "/mobile/api/login_check";
+  static const String LINK_USER_LOGIN =  ServerConfig.SERVER_ADDRESS_SECURE+ "/mobile/api/login_check";
 
   static const String LINK_USER_LOGIN_V2 =
       ServerConfig.SERVER_ADDRESS_SECURE + "/api/user/login/v2";
@@ -349,7 +348,11 @@ class ServerRoutes {
   //KKiapay API EndpointsKKIAPAY_CONFIRM_TRANSACTION
   static const String KKIAPAY_STORE_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/store";
   static const String KKIAPAY_CONFIRM_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/confirm";
-
+  // KABA ABONNEMENTS
+  static const String KABA_ABONNEMENT_GET_PACKS = ServerConfig.kaba_abonnement + "/dashboard/packs";
+  static const String KABA_ABONNEMENT_NEW_ABONNEMENT = ServerConfig.kaba_abonnement + "/dashboard/new_abonnement";
+  static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
+  static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String LINK_GET_DELIVERY_RATING_PENDING =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =

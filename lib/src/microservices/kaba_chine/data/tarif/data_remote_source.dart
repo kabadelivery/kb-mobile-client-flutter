@@ -58,10 +58,6 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
         throw Exception('Erreur de parsing JSON');
       }
 
-      if (jsonList is! List) {
-        throw Exception('Format de réponse invalide: attendu un tableau');
-      }
-
       List<TarifModel> activeRates =[];
 
       for(var json in jsonList){

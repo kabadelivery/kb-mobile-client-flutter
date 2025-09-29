@@ -12,8 +12,8 @@ class ServerConfig {
     static const String pay_ip_address = "dev.pay.kaba-delivery.com";
     static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
     static const String kaba_chine ="https://148.230.85.247.nip.io";
+    static const String kaba_abonnement = "https://ae2ec61d7d1c.ngrok-free.app";
     static const String kaba_expedition ="https://31d4814539ac.ngrok-free.app";
-
   //LOCAL
 
   //static const String ip_address = "nickel-specs-clinics-manufacturing.trycloudflare.com"; // dev server
@@ -29,8 +29,7 @@ class ServerConfig {
   static const String PAY_SERVER_ADDRESS_SECURE = "https://" + pay_ip_address;
   static const String APP_SERVer = "https://app.kaba-delivery.com";
   static const String APP_SERVER_HOST = "app.kaba-delivery.com";
-  static const String IMAGE_BUCKET_BASE_LINK =
-      "https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com";
+  static const String IMAGE_BUCKET_BASE_LINK ="https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com";
 
 //   static String TOPIC = "kaba_flutter";
 //   static String HMS_TOPIC = "kaba_flutter";

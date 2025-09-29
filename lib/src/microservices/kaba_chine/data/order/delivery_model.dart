@@ -2,10 +2,7 @@ import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
 import 'package:KABA/src/microservices/kaba_chine/data/order/payment_info_model.dart';
 import 'package:KABA/src/microservices/kaba_chine/data/order/payment_model.dart';
 import 'package:KABA/src/microservices/kaba_chine/domain/order/delivery_entity.dart';
-import 'package:KABA/src/microservices/kaba_chine/domain/tarif/tarif_entity.dart';
-import 'package:flutter/foundation.dart';
 
-import '../../Enums/deliveryStatus.dart';
 import '../../domain/order/status_history_entry.dart';
 
 class Delivery extends DeliveryEntity {

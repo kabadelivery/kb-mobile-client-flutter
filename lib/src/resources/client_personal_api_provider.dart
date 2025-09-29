@@ -219,7 +219,7 @@ class ClientPersonalApiProvider {
         };
       };
       String? device_token = await FirebaseMessaging.instance.getToken();
-      var response =
+      var response = 
           await dio.post(Uri.parse(ServerRoutes.LINK_USER_REGISTER).toString(),
               data: json.encode({
                 "nickname": nickname,
@@ -500,7 +500,7 @@ class ClientPersonalApiProvider {
     }
   }
 
-  launchTopUp(CustomerModel customer, String phoneNumber, String balance,double fees) async {
+  launchTopUp(CustomerModel customer, String phoneNumber, String balance,double fees , int transaction_motif_id) async {
     xrint("entered launchTopUp");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
@@ -520,7 +520,7 @@ class ClientPersonalApiProvider {
                 : ServerRoutes.LINK_TOPUP_FLOOZ)
             .toString(),
         data: json.encode(
-            {"phone_number": phoneNumber, "amount": balance, 'fees': '$fees'}),
+            {"phone_number": phoneNumber, "amount": balance, 'fees': '$fees' , "transaction_motif_id":transaction_motif_id}),
       );
 
       xrint(response.data.toString());

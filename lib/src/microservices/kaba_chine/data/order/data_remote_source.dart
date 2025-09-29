@@ -217,6 +217,7 @@ class DeliveryRemoteDataSourceImpl implements DeliveryRemoteDataSource {
             (X509Certificate cert, String host, int port) {
           return validateSSL(cert, host, port);
         };
+        return null;
       };
       var data =  json.encode(
           {

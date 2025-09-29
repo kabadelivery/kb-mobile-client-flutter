@@ -52,12 +52,8 @@ class OrderFeedbackPresenter implements OrderFeedbackContract {
     try {
       CommandModel commandModel = await provider.loadOrderFromId(customer, orderId);
       _orderFeedbackView.showLoading(false);
-      if (commandModel != null) {
-        _orderFeedbackView.inflateOrderDetails(commandModel);
-      } else {
-        _orderFeedbackView.systemError();
-      }
-    } catch(_) {
+      _orderFeedbackView.inflateOrderDetails(commandModel);
+        } catch(_) {
       /* Food failure */
       xrint("error ${_}");
       if (_ == -2) {

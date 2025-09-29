@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPConfirmationPage.dart';
+import 'package:KABA/src/ui/screens/auth/login/LoginOTPnewPage.dart';
+import 'package:KABA/src/ui/screens/home/orders/fake-orderpage/NewDesignOrderPage.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +14,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart' as t;
 
@@ -38,6 +42,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
+   String userlogin =  "" ; 
+
   List<String>? _loginFieldHint;
 
   String? _nicknameFieldHint;
@@ -47,17 +53,22 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
   List<int> _loginMaxLength = [8,100];
 
-  TextEditingController _loginFieldController = new TextEditingController();
-  TextEditingController _codeFieldController = new TextEditingController();
+  
+  TextEditingController passwordFieldController = new TextEditingController();
   TextEditingController _nicknameFieldController = new TextEditingController();
+  TextEditingController secondpassController = new TextEditingController();
   TextEditingController _whatsappPhonenumberController = new TextEditingController();
-
+  TextEditingController  _codeFieldController = new TextEditingController(); 
   bool isCodeSent = false;
   bool isLoginError = false;
   bool isEmailError = false;
   bool isCodeError = false;
   bool isNicknameError = false;
   bool isWhaNumberError = false;
+
+
+  
+
 
   /* circle loading progressing */
   bool isCodeSending = false;
@@ -81,6 +92,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "";
     _whatsappPhoneNumberHint = "";
 
+    userlogin = widget.login ?? "" ; 
+
     this.widget.presenter!.registerView = this;
     /* retrieve state of the app */
     _retrieveRequestParams();
@@ -95,22 +108,28 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "${AppLocalizations.of(context)!.translate('nickname')}";
     _whatsappPhoneNumberHint = "${AppLocalizations.of(context)!.translate('whatsapp_number_hint')}";
 
-    if (widget.login != null && _loginFieldController != null) {
+   /*  if (widget.login != null && _loginFieldController != null) {
       if (Utils.isEmailValid(widget.login!)) {
           _handleRadioValueChange(1);
       } else {
         _handleRadioValueChange(0);
       }
       _loginFieldController?.text = widget.login!;
-    }
+    } */
+
+
+
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: KColors.primaryColor,
+          backgroundColor: Colors.white,
           leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
               onPressed: () {
@@ -131,106 +150,139 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
           ),
         ),
         backgroundColor: Colors.white,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child:Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 30),
-                    // Text("CREATE ACCOUNT", style:TextStyle(color:KColors.primaryColor, fontSize: 22, fontWeight: FontWeight.bold)),
-                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
-                    /* radiobutton - check who are you */
-                    !isCodeSent ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          new Radio(
-                            value: 0,
-                            groupValue: _registerModeRadioValue,
-                            onChanged: _handleRadioValueChange,
-                          ), new Text(
-                              "${AppLocalizations.of(context)!.translate('phone_number')}",
-                              style: new TextStyle(fontSize: 14.0)),
-                          new Radio(
-                            value: 1,
-                            groupValue: _registerModeRadioValue,
-                            onChanged: _handleRadioValueChange,
-                          ), new Text(
-                              "${AppLocalizations.of(context)!.translate('email')}",
-                              style: new TextStyle(fontSize: 14.0)),
-                        ]) : Container(),
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(recoverModeHints[_registerModeRadioValue], textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
+        body: Column(
+         // height: MediaQuery.of(context).size.height,
+          children: [
+             SingleChildScrollView(
 
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController,
-                                enabled: !isCodeSent,
-                                onChanged: _onLoginFieldTextChanged,  maxLength: _registerModeRadioValue == 0 ? 8 : TextField.noMaxLength, keyboardType: _registerModeRadioValue == 0 ? TextInputType.emailAddress : TextInputType.emailAddress, decoration: InputDecoration.collapsed(hintText: _loginFieldHint![_registerModeRadioValue]), style: TextStyle(color:KColors.new_black)),
-                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
-
-
-                    SizedBox(height: 10),
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _nicknameFieldController,
-                                enabled: !isCodeSent,
-                                onChanged: _onNicknameFieldTextChanged,
-                                decoration: InputDecoration.collapsed(hintText: _nicknameFieldHint), style: TextStyle(color:KColors.new_black),
-                                keyboardType: TextInputType.emailAddress),
-                            decoration:  isNicknameError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
-                    _registerModeRadioValue == 1 ? SizedBox(height: 20) : Container(),
-
-                    _registerModeRadioValue == 1 ? Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context)!.translate('please_enter_whatsapp_no')}",
-                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)) : Container(),
-                    _registerModeRadioValue == 1 ?  SizedBox(height: 10) : Container(),
-
-                    _registerModeRadioValue == 1 /* email */ ?
-                    Row(mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CountryCodePicker(
-                          flagWidth: 16,
-                          onChanged: _onCountryChanged,
-                          // Initial selection and favorite can be one of code ('IT') OR dial_code('+39')
-                          initialSelection: _initialSelection,
-                          // favorite: ['+33','FR'],
-                          // optional. Shows only country name and flag
-                          showCountryOnly: false,
-                          // optional. Shows only country name and flag when popup is closed.
-                          showOnlyCountryWhenClosed: false,
-                          // optional. aligns the flag and the Text left
-                          alignLeft: false,
-                        )
-                         ,
-                        SizedBox(width: 160,
-                            child: Container(
-                                padding: EdgeInsets.all(14),
-                                child: TextField(controller: _whatsappPhonenumberController,
-                                    enabled: !isCodeSent,
-                                    onChanged: _onWhaNumberieldTextChanged,
-                                    decoration: InputDecoration.collapsed(hintText: _whatsappPhoneNumberHint), style: TextStyle(color:KColors.new_black),
-                                    keyboardType: TextInputType.emailAddress),
-                                decoration:  isWhaNumberError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                            )),
+            child:Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 15),
+                     Row(mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                       Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
+                       SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                        SizedBox(width: 5),
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
                       ],
-                    )
-                        : Container(),
+                    ),
+                     SizedBox(height: 20),
+                      Center(
+                        child: 
+                       Text("Creer votre Compte avec ${widget.login} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                      ),
+                      
+                   /*  Container(margin: EdgeInsets.only(left:40, right: 40),
+                    child:   
+                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)), */
+              const SizedBox(height: 20),
 
-                    SizedBox(height: 30),
-                    (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
+              // Username
+              TextField(
+                controller: _nicknameFieldController,
+                decoration: InputDecoration(
+                  hintText: "Nom d'utilisateur",
+                  prefixIcon: const Icon(Icons.person_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+
+              // Password
+              TextField(
+                controller: passwordFieldController,
+               // obscureText: _obscurePassword,
+                decoration: InputDecoration(
+                  hintText: "Mot de passe",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                 /*  suffixIcon: IconButton(
+                   // icon: Icon(
+                   //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                      //  _obscurePassword = !_obscurePassword;
+                      });
+                    },
+                  ), */
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 15),
+
+              // Confirm Password
+              TextField(
+                controller: secondpassController,
+                //obscureText: _obscureConfirmPassword,
+                decoration: InputDecoration(
+                  hintText: "Confirmer le mot de passe",
+                  prefixIcon: const Icon(Icons.lock_outline),
+                 /*  suffixIcon: IconButton(
+                    icon: Icon(_obscureConfirmPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _obscureConfirmPassword = !_obscureConfirmPassword;
+                      });
+                    },
+                  ) */
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Create account button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                 onPressed: () {
+                     _sendCodeAction();
+                    
+                 },
+                   // Handle create account action,
+                  child: const Text(
+                    "Créer le compte",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              
+
+              // Back button
+              Center(
+                child: TextButton.icon(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(Icons.arrow_back),
+                  label: const Text("Retour"),
+                ),
+              ),
+               SizedBox(height: 15),
+                    /* (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
                     SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
                         height: 15, width: 15) : Container(),
 
                     SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "${AppLocalizations.of(context)!.translate('press_code_hint')}",
+                        "TTT",
                         textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
@@ -240,16 +292,16 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                           SizedBox(width: 80,
                               child: Container(
                                   padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('code')}"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
+                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
 //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlinedButton(
-                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
+                          /* OutlinedButton(
+                              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
                               child: Row(
                             children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
                               /* stream builder, that shows that the code is been sent */
                               isCodeSent == false &&  isCodeSending ? Row(
                                 children: <Widget>[
@@ -258,22 +310,31 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                                 ],
                               ) : Container(),
                             ],
-                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
+                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}), */
                         ]),
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
-                        Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)),
+                        Text("FRD", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
-                    SizedBox(height: 50),
-                  ]
-              ),
-            ),
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
+                    SizedBox(height: 30),
+            ],
           ),
-        ));
+        ),
+      ),
+        Image.asset(
+  "assets/images/background/Patternlogin.png",
+  width: double.infinity,
+  height: 275,
+  fit: BoxFit.cover, // scales and crops to cover the width
+),
+          ]
+          
+        )
+        );
   }
 
   void _handleRadioValueChange (int? value) {
@@ -281,19 +342,21 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       /* clean the content */
       if (isCodeSent)
         return;
-      this._registerModeRadioValue = value!;
-      this._loginFieldController.text = "";
-      this._codeFieldController.text = "";
+     
+
+     this.passwordFieldController.text = "" ; 
+      this._nicknameFieldController.text = "";
+      this.secondpassController.text = "";
     });
   }
 
-  void _sendCodeAction() {
+  Future<void> _sendCodeAction() async {
 
     /* logins */
-    String login = _loginFieldController.text;
+    String login = userlogin;
     /* check the fields */
-    if (_registerModeRadioValue == 0) {
-      /* phone number */
+   
+      /* /* phone number */
       String phoneNumber = login;
       if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
         setState(() {
@@ -301,7 +364,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         });
         return;
       }
-    } else {
+     else {
       /* email */
       String email = login;
       if (!Utils.isEmailValid(email)) {
@@ -310,26 +373,52 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         });
         return;
       }
-    }
+    } */
 
     /* nicknames */
     String _nickname = _nicknameFieldController.text;
+    String password = passwordFieldController.text;
+    String secondpassword = secondpassController.text ;
+    
+  
     /* check the fields */
-    if (_nickname.trim().length==0) {
+    if (_nickname.trim().length==0 || password.trim().length==0 || secondpassword.trim().length==0) {
       setState(() {
         isNicknameError = true;
       });
+       mDialog("❌ Un des champ est Vide !");
       return;
     }
 
+     if (_nickname.trim().length < 3  ) {
+      setState(() {
+        isNicknameError = true;
+      });
+       mDialog("❌ Le Nom doit contenir au moins 2 characteres");
+      return;
+    }
+
+    if (password != secondpassword) {
+  // Les mots de passe ne correspondent pas
+   mDialog("❌ Les deux mots de passe ne sont pas identiques");
+
+} else if (password.length < 4) {
+  // Mot de passe trop court
+   mDialog("❌ Le mot de passe doit contenir au moins 4 caractères");
+
+} else {
     setState(() {
       isCodeSending = true;
     });
     /* send request, to the server, and if ok, save request params and update fields. */
     ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-    this.widget.presenter!.sendVerificationCode(login);
+   
+    showReceiveCodeBottomSheet(context);
+}
 
+   
 
+      
    /*
     if (_registerModeRadioValue == 0) {
       // phone number
@@ -341,6 +430,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}");
     }*/
   }
+
+  /* Future<void> _verifyotp() async {
+
+   var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+} */
 
   void mDialog(String message) {
     _showDialog(
@@ -416,7 +513,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         /* if code sent, do something else,  */
         isCodeSent = true;
         this._requestId = prefs.getString("request_id");
-        _loginFieldController.text = prefs.getString("login")!;
+        
         _nicknameFieldController.text = prefs.getString("nickname")!;
         _registerModeRadioValue = register_type;
       });
@@ -534,14 +631,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         isAccountRegistering = true;
       });
 
-      String whatsapp_number = "${countryDialCode?.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
+      String whatsapp_number = "${countryDialCode.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
 
       xrint("whatsappNo ${whatsapp_number}");
 
       /* launch create account request, and if success*/
       this.widget.presenter!.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
-          phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
-          email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
+          phone_number: Utils.isPhoneNumber_TGO(userlogin) ? userlogin : "",
+          email: Utils.isEmailValid(userlogin) ? userlogin : "",
           request_id: this._requestId, whatsapp_number: whatsapp_number
       );
     }
@@ -615,25 +712,39 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     });
   }
 
-  _checkCodeAndCreateAccount() {
+  _checkCodeAndCreateAccount() async {
 
-    /* check request id and the code */
-    String _code = _codeFieldController.text;
+    var codetyped =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+
+   if (codetyped != null && codetyped.containsKey('code') && codetyped.containsKey('type')){
+     String _code = codetyped['code'];
+    
     if (Utils.isCode(_code)) {
       setState(() {
         isCodeSending = false;
       });
       this.widget.presenter!.checkVerificationCode(
-          _codeFieldController.text, this._requestId??"");
+          codetyped['code'], this._requestId??"");
     } else {
-      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}"+codetyped['code']);
     }
+
+   } else{
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}"+codetyped['code']);
+   }
+
+    /* check request id and the code */
+     
+   
   }
 
 
 
   void _showDialog(
-      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
+      {String? svgIcons, Icon? icon, var message, bool isYesOrNo = false, Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -654,14 +765,14 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
             actions:
             isYesOrNo ? <Widget>[
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
+                style: ButtonStyle(side: WidgetStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
                 child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
+                style: ButtonStyle(side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
                   child: new Text(
                     "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
                 onPressed: () {
@@ -685,7 +796,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   @override
-  void codeError() {
+  void codeError() { 
     mToast("${AppLocalizations.of(context)!.translate('register_code_error')}");
   }
 
@@ -696,6 +807,78 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
      countryDialCode = value;
      _initialSelection = value.code!;
   }
+  
+  void showReceiveCodeBottomSheet (BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    backgroundColor: Colors.white,
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 50,
+              height: 5,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Confirmation",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            const Text( "Vous allez recevoir un code de vérification pour finaliser  ",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.black54),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: KColors.primaryColor,
+                  padding: const EdgeInsets.symmetric(vertical: 15),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () async {
+                  
+          // 
+
+           Navigator.of(context).pop();
+           setState(() {
+      isCodeSending = true;
+    });
+            
+        this.widget.presenter!.sendVerificationCode(userlogin);
+      
+            _checkCodeAndCreateAccount();
+           
+               
+            },
+                child: const Text(
+                  "Recevoir le Code",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
 
 
 }
+
+

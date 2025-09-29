@@ -7,6 +7,7 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/ui/customwidgets/FoodItems/FoodItem.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ProductWithShopDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchSwitchWidget.dart';
@@ -88,6 +89,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   String? _filterDropdownValue;
 
+  String  _selectedFilter = 'Spaghetti' ;
+
   // GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
   ScrollController _searchListScrollController = ScrollController();
@@ -114,6 +117,14 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   bool? _open_filter_value;
 
   Map<String, dynamic>? filterConfiguration;
+
+  // keep track of which chips are selected
+  final List<String> _allFilters = [
+    "spagho", "poissonbraise", "foufou", "akoume", "emakoume", "degue", "botokoin" , "tchintchinga" , "pizza" , "burger"  , "charwama" , "glaces" , "brochettes" , "poulet" , "riz"
+  ];
+  final Set<String> _selectedFilters = {}; // dynamic selection
+
+ 
 
   @override
   void initState() {
@@ -215,6 +226,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   @override
   Widget build(BuildContext context) {
+ 
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -992,11 +1005,74 @@ _searchAction();
       return Container(
           child: Center(
               child: Column(children: <Widget>[
-        SizedBox(height: 20),
+       /*  SizedBox(height: 20),
         Icon(Icons.search, color: Colors.grey),
         SizedBox(height: 10),
-        Text("${AppLocalizations.of(context)!.translate('please_search_item')}")
-      ])));
+        Text("${AppLocalizations.of(context)!.translate('please_search_item')}") */
+         Padding(
+          padding: const EdgeInsets.only(left: 15 , right: 15),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: "Rechercher un plat...",
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+            ),
+          ),
+        ), 
+
+        Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child:  Wrap(
+            spacing: 1,
+            runSpacing: 1,
+            children: _allFilters.map((filter) {
+              final isSelected = _selectedFilter == filter;
+              return ChoiceChip(
+
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                label: Text("#$filter"),
+                selected: isSelected,
+                showCheckmark: false,
+                selectedColor: KColors.primaryColor,
+                backgroundColor: Colors.grey.shade200,
+                labelStyle: TextStyle(
+                  fontSize: 11 , 
+                  color: isSelected ? Colors.white : Colors.black,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                ),
+                onSelected: (_) {
+                  setState(() {
+                    _selectedFilter = filter;
+                  });
+                },
+              );
+            }).toList(),
+            
+      ),
+
+),
+
+SizedBox(height: 10,),
+
+Padding
+( 
+  padding: EdgeInsets.all(5),
+ child:Center(
+            child: _selectedFilter == null
+                ? const Text(
+                    "Sélectionnez un filtre",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  )
+                : FoodGrid(foodType: _selectedFilter),
+          )
+)
+
+
+      ]))
+      );
 
     if (foodProposals?.length == 0) {
       return Container(
@@ -1783,3 +1859,17 @@ _searchAction();
     });
   }
 }
+
+  // 🔹 Chip widget
+  Widget _buildChip(String label, bool selected) {
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      child: FilterChip(
+        label: Text(label),
+        selected: selected,
+        selectedColor: Colors.red.shade100,
+        checkmarkColor: Colors.red,
+        onSelected: (_) {},
+      ),
+    );
+  }

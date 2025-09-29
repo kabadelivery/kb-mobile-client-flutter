@@ -1,10 +1,8 @@
-import 'package:geolocator/geolocator.dart';
 import 'package:KABA/src/models/CommandModel.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:KABA/src/models/UserTokenModel.dart';
 import 'package:KABA/src/repository.dart';
-import 'package:KABA/src/ui/customwidgets/MyVoucherMiniWidget.dart';
 import 'package:rxdart/rxdart.dart';
 
 class UserDataBloc {

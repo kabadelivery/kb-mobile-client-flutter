@@ -4,6 +4,7 @@ import 'package:KABA/src/contracts/order_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/ui/customwidgets/modals/Connexion_requise_modal.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -543,7 +544,9 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return AlertDialog(
+          return Connexion_requise_m();
+           
+         /*  AlertDialog(
             title: Text(
                 "${AppLocalizations.of(context)!.translate('please_login_before_going_forward_title')}"),
             content: SingleChildScrollView(
@@ -589,7 +592,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
                 },
               )
             ],
-          );
+          ); */
         },
       );
     } else {
