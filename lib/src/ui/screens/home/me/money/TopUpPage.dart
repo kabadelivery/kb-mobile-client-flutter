@@ -460,7 +460,7 @@ class _TopUpPageState extends State<TopUpPage> implements TopUpView {
             widget.customer!,
             "${_phoneNumberFieldController!.text}",
             "${_amountFieldController!.text}",
-            _getFees());
+            _getFees(),1);
       else {
         // launch pay dunya
         String amount = "${_amountFieldController!.text}";

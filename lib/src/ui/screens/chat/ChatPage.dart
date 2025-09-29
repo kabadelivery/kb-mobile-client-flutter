@@ -1,221 +1,224 @@
-import 'package:KABA/src/ui/screens/home/me/MeNewAccountPage.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ChatPage extends StatefulWidget {
+  final String token;
+  final int receiverId;
+
+  const ChatPage({super.key, required this.token, required this.receiverId});
+
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final List<Map<String, dynamic>> messages = [
-    {"text": "Bienvenue au Service client de Kaba 👋, how can I help you today?", "isUser": false},
-    {"text": "J'ai une reclamation ?", "isUser": true},
-  ];
+  final TextEditingController _messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+  File? _pickedImage;
 
-  final TextEditingController _controller = TextEditingController();
-  bool isTyping = false; // 👈 state for typing indicator
+  final String messagesQuery = """
+    query MessagesByUser(\$receiverId: Int!) {
+      messagesByUser(receiverId: \$receiverId) {
+        id
+        text
+        imageUrl
+        senderId
+        receiverId
+        createdAt
+      }
+    }
+  """;
 
-  void sendMessage() {
-    if (_controller.text.trim().isEmpty) return;
+  final String sendMessageMutation = """
+    mutation CreateMessage(\$receiverId: Int!, \$text: String, \$imageUrl: String) {
+      createMessage(receiverId: \$receiverId, text: \$text, imageUrl: \$imageUrl) {
+        id
+        text
+        imageUrl
+        senderId
+        receiverId
+        createdAt
+      }
+    }
+  """;
 
-    setState(() {
-      messages.add({"text": _controller.text, "isUser": true});
-      isTyping = true; // bot starts typing
-      _controller.clear();
-    });
+  final String messageSentSubscription = """
+    subscription MessageSent(\$receiverId: Int!) {
+      messageSent(receiverId: \$receiverId) {
+        id
+        text
+        imageUrl
+        senderId
+        receiverId
+        createdAt
+      }
+    }
+  """;
 
-    // Fake bot reply
-    Future.delayed(Duration(seconds: 2), () {
+  // Pick image using image_picker
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
       setState(() {
-        isTyping = false;
-        messages.add({
-          "text": "Veuillez patienter pendant que nous traitons votre demande.",
-          "isUser": false,
-        });
+        _pickedImage = File(pickedFile.path);
       });
-    });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.grey[100],
-      appBar: AppBar(
-        backgroundColor: KColors.primaryColor,
-        elevation: 0.5,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: (){
-              Navigator.pop(context); // close the bottom sheet
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MeNewAccountPage(),
-                ),
-              ); 
-          },
-        ),
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundImage: AssetImage('assets/images/kaba_logo.png'),
-              radius: 18,
-              backgroundColor: Colors.white,
-            ),
-            SizedBox(width: 8),
-            Text('Service Client', style: TextStyle(color: Colors.white)),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          // Chat messages
-          Expanded(
-            child: ListView.builder(
-              padding: EdgeInsets.all(16),
-              itemCount: messages.length + (isTyping ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (isTyping && index == messages.length) {
-                  // Typing indicator bubble
-                  return Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 6),
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Dot(),
-                          SizedBox(width: 4),
-                          Dot(),
-                          SizedBox(width: 4),
-                          Dot(),
-                        ],
-                      ),
-                    ),
-                  );
-                }
+    final HttpLink httpLink = HttpLink('https://793ae8bdb95e.ngrok-free.app/graphql',
+        defaultHeaders: {"Authorization": widget.token});
 
-                final msg = messages[index];
-                bool isUser = msg["isUser"];
-                return Align(
-                  alignment: isUser
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 6),
-                    padding: EdgeInsets.all(12),
-                    constraints: BoxConstraints(
-                        maxWidth:
-                            MediaQuery.of(context).size.width * 0.7),
-                    decoration: BoxDecoration(
-                      color: isUser ? Colors.green[400] : Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
-                        bottomLeft:
-                            Radius.circular(isUser ? 16 : 0),
-                        bottomRight:
-                            Radius.circular(isUser ? 0 : 16),
-                      ),
-                    ),
-                    child: Text(
-                      msg["text"],
-                      style: TextStyle(
-                        color: isUser ? Colors.white : Colors.black87,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // Input area
-          SafeArea(
-            child: Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      decoration: InputDecoration(
-                        hintText: "Tapez votre message...",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(25),
-                          borderSide: BorderSide.none,
-                        ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        contentPadding:
-                            EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  GestureDetector(
-                    onTap: sendMessage,
-                    child: CircleAvatar(
-                      backgroundColor: Colors.green,
-                      child: Icon(Icons.send, color: Colors.white),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          )
-        ],
+    final WebSocketLink wsLink = WebSocketLink(
+      'ws://793ae8bdb95e.ngrok-free.app/graphql',
+      config: SocketClientConfig(
+        initialPayload: () => {"authorization": widget.token},
+        autoReconnect: true,
       ),
     );
-  }
-}
 
-// 👇 Small animated dot widget
-class Dot extends StatefulWidget {
-  @override
-  _DotState createState() => _DotState();
-}
+    final Link link = Link.split((request) => request.isSubscription, wsLink, httpLink);
 
-class _DotState extends State<Dot>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+    final GraphQLClient client = GraphQLClient(
+      cache: GraphQLCache(),
+      link: link,
+    );
 
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-        vsync: this, duration: Duration(milliseconds: 600))
-      ..repeat(reverse: true);
-    _animation =
-        Tween<double>(begin: 0.3, end: 1).animate(_controller);
-  }
+    return GraphQLProvider(
+      client: ValueNotifier(client),
+      child: Scaffold(
+        appBar: AppBar(title: const Text("Chat Support")),
+        body: Column(
+          children: [
+            Expanded(
+              child: Query(
+                options: QueryOptions(
+                  document: gql(messagesQuery),
+                  variables: {"receiverId": widget.receiverId},
+                  fetchPolicy: FetchPolicy.networkOnly,
+                ),
+                builder: (result, {fetchMore, refetch}) {
+                  if (result.hasException) {
+                    return Center(child: Text(result.exception.toString()));
+                  }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
+                  if (result.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-  @override
-  Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _animation,
-      child: Container(
-        width: 6,
-        height: 6,
-        decoration: BoxDecoration(
-          color: Colors.grey,
-          shape: BoxShape.circle,
+                  final messages = result.data!['messagesByUser'] as List<dynamic>;
+
+                  return Subscription(
+                    options: SubscriptionOptions(
+                      document: gql(messageSentSubscription),
+                      variables: {"receiverId": widget.receiverId},
+                    ),
+                    builder: (subResult) {
+                      List<dynamic> updatedMessages = List.from(messages);
+                      if (subResult.data != null) {
+                        updatedMessages.add(subResult.data!['messageSent']);
+                      }
+
+                      // Scroll to bottom
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        if (_scrollController.hasClients) {
+                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
+                        }
+                      });
+
+                      return ListView.builder(
+                        controller: _scrollController,
+                        itemCount: updatedMessages.length,
+                        itemBuilder: (context, index) {
+                          final msg = updatedMessages[index];
+                          bool isMe = msg['senderId'].toString() == widget.token; // or use actual userId
+
+                          return Align(
+                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: isMe ? Colors.blue : Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (msg['text'] != null)
+                                    Text(
+                                      msg['text'],
+                                      style: TextStyle(color: isMe ? Colors.red : Colors.black),
+                                    ),
+                                  if (msg['imageUrl'] != null)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 5),
+                                      child: Image.network(msg['imageUrl']),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            if (_pickedImage != null)
+              Container(
+                margin: const EdgeInsets.all(8),
+                height: 100,
+                child: Image.file(_pickedImage!),
+              ),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.image),
+                  onPressed: _pickImage,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: const InputDecoration(hintText: "Type a message"),
+                  ),
+                ),
+                Mutation(
+                  options: MutationOptions(
+                    document: gql(sendMessageMutation),
+                  ),
+                  builder: (runMutation, mutationResult) => IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed: () async {
+                      String? imageUrl;
+                      if (_pickedImage != null) {
+                        // Upload image to your server or S3 and get URL
+                        // For demo, we use a placeholder
+                        imageUrl = "https://via.placeholder.com/150";
+                      }
+
+                      if (_messageController.text.isEmpty && imageUrl == null) return;
+
+                      runMutation({
+                        "receiverId": widget.receiverId,
+                        "text": _messageController.text,
+                        "imageUrl": imageUrl,
+                      });
+
+                      setState(() {
+                        _messageController.clear();
+                        _pickedImage = null;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -6,7 +6,7 @@ import 'package:KABA/src/xrint.dart';
 
 class TopUpContract {
 
-  void launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees) {}
+  void launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees , int transaction_motif_id) {}
   void launchPayDunya(CustomerModel customer, String balance, double fees) {}
   void fetchFees(CustomerModel customer) {}
   void fetchTopUpConfiguration(CustomerModel customer) {}
@@ -41,14 +41,14 @@ class TopUpPresenter implements TopUpContract {
   }
 
   @override
-  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees) async {
+  Future<void> launchTopUp(CustomerModel customer, String phoneNumber, String balance, double fees , int transaction_motif_id) async {
 
     if (isWorking)
       return;
     isWorking = true;
     _topUpView.showLoading(true);
     try {
-      dynamic res = await provider.launchTopUp(customer, phoneNumber, balance, fees);
+      dynamic res = await provider.launchTopUp(customer, phoneNumber, balance, fees , transaction_motif_id );
       String link = mJsonDecode(res)["data"]["url"];
       int redirect = mJsonDecode(res)["data"]["redirect"];
       if (redirect == 0)
