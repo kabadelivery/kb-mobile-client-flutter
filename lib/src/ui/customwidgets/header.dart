@@ -1,3 +1,4 @@
+import 'package:KABA/src/ui/customwidgets/performance_ui.dart';
 import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,27 +31,55 @@ Widget Header(BuildContext context){
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Container(
-          margin: EdgeInsets.only(left: 10),
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Color(0xFFCF2A4E),
-            borderRadius: BorderRadius.circular(5),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2),
-                spreadRadius: 1,
-                blurRadius: 5,
-                offset: Offset(0, 3), // changes position of shadow
-              ),
-            ]
-          ),
-          child: Row(
-            children: [
-              Icon(FontAwesomeIcons.boltLightning,color: Colors.orangeAccent,size: 14,),
-              Text("4,7",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
-              Text("/5",style: TextStyle(color: Colors.orangeAccent,fontSize: 16,fontWeight: FontWeight.bold),)
-            ],
+        GestureDetector(
+          onTap: (){
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return Dialog(
+                  backgroundColor: Colors.transparent,
+                  insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24), // reduce empty space around
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: IntrinsicWidth(
+                    child: IntrinsicHeight(
+                      child: PerformanceCard(
+                        currentRating: 4.7,
+                        reviewCount: 120,
+                        speed: 5,
+                        geolocationRespect: 5,
+                        attitude: 4.5,
+                        appearance: 4.3,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            );
+
+
+          },
+          child: Container(
+            margin: EdgeInsets.only(left: 10),
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Color(0xFFCF2A4E),
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ]
+            ),
+            child: Row(
+              children: [
+                Icon(FontAwesomeIcons.boltLightning,color: Colors.orangeAccent,size: 14,),
+                Text("4,7",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+                Text("/5",style: TextStyle(color: Colors.orangeAccent,fontSize: 16,fontWeight: FontWeight.bold),)
+              ],
+            ),
           ),
         ),
         //abonnement
