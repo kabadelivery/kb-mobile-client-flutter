@@ -10,6 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Color hexToColor(String code) {
   return Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
@@ -354,5 +355,17 @@ class Utils {
 
   static String replaceNewLineBy(String text, String placebo) {
     return text.replaceAll("\n", placebo);
+  }
+  static void saveAppPerformance(Map<String,dynamic> value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("app_performance", jsonEncode(value));
+  }
+  static Future<Map<String,dynamic>?> getAppPerformance() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? value = prefs.getString("app_performance");
+    if (value != null) {
+      return jsonDecode(value);
+    }
+    return null;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:KABA/src/ui/customwidgets/performance_ui.dart';
 import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,132 +18,153 @@ import '../../utils/_static_data/Vectors.dart';
 import '../screens/home/_home/InfoPage.dart';
 import '../screens/home/me/abonnement/kaba_abonnements.dart';
 
-Widget Header(BuildContext context){
-  return Container(
-    height: 80,
-    padding: EdgeInsets.symmetric(horizontal: 15),
-    width: MediaQuery.of(context).size.width,
-    decoration: BoxDecoration(
-      color: KColors.primaryColor,
-      borderRadius: BorderRadius.only(
-        bottomLeft: Radius.circular(20),
-        bottomRight: Radius.circular(20),
+class Header extends StatefulWidget {
+  const Header({super.key});
+
+  @override
+  State<Header> createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
+  Map<String, dynamic>? performance;
+  void getPerf()async{
+    performance = await Utils.getAppPerformance();
+    setState(() {});
+  }
+  @override void initState() {
+    super.initState();
+    getPerf();
+  }
+  @override
+  Widget build(BuildContext context) {
+
+   return  Container(
+      height: 80,
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        color: KColors.primaryColor,
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(20),
+          bottomRight: Radius.circular(20),
+        ),
       ),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        GestureDetector(
-          onTap: (){
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return Dialog(
-                  backgroundColor: Colors.transparent,
-                  insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24), // reduce empty space around
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                  child: IntrinsicWidth(
-                    child: IntrinsicHeight(
-                      child: PerformanceCard(
-                        currentRating: 4.7,
-                        reviewCount: 120,
-                        speed: 5,
-                        geolocationRespect: 5,
-                        attitude: 4.5,
-                        appearance: 4.3,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+       performance!=null?   GestureDetector(
+            onTap: ()async{
+              if(performance != null){
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Dialog(
+                      backgroundColor: Colors.transparent,
+                      insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24), // reduce empty space around
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      child: IntrinsicWidth(
+                        child: IntrinsicHeight(
+                          child: PerformanceCard(
+                            currentRating: performance!['final'],
+                            reviewCount: performance!['count'],
+                            speed: performance!['speed'],
+                            geolocationRespect: performance!['geolocation'],
+                            attitude: performance!['attitude'],
+                            appearance: performance!['appearance'],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 );
-              },
-            );
-
-
-          },
-          child: Container(
-            margin: EdgeInsets.only(left: 10),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Color(0xFFCF2A4E),
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  spreadRadius: 1,
-                  blurRadius: 5,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ]
+              }
+            },
+            child: Container(
+              margin: EdgeInsets.only(left: 10),
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Color(0xFFCF2A4E),
+                  borderRadius: BorderRadius.circular(5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      spreadRadius: 1,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ]
+              ),
+              child: Row(
+                children: [
+                  Icon(FontAwesomeIcons.boltLightning,color: Colors.orangeAccent,size: 14,),
+                  Text("${performance!['final']}",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
+                  Text("/5",style: TextStyle(color: Colors.orangeAccent,fontSize: 16,fontWeight: FontWeight.bold),)
+                ],
+              ),
             ),
+          ):Container(height: 0, width: 0,),
+          //abonnement
+          Container(
+            width: 170,
+            alignment: Alignment.center,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(FontAwesomeIcons.boltLightning,color: Colors.orangeAccent,size: 14,),
-                Text("4,7",style: TextStyle(color: Colors.white,fontSize: 16,fontWeight: FontWeight.bold),),
-                Text("/5",style: TextStyle(color: Colors.orangeAccent,fontSize: 16,fontWeight: FontWeight.bold),)
+                GestureDetector(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Kaba_abonnement(presenter: TransactionPresenter(
+                          TransactionView()
+                      ),)),
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.subscriptions,color: Colors.white,),
+                      Text("Abo.",style: TextStyle(color: Colors.white,fontSize: 12),)
+                    ],
+                  ),
+                ),
+                Container(width: 1,height: 20,color: Colors.white,),
+                GestureDetector(
+                    onTap: (){
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ChatPage(token: '', receiverId: 1,)),
+                      );
+                    },
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.chat_bubble_outline,color: Colors.white,),
+                          Text("Chat",style: TextStyle(color: Colors.white,fontSize: 12),
+                          )])),
+                Container(width: 1,height: 20,color: Colors.white,),
+                GestureDetector(
+                  onTap: (){
+                    showBottomContactSheet(context);
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.call_outlined,color: Colors.white,),
+                      Text("Call",style: TextStyle(color: Colors.white,fontSize: 12),)
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ),
-        //abonnement
-        Container(
-          width: 170,
-          alignment: Alignment.center,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => Kaba_abonnement(presenter: TransactionPresenter(
-                      TransactionView()
-                    ),)),
-                  );
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.subscriptions,color: Colors.white,),
-                    Text("Abo.",style: TextStyle(color: Colors.white,fontSize: 12),)
-                  ],
-                ),
-              ),
-              Container(width: 1,height: 20,color: Colors.white,),
-              GestureDetector(
-                onTap: (){
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChatPage(token: '', receiverId: 1,)),
-                  );
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.chat_bubble_outline,color: Colors.white,),
-                    Text("Chat",style: TextStyle(color: Colors.white,fontSize: 12),
-              )])),
-              Container(width: 1,height: 20,color: Colors.white,),
-              GestureDetector(
-                onTap: (){
-                  showBottomContactSheet(context);
-                },
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.call_outlined,color: Colors.white,),
-                    Text("Call",style: TextStyle(color: Colors.white,fontSize: 12),)
-                  ],
-                ),
-              ),
-            ],
-          ),
-        )
+          )
 
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
+
 Future<void> _callCustomerCare()async {
 //    Toast.show("call customer care", context);
   const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";

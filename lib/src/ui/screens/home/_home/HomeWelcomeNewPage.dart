@@ -485,7 +485,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               key: PageStorageKey<String>("home_welcome_new"),
               addAutomaticKeepAlives: true,
               children: <Widget>[
-                Header(context),
+                Header(),
                 /*top slide*/
                 Stack(
                   children: <Widget>[

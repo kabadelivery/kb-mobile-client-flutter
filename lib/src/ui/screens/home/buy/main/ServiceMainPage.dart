@@ -674,7 +674,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Header(context),
+                  Header(),
                   /* hint */
                   SizedBox(height: 20),
                   StateContainer.of(context).location == null

@@ -198,7 +198,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     widget.customerData = data;
     return SingleChildScrollView(
       child: Column(children: <Widget>[
-        Header(context),
+        Header(),
         /* top-up & xof */
         GestureDetector(
           onTap: () => _jumpToPage(

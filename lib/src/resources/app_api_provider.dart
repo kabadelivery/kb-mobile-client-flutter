@@ -17,6 +17,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../utils/functions/CustomerUtils.dart';
+
 class AppApiProvider {
   Future<dynamic> fetchHomeScreenModel() async {
     xrint("entered fetchHomeScreenModel");
@@ -529,4 +531,30 @@ class AppApiProvider {
     }
   }
 
+  getAppPerformance()async{
+    xrint("entered getAppPerformance");
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    var dio = Dio();
+    dio.options
+      ..connectTimeout = 10000;
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            return validateSSL(cert, host, port);
+          };
+        };
+    var response = await dio.get(
+      options: Options(
+        headers: Utils.getHeadersWithToken(customer.token!),
+      ),
+      Uri.parse(ServerRoutes.LINK_GET_PERFORMANCE_RATING).toString(),
+    );
+    xrint(response.data.toString());
+    if (response.statusCode == 200|| response.statusCode == 201) {
+      return mJsonDecode(response.data);
+    } else {
+      throw Exception(-1); // there is an error in your request
+    }
+}
 }

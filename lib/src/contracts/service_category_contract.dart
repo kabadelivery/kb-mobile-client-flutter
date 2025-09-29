@@ -4,6 +4,7 @@ import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 import '../models/CustomerModel.dart';
@@ -130,6 +131,12 @@ class ServiceMainPresenter implements ServiceMainContract {
     }
   }
   Future<void> showOrderRating() async {
+  try{
+    Map<String, dynamic> performance = await provider.getAppPerformance();
+    Utils.saveAppPerformance(performance);
+  }catch(e){
+    debugPrint("error fetching performance ${e}");
+  }
   try {
       List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
       List<DeliveryRatingPending>? deliveriesRatingPending=[];

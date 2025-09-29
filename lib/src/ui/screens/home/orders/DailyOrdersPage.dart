@@ -172,7 +172,7 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
       ),
         body: Column(
           children: [
-            Header(context),
+            Header(),
             //choose type
             SizedBox(height: 10,),
             Padding(
