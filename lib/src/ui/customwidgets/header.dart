@@ -142,7 +142,7 @@ Widget Header(BuildContext context){
     ),
   );
 }
-Future<void> _callCustomerCare() async {
+Future<void> _callCustomerCare()async {
 //    Toast.show("call customer care", context);
   const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
   if (await canLaunch(url)) {
