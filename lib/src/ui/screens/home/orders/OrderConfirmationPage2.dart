@@ -2650,222 +2650,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ),
               ),
             ],
-            
-            Container(
-              margin: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
-             
-               decoration: BoxDecoration(
-
-                          color: Color(0xFFFFFFFF), // background color
-                          borderRadius: BorderRadius.circular(8),
-                          border:
-                          Border.all(color: const Color.fromARGB(255, 172, 108, 108)),
-                                  boxShadow: const [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ]
-                        ),
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Détails de la facture'),
-                    SizedBox(height: 22),
-                   _buildInvoiceRow(
-  'Prix article',
-  double.tryParse(_orderBillConfiguration?.command_pricing?.toString() ?? '') ?? 0.0,
-),
-_buildInvoiceRow(
-  'Prix Livraison',
-  double.tryParse(_orderBillConfiguration?.shipping_pricing?.toString() ?? '') ?? 0.0,
-),
-_buildInvoiceRow(
-  'Frais supplémentaires',
-  double.tryParse(_orderBillConfiguration?.additional_fees_total_price?.toString() ?? '') ?? 0.0,
-),
-                    Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0), // internal padding
-            decoration: BoxDecoration(
-              color: Color(0xFFF3F3F5), // grey background
-              borderRadius: BorderRadius.circular(8), // small border radius
-            ),
-            child: Row(
-              children: [
-              Container(
-                
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
-                  child:  Text(
-                    "Ces frais s'appliquent en cas de pluie, jours fériés,week-end,\n forte demande et la nuit ",
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black,
-                    ),
-                  ),)  
-              ],
-    ),
-  ),
-),
-                    Divider(),
-                    SizedBox(height: 10),
-           _buildInvoiceRow(
-  'Total',
-  double.tryParse(_orderBillConfiguration?.total_normal_pricing?.toString() ?? '') ?? 0.0,
-  isTotal: true,
-),
-                    SizedBox(height: 13),
-                   Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Color(0xFFFFC8D4),
-                borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: const Color.fromARGB(255, 173, 46, 46)),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 40, // small square container
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: Color(0xFFFFC8D4), // background color
-                          borderRadius:
-                              BorderRadius.circular(8), // rounded corners
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(
-                              8.0), // inner padding for the image
-                          child: Image.asset(
-                            "assets/images/png/abonnement-icons/Package.png", // your image
-                            fit: BoxFit.contain,
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "💡 Économisez sur vos livraisons !",
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: Color(0xFFCD1F45),
-                            ),
-                          ),
-                          SizedBox(height: 4), // spacing between texts
-                          Text(
-                            "  Cette livraison vous aurait coûté 0 Franc \n  si vous aviez souscrit à une de nos formules \n  d'abonnement Kaba.",
-                            style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.normal,
-                              color: Colors.black,
-                            ),
-                          ),
-                          SizedBox(height: 4), // spacing between texts
-                           Text(
-                            " ⚡ Economies: 2 300 FCFA",
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.normal,
-                              color: Color(0xFF00A63E),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-               SizedBox(height: 11),
-                ElevatedButton(
-              onPressed: () {
-                 showModalBottomSheet(
-      context: context,
-      isScrollControlled: true, // occupe plus d’espace
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) => const SubscriptionPlansSheet(),
-    );
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
-                  minimumSize: Size(double.infinity, 30)),
-              child: Text(' S’abonner ? '),
-            ), 
-            
-            ],
-
-
-              ),
-            ),
-                   
-                   
-              
-                 
-                  ],
-                ),
-              ),
-              
-            ),
-          
-      
-                    
-      
-      
-     Container(
-      margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-              padding: const EdgeInsets.only(
-                  top: 5, bottom: 5, left: 12, right: 12), // Adjust padding
-              decoration: BoxDecoration(
-                color: Color(0xFFFFFFFF),
-                borderRadius: BorderRadius.circular(12),
-                border:
-                    Border.all(color: const Color.fromARGB(255, 172, 108, 108)),
-              ),
-              child: Column(
-                children: [
-                  Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Votre solde:'),
-                SizedBox(width:8 ),
-                Text( "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",style: TextStyle(color: const Color.fromARGB(255, 173, 46, 46) ),),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text('RECHARGER'),
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 173, 46, 46) ),
-                ),
-              ],
-            ),
-
-       ] ),
-
-     ),
-
-        SizedBox(height: 16),
-            // User Balance
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0  
-              ),child:ElevatedButton(
-              onPressed: () {
-                print("pay now pressed");
-                _buildOrderNowButton(pay_now_button_pressed);
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
-                  minimumSize: Size(double.infinity, 50)),
-              child: Text('PAYER LA COMMANDE'),
-            ),
-            ),
             SizedBox(height: 20),
 
 
@@ -3126,113 +2910,202 @@ _buildInvoiceRow(
 
                 builder: (context,setState) {
 
-                  return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children:[
-                        SizedBox(height: 10),
-                        _orderBillConfiguration != null &&
-                            _orderBillConfiguration!.isBillBuilt == true
-                            ?
-                        // check if out of range before doing anything.
-                        _orderBillConfiguration!.out_of_range == true
-                            ? _buildOutOfRangePage()
-                            : (Column(children: <Widget>[
-                          /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
-                            && */
-                          _selectedVoucher == null
-                              ? _buildPointDiscountOption()
-                              : Container(),
-
+                  return SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children:[
                           SizedBox(height: 10),
-                          _buildBill(),
-                          SizedBox(height: 10),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            color: Colors.white,
-                            padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                        "${AppLocalizations.of(context)!.translate('your_balance')}",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w500)),
-                                    SizedBox(width: 10),
-                                    Text(
-                                        "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                                        style: TextStyle(
-                                            color: KColors.primaryColor,
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w600)),
-                                  ],
-                                ),
-                                SizedBox(height: 5),
-                                InkWell(
-                                    onTap: ()async{
-                                      setState(() {
-                                        pay_now_button_pressed=false;
-                                        topup_button_pressed=true;
-                                        pay_at_delivery_button_pressed=false;
-                                      });
-                                      await Future.delayed(Duration(milliseconds: 400));
-                                      _topUpAccount();
-                                      setState((){
-                                        topup_button_pressed=false;
-                                      });
-                                    },
-                                    child:   AnimatedContainer(
-                                      duration: Duration(milliseconds: 300),
-                                      width: MediaQuery.of(context).size.width,
-                                      alignment:Alignment.center,
-                                      padding: EdgeInsets.only(
-                                          left: 15,
-                                          right: 15,
-                                          top: 10,
-                                          bottom: 10),
-                                      decoration: BoxDecoration(
-                                          color:topup_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(5))),
-                                      child:  Text(
-                                          "${AppLocalizations.of(context)!.translate('top_up')}"
-                                              .toUpperCase(),
+                          _orderBillConfiguration != null &&
+                              _orderBillConfiguration!.isBillBuilt == true
+                              ?
+                          // check if out of range before doing anything.
+                          _orderBillConfiguration!.out_of_range == true
+                              ? _buildOutOfRangePage()
+                              : (Column(children: <Widget>[
+                            /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
+                              && */
+                            _selectedVoucher == null
+                                ? _buildPointDiscountOption()
+                                : Container(),
+                    
+                            SizedBox(height: 10),
+                            _buildBill(),
+                            SizedBox(height: 10),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              color: Colors.white,
+                              padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
+                              child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Container(
+                                    padding: const EdgeInsets.all(16),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFFFC8D4),
+                                      borderRadius: BorderRadius.circular(12),
+                                      border:
+                                      Border.all(color: const Color.fromARGB(255, 173, 46, 46)),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              width: 40, // small square container
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFFFC8D4), // background color
+                                                borderRadius:
+                                                BorderRadius.circular(8), // rounded corners
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                    8.0), // inner padding for the image
+                                                child: Image.asset(
+                                                  "assets/images/png/abonnement-icons/Package.png", // your image
+                                                  fit: BoxFit.contain,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 15,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "💡 Économisez sur vos livraisons !",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xFFCD1F45),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4), // spacing between texts
+                                                Text(
+                                                  "  Cette livraison vous aurait coûté 0 Franc \n  si vous aviez souscrit à une de nos formules \n  d'abonnement Kaba.",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4), // spacing between texts
+                                                Text(
+                                                  " ⚡ Economies: 2 300 FCFA",
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF00A63E),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 11),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              context: context,
+                                              isScrollControlled: true, // occupe plus d’espace
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                              ),
+                                              builder: (context) => const SubscriptionPlansSheet(),
+                                            );
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
+                                              minimumSize: Size(double.infinity, 30)),
+                                          child: Text(' S’abonner ? '),
+                                        ),
+                    
+                                      ],
+                    
+                    
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                          "${AppLocalizations.of(context)!.translate('your_balance')}",
                                           style: TextStyle(
-                                              fontSize: 12,
-                                              color:topup_button_pressed==false?KColors.primaryColor: Colors.white,
-                                              fontWeight:
-                                              FontWeight.w500)),
-                                    )),
-                              ],
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500)),
+                                      SizedBox(width: 10),
+                                      Text(
+                                          "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                                          style: TextStyle(
+                                              color: KColors.primaryColor,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w600)),
+                                    ],
+                                  ),
+                                  SizedBox(height: 5),
+                                  InkWell(
+                                      onTap: ()async{
+                                        setState(() {
+                                          pay_now_button_pressed=false;
+                                          topup_button_pressed=true;
+                                          pay_at_delivery_button_pressed=false;
+                                        });
+                                        await Future.delayed(Duration(milliseconds: 400));
+                                        _topUpAccount();
+                                        setState((){
+                                          topup_button_pressed=false;
+                                        });
+                                      },
+                                      child:   AnimatedContainer(
+                                        duration: Duration(milliseconds: 300),
+                                        width: MediaQuery.of(context).size.width,
+                                        alignment:Alignment.center,
+                                        padding: EdgeInsets.only(
+                                            left: 15,
+                                            right: 15,
+                                            top: 10,
+                                            bottom: 10),
+                                        decoration: BoxDecoration(
+                                            color:topup_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(5))),
+                                        child:  Text(
+                                            "${AppLocalizations.of(context)!.translate('top_up')}"
+                                                .toUpperCase(),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color:topup_button_pressed==false?KColors.primaryColor: Colors.white,
+                                                fontWeight:
+                                                FontWeight.w500)),
+                                      )),
+                                ],
+                              ),
                             ),
-                          ),
-                          _isPreorderSelected()
-                              ? SizedBox(height: 5)
+                            _isPreorderSelected()
+                                ? SizedBox(height: 5)
+                                : Container(),
+                            // purchase buttons are becoming cards.
+                            _isPreorderSelected()
+                                ? _buildPreOrderButton()
+                                : Container(),
+                            !_isPreorderSelected()
+                                ? SizedBox(height: 5)
+                                : Container(),
+                            !_isPreorderSelected()
+                                ? _buildOrderNowButton(pay_now_button_pressed)
+                                : Container(),
+                            !_isPreorderSelected()
+                                ? SizedBox(height: 10)
+                                : Container(),
+                            !_isPreorderSelected()
+                                ? _buildOrderPayAtArrivalButton(pay_at_delivery_button_pressed)
+                                : Container(),
+                            SizedBox(height: 15),
+                          ]))
                               : Container(),
-                          // purchase buttons are becoming cards.
-                          _isPreorderSelected()
-                              ? _buildPreOrderButton()
-                              : Container(),
-                          !_isPreorderSelected()
-                              ? SizedBox(height: 5)
-                              : Container(),
-                          !_isPreorderSelected()
-                              ? _buildOrderNowButton(pay_now_button_pressed)
-                              : Container(),
-                          !_isPreorderSelected()
-                              ? SizedBox(height: 10)
-                              : Container(),
-                          !_isPreorderSelected()
-                              ? _buildOrderPayAtArrivalButton(pay_at_delivery_button_pressed)
-                              : Container(),
-                          SizedBox(height: 15),
-                        ]))
-                            : Container(),
-                      ]
+                        ]
+                    ),
                   );
                 }
             ),
