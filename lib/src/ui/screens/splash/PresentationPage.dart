@@ -5,8 +5,6 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intro_views_flutter/intro_views_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PresentationPage extends StatefulWidget {
@@ -15,200 +13,191 @@ class PresentationPage extends StatefulWidget {
   PresentationPage({Key? key}) : super(key: key);
 
   @override
-  _SplashPageState createState() => _SplashPageState();
+  _PresentationPageState createState() => _PresentationPageState();
 }
 
-class _SplashPageState extends State<PresentationPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
+class _PresentationPageState extends State<PresentationPage> {
+  final PageController _controller = PageController();
+  int _currentIndex = 0;
+
+  final List<String> _images = [
+    "assets/images/png/Slide_1.png",
+    "assets/images/png/Slide_2.png",
+    "assets/images/png/Slide_3.png",
+    "assets/images/png/SLide_4.png",
+    "assets/images/png/Slide_5.png",
+  ];
 
   @override
   void dispose() {
+    _controller.dispose();
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.dark,
-        child: Builder(
-          builder: (context) => IntroViewsFlutter(
-            [
-              PageViewModel(
-                pageColor: Color.fromRGBO(253, 216, 54, 0.1),
-                // iconImageAssetPath: 'assets/air-hostess.png',
-                bubble: Image.asset(ImageAssets.kaba_main),
-                body: Text(
-                  "${AppLocalizations.of(context)!.translate('choice_desc')}",
+  Future<void> _endOfTheSlides() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP, false);
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => SplashPage()),
+    );
+  }
+
+  Widget _buildFullScreenImage(String assetPath) {
+    // Image fills entire screen and keeps aspect ratio with BoxFit.cover
+    return SizedBox.expand(
+      child: Image.asset(
+        assetPath,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: double.infinity,
+      ),
+    );
+  }
+
+  Widget _buildOverlayContent(BuildContext context, int index) {
+    // Title & body are placed near the top (you can adjust positions)
+    final loc = AppLocalizations.of(context)!;
+    final titles = [
+      loc.translate('choice'),
+      loc.translate('payment'),
+      loc.translate('address'),
+      loc.translate('enjoy'),
+      loc.translate('enjoy'),
+    ];
+    final bodies = [
+      loc.translate('choice_desc'),
+      loc.translate('payment_desc'),
+      loc.translate('address_desc'),
+      loc.translate('enjoy_desc'),
+      loc.translate('enjoy_desc'),
+    ];
+
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 18.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Small bubble / logo top-left (matches your previous bubble)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Image.asset("assets/images/png/kaba_logo_red_man.png", width: 48, height: 48),
+                // Skip button top-right
+                TextButton(
+                  onPressed: _endOfTheSlides,
+                  child: Text(
+                    Utils.capitalize("${loc.translate('skip_text')}"),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500),
+                  ),
                 ),
-                title: Text(
-                  "${AppLocalizations.of(context)!.translate('choice')}"
-                      .toUpperCase(),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // Expanded spacer to push navigation controls to bottom
+            Expanded(child: Container()),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFloatingControls() {
+    final loc = AppLocalizations.of(context)!;
+
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 18.0),
+          child: Row(
+            children: [
+              Spacer(),
+              // Next / Done button
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: KColors.primaryColor,
+                  padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                 ),
-                titleTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-                mainImage: Image.asset(
-                  ImageAssets.choice,
-                  height: 285.0,
-                  width: 285.0,
-                  alignment: Alignment.center,
-                ),
-              ),
-              PageViewModel(
-                pageColor: Color.fromRGBO(24, 119, 213, 0.1),
-                // iconImageAssetPath: 'assets/air-hostess.png',
-                bubble: Image.asset(ImageAssets.kaba_main),
-                body: Text(
-                  "${AppLocalizations.of(context)!.translate('payment_desc')}",
-                ),
-                title: Text(
-                  "${AppLocalizations.of(context)!.translate('payment')}"
-                      .toUpperCase(),
-                ),
-                titleTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-                mainImage: Image.asset(
-                  ImageAssets.payment,
-                  height: 285.0,
-                  width: 285.0,
-                  alignment: Alignment.center,
-                ),
-              ),
-              PageViewModel(
-                pageColor: Color.fromRGBO(0, 88, 86, 0.1),
-                // iconImageAssetPath: 'assets/air-hostess.png',
-                bubble: Image.asset(ImageAssets.kaba_main),
-                body: Text(
-                  "${AppLocalizations.of(context)!.translate('address_desc')}",
-                ),
-                title: Text(
-                  "${AppLocalizations.of(context)!.translate('address')}"
-                      .toUpperCase(),
-                ),
-                titleTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-                mainImage: Image.asset(
-                  ImageAssets.address,
-                  height: 285.0,
-                  width: 285.0,
-                  alignment: Alignment.center,
-                ),
-              ),
-              PageViewModel(
-                pageColor: Color.fromRGBO(205, 31, 69, 0.1),
-                // iconImageAssetPath: 'assets/air-hostess.png',
-                bubble: Image.asset(ImageAssets.kaba_main),
-                body: Text(
-                  "${AppLocalizations.of(context)!.translate('enjoy_desc')}",
-                ),
-                title: Text(
-                  "${AppLocalizations.of(context)!.translate('enjoy')}"
-                      .toUpperCase(),
-                ),
-                titleTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold),
-                bodyTextStyle: TextStyle(
-                    color: KColors.new_black,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-                mainImage: Image.asset(
-                  ImageAssets.enjoy,
-                  height: 285.0,
-                  width: 285.0,
-                  alignment: Alignment.center,
+                onPressed: () {
+                  if (_currentIndex == _images.length - 1) {
+                    _endOfTheSlides();
+                  } else {
+                    _controller.nextPage(duration: Duration(milliseconds: 300), curve: Curves.ease);
+                  }
+                },
+                child: Text(
+                  _currentIndex == _images.length - 1
+                      ? Utils.capitalize("${loc.translate('done_text')}")
+                      : Utils.capitalize("${loc.translate('next_text')} >"),
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
               ),
-              // payment , address , enjoy
             ],
-            showSkipButton: true,
-            showNextButton: true,
-            showBackButton: true,
-            onTapDoneButton: () {
-              // Use Navigator.pushReplacement if you want to dispose the latest route
-              // so the user will not be able to slide back to the Intro Views.
-              _endOfTheSlides();
-            },
-            doneText: Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('done_text')}"),
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: KColors.primaryColor)),
-            skipText: Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('skip_text')}"),
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: KColors.primaryColor)),
-            nextText: Text(
-                Utils.capitalize(
-                    "${AppLocalizations.of(context)!.translate('next_text')} >"),
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: KColors.primaryColor)), //next
-            backText: Text(
-                "< " +
-                    Utils.capitalize(
-                        "${AppLocalizations.of(context)!.translate('previous_text')}"),
-                style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: KColors.primaryColor)), //next
-            /* pageButtonTextStyles: const TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontWeight: FontWeight.bold
-            ),*/
           ),
         ),
       ),
     );
   }
 
-  _skipPresentation() {
-    _endOfTheSlides();
+  Widget _buildPageIndicator() {
+    return Positioned(
+      bottom: 86,
+      left: 0,
+      right: 0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(_images.length, (i) {
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 250),
+            margin: EdgeInsets.symmetric(horizontal: 4),
+            width: i == _currentIndex ? 20 : 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: i == _currentIndex ? KColors.primaryColor : Colors.white70,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          );
+        }),
+      ),
+    );
   }
 
-  _endOfTheSlides() async {
-    // set seen at true, and move to whatever page the other page which is terms and conditions
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs
-        .setBool(ServerConfig.SHARED_PREF_FIRST_TIME_IN_APP, false)
-        .then((value) {
-      // jump to splashscreen
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SplashPage(),
-        ),
-      );
-    });
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // make scaffold background transparent so images truly fill screen
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          // PageView with full-screen images
+          PageView.builder(
+            controller: _controller,
+            itemCount: _images.length,
+            onPageChanged: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+            itemBuilder: (context, index) {
+              return Stack(
+                fit: StackFit.expand,
+                children: [
+                  _buildFullScreenImage(_images[index]),
+                  _buildOverlayContent(context, index),
+                ],
+              );
+            },
+          ),
+          _buildPageIndicator(),
+          _buildFloatingControls(),
+        ],
+      ),
+    );
   }
 }

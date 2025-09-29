@@ -260,6 +260,11 @@ flutter:
     - assets/images/png/update.png
     - assets/images/png/expedition_afrique.png
     - assets/images/png/plane.png
+    - assets/images/png/Slide_1.png
+    - assets/images/png/Slide_2.png
+    - assets/images/png/Slide_3.png
+    - assets/images/png/SLide_4.png
+    - assets/images/png/Slide_5.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:
