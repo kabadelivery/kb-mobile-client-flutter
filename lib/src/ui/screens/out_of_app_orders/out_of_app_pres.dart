@@ -222,8 +222,8 @@ class _OutOfAppPresState extends ConsumerState<OutOfAppPres> {
                         decoration: const BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Color(0xFF27B650),
-                              Color(0xFF1A9F68)],
+                              Color(0xFFCB1F44),
+                              Color(0xFFE83C61)],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                           ),
@@ -290,8 +290,8 @@ class _FeatureButton extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE9FBEB),
-        border: Border.all(color: Color(0xFFB6FFB1)),
+        color: const Color(0xFFFFEDF2),
+        border: Border.all(color: Color(0xFFEF97AA)),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -299,10 +299,10 @@ class _FeatureButton extends StatelessWidget {
           Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: Color(0x4747DA80),
+                color: Color(0x3DCB1F44),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: Color(0xFF30B563))),
+              child: Icon(icon, color: Color(0xFFCB1F44))),
           const SizedBox(width: 12),
           Expanded(
             child: Text(
