@@ -6,8 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/user/user_model.dart';
 
 class KabaChineColors {
-  static const Color primary = Color(0xFFB81B3E);
-  static const Color primary_darker = Color(0xFF7C0A23);
+  static const Color primary = Color(0xFFCB1F44);
+  static const Color primary_darker = Color(0xFFB81A3D);
   static const Color secondary = Color(0xFF2B4C7E);
   static const Color success = Color(0xFF4CAF50);
   static const Color warning = Color(0xFFFFC107);

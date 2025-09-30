@@ -12,7 +12,7 @@ class ServerConfig {
     static const String pay_ip_address = "dev.pay.kaba-delivery.com";
     static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
     static const String kaba_chine ="https://148.230.85.247.nip.io";
-    static const String kaba_abonnement = "https://ae2ec61d7d1c.ngrok-free.app";
+    static const String kaba_abonnement = "http://168.231.101.119:4040";
     static const String kaba_expedition ="https://5b729f1955db.ngrok-free.app";
   //LOCAL
   //static const String ip_address = "nickel-specs-clinics-manufacturing.trycloudflare.com"; // dev server

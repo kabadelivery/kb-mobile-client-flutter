@@ -102,19 +102,24 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
      
     return Scaffold(
         backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+        ),
+        resizeToAvoidBottomInset: true,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
-            child:Column(
-      
-              
-              children:[ Padding(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children:[
+                Padding(
                 padding: EdgeInsets.all(20) ,
                 child:Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                   
-                    SizedBox(height: 100),
+                    SizedBox(height: 60),
                      Row(mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
@@ -125,12 +130,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       ],
                     ),
                     SizedBox(height: 40),
-                   
-                     
+
+
                       Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
                       SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),
-                    child:   
+                    child:
                     Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 30),
                       Container(
@@ -190,7 +195,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 ),
               ),
               SizedBox(height: 20),
-               
+
                    if (isPhoneSelected) ...[
                 TextFormField(
                   controller: _loginFieldController,
@@ -227,14 +232,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                              TextField(controller: _loginFieldController, enabled: !isConnecting, maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration:
                             InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('identifier')}"), style: TextStyle(color:KColors.new_black)),
                             decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                            
+
                             ) */
               ] else ...[
                TextFormField(
                   controller: _loginFieldController,
                   enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
-                   
+
                     prefixIconConstraints:
                         const BoxConstraints(minWidth: 0, minHeight: 0),
                     hintText: "Entrez votre email",
@@ -265,7 +270,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   ),
                 ),
               ),
-                    
+
                     SizedBox(height: 30),
                    /*  Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -286,20 +291,18 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           SizedBox(width:20),
                           MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10),color:KColors.primaryYellowColor,child: Text("${AppLocalizations.of(context)!.translate('register')}", style: TextStyle(fontSize: 14, color: Colors.white)), onPressed: () {_moveToRegisterPage(null);}),
                         ]), */
-                         
-                      
+
+
                         //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
-                   
+
                   ]
               ),
               ),
               SizedBox(height: 40),
-              Image.asset(
-  "assets/images/background/Patternlogin.png",
-  width: double.infinity,
-  height: 275,
-  fit: BoxFit.cover, // scales and crops to cover the width
-),
+                Image.asset(
+                "assets/images/background/Patternlogin.png",
+                width: double.infinity,
+              ),
               ]
             ),
           ),

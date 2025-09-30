@@ -671,12 +671,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         color: Colors.white,
         child: Stack(
           children: [
+
             SingleChildScrollView(
               child: Column(
                 children: [
-                  Header(),
                   /* hint */
-                  SizedBox(height: 20),
+                  SizedBox(height: 70),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
                     onTap: () {
@@ -1023,7 +1023,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/6c75e766-9015-479d-8ac2-d33783ae527c/kDstCBf7V4.json")),
+                                    child:Image.asset("assets/images/png/medical-cross.png",width: 20,height: 20,)),
                                 SizedBox(width: 9),
                                 Text(
                                     "Pharmacy",
@@ -1082,6 +1082,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 ],
               ),
             ),
+            Positioned(
+                top: 0,
+                left:0,
+                child:        Header()),
             Positioned(
                 bottom: 0,
                 right: 0,

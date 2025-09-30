@@ -42,20 +42,26 @@ class PerformanceCard extends StatelessWidget {
                 ),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: const Center(
-                child: Row(
+              child: Center(
+                child: Stack(
                   children: [
-                    Icon(FontAwesomeIcons.boltLightning, color: Colors.orangeAccent, size: 25),
-                    Flexible(
-                      child: Text(
-                        "Performance en temps réel de l’appli Kaba",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20
+                    Positioned(child: Image.asset('assets/images/png/Zap.png',width:40),
+                        top: 10,right: 10),
+                    const Row(
+                      children: [
+                        Icon(FontAwesomeIcons.boltLightning, color: Colors.orangeAccent, size: 25),
+                        Flexible(
+                          child: Text(
+                            "Performance en temps réel de l’appli Kaba",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
+                      ],
                     ),
                   ],
                 ),
