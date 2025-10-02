@@ -45,7 +45,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                   children: [
                     Row(
                       children: [
-                       Image.asset('assets/images/png/box.png',width:40,height:40),
+                        Icon(FontAwesomeIcons.box,color: Colors.white,size: 19,),
                         SizedBox(width: 5,),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -106,7 +106,6 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                 color: Colors.white,
                 child:Stack(
                   children: [
-
                     Positioned(
                         bottom:0,
                         child: Image.asset("assets/images/png/expedition_afrique.png",

@@ -157,7 +157,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                          .substring(
                                                          0, 3)
                                                          : "${widget?.shopModel?.stars}")
-                                                     ]),
+                                                      ]
+                                                     ),
                                             )
                                             : SizedBox(width: 60),
                                       ],
