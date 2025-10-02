@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   Widget build(BuildContext context) {
-     
+
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 4),
+                      padding: const EdgeInsets.only(top:1),
                       child: CountryCodePicker(
                 onChanged: (code) {
                   debugPrint("New country selected: ${code.dialCode}");
@@ -210,7 +210,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 initialSelection: 'TG', // default to Togo
                 favorite: const ['+228', 'TG'], // keep Togo as favorite
                 showFlag: true,
-                textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                        showDropDownButton: true,
+                textStyle: const TextStyle(color: Colors.black, fontSize: 16),
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
                 alignLeft: false,

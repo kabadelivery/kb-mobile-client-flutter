@@ -1,163 +1,207 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
+// --- GraphQL queries, mutations, subscriptions (inchangés) ---
+const String GET_MSG = r'''
+  query MessagesByUser($receiverId: Int!) {
+    messagesByUser(receiverId: $receiverId) {
+      id
+      receiverId
+      senderId
+      text
+      createdAt
+    }
+  }
+''';
+
+const String SEND_MSG = r'''
+  mutation SendMessage($receiverId: Int!, $text: String!) {
+    sendMessage(receiverId: $receiverId, text: $text) {
+      id
+      receiverId
+      senderId
+      text
+      createdAt
+    }
+  }
+''';
+
+const String MSG_SUB = r'''
+  subscription OnMessageSent($receiverId: Int!) {
+    messageSent(receiverId: $receiverId) {
+      id
+      receiverId
+      senderId
+      text
+      createdAt
+    }
+  }
+''';
+
+// --- ChatPage ---
 class ChatPage extends StatefulWidget {
   final String token;
   final int receiverId;
 
-  const ChatPage({super.key, required this.token, required this.receiverId});
+  const ChatPage({
+    super.key,
+    required this.token,
+    required this.receiverId,
+  });
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  File? _pickedImage;
-
-  final String messagesQuery = """
-    query MessagesByUser(\$receiverId: Int!) {
-      messagesByUser(receiverId: \$receiverId) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
-      }
-    }
-  """;
-
-  final String sendMessageMutation = """
-    mutation CreateMessage(\$receiverId: Int!, \$text: String, \$imageUrl: String) {
-      createMessage(receiverId: \$receiverId, text: \$text, imageUrl: \$imageUrl) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
-      }
-    }
-  """;
-
-  final String messageSentSubscription = """
-    subscription MessageSent(\$receiverId: Int!) {
-      messageSent(receiverId: \$receiverId) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
-      }
-    }
-  """;
-
-  // Pick image using image_picker
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _pickedImage = File(pickedFile.path);
-      });
-    }
-  }
+  late final GraphQLClient _client;
+  late final TextEditingController _controller;
+  late final int currentUserId; // ✅ ID extrait du token
 
   @override
-  Widget build(BuildContext context) {
-    final HttpLink httpLink = HttpLink('https://793ae8bdb95e.ngrok-free.app/graphql',
-        defaultHeaders: {"Authorization": widget.token});
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
 
-    final WebSocketLink wsLink = WebSocketLink(
-      'ws://793ae8bdb95e.ngrok-free.app/graphql',
+    // ✅ Décodage du token
+    Map<String, dynamic> decodedToken = JwtDecoder.decode(widget.token);
+    currentUserId = decodedToken["userId"]; // dépend du payload de ton JWT
+
+    // --- GraphQL setup ---
+    final httpLink = HttpLink("https://53afc4e9691e.ngrok-free.app/graphql");
+
+    final authLink = AuthLink(
+      getToken: () async => widget.token,
+      headerKey: "authorization",
+    );
+
+    final wsLink = WebSocketLink(
+      "wss://53afc4e9691e.ngrok-free.app/graphql",
       config: SocketClientConfig(
-        initialPayload: () => {"authorization": widget.token},
         autoReconnect: true,
+        initialPayload: () async {
+          return {
+            "authorization": widget.token,
+          };
+        },
       ),
     );
 
-    final Link link = Link.split((request) => request.isSubscription, wsLink, httpLink);
-
-    final GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: link,
+    final link = Link.split(
+          (request) => request.isSubscription,
+      wsLink,
+      authLink.concat(httpLink),
     );
 
+    _client = GraphQLClient(
+      cache: GraphQLCache(store: HiveStore()),
+      link: link,
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // UI
+  @override
+  Widget build(BuildContext context) {
     return GraphQLProvider(
-      client: ValueNotifier(client),
+      client: ValueNotifier(_client),
       child: Scaffold(
-        appBar: AppBar(title: const Text("Chat Support")),
+        appBar: AppBar(
+          title: const Text("Discussion"),
+          backgroundColor: const Color(0xFFCD1F45),
+        ),
         body: Column(
           children: [
+            // --- Zone messages ---
             Expanded(
               child: Query(
                 options: QueryOptions(
-                  document: gql(messagesQuery),
+                  document: gql(GET_MSG),
                   variables: {"receiverId": widget.receiverId},
+                  pollInterval: const Duration(seconds: 2),
                   fetchPolicy: FetchPolicy.networkOnly,
                 ),
                 builder: (result, {fetchMore, refetch}) {
-                  if (result.hasException) {
-                    return Center(child: Text(result.exception.toString()));
-                  }
-
-                  if (result.isLoading) {
+                  if (result.isLoading && result.data == null) {
                     return const Center(child: CircularProgressIndicator());
                   }
+                  if (result.hasException) {
+                    return Center(
+                        child: Text("Erreur: ${result.exception.toString()}"));
+                  }
 
-                  final messages = result.data!['messagesByUser'] as List<dynamic>;
+                  final List messages =
+                      result.data?["messagesByUser"] ?? [];
 
                   return Subscription(
                     options: SubscriptionOptions(
-                      document: gql(messageSentSubscription),
+                      document: gql(MSG_SUB),
                       variables: {"receiverId": widget.receiverId},
                     ),
                     builder: (subResult) {
-                      List<dynamic> updatedMessages = List.from(messages);
                       if (subResult.data != null) {
-                        updatedMessages.add(subResult.data!['messageSent']);
+                        final msg = subResult.data!["messageSent"];
+                        if (!messages.any((m) => m["id"] == msg["id"])) {
+                          messages.add(msg);
+                          messages.sort((a, b) =>
+                              DateTime.parse(a["createdAt"])
+                                  .compareTo(DateTime.parse(b["createdAt"])));
+                        }
                       }
 
-                      // Scroll to bottom
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (_scrollController.hasClients) {
-                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-                        }
-                      });
+                      if (messages.isEmpty) {
+                        return const Center(
+                          child: Text("Aucun message pour le moment."),
+                        );
+                      }
 
                       return ListView.builder(
-                        controller: _scrollController,
-                        itemCount: updatedMessages.length,
-                        itemBuilder: (context, index) {
-                          final msg = updatedMessages[index];
-                          bool isMe = msg['senderId'].toString() == widget.token; // or use actual userId
+                        padding: const EdgeInsets.all(12),
+                        itemCount: messages.length,
+                        itemBuilder: (ctx, index) {
+                          final msg = messages[index];
+                          final bool isMe = msg["senderId"] == currentUserId;
 
                           return Align(
-                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                            alignment: isMe
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
                             child: Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              margin: const EdgeInsets.symmetric(vertical: 4),
+                              padding: const EdgeInsets.all(12),
                               decoration: BoxDecoration(
-                                color: isMe ? Colors.blue : Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(10),
+                                color: isMe
+                                    ? const Color(0xFFCD1F45)
+                                    : Colors.grey.shade300,
+                                borderRadius: BorderRadius.circular(16),
                               ),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  if (msg['text'] != null)
-                                    Text(
-                                      msg['text'],
-                                      style: TextStyle(color: isMe ? Colors.red : Colors.black),
+                                  Text(
+                                    msg["text"],
+                                    style: TextStyle(
+                                      color: isMe ? Colors.white : Colors.black,
                                     ),
-                                  if (msg['imageUrl'] != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: Image.network(msg['imageUrl']),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    DateTime.parse(msg["createdAt"])
+                                        .toLocal()
+                                        .toString(),
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: isMe
+                                          ? Colors.white70
+                                          : Colors.black54,
                                     ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -169,54 +213,51 @@ class _ChatPageState extends State<ChatPage> {
                 },
               ),
             ),
-            if (_pickedImage != null)
-              Container(
-                margin: const EdgeInsets.all(8),
-                height: 100,
-                child: Image.file(_pickedImage!),
+
+            // --- Input en bas ---
+            Mutation(
+              options: MutationOptions(
+                document: gql(SEND_MSG),
+                onError: (err) => debugPrint("Erreur send: $err"),
               ),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.image),
-                  onPressed: _pickImage,
-                ),
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(hintText: "Type a message"),
+              builder: (runMutation, result) {
+                return SafeArea(
+                  child: Container(
+                    padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _controller,
+                            decoration: const InputDecoration(
+                              hintText: "Écrire un message...",
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.send, color: Color(0xFFCD1F45)),
+                          onPressed: () {
+                            final text = _controller.text.trim();
+                            if (text.isNotEmpty) {
+                              runMutation({
+                                "receiverId": widget.receiverId,
+                                "text": text,
+                              });
+                              _controller.clear();
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Mutation(
-                  options: MutationOptions(
-                    document: gql(sendMessageMutation),
-                  ),
-                  builder: (runMutation, mutationResult) => IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () async {
-                      String? imageUrl;
-                      if (_pickedImage != null) {
-                        // Upload image to your server or S3 and get URL
-                        // For demo, we use a placeholder
-                        imageUrl = "https://via.placeholder.com/150";
-                      }
-
-                      if (_messageController.text.isEmpty && imageUrl == null) return;
-
-                      runMutation({
-                        "receiverId": widget.receiverId,
-                        "text": _messageController.text,
-                        "imageUrl": imageUrl,
-                      });
-
-                      setState(() {
-                        _messageController.clear();
-                        _pickedImage = null;
-                      });
-                    },
-                  ),
-                ),
-              ],
+                );
+              },
             ),
           ],
         ),

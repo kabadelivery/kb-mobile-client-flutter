@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "";
     _whatsappPhoneNumberHint = "";
 
-    userlogin = widget.login ?? "" ; 
+    userlogin = widget.login ?? "" ;
 
     this.widget.presenter!.registerView = this;
     /* retrieve state of the app */

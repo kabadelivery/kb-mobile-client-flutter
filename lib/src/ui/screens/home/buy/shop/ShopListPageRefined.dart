@@ -231,173 +231,111 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          titleSpacing: 0,
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 120, // increase height
           backgroundColor: KColors.primaryColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),  // rounded bottom
+              bottomRight: Radius.circular(25),
+            ),
+          ),
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-              onPressed: () {
-                if (_searchMode) {
-                  setState(() {
-                    _searchAutoFocus = false;
-                    _searchMode = false;
-                    _filterEditController.text = "";
-                  });
-_searchAction();
-                } else
-                  Navigator.pop(context);
-              }),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 24),
+            onPressed: () {
+              if (_searchMode) {
+                setState(() {
+                  _searchAutoFocus = false;
+                  _searchMode = false;
+                  _filterEditController.text = "";
+                });
+                _searchAction();
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
           centerTitle: true,
           actions: [
             _searchMode || isLoading
-                ? Container(
-                    width: 60,
-                  )
+                ? SizedBox(width: 60)
                 : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _searchAutoFocus = true;
-                        _searchMode = true;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.search,
-                      size: 20,
-                      color: Colors.white,
-                    ))
+              onPressed: () {
+                setState(() {
+                  _searchAutoFocus = true;
+                  _searchMode = true;
+                });
+              },
+              icon: Icon(Icons.search, size: 22, color: Colors.white),
+            )
           ],
-          title: AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            layoutBuilder: (currentChild, _) => currentChild!,
-            transitionBuilder: (child, animation) {
-              return SlideTransition(
-                position:
-                    Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
-                        .animate(animation),
-                child: child,
-              );
-            },
-            child: _searchMode
-                ? Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 35,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white.withAlpha(100)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Focus(
-                                    onFocusChange: (hasFocus) {
-                                      if (hasFocus) {
-                                        // do staff
-                                        _searchMode = true;
-                                      } else {
-                                        // out search mode
-                                        _searchMode = false;
-                                      }
-                                    },
-                                    child: TextField(
-                                        autofocus: _searchAutoFocus,
-                                        controller: _filterEditController,
-                                        onSubmitted: (val) {
-                                          _searchAction(pressButton: true);
-                                          xrint("on submitted");
-                                        },
-                                        onChanged: (val) {
-                                          if (_searchAutoFocus)
-                                            setState(() {
-                                              _searchAutoFocus = false;
-                                            });
-                                          xrint("on onChanged");
-                                          xrint("${val.toString()}");
-                                          EasyDebounce.debounce(
-                                              'search-input-debouncer',
-                                              Duration(milliseconds: 700),
-                                              () => {_searchAction()});
-                                        },
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontSize: 14),
-                                        textInputAction: TextInputAction.search,
-                                        decoration: InputDecoration.collapsed(
-                                            hintText:
-                                                "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
-                                            hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: KColors.new_black
-                                                    .withAlpha(150))),
-                                        enabled: true),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    _clearFocus();
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 5, right: 5, bottom: 3, top: 3),
-                                    child: Center(
-                                      child: Icon(Icons.close,
-                                          size: 20, color: Colors.white),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        /*  AnimatedSwitcher(
-                          duration: Duration(milliseconds: 400),
-                          child: searchTypePosition == 2
-                              ? InkWell(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(5),
-                                            bottomRight: Radius.circular(5)),
-                                        color: KColors.primaryColor),
-                                    // margin: EdgeInsets.only(top: 2),
-                                    padding: EdgeInsets.only(
-                                        top: 9, bottom: 9, right: 10, left: 10),
-                                    child: Icon(Icons.search,
-                                        color: Colors.white, size: 30),
-                                  ),
-                                  onTap: () {
-                                    onSearchButtonTap();
-                                  })
-                              : Container(),
-                        )*/
-                      ],
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(1.2, 0),
+                      end: Offset(0, 0),
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+                child: _searchMode
+                    ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: TextField(
+                    autofocus: _searchAutoFocus,
+                    controller: _filterEditController,
+                    onSubmitted: (val) {
+                      _searchAction(pressButton: true);
+                    },
+                    onChanged: (val) {
+                      EasyDebounce.debounce(
+                        'search-input-debouncer',
+                        Duration(milliseconds: 700),
+                            () => {_searchAction()},
+                      );
+                    },
+                    style: TextStyle(
+                      color: KColors.new_black,
+                      fontSize: 16,
                     ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                          Utils.capitalize(getCategoryTitle(context)[0]
-                              //    "${AppLocalizations.of(context)!.translate('search')}"
-                              ),
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ],
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!
+                          .translate('find_menu_or_restaurant'),
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: KColors.new_black.withAlpha(150),
+                      ),
+                      border: InputBorder.none,
+                    ),
                   ),
+                )
+                    : Text(
+                  Utils.capitalize(getCategoryTitle(context)[0]),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
+              /// 👇 Now you can add *anything else* under the title
+              SizedBox(height: 6),
+              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
+                  _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
+
+            ],
           ),
         ),
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
+
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Container(
               child: isLoading
@@ -456,8 +394,7 @@ _searchAction();
         child: Column(
           children: <Widget>[
             SizedBox(height: 10),
-            SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
+
             SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
