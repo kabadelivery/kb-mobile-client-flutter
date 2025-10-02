@@ -13,8 +13,8 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
   return   PopInWidget(
     duration: Duration(milliseconds: 500),
     child: Container(
-      height: 200,
-      width: 270,
+      width: 300,
+      padding: EdgeInsets.all(20),
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
@@ -41,6 +41,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
             ),
             child: Icon(Icons.local_shipping_outlined,color: Colors.white,size: 30,),
           ),
+          SizedBox(height: 20,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -62,6 +63,8 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
               ),
             ],
           ),
+          SizedBox(height: 20,),
+          Text("Expédiez partout au Togo et en Afrique de l'Ouest.Par voie terrestre / 07 pays disponibles",textAlign: TextAlign.center,style: TextStyle(fontSize: 14,color: Colors.black87,fontFamily: 'Inter')),
           GestureDetector(
             onTap: (){
               Navigator.of(context).pushReplacement(PageRouteBuilder(

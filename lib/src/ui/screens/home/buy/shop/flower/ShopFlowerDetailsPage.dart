@@ -409,10 +409,16 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                await showDialog(
                                   context: context,
                                   builder: (context) => PreparationPopup(
-                                    preparationTime: 35, // Dynamic value here
+                                    preparationTime: widget.food!.restaurant_entity!.cooking_time??35, // Dynamic value here
                                   ),
-                                ).then((_){
-                                  _continuePurchase();
+                                ).then((value ){
+                                  if(value != null ){
+                                    if(value['success']){
+                                      _continuePurchase();
+                                    }else{
+                                      Navigator.pop(context);
+                                    }
+                                  }
                                 });
 
                               },

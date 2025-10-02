@@ -839,6 +839,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
+                     /*
                       GestureDetector(
                         onTap: () async {
                           if (StateContainer.of(context).loggingState == 0){
@@ -898,6 +899,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
+                      */
                       GestureDetector(
                         onTap: () async{
                           if (StateContainer.of(context).loggingState == 0){
@@ -977,7 +979,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/d1ae6efb-1f15-4bfc-ab2d-2731c1280fd8/VgIF2un2jh.json")),
+                                    child: Lottie.network("https://lottie.host/65dadcb9-e967-4c9e-9e06-c2f63962c332/VYwzwRMD84.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('expedition')}",

@@ -182,7 +182,7 @@ class PreparationPopup extends StatelessWidget {
                     children: [
                       OutlinedButton(
 
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () =>  Navigator.of(context).pop({'success': false}),
                         style: OutlinedButton.styleFrom(
                           backgroundColor: Colors.white,
                           side:  BorderSide(color: Color(0xFFD02245).withOpacity(.5)),
@@ -197,8 +197,8 @@ class PreparationPopup extends StatelessWidget {
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pop(context);
-                          // Add action for "Poursuivre"
+                          Navigator.of(context).pop({'success': true});
+
                         },
                         style: ElevatedButton.styleFrom(
                           elevation: 0,

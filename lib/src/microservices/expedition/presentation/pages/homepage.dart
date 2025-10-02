@@ -45,26 +45,20 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                   children: [
                     Row(
                       children: [
-                        Icon(FontAwesomeIcons.box,color: Colors.white,size: 19,),
+                       Image.asset('assets/images/png/box.png',width:40,height:40),
                         SizedBox(width: 5,),
                         Column(
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("KABA",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                            Text("Expédition",style: TextStyle(color: Colors.white,fontSize: 12),)
+                            Text("KABA",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 15),),
+                            Text("Expédition",style: TextStyle(color: Colors.white,fontSize: 13),)
                           ],
                         )
                       ],
                     ),
                     Row(
                       children: [
-                        IconButton(onPressed: (){
-                          showBottomContactSheet(context: context);
-                        }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
-                        IconButton(onPressed: (){
-                          contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
-                        }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                         MaterialButton(
                           elevation: 0,
                           onPressed: (){
@@ -82,9 +76,25 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                   );
                                 }
                             ));
-                          },child: Text("Suivre son colis",style: TextStyle(color: Colors.white,fontSize: 11),),
+                          },child: Row(
+                            children: [
+                              Icon(Icons.location_on_outlined,color: Colors.white,size: 15,),
+                              Text("Suivre colis",style: TextStyle(color: Colors.white,fontSize: 11),),
+                            ],
+                          ),
                           minWidth: 80,height: 30,
-                          shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(20)),)
+                          shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(10)),),
+                        Row(
+                          children: [
+                            IconButton(onPressed: (){
+                              showBottomContactSheet(context: context);
+                            }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
+                            IconButton(onPressed: (){
+                              contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                            }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
+
+                          ],
+                        ),
                       ],
                     )
                   ],
