@@ -23,6 +23,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../../../../../utils/functions/popups.dart';
+import '../../../../../customwidgets/notation.dart';
+
 class ShopFlowerDetailsPage extends StatefulWidget {
   static var routeName = "/ShopFlowerDetailsPage";
 
@@ -402,8 +405,22 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                           margin:
                               EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                           child: ElevatedButton(
-                              onPressed: () {
-                                _continuePurchase();
+                              onPressed: () async{
+                               await showDialog(
+                                  context: context,
+                                  builder: (context) => PreparationPopup(
+                                    preparationTime: widget.food!.restaurant_entity!.cooking_time??35, // Dynamic value here
+                                  ),
+                                ).then((value ){
+                                  if(value != null ){
+                                    if(value['success']){
+                                      _continuePurchase();
+                                    }else{
+                                      Navigator.pop(context);
+                                    }
+                                  }
+                                });
+
                               },
                               child: Row(
                                 mainAxisSize: MainAxisSize.max,

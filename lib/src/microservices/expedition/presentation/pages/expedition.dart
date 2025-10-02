@@ -196,12 +196,12 @@ class _ExpeditionState extends State<Expedition> {
                         children: [
                           Container(
                               width: 80,
-                              child: Text("Détails du colis",
+                              child: Text(step==2?"Destination":"Estimation",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 12,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
                           Container(
                               width: 80,
-                              child: Text("Destination & Poids",
+                              child: Text("Détails du colis",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 12,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
 

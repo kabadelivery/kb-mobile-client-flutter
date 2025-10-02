@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:KABA/src/ui/customwidgets/abonnememts/SuscriptionCard.dart';
@@ -22,7 +24,7 @@ class _SubscriptionPlansSheetState extends State<SubscriptionPlansSheet> {
 
   /// ------------------- Fetch Available Plans -------------------
   Future<void> _fetchSubscriptionPlans() async {
-    final url = Uri.parse("https://c7d355e6cbf7.ngrok-free.app/dashboard/packs");
+    final url = Uri.parse("${ServerConfig.kaba_abonnement}/dashboard/packs");
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

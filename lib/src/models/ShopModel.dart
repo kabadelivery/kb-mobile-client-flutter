@@ -25,7 +25,7 @@ class ShopModel {
   String? category_id;
   bool is_certified=false;
   double distanceBetweenMeandRestaurant = 0;
-
+  int? cooking_time;
   ShopModel(
       {this.id,
       this.name,
@@ -51,6 +51,7 @@ class ShopModel {
       this.max_food,
       this.location,
       this.is_certified = false,
+        this.cooking_time
       });
 
 
@@ -80,6 +81,7 @@ class ShopModel {
     location = json["location"];
     category_id = "${json["category_id"]}";
     is_certified = json['certified']?? false;
+    cooking_time = int.parse(json['cooking_time'].toString());
   }
 
   Map toJson() => {
@@ -101,7 +103,8 @@ class ShopModel {
         "is_new": is_new,
         "location": location,
         "category_id": category_id,
-        "is_certified":is_certified??false
+        "is_certified":is_certified??false,
+        "cooking_time":cooking_time
       };
 
   @override

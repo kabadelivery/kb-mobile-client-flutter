@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../../contracts/address_contract.dart';
 import '../../../localizations/AppLocalizations.dart';
+import '../../../models/CustomerModel.dart';
 import '../../../models/DeliveryAddressModel.dart';
 import '../../../models/OrderBillConfiguration.dart';
 import '../../../resources/out_of_app_order_api.dart';
@@ -33,23 +34,38 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
   DeliveryAddressModel? shipping_address =null;
   /* jump and get it */
   if (context.mounted) {
+    CustomerModel? customer = await CustomerUtils.getCustomer();
     Map results = await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(
-                pick: true,
-                presenter: AddressPresenter(AddressView()),
-                address_type: is_actual_position?5:address_type  //address_type = 5 means  we only choose actual position
-            ),
+        is_actual_position!=true?
+        MyAddressesPage(
+              pick: true,
+              address_type: address_type,
+              autoCreatAddress: address_type==2? DeliveryAddressModel(
+              name:"${ref.watch(productListProvider).length>0?ref.watch(productListProvider)[0]['name']:"Unknown"}",
+              phone_number:customer!.phone_number.toString(),
+              user_id: customer.id.toString(),
+              description: "${AppLocalizations.of(context)!.translate('location')}",
+              quartier: "unknown",
+              near: "near unknown",
+             ):null,
+              presenter: AddressPresenter(AddressView()),
+            ): MyAddressesPage(
+            pick: true,
+            presenter: AddressPresenter(AddressView()),
+            address_type: 5 //address_type = 5 means  we only choose actual position
+        ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-              CurvedAnimation(parent: animation, curve: curve);
+          CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
+
 
     if (results != null && results.containsKey('selection')) {
       if (address_type == 1) {

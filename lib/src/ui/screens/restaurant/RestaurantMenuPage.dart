@@ -241,15 +241,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
 
     return Scaffold(
-      floatingActionButton:Transform.translate(
-        offset: const Offset(0, -300), // 👈 move it 30px up
-        child: FloatingCartButton(
-          itemCount: _foodCount,
-          onPressed: () {
-            _showMenuBottomSheet(ALL);
-          },
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
+      floatingActionButton: FloatingCartButton(
+        itemCount: _foodCount, onPressed: () { _showMenuBottomSheet(ALL);  },
+     // dynamic number
+
+  ),
       backgroundColor: Colors.white,
       appBar: appBar,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -277,17 +274,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   height: 140,
                                   child: Column(
                                     children: [
-                                      Row(children: [
-                                        Expanded(
-                                            flex: 8,
-                                            child: Text(
-                                                "${widget.restaurant?.name == null ? '' : widget.restaurant?.name}",
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: KColors.new_black,
-                                                    fontSize: 15))),
-                                        Expanded(flex: 2, child: Container()),
+                                      Row(
+                                          children: [
+                                        Text(
+                                            "${widget.restaurant?.name == null ? '' : widget.restaurant?.name}",
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: KColors.new_black,
+                                                fontSize: 15)),
+                                        Container(),
+                                        SizedBox(width: MediaQuery.of(context).size.width/3),
                                         _getRestaurantStateTag(
                                             widget.restaurant)
                                       ]),
@@ -1015,19 +1012,19 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     food, foodIndex!, menuIndex!),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: KColors.primaryColor,
+                                      color: KColors.primaryColor.withOpacity(.1),
                                       borderRadius: BorderRadius.circular(10)),
                                   padding: EdgeInsets.only(
-                                      top: 5, bottom: 5, right: 8, left: 8),
+                                      top: 10, bottom: 10, right: 8, left: 8),
                                   child: Row(children: <Widget>[
                                     Text(
                                         "${AppLocalizations.of(context)!.translate('add_to_basket')}",
                                         style: TextStyle(
                                             fontSize: 12,
-                                            color: Colors.white)),
+                                            color: KColors.primaryColor)),
                                     SizedBox(width: 5),
                                     Icon(Icons.shopping_cart_checkout,
-                                        color: Colors.white, size: 14),
+                                        color: KColors.primaryColor, size: 14),
                                   ]),
                                 ),
                               ),

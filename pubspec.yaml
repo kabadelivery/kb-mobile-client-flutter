@@ -265,6 +265,15 @@ flutter:
     - assets/images/png/Slide_3.png
     - assets/images/png/SLide_4.png
     - assets/images/png/Slide_5.png
+    - assets/images/background/pattern2.png
+    - assets/images/png/abo_white.png
+    - assets/images/png/Zap.png
+    - assets/images/png/pill.png
+    - assets/images/png/service.png
+    - assets/images/png/grey-service.png
+    - assets/images/png/medical-cross.png
+    - assets/images/png/horloge.png
+    - assets/images/png/box.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:
