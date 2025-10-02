@@ -572,7 +572,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
               child: Stack(
                 children: [
 
-                 Positioned.fill(
+                 /*
+                    Positioned.fill(
                     child: Opacity(
                       opacity: .4,
                       child: Stack(
@@ -612,7 +613,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                       ),
                     ),
                   ),
-                  // Contenu réel
+
+                 * */   // Contenu réel
                   Column(
                     children: [
                       _buildMenuItem(
