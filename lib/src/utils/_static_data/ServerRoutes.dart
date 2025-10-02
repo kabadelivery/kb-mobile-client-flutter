@@ -349,6 +349,7 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_NEW_ABONNEMENT = ServerConfig.kaba_abonnement + "/dashboard/new_abonnement";
   static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
+
   static const String LINK_GET_DELIVERY_RATING_PENDING =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";

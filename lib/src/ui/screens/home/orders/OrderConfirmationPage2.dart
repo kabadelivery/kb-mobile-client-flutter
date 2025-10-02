@@ -1014,15 +1014,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           Icon(FontAwesomeIcons.questionCircle,
                               color: Colors.grey),
                           SizedBox(width: 5),
-                          Text(
-                              "${AppLocalizations.of(context)!.translate('lost_your_password')}",
-                              style: TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
+
                         ],
                       ),
                     ),
                   )),
-              SizedBox(height: 20)
+
             ])),
     );
   }

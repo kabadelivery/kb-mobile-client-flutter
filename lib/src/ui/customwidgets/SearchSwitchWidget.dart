@@ -123,9 +123,10 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
     return widget?.type == "ticket"
         ? Container()
         : Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+
+
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   flex: 5,
@@ -133,7 +134,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                     decoration: BoxDecoration(
                       color: filter_unactive_button_color,
                       borderRadius:
-                          BorderRadius.all(const Radius.circular(5.0)),
+                          BorderRadius.all(const Radius.circular(10.0)),
                     ),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -145,8 +146,9 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                 onTap: () => widget.onSwitch(1),
                                 child: Container(
                                     height: 36,
+                                    width:120,
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
+                                        EdgeInsets.symmetric(horizontal: 20),
                                     child: Center(
                                       child: Text(Utils.capitalize(
                                               // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
@@ -167,7 +169,8 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                             ? this.filter_active_button_color
                                             : this.filter_unactive_button_color,
                                         borderRadius:
-                                            new BorderRadius.circular(5.0)))),
+                                            new BorderRadius.circular(5.0))
+                                )),
                           ),
                           SizedBox(width: 5),
                           Expanded(

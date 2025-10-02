@@ -241,11 +241,15 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
 
     return Scaffold(
-      floatingActionButton: FloatingCartButton(
-        itemCount: _foodCount, onPressed: () { _showMenuBottomSheet(ALL);  },
-     // dynamic number
-   
-  ),
+      floatingActionButton:Transform.translate(
+        offset: const Offset(0, -300), // 👈 move it 30px up
+        child: FloatingCartButton(
+          itemCount: _foodCount,
+          onPressed: () {
+            _showMenuBottomSheet(ALL);
+          },
+        ),
+      ),
       backgroundColor: Colors.white,
       appBar: appBar,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
