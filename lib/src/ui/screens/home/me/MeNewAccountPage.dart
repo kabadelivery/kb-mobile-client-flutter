@@ -466,7 +466,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 MaterialPageRoute(
                   builder: (context) => ChatPage(
                     token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc1ODg5MjY5MH0.5f-Kj344ropznydjwJbEZx9xa7kPkJyqokg5gNo0vrE",
-                    receiverId: 5,
+                    receiverId: 36572,
                   ),
                 ),
               );
