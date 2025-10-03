@@ -9,6 +9,7 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -211,7 +212,7 @@ class _ExpeditionState extends State<Expedition> {
                   ),
                 ),
                 SizedBox(height: 10,),
-             step==1?   Expanded(
+                step==1?   Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Column(
@@ -406,31 +407,43 @@ class _ExpeditionState extends State<Expedition> {
                              await Future.delayed(Duration(milliseconds: 500));
                              CustomerModel customer = await CustomerUtils.getCustomer();
                              CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-                            List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
-                               body: createExpedition,
-                               customer: customer,
-                             );
-                           expeditionModels = expeditionModels.map((exp) {
-                             exp.colis = createExpedition.colis;
-                             return exp;
-                           }).toList();
-                           Navigator.of(context).pushReplacement(PageRouteBuilder(
-                                 pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
+                           List<ExpeditionModel> expeditionModels = [];
+                            try{
+                              List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
+                                body: createExpedition,
+                                customer: customer,
+                              );
+                              expeditionModels = expeditionModels.map((exp) {
+                                exp.colis = createExpedition.colis;
+                                return exp;
+                              }).toList();
+                              Navigator.of(context).pushReplacement(PageRouteBuilder(
+                                  pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
 
-                                     expedition:expeditionModels
-                                 ),
-                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                   var begin = Offset(1.0, 0.0);
-                                   var end = Offset.zero;
-                                   var curve = Curves.ease;
-                                   var tween = Tween(begin: begin, end: end);
-                                   var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                                   return SlideTransition(
-                                       position: tween.animate(curvedAnimation),
-                                       child: child
-                                   );
-                                 }
-                             ));
+                                      expedition:expeditionModels
+                                  ),
+                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    var begin = Offset(1.0, 0.0);
+                                    var end = Offset.zero;
+                                    var curve = Curves.ease;
+                                    var tween = Tween(begin: begin, end: end);
+                                    var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                    return SlideTransition(
+                                        position: tween.animate(curvedAnimation),
+                                        child: child
+                                    );
+                                  }
+                              ));
+                            }catch(e){
+                              debugPrint("XXX ERROR CREATING EXPEDITION ${e}");
+                              CherryToast.error(
+                                title: Text("Erreur lors de la création de l'expedition"),
+                                toastPosition: Position.center,
+                              ).show(context);
+                              setState(() {
+                                isLoading =false;
+                              });
+                            }
                          }else{
                            setState(() {
                            });

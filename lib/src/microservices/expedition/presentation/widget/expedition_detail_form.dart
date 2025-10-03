@@ -96,7 +96,6 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
           BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: selected_arrival_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
           BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: selected_departure_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
         }
-
       }
     }
     if(state is PackagesUpdatedState){
@@ -561,7 +560,6 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               }
                             },
                             child: Container(
-
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color:gpsAddressChoosed? KabaExpeditionColor.primary:  Colors.white,

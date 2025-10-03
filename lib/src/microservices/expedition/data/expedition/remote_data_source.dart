@@ -27,7 +27,6 @@ abstract class ExpeditionRemoteDataSource {
     required Map<String, dynamic> queryParameters,
     required String customer_token,
   });
-
   Future<List<ExpeditionModel>> createAnExpedition({
     required CreateExpedition expedition,
     required CustomerModel customer,
@@ -145,8 +144,12 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
    final dio = _dioWithToken(customer.token!);
    expedition.colis = expedition.colis?.map((colis) {
      colis.quantite=1;
+     colis.telephoneDestination = colis.recipientPhoneNumber;
+     colis.contactDestination =colis.recipientPhoneNumber;
      return colis;
    }).toList();
+   debugPrint("XXX colis expedition ${expedition.colis![0].toJsonApi()}");
+
    var data = {
      "ligneId": expedition.colis![0].ligneId,
      "adresseOrigine": expedition.adresseOrigine,
@@ -157,7 +160,7 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
      "telephoneDestination": expedition.colis![0].recipientPhoneNumber,
      "methodeLivraison": "International",
      "methodeCollecte": expedition.methodeCollecte,
-     "colis": expedition.colis?.map((colis) => colis.toJson()).toList(),
+     "colis": expedition.colis?.map((colis) => colis.toJsonApi()).toList(),
      "dateCollecte": expedition.dateCollecte?.toIso8601String(),
      "heureCollecte": expedition.heureCollecte,
      "createdBy": {
