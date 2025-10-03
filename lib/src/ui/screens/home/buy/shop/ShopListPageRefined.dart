@@ -33,27 +33,16 @@ import 'package:flutter_switch/flutter_switch.dart';
 
 class ShopListPageRefined extends StatefulWidget {
   Position? location;
-
   RestaurantFoodProposalPresenter? foodProposalPresenter;
-
   RestaurantListPresenter? restaurantListPresenter;
-
   bool hasGps = false;
-
   PageStorageKey? key;
-
   BuildContext? context;
-
   CustomerModel? customer;
-
   List<ShopModel>? restaurantList = null;
-
   int? samePositionCount = 0;
-
   String? type;
-
   static var routeName = "/ShopListPageRefined";
-
   List<ShopModel>? finalRestaurantList;
 
   ShopListPageRefined(

@@ -1457,7 +1457,6 @@ class _ImageSlotState extends State<ImageSlot> {
           width: 85,
           child: Builder(
             builder: (_) {
-              // Si on clique et que ça charge => loader
               if (_isLoading) {
                 return const Center(
                   child: SizedBox(
@@ -1473,7 +1472,7 @@ class _ImageSlotState extends State<ImageSlot> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Transform.rotate(
-                      angle: 55 * pi / 180,
+                      angle: 55,
                       child: const Icon(Icons.logout, size: 30, color: Colors.black54),
                     ),
                     const SizedBox(height: 6),
