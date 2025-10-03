@@ -24,6 +24,7 @@ class ServiceMainView {
   void networkError() {}
   void checkVersion (String code, int force, String cl_en, String cl_fr, String cl_zh) {}
   void showOrderRating (List<DeliveryRatingPending> deliveryRatingPending) {}
+  void getRating(bool gotData){}
   void inflateServiceCategory(List<ServiceMainEntity> data) {}
 
 }
@@ -131,16 +132,11 @@ class ServiceMainPresenter implements ServiceMainContract {
     }
   }
   Future<void> showOrderRating() async {
-  try{
-    Map<String, dynamic> performance = await provider.getAppPerformance();
-    Utils.saveAppPerformance(performance);
-  }catch(e){
-    debugPrint("error fetching performance ${e}");
-  }
+
   try {
       List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
       List<DeliveryRatingPending>? deliveriesRatingPending=[];
-      if(deliveriesRatingPending==null || deliveriesRatingPending.isEmpty){
+      if(ordersRating==null || ordersRating.isEmpty){
         _serviceMainView.showOrderRating([]);
       }
       CustomerModel customer = await CustomerUtils.getCustomer();
@@ -166,5 +162,15 @@ class ServiceMainPresenter implements ServiceMainContract {
       xrint("error ${_}");
     }
 
+  }
+  Future<void> getRating()async{
+    try{
+      Map<String, dynamic> performance = await provider.getAppPerformance();
+      Utils.saveAppPerformance(performance);
+      _serviceMainView.getRating(true);
+    }catch(e){
+      debugPrint("error fetching performance ${e}");
+      _serviceMainView.getRating(false);
+    }
   }
 }

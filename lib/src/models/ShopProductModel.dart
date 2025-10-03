@@ -53,9 +53,9 @@ class ShopProductModel {
 
     price = json['price'];
     menu_id = json['menu_id'];
-    restaurant_id = json['restaurant_id'];
+    restaurant_id = int.parse(json['restaurant_id'].toString());
     description = json['description'];
-    review_count = json['review_count'];
+    review_count = int.parse(json['review_count'].toString());
     l = json["food_details_pictures"];
     food_details_pictures = l?.map((pic_link) => "${pic_link}")?.toList();
     // food_details_pictures = []..add(pic);

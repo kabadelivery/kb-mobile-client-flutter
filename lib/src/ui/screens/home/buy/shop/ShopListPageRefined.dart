@@ -230,108 +230,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          toolbarHeight: 120, // increase height
-          backgroundColor: KColors.primaryColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(25),  // rounded bottom
-              bottomRight: Radius.circular(25),
-            ),
-          ),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.white, size: 24),
-            onPressed: () {
-              if (_searchMode) {
-                setState(() {
-                  _searchAutoFocus = false;
-                  _searchMode = false;
-                  _filterEditController.text = "";
-                });
-                _searchAction();
-              } else {
-                Navigator.pop(context);
-              }
-            },
-          ),
-          centerTitle: true,
-          actions: [
-            _searchMode || isLoading
-                ? SizedBox(width: 60)
-                : IconButton(
-              onPressed: () {
-                setState(() {
-                  _searchAutoFocus = true;
-                  _searchMode = true;
-                });
-              },
-              icon: Icon(Icons.search, size: 22, color: Colors.white),
-            )
-          ],
-          title: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              AnimatedSwitcher(
-                duration: Duration(milliseconds: 300),
-                transitionBuilder: (child, animation) {
-                  return SlideTransition(
-                    position: Tween<Offset>(
-                      begin: Offset(1.2, 0),
-                      end: Offset(0, 0),
-                    ).animate(animation),
-                    child: child,
-                  );
-                },
-                child: _searchMode
-                    ? Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: TextField(
-                    autofocus: _searchAutoFocus,
-                    controller: _filterEditController,
-                    onSubmitted: (val) {
-                      _searchAction(pressButton: true);
-                    },
-                    onChanged: (val) {
-                      EasyDebounce.debounce(
-                        'search-input-debouncer',
-                        Duration(milliseconds: 700),
-                            () => {_searchAction()},
-                      );
-                    },
-                    style: TextStyle(
-                      color: KColors.new_black,
-                      fontSize: 16,
-                    ),
-                    textInputAction: TextInputAction.search,
-                    decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!
-                          .translate('find_menu_or_restaurant'),
-                      hintStyle: TextStyle(
-                        fontSize: 14,
-                        color: KColors.new_black.withAlpha(150),
-                      ),
-                      border: InputBorder.none,
-                    ),
-                  ),
-                )
-                    : Text(
-                  Utils.capitalize(getCategoryTitle(context)[0]),
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-
-              /// 👇 Now you can add *anything else* under the title
-              SizedBox(height: 6),
-              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                  _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
-
-            ],
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(1), // invisible AppBar
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: KColors.primaryColor, // no color
           ),
         ),
 
@@ -393,8 +296,108 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            SizedBox(height: 10),
+            Container(
+              padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
+              decoration: BoxDecoration(
+                color: KColors.primaryColor,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(25),
+                  bottomRight: Radius.circular(25),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                        onPressed: () {
+                          if (_searchMode) {
+                            setState(() {
+                              _searchAutoFocus = false;
+                              _searchMode = false;
+                              _filterEditController.text = "";
+                            });
+                            _searchAction();
+                          } else {
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                      const Spacer(),
+                      _searchMode || isLoading
+                          ? const SizedBox(width: 48)
+                          : IconButton(
+                        icon: const Icon(Icons.search, color: Colors.white, size: 22),
+                        onPressed: () {
+                          setState(() {
+                            _searchAutoFocus = true;
+                            _searchMode = true;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
 
+                  /// 🔍 Title / Search
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _searchMode
+                        ? Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: TextField(
+                        autofocus: _searchAutoFocus,
+                        controller: _filterEditController,
+                        onSubmitted: (val) => _searchAction(pressButton: true),
+                        onChanged: (val) {
+                          EasyDebounce.debounce(
+                            'search-input-debouncer',
+                            const Duration(milliseconds: 700),
+                                () => _searchAction(),
+                          );
+                        },
+                        style: TextStyle(color: KColors.new_black, fontSize: 16),
+                        textInputAction: TextInputAction.search,
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!
+                              .translate('find_menu_or_restaurant'),
+                          hintStyle: TextStyle(
+                            fontSize: 14,
+                            color: KColors.new_black.withAlpha(150),
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    )
+                        : Text(
+                      Utils.capitalize(getCategoryTitle(context)[0]),
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 8),
+
+                  /// 🔘 Selection widget under title
+                  SearchSwitchWidget(
+                    searchTypePosition,
+                    _choice,
+                    _filterFunction,
+                    _listContentFilter,
+                    _scrollToTopFunction,
+                    widget.type!,
+                    filterConfiguration ?? {},
+                  ),
+                ],
+              ),
+            ),
             SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(

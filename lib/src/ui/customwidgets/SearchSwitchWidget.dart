@@ -123,8 +123,6 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
     return widget?.type == "ticket"
         ? Container()
         : Container(
-
-
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -145,6 +143,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                             child: InkWell(
                                 onTap: () => widget.onSwitch(1),
                                 child: Container(
+                                    margin: EdgeInsets.all(3),
                                     height: 36,
                                     width:120,
                                     padding:
@@ -179,6 +178,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                 onTap: () => widget.onSwitch(2),
                                 child: Container(
                                     padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.all(3),
                                     child: Center(
                                       child: Text(
                                           Utils.capitalize(_searchChoices[1]),
@@ -221,11 +221,13 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                   width: 30,
                                   child: Image.asset(
                                     ImageAssets.opened,
+
                                     height: 40.0,
                                     width: 40.0,
                                     fit: BoxFit.fitHeight,
                                     alignment: Alignment.center,
-                                  ))
+                                  )
+                          )
                               :
                           // ShakeItem(autoPlay: _autoPlay, shakeList: [ShakeDefaultConstant1(),ShakeDefaultConstant2()]),
                           ShakeWidget(
@@ -239,6 +241,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                     width: 20,
                                     child: Image.asset(
                                       ImageAssets.filter_red,
+                                      color: Colors.white,
                                       height: 20.0,
                                       width: 20.0,
                                       alignment: Alignment.center,
@@ -249,58 +252,37 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                               borderRadius: BorderRadius.circular(5)),
                         ),
                       )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: Center(
-                              child: DropdownButton<String>(
-                                value: _filterDropdownValue,
-                                /*hint: Text(
-                        "${AppLocalizations.of(context)!.translate('filter')}"
-                            .toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 14, color: KColors.primaryColor)),
-                    */
-
-                                /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                                  child: Text("${AppLocalizations.of(context)!.translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
-                              */
-                                icon: Icon(
-                                  FontAwesomeIcons.filter,
-                                  color: KColors.primaryColor,
-                                  size: 16,
-                                ),
-                                iconSize: 16,
-                                elevation: 16,
-                                style: TextStyle(color: KColors.primaryColor),
-                                underline: Container(
+                    : Center(
+                  child: DropdownButton<String>(
+                    value: _filterDropdownValue,
+                    icon: Icon(
+                      FontAwesomeIcons.filter,
+                      color: KColors.white,
+                      size: 23,
+                    ),
+                    iconSize: 20,
+                    elevation: 16,
+                    style: TextStyle(color: KColors.primaryColor),
+                    underline: Container(
 //                      height: 2,
 //                      color: Colors.deepPurpleAccent,
-                                    ),
-                                onChanged: (String? newValue) {
-                                  widget.filterFunction(newValue);
-                                },
-                                items: <String>[
-                                  '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
-                                  '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
-                                  '${AppLocalizations.of(context)!.translate('nearest')}',
-                                  '${AppLocalizations.of(context)!.translate('farest')}'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                    ),
+                    onChanged: (String? newValue) {
+                      widget.filterFunction(newValue);
+                    },
+                    items: <String>[
+                      '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
+                      '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
+                      '${AppLocalizations.of(context)!.translate('nearest')}',
+                      '${AppLocalizations.of(context)!.translate('farest')}'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                ),
               ],
             ),
           );

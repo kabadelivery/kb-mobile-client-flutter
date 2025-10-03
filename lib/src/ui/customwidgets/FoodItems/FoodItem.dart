@@ -91,9 +91,15 @@ class _FoodGridState extends State<FoodGrid> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(
-              child: Text("Erreur: ${snapshot.error}",
-                  style: const TextStyle(color: Colors.red)));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            child: SingleChildScrollView(
+              child: Text(
+                "${snapshot.error}\n\n${snapshot.stackTrace}",
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+            ),
+          );
+        }
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
 

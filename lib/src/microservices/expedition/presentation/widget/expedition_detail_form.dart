@@ -662,27 +662,24 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          _buildImageSlot(
-                            context: context,
+                          ImageSlot(
                             photoIndex: 0,
-                            index: widget.index,
+                            packageIndex: widget.index,
                             imageUrl: packageModel.images != null && packageModel.images!.isNotEmpty
                                 ? packageModel.images![0]
                                 : null,
                             emptyLabel: firstImagePath != null && firstImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          _buildImageSlot(
-                            context: context,
-                            photoIndex: 1,
-                            index: widget.index,
+                          ImageSlot(
+                             photoIndex: 1,
+                            packageIndex: widget.index,
                             imageUrl: (packageModel.images != null && packageModel.images!.length > 1)
                                 ? packageModel.images![1]
                                 : null,
                             emptyLabel: secondImagePath != null && secondImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          _buildImageSlot(
-                            context: context,
-                            index: widget.index,
+                          ImageSlot(
+                            packageIndex: widget.index,
                             photoIndex: 2,
                             imageUrl: (packageModel.images != null && packageModel.images!.length > 2)
                                 ? packageModel.images![2]
@@ -1369,24 +1366,42 @@ class PackageSelector extends StatelessWidget {
     );
   }
 }
-// place this inside ta classe State<...>
 
-Widget _buildImageSlot({
-  required BuildContext context,
-  required int photoIndex,
-  required String? imageUrl,
-  required String emptyLabel,
-  required int index
-}) {
-  ExpeditionBloc expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+class ImageSlot extends StatefulWidget {
+  final int photoIndex;
+  final String? imageUrl;
+  final String emptyLabel;
+  final int packageIndex;
+
+  const ImageSlot({
+    Key? key,
+    required this.photoIndex,
+    required this.imageUrl,
+    required this.emptyLabel,
+    required this.packageIndex,
+  }) : super(key: key);
+
+  @override
+  State<ImageSlot> createState() => _ImageSlotState();
+}
+
+class _ImageSlotState extends State<ImageSlot> {
+  bool _isLoading = false;
+
   Future<void> _pickAndDispatch() async {
-    if (Platform.isAndroid) {
-      try {
+    setState(() => _isLoading = true);
+
+    final expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+
+    try {
+      if (Platform.isAndroid) {
         final value = await pickImageAndroid(context);
         if (value != null) {
-          expeditionBloc.add(AddPhotoEvent(file: value, packageIndex:index, photoIndex: photoIndex));
+          expeditionBloc.add(AddPhotoEvent(
+              file: value,
+              packageIndex: widget.packageIndex,
+              photoIndex: widget.photoIndex));
         } else {
-          debugPrint("No image picked or image too large.");
           CherryToast.error(
             toastPosition: Position.center,
             title: Text("${AppLocalizations.of(context)!.translate('error')}"),
@@ -1394,18 +1409,15 @@ Widget _buildImageSlot({
             toastDuration: const Duration(seconds: 5),
           ).show(context);
         }
-      } catch (e) {
-        debugPrint("##Error in image picking (Android)## $e");
-      }
-    } else {
-      try {
+      } else {
         final granted = await requestCameraAndGalleryPermissions();
         if (granted) {
           final value = await pickImageIOS(context);
           if (value != null) {
-            expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: index, photoIndex: photoIndex));
-          } else {
-            debugPrint("No image picked (iOS).");
+            expeditionBloc.add(AddPhotoEvent(
+                file: value,
+                packageIndex: widget.packageIndex,
+                photoIndex: widget.photoIndex));
           }
           CherryToast.success(
             toastPosition: Position.center,
@@ -1414,7 +1426,6 @@ Widget _buildImageSlot({
             toastDuration: const Duration(seconds: 5),
           ).show(context);
         } else {
-          debugPrint("Camera permission denied.");
           CherryToast.error(
             toastPosition: Position.center,
             title: Text("${AppLocalizations.of(context)!.translate('error')}"),
@@ -1422,93 +1433,93 @@ Widget _buildImageSlot({
             toastDuration: const Duration(seconds: 5),
           ).show(context);
         }
-      } catch (e) {
-        debugPrint("##Error in image picking (iOS)## $e");
       }
+    } catch (e) {
+      debugPrint("##Error picking image## $e");
     }
+
+    setState(() => _isLoading = false);
   }
 
-  return GestureDetector(
-    onTap: () async => await _pickAndDispatch(),
-    child: DottedBorder(
-      options: RoundedRectDottedBorderOptions(
-        dashPattern: const [10, 6],
-        strokeWidth: 1,
-        color: Colors.black38,
-        radius: const Radius.circular(10),
-      ),
-      child: Container(
-        height: 85,
-        width: 85,
-        child: Builder(builder: (_) {
-          // if no image url -> show placeholder
-          if (imageUrl == null || imageUrl.isEmpty) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Transform.rotate(
-                  angle: 55,
-                  child: const Icon(Icons.logout, size: 30, color: Colors.black54),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  emptyLabel,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Colors.black54,
-                    fontWeight: FontWeight.bold,
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: _isLoading ? null : _pickAndDispatch,
+      child: DottedBorder(
+        options: const RoundedRectDottedBorderOptions(
+          dashPattern: [10, 6],
+          strokeWidth: 1,
+          color: Colors.black38,
+          radius: Radius.circular(10),
+        ),
+        child: Container(
+          height: 85,
+          width: 85,
+          child: Builder(
+            builder: (_) {
+              // Si on clique et que ça charge => loader
+              if (_isLoading) {
+                return const Center(
+                  child: SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: CircularProgressIndicator(strokeWidth: 2),
                   ),
-                ),
-              ],
-            );
-          }
+                );
+              }
 
-          // if imageUrl present -> show image with loader while loading
-          return Container(
-            height: 85,
-            width: 85,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.black.withOpacity(0.05),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: Image.network(
-                imageUrl,
-                fit: BoxFit.cover,
-                width: 85,
-                height: 85,
-                // shows a loader while the image is loading
-                loadingBuilder: (context, child, loadingProgress) {
-                  if (loadingProgress == null) {
-                    return child;
-                  }
-                  return Container(
-                    color: Colors.black.withOpacity(0.06),
-                    child: const Center(
+              if (widget.imageUrl == null || widget.imageUrl!.isEmpty) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Transform.rotate(
+                      angle: 55 * pi / 180,
+                      child: const Icon(Icons.logout, size: 30, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      widget.emptyLabel,
+                      style: const TextStyle(
+                        fontSize: 11,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                );
+              }
+
+              return ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  widget.imageUrl!,
+                  fit: BoxFit.cover,
+                  width: 85,
+                  height: 85,
+                  loadingBuilder: (context, child, progress) {
+                    if (progress == null) return child;
+                    return const Center(
                       child: SizedBox(
                         width: 28,
                         height: 28,
                         child: CircularProgressIndicator(strokeWidth: 2),
                       ),
-                    ),
-                  );
-                },
-                // in case of error, show an error placeholder
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    color: Colors.black.withOpacity(0.03),
-                    child: const Center(
-                      child: Icon(Icons.broken_image, color: Colors.black38, size: 28),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        }),
+                    );
+                  },
+                  errorBuilder: (context, error, stackTrace) {
+                    return Container(
+                      color: Colors.black.withOpacity(0.05),
+                      child: const Center(
+                        child: Icon(Icons.broken_image, color: Colors.black38, size: 28),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
