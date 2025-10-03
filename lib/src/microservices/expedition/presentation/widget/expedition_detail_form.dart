@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/expedition.dart';
@@ -17,10 +18,13 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../contracts/address_contract.dart';
 import '../../../../localizations/AppLocalizations.dart';
 import '../../../../models/CustomerModel.dart';
+import '../../../../resources/address_api_provider.dart';
 import '../../../../ui/screens/home/me/address/MyAddressesPage.dart';
+import '../../../../utils/_static_data/AppConfig.dart';
 import '../../../../utils/functions/CustomerUtils.dart';
 import '../../../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import '../../../../utils/functions/permissions.dart';
+import '../../../../utils/recustomlib/place_picker_removed_nearbyplaces.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/line_model.dart';
 import '../../data/expedition/package_model.dart';
@@ -517,21 +521,17 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             onTap: ()async{
                               CustomerModel? customer = await CustomerUtils.getCustomer();
                               DeliveryAddressModel address = DeliveryAddressModel(
-                                name:"Addresse du colis de  ${packageModel.departureTown } à ${packageModel.arrivalTown}",
-                                phone_number:customer!.phone_number.toString(),
+                                name:"",
+                                phone_number:"",
                                 user_id: customer.id.toString(),
-                                description: "Pour le colis suivant : ${packageModel.description}",
-                                quartier: "${AppLocalizations.of(context)!.translate('status_unknown')}",
-                                near: "${AppLocalizations.of(context)!.translate('status_unknown')}",
+                                description: "",
+                                quartier: "",
+                                near: "",
                               );
-                              Map results = await Navigator.of(context).push(PageRouteBuilder(
+                              var results = await Navigator.of(context).push(PageRouteBuilder(
                                   pageBuilder: (context, animation, secondaryAnimation) =>
-                                      MyAddressesPage(
-                                          pick: true,
-                                          address_type: 3,
-                                          autoCreatAddress: address,
-                                          presenter: AddressPresenter(AddressView()),
-                                          ),
+                                  PlacePicker(
+                                    AppConfig.GOOGLE_MAP_API_KEY,alreadyHasLocation: true,),
                                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                     var begin = Offset(1.0, 0.0);
                                     var end = Offset.zero;
@@ -542,8 +542,20 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     return SlideTransition(
                                         position: tween.animate(curvedAnimation), child: child);
                                   }));
-                              if (results != null && results.containsKey('selection')){
-                                packageModel.recipientAddress = results['selection'] as DeliveryAddressModel;
+
+                              if (results != null ){
+                                AddressApiProvider address_api = AddressApiProvider();
+                                DeliveryAddressModel address = DeliveryAddressModel(
+                                    name: "Addresse route ${packageModel.arrivalTown} - ${packageModel.departureTown} ${DateTime.now().toIso8601String()}",
+                                    location:" ${results.latitude}:${results.longitude}" ,
+                                    phone_number:customer.phone_number,
+                                    description: "achat de produit",
+                                    near: "Inconnu",
+                                    user_id: customer.id.toString(),
+                                    quartier:"Inconnu"
+                                );
+                                Map? addressRes = await address_api.updateOrCreateAddress(address, customer) as Map;
+                                packageModel.recipientAddress = addressRes['address'] as DeliveryAddressModel;
                                 expeditionBloc.add(ChangeRecipientAddressEvent(address: packageModel.recipientAddress!, packageIndex: widget.index));
                                 gpsAddressChoosed = true;
                               }
@@ -650,288 +662,36 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      debugPrint("Image picked: ${value.path}");
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 0));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                        expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 0));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: firstImagePath!=null && firstImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Obligatoire",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![0]!=null?  DecorationImage(
-                                            image:NetworkImage(packageModel.images![0]!),
-                                            fit: BoxFit.cover
-                                        ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          _buildImageSlot(
+                            context: context,
+                            photoIndex: 0,
+                            index: widget.index,
+                            imageUrl: packageModel.images != null && packageModel.images!.isNotEmpty
+                                ? packageModel.images![0]
+                                : null,
+                            emptyLabel: firstImagePath != null && firstImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 1));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 1));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: secondImagePath!=null && secondImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Obligatoire",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![1]!=null?  DecorationImage(
-                                            image:NetworkImage(packageModel.images![1]!),
-                                            fit: BoxFit.cover
-                                        ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          _buildImageSlot(
+                            context: context,
+                            photoIndex: 1,
+                            index: widget.index,
+                            imageUrl: (packageModel.images != null && packageModel.images!.length > 1)
+                                ? packageModel.images![1]
+                                : null,
+                            emptyLabel: secondImagePath != null && secondImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 2));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 2));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: thirdImagePath!=null && thirdImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Optionnel",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![2]!=null?  DecorationImage(
-                                    image:NetworkImage(packageModel.images![2]!),
-                                      fit: BoxFit.cover
-                                  ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          _buildImageSlot(
+                            context: context,
+                            index: widget.index,
+                            photoIndex: 2,
+                            imageUrl: (packageModel.images != null && packageModel.images!.length > 2)
+                                ? packageModel.images![2]
+                                : null,
+                            emptyLabel: thirdImagePath != null && thirdImagePath.isEmpty ? "Optionnel" : "Optionnel",
                           ),
                         ],
                       )
+
                     ],
                   ),
                 ),
@@ -958,10 +718,11 @@ class PickUpOptions extends StatefulWidget {
 class _PickUpOptionsState extends State<PickUpOptions> {
   bool kaba_fetch_the_package = false;
   bool deposit_of_the_package = false;
-  bool positionChoosed=true;
+  bool positionChoosed=false;
   bool addressSavedChoosed=false;
   DateTime? selectedDate = null;
   bool addNewAddress = false;
+  bool _loading = false;
   List<String> selectedTimes = [
     "8:00 -  10:00",
     "10:00 - 12:00",
@@ -990,14 +751,24 @@ class _PickUpOptionsState extends State<PickUpOptions> {
               kaba_fetch_the_package = true;
               deposit_of_the_package = false;
             }else{
+
               kaba_fetch_the_package = false;
               deposit_of_the_package = true;
             }
+
           }
           if(state is chooseShippingMethodAddressTypeState){
               if(state.method=="POSITION"){
                 positionChoosed = true;
                 addressSavedChoosed = false;
+                _loading = false;
+                WidgetsBinding.instance.addPostFrameCallback((_){
+                  CherryToast.success(
+                    toastPosition: Position.center,
+                    title: Text("${AppLocalizations.of(context)!.translate('success')}"),
+                    description:Text("Votre position actuelle a été choisis"),
+                  ).show(context);
+                });
               }else if(state.method=="REGISTERED"){
                 positionChoosed = false;
                 addressSavedChoosed = true;
@@ -1005,6 +776,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                 positionChoosed = false;
                 addressSavedChoosed = false;
               }
+
           }
           if(state is chooseFetchDateState){
             selectedDate = state.date;
@@ -1110,7 +882,11 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                           children: [
                             GestureDetector(
                               onTap: (){
+                                setState(() {
+                                  _loading = true;
+                                });
                                 BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: "POSITION"));
+
                               },
                               child: Container(
                                 padding: EdgeInsets.all(5),
@@ -1124,7 +900,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.location_on_outlined,size: 20,color: !positionChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                    Text("Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                    Text(_loading?"En cours..." :"Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
                                   ],
                                 ),
                               ),
@@ -1592,4 +1368,147 @@ class PackageSelector extends StatelessWidget {
       ),
     );
   }
+}
+// place this inside ta classe State<...>
+
+Widget _buildImageSlot({
+  required BuildContext context,
+  required int photoIndex,
+  required String? imageUrl,
+  required String emptyLabel,
+  required int index
+}) {
+  ExpeditionBloc expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+  Future<void> _pickAndDispatch() async {
+    if (Platform.isAndroid) {
+      try {
+        final value = await pickImageAndroid(context);
+        if (value != null) {
+          expeditionBloc.add(AddPhotoEvent(file: value, packageIndex:index, photoIndex: photoIndex));
+        } else {
+          debugPrint("No image picked or image too large.");
+          CherryToast.error(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      } catch (e) {
+        debugPrint("##Error in image picking (Android)## $e");
+      }
+    } else {
+      try {
+        final granted = await requestCameraAndGalleryPermissions();
+        if (granted) {
+          final value = await pickImageIOS(context);
+          if (value != null) {
+            expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: index, photoIndex: photoIndex));
+          } else {
+            debugPrint("No image picked (iOS).");
+          }
+          CherryToast.success(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('success')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        } else {
+          debugPrint("Camera permission denied.");
+          CherryToast.error(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      } catch (e) {
+        debugPrint("##Error in image picking (iOS)## $e");
+      }
+    }
+  }
+
+  return GestureDetector(
+    onTap: () async => await _pickAndDispatch(),
+    child: DottedBorder(
+      options: RoundedRectDottedBorderOptions(
+        dashPattern: const [10, 6],
+        strokeWidth: 1,
+        color: Colors.black38,
+        radius: const Radius.circular(10),
+      ),
+      child: Container(
+        height: 85,
+        width: 85,
+        child: Builder(builder: (_) {
+          // if no image url -> show placeholder
+          if (imageUrl == null || imageUrl.isEmpty) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Transform.rotate(
+                  angle: 55,
+                  child: const Icon(Icons.logout, size: 30, color: Colors.black54),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  emptyLabel,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.black54,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            );
+          }
+
+          // if imageUrl present -> show image with loader while loading
+          return Container(
+            height: 85,
+            width: 85,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.black.withOpacity(0.05),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.network(
+                imageUrl,
+                fit: BoxFit.cover,
+                width: 85,
+                height: 85,
+                // shows a loader while the image is loading
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) {
+                    return child;
+                  }
+                  return Container(
+                    color: Colors.black.withOpacity(0.06),
+                    child: const Center(
+                      child: SizedBox(
+                        width: 28,
+                        height: 28,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  );
+                },
+                // in case of error, show an error placeholder
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: Colors.black.withOpacity(0.03),
+                    child: const Center(
+                      child: Icon(Icons.broken_image, color: Colors.black38, size: 28),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }),
+      ),
+    ),
+  );
 }

@@ -556,9 +556,6 @@ class _EditAddressPageState extends State<EditAddressPage>
           address.location = "${result.latitude}:${result.longitude}";
           widget.gps_location = address.location;
         });
-        if(isInstantCreation){
-          _saveAddress();
-        }
         xrint("address.location ${address.location}");
 
         // use mvp to launch a request and place the result here.

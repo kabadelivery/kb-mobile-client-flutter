@@ -274,6 +274,7 @@ flutter:
     - assets/images/png/medical-cross.png
     - assets/images/png/horloge.png
     - assets/images/png/box.png
+    - assets/images/png/condition.png
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

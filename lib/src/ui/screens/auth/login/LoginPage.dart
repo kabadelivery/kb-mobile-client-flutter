@@ -685,37 +685,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               mainAxisSize: MainAxisSize.min,
               children: [
                 // Icône document dans carré blanc
-                Container(
-                  height: 80,
-                  width: 80,
-                  padding: EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color:Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black12,
-                        blurRadius: 8,
-                        offset: Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Container(
-                    height: 60,
-                    width: 60,
-                    decoration: BoxDecoration(
-                      color: KColors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.description_outlined,
-                        color: KColors.primaryColor,
-                        size: 40,
-                      ),
-                    ),
-                  )
-                ),
+                Image.asset("assets/images/png/condition.png",width:80),
 
                 const SizedBox(height: 20),
 
@@ -732,16 +702,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate(
                             'accept_terms_and_conditions') + " ",
-                      ),
-                      TextSpan(
-                        text: "KABA",
-                        style: TextStyle(
-                          color: KColors.primaryColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      TextSpan(
-                        text: " ?",
                       ),
                     ],
                   ),

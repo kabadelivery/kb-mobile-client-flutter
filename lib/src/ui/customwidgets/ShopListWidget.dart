@@ -167,7 +167,6 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.7,
-
                                       child: Text("${widget?.shopModel?.address}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
