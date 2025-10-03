@@ -58,7 +58,7 @@ class _FoodGridState extends State<FoodGrid> {
   Future<List<FoodItem>> fetchFoods(String query) async {
     try {
       final List<ShopProductModel> products =
-          await _service.fetchRestaurantFoodProposal2FromTag("food", query);
+      await _service.fetchRestaurantFoodProposal2FromTag("food", query);
 
       return products.map((p) => FoodItem.fromShopProduct(p)).toList();
     } catch (e) {
@@ -91,15 +91,9 @@ class _FoodGridState extends State<FoodGrid> {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(
-            child: SingleChildScrollView(
-              child: Text(
-                "${snapshot.error}\n\n${snapshot.stackTrace}",
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
-            ),
-          );
-        }
-        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              child: Text("Erreur: ${snapshot.error}",
+                  style: const TextStyle(color: Colors.red)));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
 
@@ -120,7 +114,7 @@ class _FoodGridState extends State<FoodGrid> {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                
+
               ),
               color: Colors.white,
               elevation: 3,
@@ -130,7 +124,7 @@ class _FoodGridState extends State<FoodGrid> {
                   /// Image
                   ClipRRect(
                     borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(16)),
+                    const BorderRadius.vertical(top: Radius.circular(16)),
                     child: /* Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -140,11 +134,11 @@ class _FoodGridState extends State<FoodGrid> {
                                 Utils.inflateLink(food.pic))
                        ) ),
                     ) */
-                    
-                     
-                    
-                    
-                     Image.network(
+
+
+
+
+                    Image.network(
                       "https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com/"+food.pic,
                       height: 130,
                       width: double.infinity,
@@ -157,7 +151,7 @@ class _FoodGridState extends State<FoodGrid> {
                               color: Colors.grey),
                         );
                       },
-                    ), 
+                    ),
                   ),
 
                   /// Title

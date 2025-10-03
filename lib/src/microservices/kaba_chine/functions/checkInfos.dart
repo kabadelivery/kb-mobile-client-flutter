@@ -206,7 +206,7 @@ Widget _buildAddressRow(BuildContext context, IconData icon, String title, Strin
   );
 }
 
-void showShippingCostPopup(BuildContext context) {
+void showShippingCostPopup(BuildContext context,String price) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -268,7 +268,7 @@ void showShippingCostPopup(BuildContext context) {
                 const SizedBox(height: 16),
 
                 // Final calculation
-                sectionTitle(Icons.attach_money, AppLocalizations.of(context)!.translate("shipping_final_calc")),
+                sectionTitle(Icons.attach_money, AppLocalizations.of(context)!.translate("shipping_final_calc1")+"$price FCFA"+AppLocalizations.of(context)!.translate("shipping_final_calc2")),
 
                 const SizedBox(height: 16),
 
