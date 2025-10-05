@@ -59,6 +59,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
+import '../../../utils/functions/permissions.dart';
 import '_home/HomeWelcomeNewPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
@@ -482,6 +483,7 @@ class _HomePageState extends State<HomePage> {
                   ]);
       },
     );
+
   }
 
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
@@ -1242,66 +1244,10 @@ class _HomePageState extends State<HomePage> {
   Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
-
       String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
       /* no need to commit */
       /* expiration date in 3months */
-      if (_has_accepted_gps != "ok") {
-        return showDialog<void>(
-          context: context,
-          barrierDismissible: false, // user must tap button!
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text(
-                  "${AppLocalizations.of(context)!.translate('request')}"
-                      .toUpperCase(),
-                  style: TextStyle(color: KColors.primaryColor)),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    // location_permission
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                            image: new DecorationImage(
-                          image: new AssetImage(ImageAssets.address),
-                        ))),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14))
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('refuse')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('accept')}"),
-                  onPressed: () {
-                    prefs!.setString("_has_accepted_gps", "ok");
-                    // call get location again...
-                    Future.delayed(Duration(milliseconds: 1000), () {
-                      _getLastKnowLocation(
-                          jumpToBuyPageDetails: jumpToBuyPageDetails);
-                    });
-                    Navigator.of(context).pop();
-                  },
-                )
-              ],
-            );
-          },
-        );
-      } else {
-        // permission has been accepted
+      // permission has been accepted
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.deniedForever) {
           /*  ---- */
@@ -1359,7 +1305,8 @@ class _HomePageState extends State<HomePage> {
             },
           );
           /* ---- */
-        } else if (permission == LocationPermission.denied) {
+        }
+        else if (permission == LocationPermission.denied) {
           /* ---- */
           // Geolocator.requestPermission();
           /* ---- */
@@ -1406,6 +1353,7 @@ class _HomePageState extends State<HomePage> {
                         "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
+                      prefs!.setString("_has_accepted_gps", "ok");
                       await Geolocator.requestPermission();
                       LocationPermission permission2 =
                           await Geolocator.checkPermission();
@@ -1468,6 +1416,8 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () async {
                         /* */
                         Navigator.of(context).pop();
+                        prefs!.setString("_has_accepted_gps", "ok");
+
                         await Geolocator.openLocationSettings();
                       },
                     )
@@ -1512,7 +1462,7 @@ class _HomePageState extends State<HomePage> {
             });
           }
         }
-      }
+
     });
   }
 

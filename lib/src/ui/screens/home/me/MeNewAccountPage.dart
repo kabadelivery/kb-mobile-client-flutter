@@ -546,21 +546,104 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
                 ]),
               ),
-            ),
-            InkWell(
-              onTap: () => _jumpToPage(context, LastOrdersPage()),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                        width: 0.8, color: Colors.grey.withAlpha(35)),
+              child: Stack(
+                children: [
+
+                 /*
+                    Positioned.fill(
+                    child: Opacity(
+                      opacity: .4,
+                      child: Stack(
+                        children: const [
+                          Positioned(
+                            top: 20,
+                            left: 40,
+                            child: Icon(Icons.star, size: 40,color: Color(0xb0ffffff),),
+                          ),
+                          Positioned(
+                            top: 80,
+                            right: 50,
+                            child: Icon(Icons.circle, size: 22,color: Color(0xb0ffffff)),
+                          ),
+                          Positioned(
+                            bottom: 20,
+                            left: 30,
+                            child: Icon(Icons.favorite, size: 28,color: Color(0xb0ffffff)),
+                          ),
+                          Positioned(
+                            bottom: 40,
+                            left: 60,
+                            child: Icon(FontAwesomeIcons.biking, size: 100,color: Color(0xb0ffffff)),
+                          ),
+                          Positioned(
+                            top: 100,
+                            left: 120,
+                            child: Icon(Icons.location_on, size: 34,color: Color(
+                                0xb0ffffff)),
+                          ),
+                          Positioned(
+                            bottom: 100,
+                            right: 100,
+                            child: Icon(Icons.shopping_bag, size: 44,color: Color(0xb0ffffff)),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                child: Row(mainAxisSize: MainAxisSize.max, children: [
-                  Icon(Icons.rotate_left, color: CommandStateColor.delivered),
-                  SizedBox(
-                    width: 10,
+
+                 * */   // Contenu réel
+                  Column(
+                    children: [
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.share_location,
+                        color: Colors.redAccent,
+                        text: AppLocalizations.of(context)!
+                            .translate('addresses'),
+                        onTap: () => _jumpToPage(
+                          context,
+                          MyAddressesPage(
+                              presenter: AddressPresenter(AddressView())),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.shopping_bag,
+                        color: Colors.blueAccent,
+                        text: AppLocalizations.of(context)!.translate('orders'),
+                        onTap: () => _jumpToPage(context, LastOrdersPage()),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.notifications,
+                        color: Colors.deepPurple,
+                        text: AppLocalizations.of(context)!.translate('feeds'),
+                        onTap: () => _jumpToPage(
+                          context,
+                          FeedsPage(presenter: FeedPresenter(FeedView())),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        icon: FontAwesomeIcons.percent,
+                        color: Colors.orangeAccent,
+                        text: AppLocalizations.of(context)!.translate('coupon'),
+                        onTap: () => _jumpToPage(
+                          context,
+                          MyVouchersPage(
+                              presenter: VoucherPresenter(VoucherView())),
+                        ),
+                      ),
+                      _buildMenuItem(
+                        context,
+                        icon: Icons.settings,
+                        color: Colors.grey,
+                        text:
+                            AppLocalizations.of(context)!.translate('settings'),
+                        onTap: () => _jumpToPage(context, SettingsPage()),
+                        isLast: true,
+                      ),
+                    ],
                   ),
                   Text(
                       Utils.capitalize(

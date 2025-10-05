@@ -208,7 +208,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
               children: [
                 
                 Text(
-                  "${tarif.mode==Tariftype.boat.value?"240.000":tarif.price?.toInt()} FCFA ",
+                  "${tarif.price?.toInt()} FCFA ",
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 14,
@@ -293,7 +293,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                 padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
                 child: GestureDetector(
                   onTap: (){
-                    showShippingCostPopup(context);
+                    showShippingCostPopup(context, tarif.price.toString());
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

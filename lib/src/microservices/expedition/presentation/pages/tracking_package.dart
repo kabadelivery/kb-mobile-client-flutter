@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../localizations/AppLocalizations.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/city_model.dart';
 import '../../data/expedition/createdby_model.dart';
@@ -71,7 +72,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                     children: [
                       Icon(Icons.arrow_back_sharp,color: Colors.white,size: 19,),
                       SizedBox(width: 10,),
-                     Text("Suivi du colis",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16),)
+                     Text("${AppLocalizations.of(context)!.translate('track_parcel')}",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 16),)
                     ],
                   ),
                   ),
@@ -100,7 +101,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                       });
                       expeditionBloc.add(GetUserExpeditionEvent());
                     },
-                    child: Text("Réessayer",style: TextStyle(color: Colors.white),),
+                    child: Text("${AppLocalizations.of(context)!.translate('retry')}",style: TextStyle(color: Colors.white),),
 
                   ),
                 ):
@@ -110,7 +111,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                   alignment: Alignment.center,
                   child:expeditions.isEmpty?
                   Container(
-                    child: Text("Aucun colis pour le moment"),
+                    child: Text("${AppLocalizations.of(context)!.translate('no_parcel')}"),
                   ):
                   Column(
                     children: [
@@ -182,7 +183,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text("Total expéditions"
+                                      Text("${AppLocalizations.of(context)!.translate('total_shipments')}"
                                         ,style: TextStyle(color:Color(0xFF3D6F2E),
                                             fontWeight: FontWeight.bold,fontSize: 24),),
                                       SizedBox(height: 5,),

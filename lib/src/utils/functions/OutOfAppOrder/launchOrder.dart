@@ -232,105 +232,150 @@ void payAtDelivery(
   }
 }
 
-void _showDialog(
-    {String? iccon,
-    Icon? icon,
-    var message,
-    bool okBackToHome = false,
-    bool isYesOrNo = false,
-    Function? actionIfYes,
-    String? asset_png,
-    BuildContext? context,
-    WidgetRef? ref}) {
+void _showDialog({
+  String? iccon,
+  Icon? icon,
+  String? message,
+  bool okBackToHome = false,
+  bool isYesOrNo = false,
+  Function? actionIfYes,
+  String? asset_png,
+  required BuildContext context,
+  WidgetRef? ref,
+}) {
   showDialog(
-      context: context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: asset_png != null
-                      ? Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              // shape: BoxShape.circle,
-                              image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: new AssetImage(asset_png),
-                          )))
-                      : (icon == null
-                          ? SvgPicture.asset(
-                              iccon!,
-                            )
-                          : icon)),
-              SizedBox(height: 10),
-              Text(message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.new_black, fontSize: 13))
-            ]),
-            actions: isYesOrNo
-                ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
-                : <Widget>[
-                    //
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        if (!okBackToHome) {
-                          try {
-                            resetProviders(ref!);
-                            xrint("Resetting providers successfully");
-                          } catch (e) {
-                            xrint("Error resetting providers: $e");
-                          }
-                          Navigator.of(context).pop();
-                        } else {
-                          StateContainer.of(context)
-                              .updateTabPosition(tabPosition: 2);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              new MaterialPageRoute(
-                                  settings:
-                                      RouteSettings(name: HomePage.routeName),
-                                  builder: (BuildContext context) => HomePage(
-                                        is_out_of_app_order: true,
-                                      )),
-                              (r) => false);
-                        }
-                      },
-                    ),
-                  ]);
-      },
-      barrierDismissible: false);
-}
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        insetPadding: EdgeInsets.symmetric(horizontal: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon or image
+              Container(
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      KColors.primaryColor,
+                      KColors.primaryColor.withOpacity(.7),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Icon(
+                    Icons.delivery_dining, // tu peux remplacer par Image.asset
+                    color: Colors.white,
+                    size: 40,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
+              // Message
+              Text(
+                message ?? "",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black87,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Buttons
+              isYesOrNo
+                  ? Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey, width: 1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Text(
+                        "${AppLocalizations.of(context)!.translate('refuse')}",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: KColors.primaryColor, width: 1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                        backgroundColor: KColors.primaryColor.withOpacity(0.1),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes?.call();
+                      },
+                      child: Text(
+                        "${AppLocalizations.of(context)!.translate('accept')}",
+                        style: TextStyle(color: KColors.primaryColor),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+                  : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    elevation: 0,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)),
+                  ),
+                  child: Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    if (!okBackToHome) {
+                      try {
+                        resetProviders(ref!);
+                        xrint("Resetting providers successfully");
+                      } catch (e) {
+                        xrint("Error resetting providers: $e");
+                      }
+                      Navigator.of(context).pop();
+                    } else {
+                      StateContainer.of(context).updateTabPosition(tabPosition: 2);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          settings: RouteSettings(name: HomePage.routeName),
+                          builder: (_) => HomePage(is_out_of_app_order: true),
+                        ),
+                            (r) => false,
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 void launchOrderResponse(int errorCode, BuildContext context, WidgetRef ref) {
   ref
       .read(outOfAppScreenStateProvier.notifier)

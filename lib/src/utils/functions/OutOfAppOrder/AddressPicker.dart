@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../contracts/address_contract.dart';
 import '../../../localizations/AppLocalizations.dart';
 import '../../../models/DeliveryAddressModel.dart';
 import '../../../models/OrderBillConfiguration.dart';
+import '../../../resources/address_api_provider.dart';
 import '../../../resources/out_of_app_order_api.dart';
 import '../../../state_management/out_of_app_order/order_billing_state.dart';
 import '../../../state_management/out_of_app_order/out_of_app_order_screen_state.dart';
@@ -16,6 +18,8 @@ import '../../../state_management/out_of_app_order/voucher_state.dart';
 import '../../../ui/customwidgets/billing_widget.dart';
 import '../../../ui/screens/home/me/address/MyAddressesPage.dart';
 import '../../../xrint.dart';
+import '../../_static_data/AppConfig.dart';
+import '../../recustomlib/place_picker_removed_nearbyplaces.dart';
 import '../CustomerUtils.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -33,13 +37,27 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
   DeliveryAddressModel? shipping_address =null;
   /* jump and get it */
   if (context.mounted) {
-    Map results = await Navigator.of(context).push(PageRouteBuilder(
+    CustomerModel? customer = await CustomerUtils.getCustomer();
+    Widget page = Container();
+    if(is_actual_position){
+      page =  MyAddressesPage(
+          pick: true,
+          presenter: AddressPresenter(AddressView()),
+          address_type: 5 //address_type = 5 means  we only choose actual position
+      );
+    }
+    else if(!is_actual_position && address_type==2){
+      page =PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,alreadyHasLocation: true,);
+    }else{
+     page = MyAddressesPage(
+        pick: true,
+        address_type: address_type,
+        presenter: AddressPresenter(AddressView()),
+      );
+    }
+    var results = await  Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
-            MyAddressesPage(
-                pick: true,
-                presenter: AddressPresenter(AddressView()),
-                address_type: is_actual_position?5:address_type  //address_type = 5 means  we only choose actual position
-            ),
+        page,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;
@@ -50,7 +68,26 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));
-
+    if(address_type==2 && !is_actual_position && results!=null){
+      AddressApiProvider address_api = AddressApiProvider();
+       DeliveryAddressModel address = DeliveryAddressModel(
+        name: "${productState[0]['name']}",
+        location: "${"${results.latitude}:${results.longitude}"}",
+        phone_number:customer.phone_number,
+        description: "achat de produit",
+         near: "Inconnu",
+         user_id: customer.id.toString(),
+         quartier:"Inconnu"
+      );
+      Map? addressRes = await address_api.updateOrCreateAddress(address, customer) as Map;
+      order_address = [];
+      order_address.add(addressRes!['address'] as DeliveryAddressModel);
+      locationNotifier.pickOrderAddress(addressRes!['address']);
+      locationNotifier.setOrderAddressPicked(true);
+      if (locationState.is_shipping_address_picked!) {
+        shipping_address = locationState.selectedShippingAddress!;
+      }
+     }else
     if (results != null && results.containsKey('selection')) {
       if (address_type == 1) {
         shipping_address = results['selection'];

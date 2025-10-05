@@ -82,7 +82,12 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                   );
                                 }
                             ));
-                          },child: Text("Suivre son colis",style: TextStyle(color: Colors.white,fontSize: 11),),
+                          },child: Row(
+                            children: [
+                              Icon(Icons.location_on_outlined,color: Colors.white,size: 15,),
+                              Text("${AppLocalizations.of(context)!.translate('parcel_tracking')}",style: TextStyle(color: Colors.white,fontSize: 11),),
+                            ],
+                          ),
                           minWidth: 80,height: 30,
                           shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(20)),)
                       ],
@@ -96,7 +101,6 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                 color: Colors.white,
                 child:Stack(
                   children: [
-
                     Positioned(
                         bottom:0,
                         child: Image.asset("assets/images/png/expedition_afrique.png",
@@ -113,7 +117,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           SizedBox(height: 5,),
                           Container(
                               width: 270,
-                              child: Text("Choisissez votre destination et expédiez en toute sécurité",style: TextStyle(fontSize: 13,color: Colors.black87,fontFamily: 'Inter'),)),
+                              child: Text("${AppLocalizations.of(context)!.translate('choose_destination')}",style: TextStyle(fontSize: 13,color: Colors.black87,fontFamily: 'Inter'),)),
                           //SizedBox(height: 10,),
                           //                           Container(
                           //                             width: 270,

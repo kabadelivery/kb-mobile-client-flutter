@@ -331,11 +331,14 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                       Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(Utils.capitalize(address!.name!),
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                    color: KColors.new_black)),
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.8,
+                              child: Text(Utils.capitalize(address!.name!),
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                      color: KColors.new_black)),
+                            ),
                             SizedBox(height: 5),
                             Container(
                               width: MediaQuery.of(context).size.width * 0.65,

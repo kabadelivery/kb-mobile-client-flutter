@@ -87,13 +87,20 @@ class _PresentationPageState extends State<PresentationPage> {
                 // Skip button top-right
                 TextButton(
                   onPressed: _endOfTheSlides,
-                  child: Text(
-                    Utils.capitalize("${loc.translate('skip_text')}"),
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500),
-                  ),
+                  child: Container(
+                    padding:EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color:Colors.black.withOpacity(.2)
+                    ),
+                    child: Text(
+                      Utils.capitalize("${loc.translate('skip_text')}"),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500),
+                    ),
+                  )
                 ),
               ],
             ),

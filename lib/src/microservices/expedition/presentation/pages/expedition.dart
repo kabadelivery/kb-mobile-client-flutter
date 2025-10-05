@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
 import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
@@ -9,6 +10,7 @@ import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/chat/chat_bloc.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -124,7 +126,7 @@ class _ExpeditionState extends State<Expedition> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(widget.type==ExpeditionType.international?"Expédition Internationale":"Expédition Nationale",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                          Text("Etape $step sur 2",style: TextStyle(color: Colors.white,fontSize: 12),)
+                          Text("${AppLocalizations.of(context)!.translate('step_count')} ${step} ${AppLocalizations.of(context)!.translate('over')} 2",style: TextStyle(color: Colors.white,fontSize: 12),)
                         ],
                       )
                     ],
@@ -201,7 +203,7 @@ class _ExpeditionState extends State<Expedition> {
                                 style: TextStyle(fontSize: 12,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
                           Container(
                               width: 80,
-                              child: Text("Destination & Poids",
+                              child: Text("${AppLocalizations.of(context)!.translate('parcel_details')}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 12,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
 
@@ -211,7 +213,7 @@ class _ExpeditionState extends State<Expedition> {
                   ),
                 ),
                 SizedBox(height: 10,),
-             step==1?   Expanded(
+                step==1?   Expanded(
                   child: SingleChildScrollView(
                     scrollDirection: Axis.vertical,
                     child: Column(
@@ -251,10 +253,10 @@ class _ExpeditionState extends State<Expedition> {
                                 children: [
                                   Icon(Icons.info_outline,color: KabaExpeditionColor.primary,),
                                   SizedBox(width: 10,),
-                                  Text("Important",style: TextStyle(fontWeight: FontWeight.bold),)
+                                  Text("${AppLocalizations.of(context)!.translate('important')}",style: TextStyle(fontWeight: FontWeight.bold),)
                                   ],
                               ),
-                              Text("Ce coût prend en compte la récupération de votre colis, l’expédition et la livraison à l’adresse exacte du destinataire.  Il peut changer en fonction de la nature et du conditionnement de votre colis",
+                              Text("${AppLocalizations.of(context)!.translate('cost_info')}",
                                   style: TextStyle(fontSize: 14,color: Colors.black), textAlign: TextAlign.justify),
                             ],
                           )),
@@ -282,7 +284,7 @@ class _ExpeditionState extends State<Expedition> {
                                         border: Border.all(color: Colors.grey,width: .5),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
-                                    child: Text("Annuler",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
+                                    child: Text("${AppLocalizations.of(context)!.translate('cancel')}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
                                   ),
                                 ),
                               ),
@@ -406,31 +408,43 @@ class _ExpeditionState extends State<Expedition> {
                              await Future.delayed(Duration(milliseconds: 500));
                              CustomerModel customer = await CustomerUtils.getCustomer();
                              CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
-                            List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
-                               body: createExpedition,
-                               customer: customer,
-                             );
-                           expeditionModels = expeditionModels.map((exp) {
-                             exp.colis = createExpedition.colis;
-                             return exp;
-                           }).toList();
-                           Navigator.of(context).pushReplacement(PageRouteBuilder(
-                                 pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
+                           List<ExpeditionModel> expeditionModels = [];
+                            try{
+                              List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
+                                body: createExpedition,
+                                customer: customer,
+                              );
+                              expeditionModels = expeditionModels.map((exp) {
+                                exp.colis = createExpedition.colis;
+                                return exp;
+                              }).toList();
+                              Navigator.of(context).pushReplacement(PageRouteBuilder(
+                                  pageBuilder: (context, animation, secondaryAnimation) => BillingPage(
 
-                                     expedition:expeditionModels
-                                 ),
-                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                   var begin = Offset(1.0, 0.0);
-                                   var end = Offset.zero;
-                                   var curve = Curves.ease;
-                                   var tween = Tween(begin: begin, end: end);
-                                   var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                                   return SlideTransition(
-                                       position: tween.animate(curvedAnimation),
-                                       child: child
-                                   );
-                                 }
-                             ));
+                                      expedition:expeditionModels
+                                  ),
+                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                    var begin = Offset(1.0, 0.0);
+                                    var end = Offset.zero;
+                                    var curve = Curves.ease;
+                                    var tween = Tween(begin: begin, end: end);
+                                    var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                    return SlideTransition(
+                                        position: tween.animate(curvedAnimation),
+                                        child: child
+                                    );
+                                  }
+                              ));
+                            }catch(e){
+                              debugPrint("XXX ERROR CREATING EXPEDITION ${e}");
+                              CherryToast.error(
+                                title: Text("${AppLocalizations.of(context)!.translate('create_error')}"),
+                                toastPosition: Position.center,
+                              ).show(context);
+                              setState(() {
+                                isLoading =false;
+                              });
+                            }
                          }else{
                            setState(() {
                            });

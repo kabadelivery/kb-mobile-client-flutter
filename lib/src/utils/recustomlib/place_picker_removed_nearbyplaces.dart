@@ -185,9 +185,13 @@ class PlacePickerState extends State<PlacePicker> {
               children: <Widget>[
                 SelectPlaceAction(getLocationName(), () {
                   if (markers.first.position != null) {
+                    debugPrint("XXX position 1 ${markers.first.position}");
                     Navigator.of(context).pop(markers.first.position);
-                  } else
+
+                  } else {
+                    debugPrint("XXX position 1 ${markers.first.position}");
                     Navigator.of(context).pop(this.target);
+                  }
                 }),
               ],
             ),

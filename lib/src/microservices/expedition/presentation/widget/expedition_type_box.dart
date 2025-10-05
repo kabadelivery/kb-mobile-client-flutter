@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
+import '../../../../localizations/AppLocalizations.dart';
 import '../../../kaba_chine/core/utils.dart';
 import '../../core/utils.dart';
 
@@ -41,6 +42,10 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
             ),
             child: Icon(Icons.local_shipping_outlined,color: Colors.white,size: 30,),
           ),
+          SizedBox(height: 20,),
+          Text("${AppLocalizations.of(context)!.translate('ship_everywhere')}",textAlign: TextAlign.center,style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Colors.black87,fontFamily: 'Inter')),
+
+          SizedBox(height: 10,),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -48,7 +53,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
                 children: [
                   Icon(Icons.local_shipping_outlined,color: KabaExpeditionColor.primary,size: 16,),
                   SizedBox(width: 5,),
-                  Text("Par voie terrestre",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
+                  Text("${AppLocalizations.of(context)!.translate('by_land')}",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
 
                 ],
               ),
@@ -56,13 +61,14 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
                 children: [
                   Icon(FontAwesomeIcons.earthAfrica,color: KabaExpeditionColor.primary,size: 16,),
                   SizedBox(width: 5,),
-                  Text("7 pays disponibles",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
+                  Text("${AppLocalizations.of(context)!.translate('available_countries')}",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
 
                 ],
               ),
             ],
           ),
-          GestureDetector(
+          SizedBox(height: 20,),
+           GestureDetector(
             onTap: (){
               Navigator.of(context).pushReplacement(PageRouteBuilder(
                   pageBuilder: (context, animation, secondaryAnimation) => Expedition(type: ExpeditionType.international),
@@ -100,7 +106,7 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text("Expédier maintenant",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.white,fontFamily: 'Inter'),),
+                  Text("${AppLocalizations.of(context)!.translate('ship_now')}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 13,color: Colors.white,fontFamily: 'Inter'),),
                   SizedBox(width: 5,),
                   Icon(Icons.arrow_forward,color: Colors.white,size: 12,)
                 ],
@@ -151,7 +157,7 @@ Widget ExpeditionNationalBox({required BuildContext context}){
                 children: [
                   Icon(Icons.local_shipping_outlined,color: KabaExpeditionColor.primary,size: 16,),
                   SizedBox(width: 5,),
-                  Text("Par voie terrestre",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
+                  Text("${AppLocalizations.of(context)!.translate('by_land')}",style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'),),
 
                 ],
               ),
@@ -163,7 +169,7 @@ Widget ExpeditionNationalBox({required BuildContext context}){
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                 Flexible(child: Text("Cette fonctionnalité est en cours de développement",textAlign: TextAlign.center,style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'))),
+                 Flexible(child: Text("${AppLocalizations.of(context)!.translate('feature_dev')}",textAlign: TextAlign.center,style: TextStyle(fontSize: 12,color: Colors.black87,fontFamily: 'Inter'))),
               ],
             ),
           )

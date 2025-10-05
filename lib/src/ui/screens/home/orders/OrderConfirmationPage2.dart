@@ -661,16 +661,21 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant livraison promotion */
                         Text(
-                            "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
+                          "${((_orderBillConfiguration.additional_fees_total_price ?? 0) - (_orderBillConfiguration.additional_fees?['COMMISSION_FEE'] ?? 0))} ${AppLocalizations.of(context)!.translate('currency')}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
+                        )
                       ],
                     )
                   ])
                   : Container(),
               SizedBox(height: 10),
-              Container(
+              _orderBillConfiguration!.additional_fees_total_price != 0 ||
+                  _orderBillConfiguration!.additional_fees_total_price !=
+                      null
+                  ?   Container(
                 decoration: BoxDecoration(
                     color: Color(0x54B6B6B6),
                     borderRadius: BorderRadius.circular(5)),
@@ -680,7 +685,47 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
                       style: TextStyle(fontSize: 11, color: Colors.black)),
                 ),
-              ),
+              ):Container(),
+              SizedBox(height: 10),
+              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
+                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
+                      0
+                  ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('commission')}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.normal, fontSize: 12)),
+                    /* check if there is promotion on Livraison */
+                    Row(
+                      children: <Widget>[
+                        /* montant livraison promotion */
+                        Text(
+                            "${(_orderBillConfiguration.additional_fees!['COMMISSION_FEE']??0 )} ${AppLocalizations.of(context)!.translate('currency')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
+                      ],
+                    )
+                  ])
+                  : Container(),
+              SizedBox(height: 10),
+              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
+                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
+                      0
+                  ?  Container(
+                decoration: BoxDecoration(
+                    color: Color(0x1DCB1F44),
+                    border: Border.all(color: Color(0xFFCB1F44)),
+                    borderRadius: BorderRadius.circular(5)),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('commission_explain')}",
+                      style: TextStyle(fontSize: 11, color: Colors.black)),
+                ),
+              ):Container(),
               SizedBox(height: 10),
               _orderBillConfiguration!.remise! > 0
                   ? Row(
@@ -2800,24 +2845,26 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 20),
-                        RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                    text:
-                                    "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
-                                    style: TextStyle(
-                                        color: KColors.new_black,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold)),
-                                TextSpan(
-                                    text:
-                                    "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
-                                    style: TextStyle(
-                                        color: KColors.primaryColor,
-                                        fontWeight: FontWeight.bold))
-                              ],
-                            )),
+                        Flexible(
+                          child: RichText(
+                              text: TextSpan(
+                                children: <TextSpan>[
+                                  TextSpan(
+                                      text:
+                                      "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
+                                      style: TextStyle(
+                                          color: KColors.new_black,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                  TextSpan(
+                                      text:
+                                      "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
+                                      style: TextStyle(
+                                          color: KColors.primaryColor,
+                                          fontWeight: FontWeight.bold))
+                                ],
+                              )),
+                        ),
                       ],
                     ),
                   ),
@@ -2967,35 +3014,39 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                             SizedBox(
                                               width: 15,
                                             ),
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "💡 Économisez sur vos livraisons !",
-                                                  style: TextStyle(
-                                                    fontSize: 15,
-                                                    color: Color(0xFFCD1F45),
-                                                  ),
+                                            Flexible(
+                                              child: Text(
+                                                "💡 Économisez sur vos livraisons !",
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  color: Color(0xFFCD1F45),
                                                 ),
-                                                SizedBox(height: 4), // spacing between texts
-                                                Text(
-                                                  "  Cette livraison vous aurait coûté 0 Franc \n  si vous aviez souscrit à une de nos formules \n  d'abonnement Kaba.",
-                                                  style: TextStyle(
-                                                    fontSize: 11,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                                SizedBox(height: 4), // spacing between texts
-                                                Text(
-                                                  " ⚡ Economies: 2 300 FCFA",
-                                                  style: TextStyle(
-                                                    fontSize: 13,
-                                                    fontWeight: FontWeight.normal,
-                                                    color: Color(0xFF00A63E),
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: 4), // spacing between texts
+                                            Text(
+                                              textAlign: TextAlign.start,
+                                              "Cette livraison vous aurait coûté 0 Franc  si vous aviez souscrit à une de nos formules  d'abonnement Kaba.",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.normal,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(height: 4), // spacing between texts
+                                            Text(
+                                              " ⚡ Economies: 2 300 FCFA",
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.normal,
+                                                color: Color(0xFF00A63E),
+                                              ),
                                             ),
                                           ],
                                         ),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/expedition.dart';
@@ -17,10 +18,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../contracts/address_contract.dart';
 import '../../../../localizations/AppLocalizations.dart';
 import '../../../../models/CustomerModel.dart';
+import '../../../../resources/address_api_provider.dart';
 import '../../../../ui/screens/home/me/address/MyAddressesPage.dart';
+import '../../../../utils/_static_data/AppConfig.dart';
 import '../../../../utils/functions/CustomerUtils.dart';
 import '../../../../utils/functions/OutOfAppOrder/imagePicker.dart';
 import '../../../../utils/functions/permissions.dart';
+import '../../../../utils/functions/separator.dart';
+import '../../../../utils/recustomlib/place_picker_removed_nearbyplaces.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/line_model.dart';
 import '../../data/expedition/package_model.dart';
@@ -47,6 +52,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
   String? selected_departure_town="Lomé";
   String? selected_arrival_town =null;
   double? estimation_price =null;
+  int? estimation_day =null;
   List<Map<String,String>> map_of_town_arrival= [];
   List<Map<String,String>> map_of_town_departure= [];
   List<LineModel>availableLines=[];
@@ -92,7 +98,6 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
           BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: selected_arrival_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
           BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: selected_departure_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
         }
-
       }
     }
     if(state is PackagesUpdatedState){
@@ -160,8 +165,8 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Colis ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 14),),
-                          Text("Configuration requise",style: TextStyle(fontSize: 14,color: Colors.black54),)
+                          Text("${AppLocalizations.of(context)!.translate('parcel')} ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 14),),
+                          Text("${AppLocalizations.of(context)!.translate('requirements')}",style: TextStyle(fontSize: 14,color: Colors.black54),)
                         ],
                       )
                     ],
@@ -195,7 +200,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FormTitleWithIcon(title: "Ville de départ", icon: Icon(size:15,Icons.rocket_launch_outlined,color: Color(0xFFCD1F45),)),
+                        FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("departure_town")}", icon: Icon(size:15,Icons.rocket_launch_outlined,color: Color(0xFFCD1F45),)),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 10),
                           width: 150,
@@ -207,7 +212,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropdownButton<String>(
-                            hint: Text("Sélectionner la ville de départ"),
+                            hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
                             value: selected_departure_town,
                             isExpanded: true,
                             elevation: 16,
@@ -249,7 +254,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(size:15,Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
+                        FormTitleWithIcon(title:  "${AppLocalizations.of(context)!.translate("arrival_town")}", icon: Icon(size:15,Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
                         Container(
                           margin: EdgeInsets.symmetric(vertical: 10),
                           width: 150,
@@ -260,7 +265,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 10),
                           child: DropdownButton<String>(
-                            hint: Text("Sélectionner la ville d'arrivé"),
+                            hint: Text("${AppLocalizations.of(context)!.translate('select_arrival_city')}"),
                             value: selected_arrival_town,
                             isExpanded: true,
                             elevation: 16,
@@ -303,7 +308,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                 SizedBox(height: 10,),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  child: Text("Poids du colis", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                  child: Text("${AppLocalizations.of(context)!.translate('parcel_weight')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
                 ),
                 SizedBox(height: 10,),
                 Container(
@@ -367,6 +372,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                         builder: (context, state) {
                           if(state is EstimationCalculated){
                               estimation_price = state.result.prixFinal;
+                              estimation_day= state.result.dureeJours;
                           }
                           if(state is EstimationLoading){
 
@@ -383,15 +389,32 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5),
                                         child: Row(
                                           mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
-                                            SizedBox(width: 5,),
                                             state is EstimationLoading?
                                             Text('Calcul en cours...')
-                                            :Row(
+                                            :Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                Text("Coût estimé :",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
-                                                Text("${_weight.text.isNotEmpty?estimation_price:"0" } FCFA", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
+                                                    SizedBox(width: 5,),
+                                                    Text("${AppLocalizations.of(context)!.translate('estimated_cost')}",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                                    Text("${_weight.text.isNotEmpty?formatCurrency(double.parse(estimation_price.toString())):"0" } FCFA", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                                   ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  children: [
+                                                    Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
+                                                    SizedBox(width: 5,),
+                                                    Text("Livraison en ",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                                    Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                                   ],
+                                                ),
                                               ],
                                             )
                                           ],
@@ -410,7 +433,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       SizedBox(height: 10,),
-                      Text("Que contient votre colis? Fournir les détails précis",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                      Text("${AppLocalizations.of(context)!.translate('parcel_content')}",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
                       SizedBox(height: 10,),
                       TextFormField(
                         controller: _packageContainer,
@@ -441,7 +464,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       SizedBox(height: 10,),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                        child: Text("Numéro de téléphone du destinataire", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                        child: Text("${AppLocalizations.of(context)!.translate('recipient_phone')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
                       ),
                       SizedBox(height: 10,),
                       TextFormField(
@@ -481,7 +504,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Adresse du destinataire",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
+                      Text("${AppLocalizations.of(context)!.translate('recipient_address')}",style: TextStyle(fontSize: 12,color: Colors.black87,fontWeight: FontWeight.bold),),
                       SizedBox(height: 5,),
                       TextFormField(
                         maxLines: 3,
@@ -517,21 +540,17 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             onTap: ()async{
                               CustomerModel? customer = await CustomerUtils.getCustomer();
                               DeliveryAddressModel address = DeliveryAddressModel(
-                                name:"Addresse du colis de  ${packageModel.departureTown } à ${packageModel.arrivalTown}",
-                                phone_number:customer!.phone_number.toString(),
+                                name:"",
+                                phone_number:"",
                                 user_id: customer.id.toString(),
-                                description: "Pour le colis suivant : ${packageModel.description}",
-                                quartier: "${AppLocalizations.of(context)!.translate('status_unknown')}",
-                                near: "${AppLocalizations.of(context)!.translate('status_unknown')}",
+                                description: "",
+                                quartier: "",
+                                near: "",
                               );
-                              Map results = await Navigator.of(context).push(PageRouteBuilder(
+                              var results = await Navigator.of(context).push(PageRouteBuilder(
                                   pageBuilder: (context, animation, secondaryAnimation) =>
-                                      MyAddressesPage(
-                                          pick: true,
-                                          address_type: 3,
-                                          autoCreatAddress: address,
-                                          presenter: AddressPresenter(AddressView()),
-                                          ),
+                                  PlacePicker(
+                                    AppConfig.GOOGLE_MAP_API_KEY,alreadyHasLocation: true,),
                                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                     var begin = Offset(1.0, 0.0);
                                     var end = Offset.zero;
@@ -542,14 +561,25 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     return SlideTransition(
                                         position: tween.animate(curvedAnimation), child: child);
                                   }));
-                              if (results != null && results.containsKey('selection')){
-                                packageModel.recipientAddress = results['selection'] as DeliveryAddressModel;
+
+                              if (results != null ){
+                                AddressApiProvider address_api = AddressApiProvider();
+                                DeliveryAddressModel address = DeliveryAddressModel(
+                                    name: "Addresse route ${packageModel.arrivalTown} - ${packageModel.departureTown} ${DateTime.now().toIso8601String()}",
+                                    location:" ${results.latitude}:${results.longitude}" ,
+                                    phone_number:customer.phone_number,
+                                    description: "achat de produit",
+                                    near: "Inconnu",
+                                    user_id: customer.id.toString(),
+                                    quartier:"Inconnu"
+                                );
+                                Map? addressRes = await address_api.updateOrCreateAddress(address, customer) as Map;
+                                packageModel.recipientAddress = addressRes['address'] as DeliveryAddressModel;
                                 expeditionBloc.add(ChangeRecipientAddressEvent(address: packageModel.recipientAddress!, packageIndex: widget.index));
                                 gpsAddressChoosed = true;
                               }
                             },
                             child: Container(
-
                               padding: EdgeInsets.all(5),
                               decoration: BoxDecoration(
                                 color:gpsAddressChoosed? KabaExpeditionColor.primary:  Colors.white,
@@ -561,7 +591,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                 children: [
                                   Icon(Icons.add_circle_outline,size: 20,color:gpsAddressChoosed?Colors.white:  KabaExpeditionColor.primary,),
                                   SizedBox(width: 10,),
-                                  Text("Ajouter addresse GPS",style: TextStyle(fontSize: 11,color:gpsAddressChoosed?Colors.white: KabaExpeditionColor.primary),)
+                                  Text("${AppLocalizations.of(context)!.translate('add_gps')}",style: TextStyle(fontSize: 11,color:gpsAddressChoosed?Colors.white: KabaExpeditionColor.primary),)
                                 ],
                               ),
                             ),
@@ -569,28 +599,35 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
 
                           GestureDetector(
                             onTap: ()async{
-                              Map results = await Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) =>
-                                      MyAddressesPage(
-                                        pick: true,
-                                        address_type: 2,
-                                        presenter: AddressPresenter(AddressView()),
-                                      ),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    var begin = Offset(1.0, 0.0);
-                                    var end = Offset.zero;
-                                    var curve = Curves.ease;
-                                    var tween = Tween(begin: begin, end: end);
-                                    var curvedAnimation =
-                                    CurvedAnimation(parent: animation, curve: curve);
-                                    return SlideTransition(
-                                        position: tween.animate(curvedAnimation), child: child);
-                                  }));
+                              if(packageModel.departureTown!.isEmpty || packageModel.arrivalTown!.isEmpty){
+                                 CherryToast.error(
+                                    toastPosition:Position.center,
+                                    title: Text("Choisissez votre itinéraire de livraison"),
+                                 );
+                              }else{
+                                Map results = await Navigator.of(context).push(PageRouteBuilder(
+                                    pageBuilder: (context, animation, secondaryAnimation) =>
+                                        MyAddressesPage(
+                                          pick: true,
+                                          address_type: 2,
+                                          presenter: AddressPresenter(AddressView()),
+                                        ),
+                                    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                      var begin = Offset(1.0, 0.0);
+                                      var end = Offset.zero;
+                                      var curve = Curves.ease;
+                                      var tween = Tween(begin: begin, end: end);
+                                      var curvedAnimation =
+                                      CurvedAnimation(parent: animation, curve: curve);
+                                      return SlideTransition(
+                                          position: tween.animate(curvedAnimation), child: child);
+                                    }));
 
-                              if (results != null && results.containsKey('selection')){
-                                packageModel.recipientAddress = results['selection'] as DeliveryAddressModel;
-                                expeditionBloc.add(ChangeRecipientAddressEvent(address: packageModel.recipientAddress!, packageIndex: widget.index));
-                                registeredAddressChoosed = true;
+                                if (results != null && results.containsKey('selection')){
+                                  packageModel.recipientAddress = results['selection'] as DeliveryAddressModel;
+                                  expeditionBloc.add(ChangeRecipientAddressEvent(address: packageModel.recipientAddress!, packageIndex: widget.index));
+                                  registeredAddressChoosed = true;
+                                }
                               }
                             },
                             child: Container(
@@ -606,7 +643,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                 children: [
                                   Icon(Icons.save_outlined,size: 20,color:registeredAddressChoosed?Colors.white: KabaExpeditionColor.primary,),
                                   SizedBox(width: 10,),
-                                  Text("Addresses enregistrées",style: TextStyle(fontSize: 11,color:registeredAddressChoosed?Colors.white: KabaExpeditionColor.primary),)
+                                  Text("${AppLocalizations.of(context)!.translate('saved_addresses')}",style: TextStyle(fontSize: 11,color:registeredAddressChoosed?Colors.white: KabaExpeditionColor.primary),)
                                 ],
                               ),
                             ),
@@ -645,293 +682,38 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
 
                   child: Column(
                     children: [
-                      Text('Photos du colis (2 obligatoires)',style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                      Text("${AppLocalizations.of(context)!.translate('current_position')}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                       SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      debugPrint("Image picked: ${value.path}");
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 0));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                        expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 0));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: firstImagePath!=null && firstImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Obligatoire",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![0]!=null?  DecorationImage(
-                                            image:NetworkImage(packageModel.images![0]!),
-                                            fit: BoxFit.cover
-                                        ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          ImageSlot(
+                            photoIndex: 0,
+                            packageIndex: widget.index,
+                            imageUrl: packageModel.images != null && packageModel.images!.isNotEmpty
+                                ? packageModel.images![0]
+                                : null,
+                            emptyLabel: firstImagePath != null && firstImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 1));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 1));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: secondImagePath!=null && secondImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Obligatoire",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![1]!=null?  DecorationImage(
-                                            image:NetworkImage(packageModel.images![1]!),
-                                            fit: BoxFit.cover
-                                        ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          ImageSlot(
+                             photoIndex: 1,
+                            packageIndex: widget.index,
+                            imageUrl: (packageModel.images != null && packageModel.images!.length > 1)
+                                ? packageModel.images![1]
+                                : null,
+                            emptyLabel: secondImagePath != null && secondImagePath.isEmpty ? "Obligatoire" : "Obligatoire",
                           ),
-                          GestureDetector(
-                            onTap: ()async{
-                              if (Platform.isAndroid) {
-                                try {
-                                  await pickImageAndroid(context).then((value) {
-                                    if (value != null) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value, packageIndex: widget.index, photoIndex: 2));
-                                    } else {
-                                      debugPrint("No image picked or image too large.");
-                                      CherryToast.error(
-                                        toastPosition: Position.center,
-                                        title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                        description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
-                                        toastDuration: Duration(seconds: 5),
-                                      ).show(context);
-                                      // Optionally show a SnackBar or handle cancellation here
-                                    }
-                                  });
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              } else {
-                                try {
-                                  bool granted = await requestCameraAndGalleryPermissions();
-                                  if (granted) {
-                                    await pickImageIOS(context).then((value) {
-                                      expeditionBloc.add(AddPhotoEvent(file: value!, packageIndex: widget.index, photoIndex: 2));
-                                    });
-                                    debugPrint("Camera permission granted!");
-                                    CherryToast.success(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('success')}"),
-                                      description:Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-                                  } else {
-                                    debugPrint("Camera permission denied.");
-                                    CherryToast.error(
-                                      toastPosition: Position.center,
-                                      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-                                      description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
-                                      toastDuration: Duration(seconds: 5),
-                                    ).show(context);
-
-
-                                  }
-                                } catch (e) {
-                                  debugPrint("##Error in image picking, out of app order## $e");
-                                }
-                              }
-                            },
-                            child: DottedBorder(
-                              options: RoundedRectDottedBorderOptions(
-                                dashPattern: [10,6],
-                                strokeWidth: 1,
-                                color: Colors.black38,
-                                radius: Radius.circular(10),
-                              ), child: Container(
-                                height: 85,
-                                width: 85,
-                                child: thirdImagePath!=null && thirdImagePath.isEmpty?
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Transform.rotate(
-                                        angle: 55,
-                                        child: Icon(Icons.logout,size: 30,color: Colors.black54,)),
-                                    Text("Optionnel",style: TextStyle(fontSize: 11,color: Colors.black54,fontWeight:FontWeight.bold ),),
-                                  ],
-                                ):
-                                Container(
-                                  height: 85,
-                                  width: 85,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: Colors.black.withOpacity(0.2)
-                                  ),
-                                  child: Container(
-                                    height: 85,
-                                    width: 85,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        image:packageModel.images![2]!=null?  DecorationImage(
-                                    image:NetworkImage(packageModel.images![2]!),
-                                      fit: BoxFit.cover
-                                  ):null
-                                    ),
-                                  ),
-                                )
-                            ),),
+                          ImageSlot(
+                            packageIndex: widget.index,
+                            photoIndex: 2,
+                            imageUrl: (packageModel.images != null && packageModel.images!.length > 2)
+                                ? packageModel.images![2]
+                                : null,
+                            emptyLabel: thirdImagePath != null && thirdImagePath.isEmpty ? "Optionnel" : "Optionnel",
                           ),
                         ],
                       )
+
                     ],
                   ),
                 ),
@@ -958,16 +740,16 @@ class PickUpOptions extends StatefulWidget {
 class _PickUpOptionsState extends State<PickUpOptions> {
   bool kaba_fetch_the_package = false;
   bool deposit_of_the_package = false;
-  bool positionChoosed=true;
+  bool positionChoosed=false;
   bool addressSavedChoosed=false;
   DateTime? selectedDate = null;
   bool addNewAddress = false;
+  bool _loading = false;
   List<String> selectedTimes = [
     "8:00 -  10:00",
     "10:00 - 12:00",
     "12:00 - 14:00",
     "14:00 - 16:00",
-    "16:00 - 18:00"
   ];
   String? selectedTime = null;
   DeliveryAddressModel? addressSelected =null;
@@ -990,14 +772,24 @@ class _PickUpOptionsState extends State<PickUpOptions> {
               kaba_fetch_the_package = true;
               deposit_of_the_package = false;
             }else{
+
               kaba_fetch_the_package = false;
               deposit_of_the_package = true;
             }
+
           }
           if(state is chooseShippingMethodAddressTypeState){
               if(state.method=="POSITION"){
                 positionChoosed = true;
                 addressSavedChoosed = false;
+                _loading = false;
+                WidgetsBinding.instance.addPostFrameCallback((_){
+                  CherryToast.success(
+                    toastPosition: Position.center,
+                    title: Text("${AppLocalizations.of(context)!.translate('success')}"),
+                    description:Text("${AppLocalizations.of(context)!.translate('current_position')}"),
+                  ).show(context);
+                });
               }else if(state.method=="REGISTERED"){
                 positionChoosed = false;
                 addressSavedChoosed = true;
@@ -1005,6 +797,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                 positionChoosed = false;
                 addressSavedChoosed = false;
               }
+
           }
           if(state is chooseFetchDateState){
             selectedDate = state.date;
@@ -1030,9 +823,9 @@ class _PickUpOptionsState extends State<PickUpOptions> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Adresse de recupération',style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                Text("${AppLocalizations.of(context)!.translate('pickup_address')}",style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                 SizedBox(height: 10),
-                Text("Numéro de téléphone de l'expéditeur?",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
+                Text("${AppLocalizations.of(context)!.translate('sender_phone')}",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
                 SizedBox(height: 10,),
                 TextFormField(
                   controller: _senderPhoneNumber,
@@ -1069,8 +862,8 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("Kaba recupère le colis ?",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
-                        Text("Service de récupération à domicile",style: TextStyle(fontSize: 13,color: Colors.black38),),
+                        Text("${AppLocalizations.of(context)!.translate('pickup_service_question')}",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("${AppLocalizations.of(context)!.translate('home_pickup_service')}",style: TextStyle(fontSize: 13,color: Colors.black38),),
                       ],
                     ),
                     SizedBox(width: 10,),
@@ -1110,7 +903,11 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                           children: [
                             GestureDetector(
                               onTap: (){
+                                setState(() {
+                                  _loading = true;
+                                });
                                 BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: "POSITION"));
+
                               },
                               child: Container(
                                 padding: EdgeInsets.all(5),
@@ -1124,7 +921,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.location_on_outlined,size: 20,color: !positionChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                    Text("Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                    Text(_loading?"En cours..." :"Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
                                   ],
                                 ),
                               ),
@@ -1164,7 +961,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(Icons.save_outlined,size: 20,color: !addressSavedChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                    Text("Adresses enregistrées",style: TextStyle(fontSize: 13,color:!addressSavedChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                    Text("${AppLocalizations.of(context)!.translate('saved_addresses_alt')}",style: TextStyle(fontSize: 13,color:!addressSavedChoosed? KabaExpeditionColor.primary:Colors.white),)
                                   ],
                                 ),
                               ),
@@ -1221,7 +1018,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(Icons.add_circle_outline,size: 20,color: !addNewAddress? KabaExpeditionColor.primary:Colors.white,),
-                                Text("Ajouter une nouvelle adresse",style: TextStyle(fontSize: 13,color:!addNewAddress? KabaExpeditionColor.primary:Colors.white),)
+                                Text("${AppLocalizations.of(context)!.translate('add_new_address')}",style: TextStyle(fontSize: 13,color:!addNewAddress? KabaExpeditionColor.primary:Colors.white),)
                               ],
                             ),
                           ),
@@ -1250,9 +1047,9 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                           ],
                         ):Container(),
                         SizedBox(height:10),
-                        Text("📅 Planification de la récupération",style: TextStyle(fontSize: 13,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
+                        Text("${AppLocalizations.of(context)!.translate('pickup_scheduling')}",style: TextStyle(fontSize: 13,color:KabaExpeditionColor.primary,fontWeight: FontWeight.bold),),
                         SizedBox(height:10),
-                        Text("Date de récupération",style: TextStyle(fontSize: 13,color:Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("${AppLocalizations.of(context)!.translate('pickup_date')}",style: TextStyle(fontSize: 13,color:Colors.black87,fontWeight: FontWeight.bold),),
                         SizedBox(height:10),
                         GestureDetector(
                           onTap: ()async{
@@ -1268,7 +1065,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                               }else{
                                 CherryToast.error(
                                   toastPosition: Position.center,
-                                  title: Text("Choisissez une date valide"),
+                                  title: Text("${AppLocalizations.of(context)!.translate('invalid_date')}"),
                                   toastDuration: Duration(seconds: 5),
                                 ).show(context);
                               }
@@ -1303,7 +1100,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                children: [
                                 DropdownButton(
-                                  hint: Text("Sélectionnez un créneau",style: TextStyle(fontSize: 13,color:selectedDate==null? Colors.black54:Colors.white),),
+                                  hint: Text("${AppLocalizations.of(context)!.translate('select_time_slot')}",style: TextStyle(fontSize: 13,color:selectedDate==null? Colors.black54:Colors.white),),
                                     underline: SizedBox(),
                                    value: selectedTime,
                                    padding: EdgeInsets.only(right: 90),
@@ -1332,8 +1129,8 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text("Vous déposez le colis ?",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
-                        Text("Déposer à nos bureaux Kaba",style: TextStyle(fontSize: 13,color: Colors.black38),),
+                        Text("${AppLocalizations.of(context)!.translate('drop_off_question')}",style: TextStyle(fontSize: 13,color: Colors.black87,fontWeight: FontWeight.bold),),
+                        Text("${AppLocalizations.of(context)!.translate('drop_off_office')}",style: TextStyle(fontSize: 13,color: Colors.black38),),
                       ],
                     ),
                     SizedBox(width: 10,),
@@ -1368,7 +1165,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                         children: [
                           Icon(Icons.location_on_outlined,size: 20,color: KabaExpeditionColor.primary,),
                           SizedBox(width: 10,),
-                          Text("Bureau Kaba",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
+                          Text("${AppLocalizations.of(context)!.translate('kaba_office')}",style: TextStyle(fontSize: 14,color: Colors.black87,fontWeight: FontWeight.bold),),
 
                         ],
                       ),
@@ -1485,7 +1282,7 @@ class PackageSelector extends StatelessWidget {
                         Container(
                           width: 220,
                           child: Text(
-                            "Chaque colis peut avoir une destination différente",
+                            "${AppLocalizations.of(context)!.translate('different_destination')}",
                             maxLines: 2,
 
                             style: TextStyle(fontSize: 12, color: Colors.black54),
@@ -1590,6 +1387,172 @@ class PackageSelector extends StatelessWidget {
           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
       ),
+    );
+  }
+}
+
+class ImageSlot extends StatefulWidget {
+  final int photoIndex;
+  final String? imageUrl;
+  final String emptyLabel;
+  final int packageIndex;
+
+  const ImageSlot({
+    Key? key,
+    required this.photoIndex,
+    required this.imageUrl,
+    required this.emptyLabel,
+    required this.packageIndex,
+  }) : super(key: key);
+
+  @override
+  State<ImageSlot> createState() => _ImageSlotState();
+}
+
+class _ImageSlotState extends State<ImageSlot> {
+  bool _isLoading = false;
+  Future<void> _pickAndDispatch() async {
+    setState(() => _isLoading = true);
+    final expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
+    try {
+      if (Platform.isAndroid) {
+        final value = await pickImageAndroid(context);
+        if (value != null) {
+          expeditionBloc.add(AddPhotoEvent(
+              file: value,
+              packageIndex: widget.packageIndex,
+              photoIndex: widget.photoIndex));
+        } else {
+          CherryToast.error(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('no_image_or_too_large')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      } else {
+        final granted = await requestCameraAndGalleryPermissions();
+        if (granted) {
+          final value = await pickImageIOS(context);
+          if (value != null) {
+            expeditionBloc.add(AddPhotoEvent(
+                file: value,
+                packageIndex: widget.packageIndex,
+                photoIndex: widget.photoIndex));
+          }
+          CherryToast.success(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('success')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('camera_permission_granted')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        } else {
+          CherryToast.error(
+            toastPosition: Position.center,
+            title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+            description: Text("${AppLocalizations.of(context)!.translate('camera_permission_denied')}"),
+            toastDuration: const Duration(seconds: 5),
+          ).show(context);
+        }
+      }
+
+    } catch (e) {
+      debugPrint("##Error picking image## $e");
+      setState(() => _isLoading = false);
+    }
+
+  }
+  @override
+  Widget build(BuildContext context) {
+    if(widget.imageUrl!=null && widget.imageUrl!.isNotEmpty){
+      setState(() => _isLoading = false);
+    }
+    return GestureDetector(
+      onTap: _isLoading ? null : _pickAndDispatch,
+      child: DottedBorder(
+        options: const RoundedRectDottedBorderOptions(
+          dashPattern: [10, 6],
+          strokeWidth: 1,
+          color: Colors.black38,
+          radius: Radius.circular(10),
+        ),
+        child: Container(
+          width: 85,
+          height: 85,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: _buildContent(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent() {
+    if (_isLoading) {
+      return Container(
+        color: Colors.grey.shade200,
+        child: const Center(
+          child: SizedBox(
+            width: 28,
+            height: 28,
+            child: CircularProgressIndicator(strokeWidth: 2),
+          ),
+        ),
+      );
+    }
+    if (widget.imageUrl == null || widget.imageUrl!.isEmpty) {
+      return Container(
+        color: Colors.grey.shade100,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Transform.rotate(
+              angle: 55,
+              child: const Icon(Icons.logout, size: 30, color: Colors.black54),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              widget.emptyLabel,
+              style: const TextStyle(
+                fontSize: 11,
+                color: Colors.black54,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return Image.network(
+      widget.imageUrl!,
+      fit: BoxFit.cover,
+      width: 85,
+      height: 85,
+      frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+        if (wasSynchronouslyLoaded || frame != null) {
+          return child;
+        } else {
+          return Container(
+            color: Colors.grey.shade200,
+            child: const Center(
+              child: SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          );
+        }
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return Container(
+          color: Colors.grey.shade200,
+          child: const Center(
+            child: Icon(Icons.broken_image, color: Colors.black38, size: 28),
+          ),
+        );
+      },
     );
   }
 }

@@ -80,6 +80,7 @@ class ShopModel {
     location = json["location"];
     category_id = "${json["category_id"]}";
     is_certified = json['certified']?? false;
+    cooking_time = int.tryParse(json['cooking_time']?.toString() ?? '') ?? 0;
   }
 
   Map toJson() => {
@@ -103,7 +104,6 @@ class ShopModel {
         "category_id": category_id,
         "is_certified":is_certified??false
       };
-
   @override
   String toString() {
     return toJson().toString();
