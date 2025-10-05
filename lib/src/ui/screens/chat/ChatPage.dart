@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -8,7 +9,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../../models/CustomerModel.dart';
 import '../../../models/MessageModel/MessageModel.dart';
 import '../../../utils/functions/CustomerUtils.dart';
-import '../../../utils/_static_data/KTheme.dart';
+
 import '../../customwidgets/Chat/OwnMessage.dart';
 import '../../customwidgets/Chat/ReplyMessageCard.dart';
 import '../home/me/MeNewAccountPage.dart';
@@ -222,11 +223,7 @@ class _ChatPageState extends State<ChatPage> {
                   icon: const Icon(Icons.arrow_back_ios,
                       color: Colors.white, size: 20),
                   onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => MeNewAccountPage()),
-                    );
+                    Navigator.pop(context);
                   },
                 ),
                 const CircleAvatar(
