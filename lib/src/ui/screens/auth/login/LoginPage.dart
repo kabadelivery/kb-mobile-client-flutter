@@ -129,40 +129,58 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                      
                       Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
                       SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),
+                    Container(
+                        margin: EdgeInsets.only(left:35, right: 35),
                     child:   
                     Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 30),
                       Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8 , vertical:8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: KColors.primaryColor, width: 1.2),
                 ),
-                child: Row(
+                child:  Row(
                   children: [
+                    // PHONE BUTTON
                     Expanded(
                       child: GestureDetector(
                         onTap: () => setState(() => isPhoneSelected = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 3),
                           decoration: BoxDecoration(
-                            color: isPhoneSelected ? KColors.primaryColor: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "N° Téléphone",
-                              style: TextStyle(
-                                color: isPhoneSelected
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            color: isPhoneSelected ? KColors.primaryColor : Colors.white,
+                           // border: Border.all(color: KColors.primaryColor, width: 1.5),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10) ,
+                              bottomLeft: Radius.circular(10),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.phone_iphone,
+                                color: isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "N° Téléphone",
+                                style: TextStyle(
+                                  color: isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
+
+                    // EMAIL BUTTON
                     Expanded(
                       child: GestureDetector(
                         onTap: () => setState(() => isPhoneSelected = false),
@@ -170,25 +188,39 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: !isPhoneSelected ? KColors.primaryColor : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Email",
-                              style: TextStyle(
-                                color: !isPhoneSelected
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            //border: Border.all(color: KColors.primaryColor, width: 1.5),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10) ,
+                              bottomLeft: Radius.circular(10) ,
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.email_outlined,
+                                color: !isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Email",
+                                style: TextStyle(
+                                  color: !isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ],
-                ),
-              ),
+                )
+
+                      ),
               SizedBox(height: 20),
                
                    if (isPhoneSelected) ...[
