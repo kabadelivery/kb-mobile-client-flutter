@@ -61,8 +61,14 @@ class _FoodGridState extends State<FoodGrid> {
       await _service.fetchRestaurantFoodProposal2FromTag("food", query);
 
       return products.map((p) => FoodItem.fromShopProduct(p)).toList();
-    } catch (e) {
-      throw Exception("Erreur lors du fetch: $e");
+    } catch (e, stack) {
+      debugPrint("=== ERROR in fetchRestaurantFoodProposal2FromTag ===");
+      debugPrint("Error type: ${e.runtimeType}");
+      debugPrint("Error: $e");
+      debugPrint("Stack trace:\n$stack");
+
+      // rethrow with full context
+      throw Exception("Erreur lors du fetch: $e\nStack trace: $stack");
     }
   }
 
@@ -90,10 +96,39 @@ class _FoodGridState extends State<FoodGrid> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(
-              child: Text("Erreur: ${snapshot.error}",
-                  style: const TextStyle(color: Colors.red)));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          // You can also use snapshot.stackTrace for details
+          debugPrint("=== ERROR CAUGHT ===");
+          debugPrint("Error: ${snapshot.error}");
+          debugPrint("Stack trace: ${snapshot.stackTrace}");
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, color: Colors.red, size: 40),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Oops! Something went wrong.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Show both error and stack trace
+                  Text(
+                    "Error: ${snapshot.error}\n\nStackTrace:\n${snapshot.stackTrace}",
+                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
 

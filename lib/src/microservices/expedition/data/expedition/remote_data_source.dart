@@ -95,6 +95,7 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
     try {
       final response = await dio.get(GET_SINGLE_SHIPPING_LINE_PRICING_LINK+"ligneId=${queryParameters['ligneId']}&poids=${queryParameters['poids']}");
       final data = response.data;
+      debugPrint("XXX Calculated data $data");
       return LinePricingCalculateModel.fromJson(Map<String, dynamic>.from(data));
     } on DioError catch (e) {
       throw Exception('Erreur calculateShippingLinePricing: ${e.message}');
@@ -116,9 +117,7 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       contentType: mimeType != null ? MediaType.parse(mimeType) : null,
     );
     debugPrint('Fichier image : ${file.filename}, ${file.length}');
-
     request.files.add(file);
-
     final streamed = await request.send();
     final response = await http.Response.fromStream(streamed);
 

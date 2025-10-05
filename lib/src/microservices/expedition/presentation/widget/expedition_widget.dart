@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/core/utils.dart';
 import 'package:KABA/src/microservices/expedition/presentation/widget/status.dart';
 import 'package:KABA/src/microservices/expedition/presentation/widget/tracked_package_widget.dart';
@@ -238,7 +239,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
               ));
 
             },
-            child: const Text("Voir le suivi détaillé"),
+            child:  Text("${AppLocalizations.of(context)!.translate('see_detailed_tracking')}"),
           ),
         )
       ],

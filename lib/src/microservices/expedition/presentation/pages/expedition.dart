@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/package_model.dart';
 import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
@@ -125,7 +126,7 @@ class _ExpeditionState extends State<Expedition> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(widget.type==ExpeditionType.international?"Expédition Internationale":"Expédition Nationale",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
-                          Text("Etape $step sur 2",style: TextStyle(color: Colors.white,fontSize: 12),)
+                          Text("${AppLocalizations.of(context)!.translate('step_count')} ${step} ${AppLocalizations.of(context)!.translate('over')} 2",style: TextStyle(color: Colors.white,fontSize: 12),)
                         ],
                       )
                     ],
@@ -202,7 +203,7 @@ class _ExpeditionState extends State<Expedition> {
                                 style: TextStyle(fontSize: 12,color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold),)),
                           Container(
                               width: 80,
-                              child: Text("Détails du colis",
+                              child: Text("${AppLocalizations.of(context)!.translate('parcel_details')}",
                                 textAlign: TextAlign.center,
                                 style: TextStyle(fontSize: 12,color: step==2? KabaExpeditionColor.primary: Colors.black54,fontWeight: FontWeight.bold),)),
 
@@ -252,10 +253,10 @@ class _ExpeditionState extends State<Expedition> {
                                 children: [
                                   Icon(Icons.info_outline,color: KabaExpeditionColor.primary,),
                                   SizedBox(width: 10,),
-                                  Text("Important",style: TextStyle(fontWeight: FontWeight.bold),)
+                                  Text("${AppLocalizations.of(context)!.translate('important')}",style: TextStyle(fontWeight: FontWeight.bold),)
                                   ],
                               ),
-                              Text("Ce coût prend en compte la récupération de votre colis, l’expédition et la livraison à l’adresse exacte du destinataire.  Il peut changer en fonction de la nature et du conditionnement de votre colis",
+                              Text("${AppLocalizations.of(context)!.translate('cost_info')}",
                                   style: TextStyle(fontSize: 14,color: Colors.black), textAlign: TextAlign.justify),
                             ],
                           )),
@@ -283,7 +284,7 @@ class _ExpeditionState extends State<Expedition> {
                                         border: Border.all(color: Colors.grey,width: .5),
                                         borderRadius: BorderRadius.circular(10)
                                     ),
-                                    child: Text("Annuler",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
+                                    child: Text("${AppLocalizations.of(context)!.translate('cancel')}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
                                   ),
                                 ),
                               ),
@@ -437,7 +438,7 @@ class _ExpeditionState extends State<Expedition> {
                             }catch(e){
                               debugPrint("XXX ERROR CREATING EXPEDITION ${e}");
                               CherryToast.error(
-                                title: Text("Erreur lors de la création de l'expedition"),
+                                title: Text("${AppLocalizations.of(context)!.translate('create_error')}"),
                                 toastPosition: Position.center,
                               ).show(context);
                               setState(() {
