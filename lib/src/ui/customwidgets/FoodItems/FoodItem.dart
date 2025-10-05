@@ -96,11 +96,6 @@ class _FoodGridState extends State<FoodGrid> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          // You can also use snapshot.stackTrace for details
-          debugPrint("=== ERROR CAUGHT ===");
-          debugPrint("Error: ${snapshot.error}");
-          debugPrint("Stack trace: ${snapshot.stackTrace}");
-
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
@@ -116,12 +111,6 @@ class _FoodGridState extends State<FoodGrid> {
                       fontWeight: FontWeight.bold,
                       color: Colors.red,
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  // Show both error and stack trace
-                  Text(
-                    "Error: ${snapshot.error}\n\nStackTrace:\n${snapshot.stackTrace}",
-                    style: const TextStyle(color: Colors.black87, fontSize: 12),
                   ),
                 ],
               ),

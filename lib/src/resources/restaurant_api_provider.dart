@@ -12,10 +12,11 @@ import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 
 class RestaurantApiProvider {
-  
+
   Future<List<RestaurantSubMenuModel>> fetchRestaurantMenuList(
       ShopModel ShopModel) async {
     xrint("entered fetchRestaurantMenuList");
@@ -150,7 +151,7 @@ class RestaurantApiProvider {
       var response = await dio.get(
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: queryParams // json.encode({'tag': query}),
-          );
+      );
 
       xrint(response.data.toString());
       List<ShopProductModel> foods = [];
@@ -161,11 +162,11 @@ class RestaurantApiProvider {
           if (lo == null) {
             return [];
           } else {
-            // foods with restaurant inside.
-            lo?.map((food_restaurant) {
+              lo?.map((food_restaurant) {
               ShopProductModel f = ShopProductModel.fromJson(food_restaurant);
               f.restaurant_entity =
                   ShopModel.fromJson(food_restaurant["restaurant"]);
+
               foods.add(f);
             })?.toList();
             return foods;
@@ -208,7 +209,7 @@ class RestaurantApiProvider {
           } else {
             lo?.map((food_restaurant) {
               ShopProductModel f =
-                  ShopProductModel.fromJson(food_restaurant["food"]);
+              ShopProductModel.fromJson(food_restaurant["food"]);
               f.restaurant_entity =
                   ShopModel.fromJson(food_restaurant["restaurant"]);
               foods.add(f);

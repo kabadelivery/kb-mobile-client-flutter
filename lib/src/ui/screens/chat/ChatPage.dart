@@ -7,10 +7,10 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../models/CustomerModel.dart';
 import '../../../models/MessageModel/MessageModel.dart';
-import '../../customwidgets/Chat/OwnMessage.dart';
-import '../../customwidgets/Chat/ReplyMessageCard.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/_static_data/KTheme.dart';
+import '../../customwidgets/Chat/OwnMessage.dart';
+import '../../customwidgets/Chat/ReplyMessageCard.dart';
 import '../home/me/MeNewAccountPage.dart';
 
 class ChatPage extends StatefulWidget {
