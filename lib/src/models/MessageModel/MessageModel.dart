@@ -1,5 +1,11 @@
 class MessageModel {
-  String type ;
-  String message ;
-  MessageModel({required this.message,required this.type }) ;
+  String type;          // "source" or "destination"
+  String message;       // text message OR image URL
+  String messageType;   // "text" or "image"
+
+  MessageModel({
+    required this.message,
+    required this.type,
+    this.messageType = "text", // default = text message
+  });
 }

@@ -1,3 +1,7 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
@@ -7,7 +11,7 @@ import '../../customwidgets/Chat/OwnMessage.dart';
 import '../../customwidgets/Chat/ReplyMessageCard.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../../utils/_static_data/KTheme.dart';
-import '../home/HomePage.dart';
+import '../home/me/MeNewAccountPage.dart';
 
 class ChatPage extends StatefulWidget {
   final String token;
@@ -24,15 +28,18 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  List<MessageModel> messages = [];
-  int? customerId;
-
   late IO.Socket socket;
+  final Dio _dio = Dio();
+  final ImagePicker _picker = ImagePicker();
+
   final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
+  List<MessageModel> messages = [];
+  int? customerId;
   bool sendButton = false;
 
+  // -------------------------- INIT --------------------------
   @override
   void initState() {
     super.initState();
@@ -40,73 +47,143 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Future<void> _initData() async {
-    // Load logged-in customer
     CustomerModel customer = await CustomerUtils.getCustomer();
-    setState(() {
-      customerId = customer.id;
-    });
 
-    // Connect socket after customerId is available
-    _connect();
-  }
+    String? digitsOnly = customer.phone_number?.replaceAll(RegExp(r'\D'), ''); // remove non-digits
 
-  void _connect() {
-    socket = IO.io(
-      "http://192.168.1.104:5000",
-      <String, dynamic>{
-        "transports": ["websocket"],
-        "autoConnect": true, // auto connect enabled
-      },
-    );
+    customerId = int.parse(digitsOnly!);
 
-    socket.onConnect((_) {
-      print("✅ Socket connected: ${socket.id}");
-      if (customerId != null) {
-        socket.emit("/register", customerId); // register user automatically
-        print("🆔 Registered as user $customerId");
+    _connectSocket();
+
+    // Wait a bit and then request chat history
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (socket.connected && customerId != null) {
+        socket.emit("/getMessages", {
+          "userId": customerId,
+          "otherId": 92109474,
+        });
       }
     });
 
-    // Receive new messages
-    socket.on("message", (msg) {
-      print("💬 Message received: $msg");
+    setState(() {});
+  }
+
+  // -------------------------- SOCKET --------------------------
+  void _connectSocket() {
+    socket = IO.io(
+      "http://168.231.101.119:5000",
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .build(),
+    );
+
+    socket.connect();
+
+    socket.onConnect((_) {
+      print("✅ Socket connected: ${socket.id}");
+
+      if (customerId != null) {
+        socket.emit("/register", customerId);
+        print("🆔 Registered user ID: $customerId");
+      }
+    });
+
+    socket.on("messages", (history) {
+      print("📜 Received ${history.length} messages");
       setState(() {
-        messages.add(MessageModel(
+        messages = (history as List)
+            .map((msg) => MessageModel(
           message: msg["text"],
-          type: msg["senderId"] == customerId ? "source" : "destination",
-        ));
+          type: msg["senderId"] == customerId
+              ? "source"
+              : "destination",
+        ))
+            .toList();
       });
       _scrollToBottom();
     });
 
-    socket.on("error", (err) {
-      print("⚠️ Server error: $err");
+    socket.on("message", (msg) {
+      final senderId = msg["senderId"];
+      final receiverId = msg["receiverId"];
+      final text = msg["text"];
+
+      print("💬 New message: $text");
+
+      // Prevent duplicate local echo
+      final isDuplicate = messages.isNotEmpty &&
+          messages.last.message == text &&
+          msg["senderId"] == customerId;
+
+      if (isDuplicate) return;
+
+      setState(() {
+        messages.add(
+          MessageModel(
+            message: text,
+            type: senderId == customerId ? "source" : "destination",
+          ),
+        );
+      });
+      _scrollToBottom();
     });
+
 
     socket.onDisconnect((_) {
       print("❌ Socket disconnected");
     });
   }
 
-  void sendMessage(String message) {
-    if (customerId == null || message.trim().isEmpty) return;
+  // -------------------------- ACTIONS --------------------------
+  void sendMessage(String text) {
+    if (customerId == null || text.trim().isEmpty) return;
 
-    // Add locally
-    setState(() {
-      messages.add(MessageModel(message: message, type: "source"));
-    });
-    _scrollToBottom();
-
-    // Send via socket
-    socket.emit("/message", {
+    final messageData = {
       "senderId": customerId,
-      "receiverId": widget.receiverId,
-      "text": message,
+      "receiverId": 92109474,
+      "text": text.trim(),
+    };
+
+    socket.emit("/message", messageData);
+
+    // Instantly show locally for sender
+    final tempMessage = MessageModel(message: text.trim(), type: "source");
+    setState(() {
+      messages.add(tempMessage);
     });
+
+    _controller.clear();
+    setState(() => sendButton = false);
+    _scrollToBottom();
+  }
+
+  Future<void> pickAndSendImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null || customerId == null) return;
+
+    try {
+      final file = File(image.path);
+      final uploadUrl = "http://168.231.101.119:5000/upload-image";
+      final fileName = path.basename(file.path);
+
+      final formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(file.path, filename: fileName),
+      });
+
+      final response = await _dio.post(uploadUrl, data: formData);
+      final imageUrl = response.data["url"];
+
+      print("✅ Image uploaded: $imageUrl");
+
+      sendMessage(imageUrl);
+    } catch (e) {
+      print("❌ Image upload failed: $e");
+    }
   }
 
   void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 100), () {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
@@ -117,6 +194,7 @@ class _ChatPageState extends State<ChatPage> {
     });
   }
 
+  // -------------------------- DISPOSE --------------------------
   @override
   void dispose() {
     socket.dispose();
@@ -125,108 +203,112 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
+  // -------------------------- UI --------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        leadingWidth: 70,
-        leading: InkWell(
-          onTap: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => HomePage()),
-            );
-          },
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.arrow_back),
-              CircleAvatar(
-                radius: 20,
-                backgroundColor: Colors.blueGrey,
-              ),
-            ],
-          ),
-        ),
-        title: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        automaticallyImplyLeading: false,
+        backgroundColor: KColors.primaryColor,
+        elevation: 2,
+        titleSpacing: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
-              "Service Client Kaba",
-              style: TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: Colors.white, size: 20),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MeNewAccountPage()),
+                    );
+                  },
+                ),
+                const CircleAvatar(
+                  radius: 18,
+                  backgroundImage:
+                  AssetImage("assets/images/logo-chat.jpeg"),
+                  backgroundColor: Colors.white,
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  "Service Client Kaba",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "last seen today ${customerId ?? ''}",
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12),
+            IconButton(
+              icon: const Icon(Icons.call, color: Colors.white),
+              onPressed: () {
+                // TODO: Implement call feature
+              },
             ),
           ],
         ),
-        backgroundColor: KColors.primaryColor,
       ),
       body: Column(
         children: [
-          // Chat messages
+          // ------------------ Chat history ------------------
           Expanded(
             child: ListView.builder(
               controller: _scrollController,
               itemCount: messages.length,
               itemBuilder: (context, index) {
-                if (messages[index].type == "source") {
-                  return OwnMessageCard(message: messages[index].message);
+                final msg = messages[index];
+                final isImage = msg.message.startsWith("http");
+
+                if (msg.type == "source") {
+                  return OwnMessageCard(
+                    message: msg.message,
+                    messageType: isImage ? "image" : "text",
+                  );
                 } else {
-                  return ReplyMessageCard(message: messages[index].message);
+                  return ReplyMessageCard(
+                    message: msg.message,
+                    messageType: isImage ? "image" : "text",
+                  );
                 }
               },
             ),
           ),
 
-          // Input area with photo & file icons
+          // ------------------ Input area ------------------
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 IconButton(
                   icon: const Icon(Icons.photo, color: Colors.grey),
-                  onPressed: () {
-                    print("📷 Select photo clicked");
-                    // TODO: implement photo picker
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.attach_file, color: Colors.grey),
-                  onPressed: () {
-                    print("📎 Attach file clicked");
-                    // TODO: implement file picker
-                  },
+                  onPressed: pickAndSendImage,
                 ),
                 Expanded(
                   child: Card(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25)),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
                     child: TextFormField(
                       controller: _controller,
-                      textAlignVertical: TextAlignVertical.center,
-                      onChanged: (value) {
-                        setState(() {
-                          sendButton = value.isNotEmpty;
-                        });
-                      },
+                      onChanged: (value) =>
+                          setState(() => sendButton = value.isNotEmpty),
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: "Type a message",
-                        contentPadding:
-                        EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
                       ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
                 CircleAvatar(
-                  radius: 25,
                   backgroundColor: KColors.primaryColor,
                   child: IconButton(
                     icon: Icon(
@@ -236,15 +318,13 @@ class _ChatPageState extends State<ChatPage> {
                     onPressed: () {
                       if (_controller.text.trim().isNotEmpty) {
                         sendMessage(_controller.text.trim());
-                        _controller.clear();
-                        setState(() => sendButton = false);
                       }
                     },
                   ),
-                )
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
