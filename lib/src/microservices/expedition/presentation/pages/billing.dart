@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/remote_data_source.dart';
 import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
@@ -40,102 +41,102 @@ class _BillingPageState extends State<BillingPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child:SingleChildScrollView(
-          physics: NeverScrollableScrollPhysics(),
-          child: Column(
-            children: [
-              InkWell(
-                onTap: (){
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding:
-                  EdgeInsets.only(left: 20, top: 60,bottom: 20),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(30),
-                          bottomRight: Radius.circular(30)),
-                      color: KabaExpeditionColor.primary)
-                  ,child: Row(
-                  children: [
-                    Icon(Icons.arrow_back_sharp,color: Colors.white,size: 19,),
-                    SizedBox(width: 10,),
-                    Text('Facture & Négociation',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
-                  ],
-                ),
-                ),
-              ),
-              Container(
-          height: MediaQuery.of(context).size.height * 0.8,
-          width: MediaQuery.of(context).size.width,
-          child: (expedition == null || expedition.isEmpty)
-          ? const SizedBox.shrink()
-          : ListView.builder(
-        shrinkWrap: true,
-        itemCount: expedition.length,
-        itemBuilder: (context, index) {
-          return SafeArea(
-            child: Builder(
-              builder: (_) {
-                try {
-                  return ExpeditionBilling(
-                    expedition: expedition[index],
-                    index: index,
-                  );
-                } catch (e) {
-                  debugPrint("⚠️ Error rendering expedition[$index]: $e");
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
-          );
-        },
-      ),
-    ),
-    Container(
-                width: 330,
-                child: MaterialButton(
-                    elevation: 0,
-                    color: KabaExpeditionColor.primary,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+        backgroundColor: Colors.white,
+        body: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child:SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                children: [
+                  InkWell(
+                    onTap: (){
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding:
+                      EdgeInsets.only(left: 20, top: 60,bottom: 20),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(30),
+                              bottomRight: Radius.circular(30)),
+                          color: KabaExpeditionColor.primary)
+                      ,child: Row(
                       children: [
-                        Icon(Icons.check_circle_outline_rounded,color: Colors.white,size: 19,),
-                        SizedBox(width: 5,),
-                        Text("Accepter et continuer",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:Colors.white),)
+                        Icon(Icons.arrow_back_sharp,color: Colors.white,size: 19,),
+                        SizedBox(width: 10,),
+                        Text('Facture & Négociation',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
                       ],
                     ),
-                    onPressed: (){
-                      Navigator.of(context).pushReplacement(PageRouteBuilder(
-                          pageBuilder: (context, animation, secondaryAnimation) => Confirmationpage(),
-                          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                            var begin = Offset(1.0, 0.0);
-                            var end = Offset.zero;
-                            var curve = Curves.ease;
-                            var tween = Tween(begin: begin, end: end);
-                            var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                            return SlideTransition(
-                                position: tween.animate(curvedAnimation),
-                                child: child
-                            );
-                          }
-                      ));
-                    }),
-              )
-            ],
-          ),
-        )
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.8,
+                    width: MediaQuery.of(context).size.width,
+                    child: (expedition == null || expedition.isEmpty)
+                        ? const SizedBox.shrink()
+                        : ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: expedition.length,
+                      itemBuilder: (context, index) {
+                        return SafeArea(
+                          child: Builder(
+                            builder: (_) {
+                              try {
+                                return ExpeditionBilling(
+                                  expedition: expedition[index],
+                                  index: index,
+                                );
+                              } catch (e) {
+                                debugPrint("⚠️ Error rendering expedition[$index]: $e");
+                                return const SizedBox.shrink();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Container(
+                    width: 330,
+                    child: MaterialButton(
+                        elevation: 0,
+                        color: KabaExpeditionColor.primary,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.check_circle_outline_rounded,color: Colors.white,size: 19,),
+                            SizedBox(width: 5,),
+                            Text("${AppLocalizations.of(context)!.translate('accept_continue')}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:Colors.white),)
+                          ],
+                        ),
+                        onPressed: (){
+                          Navigator.of(context).pushReplacement(PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => Confirmationpage(),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                var begin = Offset(1.0, 0.0);
+                                var end = Offset.zero;
+                                var curve = Curves.ease;
+                                var tween = Tween(begin: begin, end: end);
+                                var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                return SlideTransition(
+                                    position: tween.animate(curvedAnimation),
+                                    child: child
+                                );
+                              }
+                          ));
+                        }),
+                  )
+                ],
+              ),
+            )
 
-    )
+        )
     );
   }
 }
@@ -199,7 +200,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                   children: [
                     Icon(FontAwesomeIcons.fileText,color: KabaExpeditionColor.primary,size: 18,),
                     SizedBox(width: 10,),
-                    Text("Récapitulatif de votre expédition",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold),),
+                    Text("${AppLocalizations.of(context)!.translate('shipment_summary')}",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold),),
 
                   ],
                 ),
@@ -208,7 +209,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Route : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                    Text("${AppLocalizations.of(context)!.translate('route')}",style: TextStyle(color: Colors.black54,fontSize: 14),),
                     Row(
                       children: [
                         Text("${expedition.colis![widget.index].departureTown}", style: TextStyle(fontSize: 14,color: Colors.black)),
@@ -225,7 +226,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Poids : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                    Text("${AppLocalizations.of(context)!.translate('weight')}",style: TextStyle(color: Colors.black54,fontSize: 14),),
                     Text("${expedition.colis![widget.index].poids} Kg", style: TextStyle(fontSize: 14,color: Colors.black))
                   ],
                 ),
@@ -240,7 +241,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Montant provisoire :",style: TextStyle(fontSize: 14,color:Colors.black,fontWeight: FontWeight.bold),),
+                    Text("${AppLocalizations.of(context)!.translate('provisional_amount')}",style: TextStyle(fontSize: 14,color:Colors.black,fontWeight: FontWeight.bold),),
                     Text("${price}",style: TextStyle(fontSize: 14,color:Color(0xFFCD1F45),fontWeight: FontWeight.bold,decorationColor:KabaExpeditionColor.primary, decoration: negociate?TextDecoration.lineThrough:null),)
                   ],
                 ),
@@ -258,7 +259,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                         ],
                         validator: (value){
                           if(value==null || value.isEmpty){
-                            return "Veuillez entrer un montant correct";
+                            return "${AppLocalizations.of(context)!.translate('enter_valid_amount')}";
                           }
                           return null;
                         },
@@ -282,7 +283,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(color: KabaExpeditionColor.primary,width: 1)
                             ),
-                            hintText: "Entrez votre proposition (Ex :20 000 CFA)",
+                            hintText: "${AppLocalizations.of(context)!.translate('enter_proposal')}",
                             hintStyle: TextStyle(fontSize: 12,color: Colors.grey.shade400),
                             contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 10)
                         ),
@@ -307,7 +308,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                                   expeditionId: expedition.id!,
                                   montantPropose:
                                   double.parse(_negociationPriceController.text),
-                                  raison: "Négociation du prix de l'expédition");
+                                  raison: "${AppLocalizations.of(context)!.translate('price_negotiation')}");
                               CreateNegociation createNegociation = CreateNegociation(
                                   ExpeditionRepositoryImpl(
                                       ExpeditionRemoteDataSourceImpl()
@@ -316,12 +317,12 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                               CustomerModel customerToken = await CustomerUtils.getCustomer();
                               await createNegociation.call(body: negotiationModel.toJson(), customerToken: customerToken.token!).then((_){
                                 CherryToast.success(
-                                  title: Text("Proposition envoyée avec succès",style: TextStyle(color: Colors.black87),),
+                                  title: Text("${AppLocalizations.of(context)!.translate('proposal_success')}",style: TextStyle(color: Colors.black87),),
                                 ).show(context);
                               }).catchError((error){
                                 debugPrint("XXX Error ${error.toString()}");
                                 CherryToast.error(
-                                  title: Text("Une erreur s'est produite",style: TextStyle(color: Colors.black87),),
+                                  title: Text("${AppLocalizations.of(context)!.translate('error_occurred')}",style: TextStyle(color: Colors.black87),),
                                 ).show(context);
                               });
                               setState(() {
@@ -349,7 +350,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
             children: [
               Icon(Icons.check_circle_outline_outlined,color: KabaExpeditionColor.primary,size: 22,),
               SizedBox(width: 10,),
-              Flexible(child: Text("Ce montant est provisoire et peut être ajusté après vérification de votre colis par nos équipes",
+              Flexible(child: Text("${AppLocalizations.of(context)!.translate('amount_info')}",
                 style: TextStyle(fontSize: 14),))
             ],
           ),
@@ -372,7 +373,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 children: [
                   Icon(CupertinoIcons.chat_bubble,color: KabaExpeditionColor.primary,size: 19,weight: 3,),
                   SizedBox(width: 5,),
-                  Text("Négocier le prix",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:KabaExpeditionColor.primary),)
+                  Text("${AppLocalizations.of(context)!.translate('negotiate_price')}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:KabaExpeditionColor.primary),)
                 ],
               ),
               onPressed: (){

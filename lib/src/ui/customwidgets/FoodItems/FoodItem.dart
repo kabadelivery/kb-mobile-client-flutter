@@ -58,11 +58,17 @@ class _FoodGridState extends State<FoodGrid> {
   Future<List<FoodItem>> fetchFoods(String query) async {
     try {
       final List<ShopProductModel> products =
-          await _service.fetchRestaurantFoodProposal2FromTag("food", query);
+      await _service.fetchRestaurantFoodProposal2FromTag("food", query);
 
       return products.map((p) => FoodItem.fromShopProduct(p)).toList();
-    } catch (e) {
-      throw Exception("Erreur lors du fetch: $e");
+    } catch (e, stack) {
+      debugPrint("=== ERROR in fetchRestaurantFoodProposal2FromTag ===");
+      debugPrint("Error type: ${e.runtimeType}");
+      debugPrint("Error: $e");
+      debugPrint("Stack trace:\n$stack");
+
+      // rethrow with full context
+      throw Exception("Erreur lors du fetch: $e\nStack trace: $stack");
     }
   }
 
@@ -90,11 +96,34 @@ class _FoodGridState extends State<FoodGrid> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          return Center(
+          // You can also use snapshot.stackTrace for details
+          debugPrint("=== ERROR CAUGHT ===");
+          debugPrint("Error: ${snapshot.error}");
+          debugPrint("Stack trace: ${snapshot.stackTrace}");
+
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
-              child: Text(
-                "${snapshot.error}\n\n${snapshot.stackTrace}",
-                style: const TextStyle(color: Colors.red, fontSize: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.error, color: Colors.red, size: 40),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Oops! Something went wrong.",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  // Show both error and stack trace
+                  Text(
+                    "Error: ${snapshot.error}\n\nStackTrace:\n${snapshot.stackTrace}",
+                    style: const TextStyle(color: Colors.black87, fontSize: 12),
+                  ),
+                ],
               ),
             ),
           );
@@ -120,7 +149,7 @@ class _FoodGridState extends State<FoodGrid> {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-                
+
               ),
               color: Colors.white,
               elevation: 3,
@@ -130,7 +159,7 @@ class _FoodGridState extends State<FoodGrid> {
                   /// Image
                   ClipRRect(
                     borderRadius:
-                        const BorderRadius.vertical(top: Radius.circular(16)),
+                    const BorderRadius.vertical(top: Radius.circular(16)),
                     child: /* Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -140,11 +169,11 @@ class _FoodGridState extends State<FoodGrid> {
                                 Utils.inflateLink(food.pic))
                        ) ),
                     ) */
-                    
-                     
-                    
-                    
-                     Image.network(
+
+
+
+
+                    Image.network(
                       "https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com/"+food.pic,
                       height: 130,
                       width: double.infinity,
@@ -157,7 +186,7 @@ class _FoodGridState extends State<FoodGrid> {
                               color: Colors.grey),
                         );
                       },
-                    ), 
+                    ),
                   ),
 
                   /// Title

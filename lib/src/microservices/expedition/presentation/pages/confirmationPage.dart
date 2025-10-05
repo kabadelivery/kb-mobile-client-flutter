@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/homepage.dart';
 import 'package:KABA/src/microservices/kaba_chine/functions/contact.dart';
 import 'package:flutter/cupertino.dart';
@@ -56,17 +57,17 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                   duration: Duration(milliseconds: 700),
                   child: Container(
                     width: 330,
-                     height: 250,
-                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: Color(0xFFEEF7FF),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.blue.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 20,
-                          offset: Offset(0, 3)),
-                      ]
+                    height: 250,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(15),
+                        color: Color(0xFFEEF7FF),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.blue.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 20,
+                              offset: Offset(0, 3)),
+                        ]
                     ),
                     child: Stack(
                       children: [
@@ -98,28 +99,28 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                             children: [
                               SizedBox(height: 20,),
                               Container(
-                                width: 60,
-                                height: 60,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(100),
-                                  gradient: LinearGradient(
-                                  colors: [
-                                   Color(0xFFE93F53),
-                                   KabaExpeditionColor.primary
-                                  ]
+                                  width: 60,
+                                  height: 60,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(100),
+                                      gradient: LinearGradient(
+                                          colors: [
+                                            Color(0xFFE93F53),
+                                            KabaExpeditionColor.primary
+                                          ]
 
 
-                                  )
-                                ),
-                                child: Center(child: Icon(CupertinoIcons.paperplane,color: Colors.white,size: 30,))
+                                      )
+                                  ),
+                                  child: Center(child: Icon(CupertinoIcons.paperplane,color: Colors.white,size: 30,))
                               ),
-                              Text("Demande envoyée à KABA",style: TextStyle(color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold,fontSize: 14),),
+                              Text("${AppLocalizations.of(context)!.translate('request_sent')}",style: TextStyle(color: KabaExpeditionColor.primary,fontWeight: FontWeight.bold,fontSize: 14),),
                               SizedBox(height: 15,),
                               Container(
                                   width: 330,
                                   padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Flexible(child: Text("Votre demande d’expédition a été transmise à notre équipe Vous recevrez une réponse sous peu.",textAlign: TextAlign.center,
+                                  child: Flexible(child: Text("${AppLocalizations.of(context)!.translate('shipment_sent')}",textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 12),
                                   ))),
                               SizedBox(height: 20,),
@@ -127,14 +128,14 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                                 width: 300,
                                 padding: EdgeInsets.all(5),
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10)
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)
                                 ),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Icon(Icons.watch_later_outlined,color: KabaExpeditionColor.primary,),
-                                    Text("En attente de confirmation",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                                    Text("${AppLocalizations.of(context)!.translate('waiting_confirmation')}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
                                     SizedBox()
                                   ],
                                 ),
@@ -159,14 +160,14 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                     width: 330,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 20,
-                          offset: Offset(0, 3)),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: [
+                          BoxShadow(
+                              color: Colors.grey.withOpacity(0.3),
+                              spreadRadius: 2,
+                              blurRadius: 20,
+                              offset: Offset(0, 3)),
                         ]),
 
                     child: Row(
@@ -193,7 +194,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("Prochaines étapes",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
+                            Text("${AppLocalizations.of(context)!.translate('next_steps')}",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold),),
                             SizedBox(height: 10,),
                             Container(
                               width: 250,
@@ -204,7 +205,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                                     children: [
                                       Icon(Icons.circle,size: 12,color: KabaExpeditionColor.primary,),
                                       SizedBox(width: 5,),
-                                      Flexible(child: Text("Notre équipe examine votre demande",style: TextStyle(fontSize: 13,color: Colors.black54),)),
+                                      Flexible(child: Text("${AppLocalizations.of(context)!.translate('team_review')}",style: TextStyle(fontSize: 13,color: Colors.black54),)),
 
                                     ],
                                   ),
@@ -214,7 +215,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                                     children: [
                                       Icon(Icons.circle,size: 12,color: KabaExpeditionColor.primary,),
                                       SizedBox(width: 5,),
-                                      Flexible(child: Text("Vous recevrez une notification de confirmation rapidement",style: TextStyle(fontSize: 13,color: Colors.black54))),
+                                      Flexible(child: Text("${AppLocalizations.of(context)!.translate('confirmation_soon')}",style: TextStyle(fontSize: 13,color: Colors.black54))),
 
                                     ],
                                   ),
@@ -224,7 +225,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                                     children: [
                                       Icon(Icons.circle,size: 12,color: KabaExpeditionColor.primary,),
                                       SizedBox(width: 5,),
-                                      Flexible(child: Text("Le suivi de votre colis sera disponible",style: TextStyle(fontSize: 13,color: Colors.black54))),
+                                      Flexible(child: Text("${AppLocalizations.of(context)!.translate('tracking_available')}",style: TextStyle(fontSize: 13,color: Colors.black54))),
                                     ],
                                   ),
                                 ],
@@ -244,13 +245,13 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                     width: 330,
                     padding: EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Color(0xFFFDFBE8),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF3E3E3E).withOpacity(0.2),
-                          spreadRadius: 2,
-                          blurRadius: 20,)]
+                        color: Color(0xFFFDFBE8),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF3E3E3E).withOpacity(0.2),
+                            spreadRadius: 2,
+                            blurRadius: 20,)]
                     ),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -274,11 +275,11 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                         ),
                         Column(
                           children: [
-                            Text('Temps de réponse',style: TextStyle(color:Color(0xFF974617),fontSize: 16,fontWeight: FontWeight.bold),),
+                            Text("${AppLocalizations.of(context)!.translate('response_time')}",style: TextStyle(color:Color(0xFF974617),fontSize: 16,fontWeight: FontWeight.bold),),
                             SizedBox(height: 10,),
-                            Text('Maximum sous 15 minutes',style:TextStyle(color: Color(0xFFA9512E),fontSize:12,fontWeight: FontWeight.bold),),
+                            Text("${AppLocalizations.of(context)!.translate('max_15min')}",style:TextStyle(color: Color(0xFFA9512E),fontSize:12,fontWeight: FontWeight.bold),),
                             SizedBox(height: 10,),
-                            Text("Nous avons contacterons rapidement",style:TextStyle(color: Color(0xFFA9512E),fontSize: 12),)
+                            Text("${AppLocalizations.of(context)!.translate('contact_soon')}",style:TextStyle(color: Color(0xFFA9512E),fontSize: 12),)
                           ],
                         )
                       ],
@@ -297,28 +298,28 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                           elevation: 0,
                           highlightElevation: 0,
                           minWidth: 160,
-                            color: Colors.white,
-                            shape: RoundedRectangleBorder(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
                               side: BorderSide(width: .5,color: Colors.grey),
                               borderRadius: BorderRadius.circular(10)
-                            ),
-                            onPressed: (){
-                              Navigator.of(context).pushReplacement(PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => KabaExpeditionHomePage(),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    var begin = Offset(1.0, 0.0);
-                                    var end = Offset.zero;
-                                    var curve = Curves.ease;
-                                    var tween = Tween(begin: begin, end: end);
-                                    var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                                    return SlideTransition(
-                                        position: tween.animate(curvedAnimation),
-                                        child: child
-                                    );
-                                  }
-                              ));
-                            },
-                            child: Text("Retour acceuil",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.w100)),
+                          ),
+                          onPressed: (){
+                            Navigator.of(context).pushReplacement(PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => KabaExpeditionHomePage(),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  var begin = Offset(1.0, 0.0);
+                                  var end = Offset.zero;
+                                  var curve = Curves.ease;
+                                  var tween = Tween(begin: begin, end: end);
+                                  var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                  return SlideTransition(
+                                      position: tween.animate(curvedAnimation),
+                                      child: child
+                                  );
+                                }
+                            ));
+                          },
+                          child: Text("${AppLocalizations.of(context)!.translate('back_home')}",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.w100)),
 
                         ),
                         MaterialButton(
@@ -337,7 +338,7 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                             children: [
                               Icon(CupertinoIcons.chat_bubble,color: Colors.black,size: 17,),
                               SizedBox(width: 10,),
-                              Text("Chat support",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.w100),),
+                              Text("${AppLocalizations.of(context)!.translate('chat_support')}",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.w100),),
                             ],
                           ),
 
