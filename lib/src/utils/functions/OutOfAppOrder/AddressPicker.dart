@@ -8,7 +8,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../contracts/address_contract.dart';
 import '../../../localizations/AppLocalizations.dart';
-import '../../../models/CustomerModel.dart';
 import '../../../models/DeliveryAddressModel.dart';
 import '../../../models/OrderBillConfiguration.dart';
 import '../../../resources/address_api_provider.dart';
@@ -65,7 +64,7 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
           var curve = Curves.ease;
           var tween = Tween(begin: begin, end: end);
           var curvedAnimation =
-          CurvedAnimation(parent: animation, curve: curve);
+              CurvedAnimation(parent: animation, curve: curve);
           return SlideTransition(
               position: tween.animate(curvedAnimation), child: child);
         }));

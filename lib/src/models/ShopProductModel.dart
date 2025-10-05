@@ -22,7 +22,6 @@ class ShopProductModel {
   /* restaurant entity */
   ShopModel? restaurant_entity;
 
-
   ShopProductModel(
       {this.id,
         this.name,

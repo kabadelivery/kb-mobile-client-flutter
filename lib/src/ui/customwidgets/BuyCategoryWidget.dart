@@ -14,7 +14,6 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../utils/functions/popups.dart';
 import '../../xrint.dart';
 
 class BuyCategoryWidget extends StatefulWidget {
@@ -138,35 +137,28 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
         widget.mDialog!(
             "${AppLocalizations.of(context)!.translate('coming_soon_dialog')}");
       } else {
-        xrint('key ${widget.entity!.key}');
-        page =ShopListPageRefined(
+        xrint('key ${widget.key}');
+        page =widget.entity!.key=="packages"?ShippingPackageOrderPage():
+        widget.entity!.key=="out of app"? OutOfAppOrderPage():
+        ShopListPageRefined(
             context: context,
             type: widget.entity!.key!,
             foodProposalPresenter: RestaurantFoodProposalPresenter(RestaurantFoodProposalView()),
             restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
-        if(widget.entity!.key=="shop"){
-          showModernPopup(
-              context: context,
-              text:
-              "Désolé. Ce service n’est pas encore disponible. Il le sera bientôt",
-              icon: Icon(Icons.store_mall_directory)
-          );
-        }else{
-          Navigator.of(context).push(PageRouteBuilder(
-              pageBuilder: (context, animation, secondaryAnimation) => page,
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) {
-                var begin = Offset(1.0, 0.0);
-                var end = Offset.zero;
-                var curve = Curves.ease;
-                var tween = Tween(begin: begin, end: end);
-                var curvedAnimation =
-                CurvedAnimation(parent: animation, curve: curve);
-                return SlideTransition(
-                    position: tween.animate(curvedAnimation), child: child);
-              }));
-        }
-       }
+        Navigator.of(context).push(PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => page,
+            transitionsBuilder:
+                (context, animation, secondaryAnimation, child) {
+              var begin = Offset(1.0, 0.0);
+              var end = Offset.zero;
+              var curve = Curves.ease;
+              var tween = Tween(begin: begin, end: end);
+              var curvedAnimation =
+                  CurvedAnimation(parent: animation, curve: curve);
+              return SlideTransition(
+                  position: tween.animate(curvedAnimation), child: child);
+            }));
+      }
     }
   }
 

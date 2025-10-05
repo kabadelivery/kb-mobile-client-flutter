@@ -51,14 +51,20 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("KABA",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 15),),
-                            Text("Expédition",style: TextStyle(color: Colors.white,fontSize: 13),)
+                            Text("KABA",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                            Text("Expédition",style: TextStyle(color: Colors.white,fontSize: 12),)
                           ],
                         )
                       ],
                     ),
                     Row(
                       children: [
+                        IconButton(onPressed: (){
+                          showBottomContactSheet(context: context);
+                        }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
+                        IconButton(onPressed: (){
+                          contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                        }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                         MaterialButton(
                           elevation: 0,
                           onPressed: (){
@@ -83,18 +89,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                             ],
                           ),
                           minWidth: 80,height: 30,
-                          shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(10)),),
-                        Row(
-                          children: [
-                            IconButton(onPressed: (){
-                              showBottomContactSheet(context: context);
-                            }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
-                            IconButton(onPressed: (){
-                              contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
-                            }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
-
-                          ],
-                        ),
+                          shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(20)),)
                       ],
                     )
                   ],

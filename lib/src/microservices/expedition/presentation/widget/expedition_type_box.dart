@@ -14,8 +14,8 @@ Widget ExpeditionInternationalBox({required BuildContext context}){
   return   PopInWidget(
     duration: Duration(milliseconds: 500),
     child: Container(
-      width: 300,
-      padding: EdgeInsets.all(20),
+      height: 200,
+      width: 270,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),

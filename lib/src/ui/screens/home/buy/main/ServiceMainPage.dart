@@ -696,12 +696,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         color: Colors.white,
         child: Stack(
           children: [
-
             SingleChildScrollView(
               child: Column(
                 children: [
+                  Header(),
                   /* hint */
-                  SizedBox(height: 70),
+                  SizedBox(height: 20),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
                     onTap: () {
@@ -864,7 +864,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
-                     /*
                       GestureDetector(
                         onTap: () async {
                           if (StateContainer.of(context).loggingState == 0){
@@ -924,7 +923,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
-                      */
                       GestureDetector(
                         onTap: () async{
                           if (StateContainer.of(context).loggingState == 0){
@@ -1004,7 +1002,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/65dadcb9-e967-4c9e-9e06-c2f63962c332/VYwzwRMD84.json")),
+                                    child: Lottie.network("https://lottie.host/d1ae6efb-1f15-4bfc-ab2d-2731c1280fd8/VgIF2un2jh.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('expedition')}",
@@ -1050,7 +1048,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child:Image.asset("assets/images/png/medical-cross.png",width: 20,height: 20,)),
+                                    child: Lottie.network("https://lottie.host/6c75e766-9015-479d-8ac2-d33783ae527c/kDstCBf7V4.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "Pharmacy",
@@ -1109,10 +1107,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 ],
               ),
             ),
-            Positioned(
-                top: 0,
-                left:0,
-                child:        Header()),
             Positioned(
                 bottom: 0,
                 right: 0,

@@ -145,7 +145,8 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                               end: Alignment.bottomRight,
                             ),
                           ),
-                          child:Image.asset("assets/images/png/pill.png",width: 30,height: 30),
+                          child: const Icon(FontAwesomeIcons.pills,
+                              color: Colors.white),
                         ),
                         const SizedBox(width: 12),
                         const Column(
