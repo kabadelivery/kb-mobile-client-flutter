@@ -1,45 +1,18 @@
+import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-// --- GraphQL queries, mutations, subscriptions (inchangés) ---
-const String GET_MSG = r'''
-  query MessagesByUser($receiverId: Int!) {
-    messagesByUser(receiverId: $receiverId) {
-      id
-      receiverId
-      senderId
-      text
-      createdAt
-    }
-  }
-''';
+import '../../../models/CustomerModel.dart';
+import '../../../models/MessageModel/MessageModel.dart';
+import '../../customwidgets/Chat/OwnMessage.dart';
+import '../../customwidgets/Chat/ReplyMessageCard.dart';
+import '../../../utils/functions/CustomerUtils.dart';
+import '../../../utils/_static_data/KTheme.dart';
+import '../home/me/MeNewAccountPage.dart';
 
-const String SEND_MSG = r'''
-  mutation SendMessage($receiverId: Int!, $text: String!) {
-    sendMessage(receiverId: $receiverId, text: $text) {
-      id
-      receiverId
-      senderId
-      text
-      createdAt
-    }
-  }
-''';
-
-const String MSG_SUB = r'''
-  subscription OnMessageSent($receiverId: Int!) {
-    messageSent(receiverId: $receiverId) {
-      id
-      receiverId
-      senderId
-      text
-      createdAt
-    }
-  }
-''';
-
-// --- ChatPage ---
 class ChatPage extends StatefulWidget {
   final String token;
   final int receiverId;
@@ -55,212 +28,304 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late final GraphQLClient _client;
-  late final TextEditingController _controller;
-  late final int currentUserId; // ✅ ID extrait du token
+  late IO.Socket socket;
+  final Dio _dio = Dio();
+  final ImagePicker _picker = ImagePicker();
 
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  List<MessageModel> messages = [];
+  int? customerId;
+  bool sendButton = false;
+
+  // -------------------------- INIT --------------------------
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
-
-    // ✅ Décodage du token
-    Map<String, dynamic> decodedToken = JwtDecoder.decode(widget.token);
-    currentUserId = decodedToken["userId"]; // dépend du payload de ton JWT
-
-    // --- GraphQL setup ---
-    final httpLink = HttpLink("https://53afc4e9691e.ngrok-free.app/graphql");
-
-    final authLink = AuthLink(
-      getToken: () async => widget.token,
-      headerKey: "authorization",
-    );
-
-    final wsLink = WebSocketLink(
-      "wss://53afc4e9691e.ngrok-free.app/graphql",
-      config: SocketClientConfig(
-        autoReconnect: true,
-        initialPayload: () async {
-          return {
-            "authorization": widget.token,
-          };
-        },
-      ),
-    );
-
-    final link = Link.split(
-          (request) => request.isSubscription,
-      wsLink,
-      authLink.concat(httpLink),
-    );
-
-    _client = GraphQLClient(
-      cache: GraphQLCache(store: HiveStore()),
-      link: link,
-    );
+    _initData();
   }
 
+  Future<void> _initData() async {
+    CustomerModel customer = await CustomerUtils.getCustomer();
+
+    String? digitsOnly = customer.phone_number?.replaceAll(RegExp(r'\D'), ''); // remove non-digits
+
+    customerId = int.parse(digitsOnly!);
+
+    _connectSocket();
+
+    // Wait a bit and then request chat history
+    Future.delayed(const Duration(milliseconds: 700), () {
+      if (socket.connected && customerId != null) {
+        socket.emit("/getMessages", {
+          "userId": customerId,
+          "otherId": 92109474,
+        });
+      }
+    });
+
+    setState(() {});
+  }
+
+  // -------------------------- SOCKET --------------------------
+  void _connectSocket() {
+    socket = IO.io(
+      "http://168.231.101.119:5000",
+      IO.OptionBuilder()
+          .setTransports(['websocket'])
+          .disableAutoConnect()
+          .build(),
+    );
+
+    socket.connect();
+
+    socket.onConnect((_) {
+      print("✅ Socket connected: ${socket.id}");
+
+      if (customerId != null) {
+        socket.emit("/register", customerId);
+        print("🆔 Registered user ID: $customerId");
+      }
+    });
+
+    socket.on("messages", (history) {
+      print("📜 Received ${history.length} messages");
+      setState(() {
+        messages = (history as List)
+            .map((msg) => MessageModel(
+          message: msg["text"],
+          type: msg["senderId"] == customerId
+              ? "source"
+              : "destination",
+        ))
+            .toList();
+      });
+      _scrollToBottom();
+    });
+
+    socket.on("message", (msg) {
+      final senderId = msg["senderId"];
+      final receiverId = msg["receiverId"];
+      final text = msg["text"];
+
+      print("💬 New message: $text");
+
+      // Prevent duplicate local echo
+      final isDuplicate = messages.isNotEmpty &&
+          messages.last.message == text &&
+          msg["senderId"] == customerId;
+
+      if (isDuplicate) return;
+
+      setState(() {
+        messages.add(
+          MessageModel(
+            message: text,
+            type: senderId == customerId ? "source" : "destination",
+          ),
+        );
+      });
+      _scrollToBottom();
+    });
+
+
+    socket.onDisconnect((_) {
+      print("❌ Socket disconnected");
+    });
+  }
+
+  // -------------------------- ACTIONS --------------------------
+  void sendMessage(String text) {
+    if (customerId == null || text.trim().isEmpty) return;
+
+    final messageData = {
+      "senderId": customerId,
+      "receiverId": 92109474,
+      "text": text.trim(),
+    };
+
+    socket.emit("/message", messageData);
+
+    // Instantly show locally for sender
+    final tempMessage = MessageModel(message: text.trim(), type: "source");
+    setState(() {
+      messages.add(tempMessage);
+    });
+
+    _controller.clear();
+    setState(() => sendButton = false);
+    _scrollToBottom();
+  }
+
+  Future<void> pickAndSendImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null || customerId == null) return;
+
+    try {
+      final file = File(image.path);
+      final uploadUrl = "http://168.231.101.119:5000/upload-image";
+      final fileName = path.basename(file.path);
+
+      final formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(file.path, filename: fileName),
+      });
+
+      final response = await _dio.post(uploadUrl, data: formData);
+      final imageUrl = response.data["url"];
+
+      print("✅ Image uploaded: $imageUrl");
+
+      sendMessage(imageUrl);
+    } catch (e) {
+      print("❌ Image upload failed: $e");
+    }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  // -------------------------- DISPOSE --------------------------
   @override
   void dispose() {
+    socket.dispose();
     _controller.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
-  // UI
+  // -------------------------- UI --------------------------
   @override
   Widget build(BuildContext context) {
-    return GraphQLProvider(
-      client: ValueNotifier(_client),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Discussion"),
-          backgroundColor: const Color(0xFFCD1F45),
-        ),
-        body: Column(
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: KColors.primaryColor,
+        elevation: 2,
+        titleSpacing: 0,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            // --- Zone messages ---
-            Expanded(
-              child: Query(
-                options: QueryOptions(
-                  document: gql(GET_MSG),
-                  variables: {"receiverId": widget.receiverId},
-                  pollInterval: const Duration(seconds: 2),
-                  fetchPolicy: FetchPolicy.networkOnly,
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios,
+                      color: Colors.white, size: 20),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MeNewAccountPage()),
+                    );
+                  },
                 ),
-                builder: (result, {fetchMore, refetch}) {
-                  if (result.isLoading && result.data == null) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  if (result.hasException) {
-                    return Center(
-                        child: Text("Erreur: ${result.exception.toString()}"));
-                  }
-
-                  final List messages =
-                      result.data?["messagesByUser"] ?? [];
-
-                  return Subscription(
-                    options: SubscriptionOptions(
-                      document: gql(MSG_SUB),
-                      variables: {"receiverId": widget.receiverId},
-                    ),
-                    builder: (subResult) {
-                      if (subResult.data != null) {
-                        final msg = subResult.data!["messageSent"];
-                        if (!messages.any((m) => m["id"] == msg["id"])) {
-                          messages.add(msg);
-                          messages.sort((a, b) =>
-                              DateTime.parse(a["createdAt"])
-                                  .compareTo(DateTime.parse(b["createdAt"])));
-                        }
-                      }
-
-                      if (messages.isEmpty) {
-                        return const Center(
-                          child: Text("Aucun message pour le moment."),
-                        );
-                      }
-
-                      return ListView.builder(
-                        padding: const EdgeInsets.all(12),
-                        itemCount: messages.length,
-                        itemBuilder: (ctx, index) {
-                          final msg = messages[index];
-                          final bool isMe = msg["senderId"] == currentUserId;
-
-                          return Align(
-                            alignment: isMe
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(vertical: 4),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: isMe
-                                    ? const Color(0xFFCD1F45)
-                                    : Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    msg["text"],
-                                    style: TextStyle(
-                                      color: isMe ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    DateTime.parse(msg["createdAt"])
-                                        .toLocal()
-                                        .toString(),
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: isMe
-                                          ? Colors.white70
-                                          : Colors.black54,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-            ),
-
-            // --- Input en bas ---
-            Mutation(
-              options: MutationOptions(
-                document: gql(SEND_MSG),
-                onError: (err) => debugPrint("Erreur send: $err"),
-              ),
-              builder: (runMutation, result) {
-                return SafeArea(
-                  child: Container(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border(top: BorderSide(color: Colors.grey.shade300)),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: _controller,
-                            decoration: const InputDecoration(
-                              hintText: "Écrire un message...",
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.send, color: Color(0xFFCD1F45)),
-                          onPressed: () {
-                            final text = _controller.text.trim();
-                            if (text.isNotEmpty) {
-                              runMutation({
-                                "receiverId": widget.receiverId,
-                                "text": text,
-                              });
-                              _controller.clear();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                const CircleAvatar(
+                  radius: 18,
+                  backgroundImage:
+                  AssetImage("assets/images/logo-chat.jpeg"),
+                  backgroundColor: Colors.white,
+                ),
+                const SizedBox(width: 10),
+                const Text(
+                  "Service Client Kaba",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
+                ),
+              ],
+            ),
+            IconButton(
+              icon: const Icon(Icons.call, color: Colors.white),
+              onPressed: () {
+                // TODO: Implement call feature
               },
             ),
           ],
         ),
+      ),
+      body: Column(
+        children: [
+          // ------------------ Chat history ------------------
+          Expanded(
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final msg = messages[index];
+                final isImage = msg.message.startsWith("http");
+
+                if (msg.type == "source") {
+                  return OwnMessageCard(
+                    message: msg.message,
+                    messageType: isImage ? "image" : "text",
+                  );
+                } else {
+                  return ReplyMessageCard(
+                    message: msg.message,
+                    messageType: isImage ? "image" : "text",
+                  );
+                }
+              },
+            ),
+          ),
+
+          // ------------------ Input area ------------------
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.photo, color: Colors.grey),
+                  onPressed: pickAndSendImage,
+                ),
+                Expanded(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: TextFormField(
+                      controller: _controller,
+                      onChanged: (value) =>
+                          setState(() => sendButton = value.isNotEmpty),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Type a message",
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    ),
+                  ),
+                ),
+                CircleAvatar(
+                  backgroundColor: KColors.primaryColor,
+                  child: IconButton(
+                    icon: Icon(
+                      sendButton ? Icons.send : Icons.mic,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (_controller.text.trim().isNotEmpty) {
+                        sendMessage(_controller.text.trim());
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -376,7 +376,11 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                           margin: EdgeInsets.only(top:5),
                           child: Column(
                             children: <Widget>[
-//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+//   _jumpToPage(
+//                               context,
+//                               CustomerCareChatPage(
+//                                   presenter: CustomerCareChatPresenter(
+//                                       CustomerCareChatView()))),                                 IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
                               Image.asset(  "assets/images/png/Iconeabo.png",  width: 35,  height: 35) ,
                               SizedBox(height: 5),
                               Center(

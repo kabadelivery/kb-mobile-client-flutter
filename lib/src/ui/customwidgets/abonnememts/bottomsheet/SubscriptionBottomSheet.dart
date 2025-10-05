@@ -384,7 +384,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       print("Error: ${response.statusCode}, body: ${response.body}");
       return {
         "status": "error",
-        "message": "Erreur lors de l’abonnement",
+        "message": "Desole vous deja un Abonnement en cours !",
         "code": response.statusCode,
       };
     }
