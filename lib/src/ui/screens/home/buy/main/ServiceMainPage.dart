@@ -110,7 +110,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-    this.widget.presenter!.getRating();
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -124,22 +123,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
   @override
   void showOrderRating(List<DeliveryRatingPending> deliveriesRatingPending) async {
-
+    bool canSkip = await CanSkipEndpoint();
     if (deliveriesRatingPending.length == 1) {
-      bool canSkip = await CanSkipEndpoint();
-      Future.delayed(Duration(seconds: 1));
-      setState(() {
-        isLoading = false;
-      });
       _showRatingDialog(deliveriesRatingPending.first, true,canSkip);
-    }
-    else if(deliveriesRatingPending.length > 1) {
-      bool canSkip = await CanSkipEndpoint();
+    }  else if(deliveriesRatingPending.length > 1) {
       final choice = await _askUserChoice(context,canSkip);
-      Future.delayed(Duration(seconds: 1));
-      setState(() {
-        isLoading = false;
-      });
       if (choice == "one") {
         final latest = deliveriesRatingPending.reduce((a, b) {
           final idA = int.tryParse(a.command_id.toString()) ?? 0;
@@ -158,14 +146,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
             return;
           else
             continue;
+
         }
       }
     }
-    else{
-      setState(() {
-        isLoading = false;
-      });
-    }
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      isLoading = false;
+    });
   }
   Future<String?> _askUserChoice(BuildContext context,bool canSkip) {
     return showDialog<String>(
@@ -366,25 +354,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
-          this.widget.presenter!.getRating();
-          List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
-          if(ordersRating==null || ordersRating.isEmpty){
-            setState(() {
-              isLoading = true;
-            });
-          }
+          setState(() {
+            isLoading = true;
+          });
           this.widget.presenter!.showOrderRating();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _getLastKnowLocation(jumpToBuyPageDetails: false);
           });
         }
       }
-    });
-  }
-  @override
-  void getRating(bool gotData)async{
-    setState(() {
-      isLoading = false;
     });
   }
   void showNewFeature(BuildContext context, String version) {
@@ -647,9 +625,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
   }
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      askNotificationPermission();
-    });
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: 1,
@@ -696,12 +671,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
         color: Colors.white,
         child: Stack(
           children: [
-
             SingleChildScrollView(
               child: Column(
                 children: [
+                  Header(),
                   /* hint */
-                  SizedBox(height: 70),
+                  SizedBox(height: 20),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
                     onTap: () {
@@ -864,7 +839,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
-                     /*
                       GestureDetector(
                         onTap: () async {
                           if (StateContainer.of(context).loggingState == 0){
@@ -924,7 +898,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
-                      */
                       GestureDetector(
                         onTap: () async{
                           if (StateContainer.of(context).loggingState == 0){
@@ -1004,7 +977,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/65dadcb9-e967-4c9e-9e06-c2f63962c332/VYwzwRMD84.json")),
+                                    child: Lottie.network("https://lottie.host/d1ae6efb-1f15-4bfc-ab2d-2731c1280fd8/VgIF2un2jh.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('expedition')}",
@@ -1050,7 +1023,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child:Image.asset("assets/images/png/medical-cross.png",width: 20,height: 20,)),
+                                    child: Lottie.network("https://lottie.host/6c75e766-9015-479d-8ac2-d33783ae527c/kDstCBf7V4.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "Pharmacy",
@@ -1109,10 +1082,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 ],
               ),
             ),
-            Positioned(
-                top: 0,
-                left:0,
-                child:        Header()),
             Positioned(
                 bottom: 0,
                 right: 0,
@@ -1501,6 +1470,61 @@ class ServiceMainPageState extends State<ServiceMainPage>
       String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
       /* no need to commit */
       /* expiration date in 3months */
+      if (_has_accepted_gps != "ok") {
+        return showDialog<void>(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                  "${AppLocalizations.of(context)!.translate('request')}"
+                      .toUpperCase(),
+                  style: TextStyle(color: KColors.primaryColor)),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    // location_permission
+                    Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                            image: new DecorationImage(
+                              image: new AssetImage(ImageAssets.address),
+                            ))),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('location_explanation_pricing')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 14))
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('refuse')}"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                TextButton(
+                  child: Text(
+                      "${AppLocalizations.of(context)!.translate('accept')}"),
+                  onPressed: () {
+                    prefs!.setString("_has_accepted_gps", "ok");
+                    // call get location again...
+                    Future.delayed(Duration(milliseconds: 1000), () {
+                      _getLastKnowLocation(
+                          jumpToBuyPageDetails: jumpToBuyPageDetails);
+                    });
+                    Navigator.of(context).pop();
+                  },
+                )
+              ],
+            );
+          },
+        );
+      } else {
         // permission has been accepted
         LocationPermission permission = await Geolocator.checkPermission();
         if (permission == LocationPermission.deniedForever) {
@@ -1550,8 +1574,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         "${AppLocalizations.of(context)!.translate('accept')}"),
                     onPressed: () async {
                       /* */
-                      prefs!.setString("_has_accepted_gps", "ok");
-
                       await Geolocator.openAppSettings();
                       Navigator.of(context).pop();
                     },
@@ -1613,8 +1635,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       await Geolocator.checkPermission();
                       if (permission2 == LocationPermission.always ||
                           permission2 == LocationPermission.whileInUse) {
-                        prefs!.setString("_has_accepted_gps", "ok");
-
                         _getLastKnowLocation(
                             jumpToBuyPageDetails: jumpToBuyPageDetails);
                       }
@@ -1716,7 +1736,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 });
           }
         }
-
+      }
     });
   }
 

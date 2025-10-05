@@ -60,7 +60,7 @@ class _EditAddressPageState extends State<EditAddressPage>
 
   LatLng? selectedLocation;
   DeliveryAddressModel address;
-  bool isInstantCreation =false;
+
   var _locationNameController = TextEditingController(),
       _phoneNumberController = TextEditingController(),
       _nearController = TextEditingController(),
@@ -117,13 +117,6 @@ class _EditAddressPageState extends State<EditAddressPage>
     _phoneNumberController.text = address.phone_number??"";
     _nearController.text = address.near??"";
     _descriptionController.text = address.description??"";
-
-    if(widget.address!.name!.isNotEmpty && (widget.gps_location==null || widget.gps_location!.isEmpty)){
-      isInstantCreation = true;
-      WidgetsBinding.instance.addPostFrameCallback((_){
-        showPlacePicker(context);
-      });
-    }
   }
 
   @override
@@ -440,8 +433,7 @@ class _EditAddressPageState extends State<EditAddressPage>
               );
             },
           );
-        }
-        else {
+        } else {
           /* get last know position */
           LocationPermission permission = await Geolocator.checkPermission();
           if (permission == LocationPermission.deniedForever) {
@@ -550,7 +542,6 @@ class _EditAddressPageState extends State<EditAddressPage>
       xrint("get and has customer ");
 
       if (result != null) {
-
         setState(() {
           _checkLocationLoading = true;
           address.location = "${result.latitude}:${result.longitude}";
@@ -577,7 +568,6 @@ class _EditAddressPageState extends State<EditAddressPage>
       setState(() {
         isPickLocation = false;
       });
-
     });
   }
 
@@ -756,7 +746,7 @@ class _EditAddressPageState extends State<EditAddressPage>
                           });
                           Navigator.of(context).pop({
                             'ok': true,
-                            'createdAddress': widget.createdAddress,
+                            'createdAddress': widget.createdAddress
                           });
                         } else {
                           Navigator.of(context).pop();

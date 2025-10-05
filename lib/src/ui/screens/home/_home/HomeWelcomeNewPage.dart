@@ -485,12 +485,13 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
               key: PageStorageKey<String>("home_welcome_new"),
               addAutomaticKeepAlives: true,
               children: <Widget>[
+                Header(),
                 /*top slide*/
                 Stack(
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
-                      margin: EdgeInsets.only(bottom: 10, top: 60),
+                      margin: EdgeInsets.only(bottom: 10, top: 15),
                       child: ClipPath(
                           // clipper: KabaRoundTopClipper(),
                           child: sliderLength> 1
@@ -599,11 +600,6 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                             ],
                           ),
                         )),
-                    Positioned(
-                        top: 0,
-                        left:0,
-                        child:
-                    Header()),
                   ],
                 ),
                 /* top restaurants */

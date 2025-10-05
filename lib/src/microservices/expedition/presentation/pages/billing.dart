@@ -1,4 +1,3 @@
-import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
 import 'package:KABA/src/microservices/expedition/data/expedition/remote_data_source.dart';
 import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
@@ -112,7 +111,7 @@ class _BillingPageState extends State<BillingPage> {
                       children: [
                         Icon(Icons.check_circle_outline_rounded,color: Colors.white,size: 19,),
                         SizedBox(width: 5,),
-                        Text("${AppLocalizations.of(context)!.translate('accept_continue')}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:Colors.white),)
+                        Text("Accepter et continuer",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:Colors.white),)
                       ],
                     ),
                     onPressed: (){
@@ -200,7 +199,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                   children: [
                     Icon(FontAwesomeIcons.fileText,color: KabaExpeditionColor.primary,size: 18,),
                     SizedBox(width: 10,),
-                    Text("${AppLocalizations.of(context)!.translate('shipment_summary')}",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold),),
+                    Text("Récapitulatif de votre expédition",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold),),
 
                   ],
                 ),
@@ -209,7 +208,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${AppLocalizations.of(context)!.translate('route')}",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                    Text("Route : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
                     Row(
                       children: [
                         Text("${expedition.colis![widget.index].departureTown}", style: TextStyle(fontSize: 14,color: Colors.black)),
@@ -226,7 +225,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${AppLocalizations.of(context)!.translate('weight')}",style: TextStyle(color: Colors.black54,fontSize: 14),),
+                    Text("Poids : ",style: TextStyle(color: Colors.black54,fontSize: 14),),
                     Text("${expedition.colis![widget.index].poids} Kg", style: TextStyle(fontSize: 14,color: Colors.black))
                   ],
                 ),
@@ -241,7 +240,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("${AppLocalizations.of(context)!.translate('provisional_amount')}",style: TextStyle(fontSize: 14,color:Colors.black,fontWeight: FontWeight.bold),),
+                    Text("Montant provisoire :",style: TextStyle(fontSize: 14,color:Colors.black,fontWeight: FontWeight.bold),),
                     Text("${price}",style: TextStyle(fontSize: 14,color:Color(0xFFCD1F45),fontWeight: FontWeight.bold,decorationColor:KabaExpeditionColor.primary, decoration: negociate?TextDecoration.lineThrough:null),)
                   ],
                 ),
@@ -259,7 +258,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                         ],
                         validator: (value){
                           if(value==null || value.isEmpty){
-                            return "${AppLocalizations.of(context)!.translate('enter_valid_amount')}";
+                            return "Veuillez entrer un montant correct";
                           }
                           return null;
                         },
@@ -283,7 +282,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                                 borderRadius: BorderRadius.circular(10),
                                 borderSide: BorderSide(color: KabaExpeditionColor.primary,width: 1)
                             ),
-                            hintText: "${AppLocalizations.of(context)!.translate('enter_proposal')}",
+                            hintText: "Entrez votre proposition (Ex :20 000 CFA)",
                             hintStyle: TextStyle(fontSize: 12,color: Colors.grey.shade400),
                             contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 10)
                         ),
@@ -308,7 +307,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                                   expeditionId: expedition.id!,
                                   montantPropose:
                                   double.parse(_negociationPriceController.text),
-                                  raison: "${AppLocalizations.of(context)!.translate('price_negotiation')}");
+                                  raison: "Négociation du prix de l'expédition");
                               CreateNegociation createNegociation = CreateNegociation(
                                   ExpeditionRepositoryImpl(
                                       ExpeditionRemoteDataSourceImpl()
@@ -317,12 +316,12 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                               CustomerModel customerToken = await CustomerUtils.getCustomer();
                               await createNegociation.call(body: negotiationModel.toJson(), customerToken: customerToken.token!).then((_){
                                 CherryToast.success(
-                                  title: Text("${AppLocalizations.of(context)!.translate('proposal_success')}",style: TextStyle(color: Colors.black87),),
+                                  title: Text("Proposition envoyée avec succès",style: TextStyle(color: Colors.black87),),
                                 ).show(context);
                               }).catchError((error){
                                 debugPrint("XXX Error ${error.toString()}");
                                 CherryToast.error(
-                                  title: Text("${AppLocalizations.of(context)!.translate('error_occurred')}",style: TextStyle(color: Colors.black87),),
+                                  title: Text("Une erreur s'est produite",style: TextStyle(color: Colors.black87),),
                                 ).show(context);
                               });
                               setState(() {
@@ -350,7 +349,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
             children: [
               Icon(Icons.check_circle_outline_outlined,color: KabaExpeditionColor.primary,size: 22,),
               SizedBox(width: 10,),
-              Flexible(child: Text("${AppLocalizations.of(context)!.translate('amount_info')}",
+              Flexible(child: Text("Ce montant est provisoire et peut être ajusté après vérification de votre colis par nos équipes",
                 style: TextStyle(fontSize: 14),))
             ],
           ),
@@ -373,7 +372,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                 children: [
                   Icon(CupertinoIcons.chat_bubble,color: KabaExpeditionColor.primary,size: 19,weight: 3,),
                   SizedBox(width: 5,),
-                  Text("${AppLocalizations.of(context)!.translate('negotiate_price')}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:KabaExpeditionColor.primary),)
+                  Text("Négocier le prix",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12,color:KabaExpeditionColor.primary),)
                 ],
               ),
               onPressed: (){

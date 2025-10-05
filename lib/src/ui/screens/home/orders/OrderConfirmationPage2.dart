@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionPlansSheet.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -276,13 +275,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       return Container();
     else
       return Container(
-
+        color: KColors.new_gray,
         margin: EdgeInsets.only(left: 20, right: 20),
         padding: EdgeInsets.all(10),
-        decoration:BoxDecoration(
-            color: KColors.new_gray,
-            borderRadius: BorderRadius.circular(10)
-        ),
         child: Stack(
           children: [
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
@@ -310,7 +305,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               )
             ]),
             Positioned(
-                top: 0,
+                top: 5,
                 right: 0,
                 child: InkWell(
                     child: Container(
@@ -666,21 +661,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       children: <Widget>[
                         /* montant livraison promotion */
                         Text(
-                          "${((_orderBillConfiguration.additional_fees_total_price ?? 0) - (_orderBillConfiguration.additional_fees?['COMMISSION_FEE'] ?? 0))} ${AppLocalizations.of(context)!.translate('currency')}",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                          ),
-                        )
+                            "${_orderBillConfiguration.additional_fees_total_price} ${AppLocalizations.of(context)!.translate('currency')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12)),
                       ],
                     )
                   ])
                   : Container(),
               SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees_total_price != 0 ||
-                  _orderBillConfiguration!.additional_fees_total_price !=
-                      null
-                  ?   Container(
+              Container(
                 decoration: BoxDecoration(
                     color: Color(0x54B6B6B6),
                     borderRadius: BorderRadius.circular(5)),
@@ -690,47 +680,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
                       style: TextStyle(fontSize: 11, color: Colors.black)),
                 ),
-              ):Container(),
-              SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
-                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
-                      0
-                  ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('commission')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
-                    /* check if there is promotion on Livraison */
-                    Row(
-                      children: <Widget>[
-                        /* montant livraison promotion */
-                        Text(
-                            "${(_orderBillConfiguration.additional_fees!['COMMISSION_FEE']??0 )} ${AppLocalizations.of(context)!.translate('currency')}",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12)),
-                      ],
-                    )
-                  ])
-                  : Container(),
-              SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
-                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
-                      0
-                  ?  Container(
-                decoration: BoxDecoration(
-                    color: Color(0x1DCB1F44),
-                    border: Border.all(color: Color(0xFFCB1F44)),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('commission_explain')}",
-                      style: TextStyle(fontSize: 11, color: Colors.black)),
-                ),
-              ):Container(),
+              ),
               SizedBox(height: 10),
               _orderBillConfiguration!.remise! > 0
                   ? Row(
@@ -790,16 +740,16 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   _cookingTimeEstimation() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 15),
+      margin: EdgeInsets.all(15),
         padding: const EdgeInsets.only(
-                  top: 20, bottom: 20, left: 12, right: 12), // Adjust padding
+                  top: 15, bottom: 15, left: 12, right: 12), // Adjust padding
               decoration: BoxDecoration(
                 
-                color: Colors.blue.withOpacity(.05),
-                borderRadius: BorderRadius.circular(25),
+                color: Color(0xFFEFF5FF),
+                borderRadius: BorderRadius.circular(21),
                 
                 border:
-                    Border.all(color: Colors.blue,width:.5),
+                    Border.all(color: Colors.blue),
               ),
         child: /* Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -821,19 +771,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
            Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.blue.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(5),
-
-                    ),
-                    child:Icon(Icons.timer_outlined,color: Colors.blue,size:18)
-                ),
+                Icon(Icons.timer_outlined, color: Colors.blue),
                 SizedBox(width:15),
                 Text("${AppLocalizations.of(context)!.translate('cooking_time_estimation')}"),
                 SizedBox(width: 30),
-                 Text('${widget.restaurant!.cooking_time!} min',style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold,fontSize:17),),
+                 Text('${AppLocalizations.of(context)!.translate('min_short_on_average')}',style: TextStyle(color: Colors.red,fontWeight: FontWeight.w600),),
                /*  ElevatedButton(
 
                   onPressed: () {},
@@ -868,98 +810,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           children: <Widget>[SizedBox(height: 20)]
             ..add
             (Container(
-              margin: const EdgeInsets.all(12),
-
+              margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Color(0xFFFFF6EF),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: KColors.primaryColor.withOpacity(0.3),
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  )
-                ],
-              ),
+                  color: KColors.new_gray,
+                  borderRadius: BorderRadius.all(Radius.circular(5))),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // titre du container
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          KColors.primaryColor.withOpacity(.8),
-                          KColors.primaryColor,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft: Radius.circular(20)),
-
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(5),
-
-                              ),
-                              child:Icon(Icons.shopping_bag,color: Colors.white,size:15)
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              AppLocalizations.of(context)!.translate('order_summary'),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Image.asset("assets/images/png/box.png",width:30),
-                            Text(
-                              "${widget.foods!.length!}",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold
-                              ),
-                            ),
-                            const SizedBox(width: 5),
-                            Text("${widget.foods!.length!>1?"articles":"article"}",  style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold
-                            ),)
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-
-                  // ta liste de produits
-                  ..._buildFoodList(),
-                ],
-              ),
-            )
-            )
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 10, top: 10, bottom: 5),
+                      child: Row(children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('order_summary')}",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 13))
+                      ]),
+                    )
+                  ]..addAll(_buildFoodList())),
+            ))
           // restaurant is closed and we can't do nothing
             ..addAll((_orderBillConfiguration.hasCheckedOpen == true &&
                 _orderBillConfiguration.can_preorder == 0 &&
@@ -991,6 +860,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             ]
                 : <Widget>[
                     _cookingTimeEstimation(),
+                    SizedBox(height: 10),
                     _buildRadioPreorderChoice(),
                     SizedBox(height: 10),
                     Container(
@@ -1026,31 +896,25 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                      Container(
                       margin: EdgeInsets.only(left:15,right:15),
               padding: const EdgeInsets.only(
-                  top: 20, bottom: 20, left: 12, right: 12), // Adjust padding
+                  top: 12, bottom: 15, left: 12, right: 12), // Adjust padding
               decoration: BoxDecoration(
                 
-                color: KColors.primaryColor.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(25),
+                color: Color(0xFFFFE8ED),
+                borderRadius: BorderRadius.circular(21),
+                
                 border:
-                    Border.all(color: KColors.primaryColor,width: .5),
+                    Border.all(color: Colors.red),
               ),
               child: Column(
                 children: [
                   Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Container(
-                    padding: EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: KColors.primaryColor.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(5),
-
-                    ),
-                    child:Icon(Icons.chat_bubble_outline,color: KColors.primaryColor,size:18)
-                ), SizedBox(width:10),
+                Icon(Icons.chat_bubble_outline_outlined, color: Colors.red),
+                SizedBox(width:10),
                 Text("${AppLocalizations.of(context)!.translate('additional_info')}",style: TextStyle(fontWeight:FontWeight.normal),),
                 SizedBox(width:10),
-                 Icon(Icons.keyboard_arrow_down, color:KColors.primaryColor),
+                 Icon(Icons.keyboard_arrow_down, color: Colors.red),
                /*  ElevatedButton(
 
                   onPressed: () {},
@@ -1075,47 +939,50 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                     BorderRadius.all(Radius.circular(5)),
                                  // color: KColors.mBlue.withAlpha(30)
                                   ),
-                            child:   Container(
-                              margin: EdgeInsets.only(left:15,right:15),
-                              padding: const EdgeInsets.only(
-                                  top: 20, bottom: 20, left: 12, right: 12), // Adjust padding
-                              decoration: BoxDecoration(
-                                color: Colors.blue.withOpacity(.05),
-                                borderRadius: BorderRadius.circular(25),
-                                border:
-                                Border.all(color: Colors.blue,width:.5),
-                              ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                          padding: EdgeInsets.all(6),
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue.withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(5),
-
-                                          ),
-                                          child:Icon(Icons.location_on_outlined,color: Colors.blue,size:22)
-                                      ),
-                                      SizedBox(width:32),
-                                      Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),),
-                                      SizedBox(width:70),
-                                      Icon(Icons.control_point_outlined, color: Colors.blue),
-                                      /*  ElevatedButton(
+                            child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: 
+                                
+                                <Widget>[
+                                  
+                                   Container(
+              padding: const EdgeInsets.only(
+                  top: 15, bottom: 15, left: 12, right: 12), // Adjust padding
+              decoration: BoxDecoration(
+                
+                color: Color(0xFFEFF5FF),
+                borderRadius: BorderRadius.circular(21),
+                
+                border:
+                    Border.all(color: Colors.blue),
+              ),
+              child: Column(
+                children: [
+                  Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.place_outlined, color: Colors.blue),
+                SizedBox(width:32),
+                Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),),
+                SizedBox(width:70),
+                 Icon(Icons.control_point_outlined, color: Colors.blue),
+               /*  ElevatedButton(
 
                   onPressed: () {},
                   child: Icon(Icons.plus_one_rounded, color: Colors.blue),
                 ) */
-                                    ],
-                                  ),
-
-
-                                ],
-                              ),
-                            ),
-                        ),
+              ],
+            ),
+               
+               
+                ],
+              ),
+            ),
+           
+                                ]
+                                
+                                )),
                         onTap: () {
                           _pickDeliveryAddress();
                         }),
@@ -1125,33 +992,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   _orderBillConfiguration!.isBillBuilt == true
                   ?GestureDetector(
                 onTap: (){
-                  showBillingPopUp();
+                 // showBillingPopUp();
                 },
-                child: Container(
-
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        KColors.primaryColor,
-                        KColors.primaryColor.withOpacity(.8),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius:BorderRadius.circular(10)
-                  ),
-                  padding:EdgeInsets.symmetric(horizontal: 15,vertical: 10),
-                  margin:EdgeInsets.symmetric(horizontal: 20,vertical: 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children:[
-                      Icon(Icons.receipt_long,color: Colors.white,size:20),
-                      SizedBox(width:10),
-                      Text("${AppLocalizations.of(context)!.translate('see_bill')}",style: TextStyle(color:Colors.white,fontWeight: FontWeight.w600,fontSize:14),)
-                    ]
-                  )
-                ),
               ):Container(),
               //NEW USER VOUCHER
               is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
@@ -1160,26 +1002,24 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               isConnecting
                   ? Center(child: MyLoadingProgressWidget())
                   : Container(),
-              //  Center(
-              //                   child: InkWell(
-              //                     onTap: () => _jumpToRecoverPage(),
-              //                     child: Padding(
-              //                       padding: const EdgeInsets.only(top: 8, bottom: 20.0),
-              //                       child: Row(
-              //                         mainAxisSize: MainAxisSize.min,
-              //                         children: [
-              //                           Icon(FontAwesomeIcons.questionCircle,
-              //                               color: Colors.grey),
-              //                           SizedBox(width: 5),
-              //                           Text(
-              //                               "${AppLocalizations.of(context)!.translate('lost_your_password')}",
-              //                               style: TextStyle(
-              //                                   fontSize: 12, color: Colors.grey)),
-              //                         ],
-              //                       ),
-              //                     ),
-              //                   )),
-              SizedBox(height: 20)
+
+              Center(
+                  child: InkWell(
+                    onTap: () => _jumpToRecoverPage(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8, bottom: 20.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(FontAwesomeIcons.questionCircle,
+                              color: Colors.grey),
+                          SizedBox(width: 5),
+
+                        ],
+                      ),
+                    ),
+                  )),
+
             ])),
     );
   }
@@ -1955,7 +1795,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               decoration: BoxDecoration(
                 
                 color: Color(0xFFFFFFFFF),
-                borderRadius: BorderRadius.circular(25),
+                borderRadius: BorderRadius.circular(21),
                  boxShadow: const [
           BoxShadow(
             color: Colors.black12,
@@ -2138,6 +1978,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   fontWeight: FontWeight.w500)),
                         ],
                       ),
+                      SizedBox(height: 5),
+                      Container(
+                        child: Text(
+                            "${AppLocalizations.of(context)!.translate('pay_with_kaba_balance')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 11, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,)),
+
+                      ),
                     ]),
               ),
             ),
@@ -2171,7 +2019,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 });
               },
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
@@ -2189,6 +2037,15 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                 fontWeight: FontWeight.w500,
                               )),
                         ],
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        child: Text(
+                            "${AppLocalizations.of(context)!.translate('pay_with_cash_at_delivery')}",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10, color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white)),
+                        margin: EdgeInsets.only(left: 10, right: 10),
                       ),
                     ]),
               ),
@@ -2280,105 +2137,116 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
   Widget _buildBasketItem(ShopProductModel food, int quantity) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: KColors.primaryColor, width: 0.5),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // product image
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              Utils.inflateLink(food.pic!),
-              width: 60,
-              height: 60,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 10),
-
-          // name + prices
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  Utils.capitalize(food.name!),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black87,
+        margin: EdgeInsets.only(left: 10, right: 10, top: 4, bottom: 4),
+        child: InkWell(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                  ListTile(
+                    contentPadding: EdgeInsets.only(left: 10),
+                    leading: Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.rectangle,
+                          borderRadius: BorderRadius.all(Radius.circular(5)),
+                          image: new DecorationImage(
+                              fit: BoxFit.cover,
+                              image: CachedNetworkImageProvider(
+                                  Utils.inflateLink(food.pic!)))),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Container(
+                          height: 30,
+                          decoration: BoxDecoration(
+                              color: KColors.primaryColor.withAlpha(30),
+                              borderRadius: BorderRadius.all(Radius.circular(20))),
+                          padding: EdgeInsets.only(
+                              top: 5, bottom: 5, left: 10, right: 10),
+                          child: Row(children: <Widget>[
+                            SizedBox(width: 2),
+                            Text("${food?.price}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    decoration: food.promotion != 0
+                                        ? TextDecoration.lineThrough
+                                        : TextDecoration.none)),
+                            SizedBox(width: 2),
+                            (food.promotion != 0
+                                ? Text("${food?.promotion_price}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.normal))
+                                : Container()),
+                            SizedBox(width: 3),
+                            Text(
+                                "${AppLocalizations.of(context)!.translate('currency')}",
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    color: KColors.primaryColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600)),
+                          ]),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        quantity > 1
+                            ? Text(" X ${quantity}",
+                            style: TextStyle(
+                                color: KColors.new_black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold))
+                            : Container(
+                          width: 24,
+                        )
+                      ],
+                    ),
+                    title: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text("${Utils.capitalize(food.name!)}",
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                color: KColors.new_black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)),
+                      ],
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    // old price if promotion
-                    if (food.promotion != 0)
-                      Text(
-                        "${food.price} ${AppLocalizations.of(context)!.translate('currency')}",
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey,
-                          decoration: TextDecoration.lineThrough,
+                  // add-up the buttons at the right side of it
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Container(
+                        // margin: EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          border: Border.all(color: Colors.transparent),
                         ),
                       ),
-                    if (food.promotion != 0) const SizedBox(width: 6),
-
-                    // promo price (or normal price)
-                    Text(
-                      "${food.promotion != 0 ? food.promotion_price : food.price} ${AppLocalizations.of(context)!.translate('currency')}",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold,
-                        color: KColors.primaryColor,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // quantity
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                "${food.promotion != 0 ? food.promotion_price : food.price} ${AppLocalizations.of(context)!.translate('currency')}",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: KColors.primaryColor,
-                ),
+                    ],
+                  )
+                ],
               ),
-              Text(
-                "x$quantity",
-                style: const TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+            )));
   }
 
   @override
@@ -2710,80 +2578,36 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     if (_selectedVoucher == null) {
       return Column(children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(left: 20, right: 20),
-          child:   Row(
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showCodeInput = !showCodeInput;
-                    });
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [Color(0xff730920), KColors.primaryColor],
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.code, color: KColors.white, size: 18),
-                        const SizedBox(width: 6),
-                        Text(
-                          "Ajouter Code Abon.",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
+          padding: const EdgeInsets.only(left: 15, right: 15),  
+          child:    Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        showCodeInput = !showCodeInput; // 👈 toggle visibility
+                      });
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFCC1E44)),
+                    child: Text('Ajouter Code Abo.'),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10), // espace entre les deux
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    _selectVoucher();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topRight,
-                        end: Alignment.bottomLeft,
-                        colors: [Color(0xffff9100), KColors.primaryYellowColor],
-                      ),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(CupertinoIcons.tickets, color: KColors.white, size: 18),
-                        const SizedBox(width: 6),
-                        Text(
-                          "${AppLocalizations.of(context)!.translate('add_coupon')}",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _selectVoucher();
+                    },
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFFFE9A00)),
+                    child: Text('Ajouter un don'),
                   ),
                 ),
-              ),
-            ],
-          )
-
-
+              ],
+            ),
+         
+            
         )
           ,
 
@@ -2976,26 +2800,24 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(width: 20),
-                        Flexible(
-                          child: RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                      "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
-                                      style: TextStyle(
-                                          color: KColors.new_black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold)),
-                                  TextSpan(
-                                      text:
-                                      "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              )),
-                        ),
+                        RichText(
+                            text: TextSpan(
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                    "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
+                                    style: TextStyle(
+                                        color: KColors.new_black,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text:
+                                    "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
+                                    style: TextStyle(
+                                        color: KColors.primaryColor,
+                                        fontWeight: FontWeight.bold))
+                              ],
+                            )),
                       ],
                     ),
                   ),
@@ -3077,10 +2899,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     showDialog(
         context: context,
         builder: (BuildContext context) {
+
           return AlertDialog(
             scrollable: true,
             content:StatefulBuilder(
+
                 builder: (context,setState) {
+
                   return SingleChildScrollView(
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -3107,86 +2932,77 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                               color: Colors.white,
                               padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
                               child: Column(
-                                mainAxisAlignment:MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: <Widget>[
                                   Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors:[
-                                          Color(0xffFFDADF),
-                                          Color(0xffFFECD5),
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                      ),
+                                      color: Color(0xFFFFC8D4),
                                       borderRadius: BorderRadius.circular(12),
                                       border:
-                                      Border.all(color: const Color.fromARGB(255, 173, 46, 46),width: .5),
+                                      Border.all(color: const Color.fromARGB(255, 173, 46, 46)),
                                     ),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                                padding: EdgeInsets.all(6),
-                                                decoration: BoxDecoration(
-                                                  color: KColors.primaryColor.withOpacity(0.1),
-                                                  borderRadius: BorderRadius.circular(5),
-
+                                              width: 40, // small square container
+                                              height: 40,
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFFFC8D4), // background color
+                                                borderRadius:
+                                                BorderRadius.circular(8), // rounded corners
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                    8.0), // inner padding for the image
+                                                child: Image.asset(
+                                                  "assets/images/png/abonnement-icons/Package.png", // your image
+                                                  fit: BoxFit.contain,
                                                 ),
-                                                child:Icon(Icons.query_stats,color: KColors.primaryColor,size:22)
+                                              ),
                                             ),
                                             SizedBox(
-                                              width: 5,
+                                              width: 15,
                                             ),
-                                            Flexible(
-                                              child: Text(
-                                                "💡 Économisez sur vos livraisons !",
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Color(0xFFCD1F45),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  "💡 Économisez sur vos livraisons !",
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Color(0xFFCD1F45),
+                                                  ),
                                                 ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          children: [
-                                            SizedBox(height: 4), // spacing between texts
-                                            Text(
-                                              textAlign: TextAlign.start,
-                                              "Cette livraison vous aurait coûté 0 Franc  si vous aviez souscrit à une de nos formules  d'abonnement Kaba.",
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.normal,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                            SizedBox(height: 4), // spacing between texts
-                                            Text(
-                                              " ⚡ Economies: 2 300 FCFA",
-                                              style: TextStyle(
-                                                fontSize: 13,
-                                                fontWeight: FontWeight.normal,
-                                                color: Color(0xFF00A63E),
-                                              ),
+                                                SizedBox(height: 4), // spacing between texts
+                                                Text(
+                                                  "  Cette livraison vous aurait coûté 0 Franc \n  si vous aviez souscrit à une de nos formules \n  d'abonnement Kaba.",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 4), // spacing between texts
+                                                Text(
+                                                  " ⚡ Economies: 2 300 FCFA",
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    fontWeight: FontWeight.normal,
+                                                    color: Color(0xFF00A63E),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
                                         SizedBox(height: 11),
                                         ElevatedButton(
-
                                           onPressed: () {
                                             showModalBottomSheet(
-
                                               context: context,
                                               isScrollControlled: true, // occupe plus d’espace
                                               shape: const RoundedRectangleBorder(
@@ -3196,7 +3012,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                             );
                                           },
                                           style: ElevatedButton.styleFrom(
-                                              elevation:0,
                                               backgroundColor: const Color.fromARGB(255, 173, 46, 46)  ,
                                               minimumSize: Size(double.infinity, 30)),
                                           child: Text(' S’abonner ? '),

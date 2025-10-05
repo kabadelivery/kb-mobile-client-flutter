@@ -178,7 +178,6 @@ class _OutOfAppProductFormContentState
                                   SizedBox(height: 5),
                                   Text(
                                     "${AppLocalizations.of(context)!.translate('choose_an_image')}",
-                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,

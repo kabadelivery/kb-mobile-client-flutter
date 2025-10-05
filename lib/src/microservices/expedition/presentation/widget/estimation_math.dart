@@ -7,8 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../../../../localizations/AppLocalizations.dart';
-import '../../../../utils/functions/separator.dart';
 import '../../../kaba_chine/presentation/widgets/package_form_info.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/line_model.dart';
@@ -128,9 +126,9 @@ class _EstimationFormState extends State<EstimationForm> {
                     crossAxisAlignment: CrossAxisAlignment.start,
 
                     children: [
-                      Text("${AppLocalizations.of(context)!.translate('calculate_estimate')}",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black87),),
+                      Text("Calculer votre estimation",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black87),),
                       SizedBox(height: 5,),
-                      Text("${AppLocalizations.of(context)!.translate('transparent_price')}",style: TextStyle(fontSize: 13,color: Colors.black54),)
+                      Text("Prix transparent et compétitif",style: TextStyle(fontSize: 13,color: Colors.black54),)
                     ],
                   )
                 ],
@@ -141,7 +139,7 @@ class _EstimationFormState extends State<EstimationForm> {
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
-                  FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("departure_town")}", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
+                  FormTitleWithIcon(title: "Ville de départ", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
@@ -153,7 +151,7 @@ class _EstimationFormState extends State<EstimationForm> {
                         )),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: DropdownButton<String>(
-                      hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
+                      hint: Text("Sélectionner la ville de départ"),
                       value: selected_departure_town,
                       isExpanded: true,
                       elevation: 16,
@@ -178,7 +176,7 @@ class _EstimationFormState extends State<EstimationForm> {
                       },
                     ),
                   ),
-                  FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("arrival_town")}", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
+                  FormTitleWithIcon(title: "Ville d'arrivé", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 10),
                     width: 330,
@@ -190,7 +188,7 @@ class _EstimationFormState extends State<EstimationForm> {
                         )),
                     padding: EdgeInsets.symmetric(horizontal: 10),
                     child: DropdownButton<String>(
-                      hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
+                      hint: Text("Sélectionner la ville de départ"),
                       value: selected_arrival_town,
                       isExpanded: true,
                       elevation: 16,
@@ -363,14 +361,14 @@ class _EstimationFormState extends State<EstimationForm> {
                                   child: Icon(FontAwesomeIcons.calculator,color:Colors.white,size:15),
                                 ),
                                 SizedBox(width: 10,),
-                                Text("${AppLocalizations.of(context)!.translate('estimate_done')}",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
+                                Text("Estimation calculée",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
                               ],
                             ),
                             SizedBox(height: 10,),
-                            Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
+                            Text("$estimation_price FCFA",style: TextStyle(fontSize: 22,fontWeight:
                             FontWeight.bold,color: Color(0xFF00C35B)),),
                             SizedBox(height: 10,),
-                            Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
+                            Text("Prix final confirmé après vérification du colis",style: TextStyle(fontSize: 12,color: Color(
                                 0xFF009E47)),)
 
                           ],
@@ -401,7 +399,7 @@ class _EstimationFormState extends State<EstimationForm> {
                               ),
                               borderRadius: BorderRadius.circular(10)
                           ),
-                          child: Text("${AppLocalizations.of(context)!.translate('negotiate_price')}",style: TextStyle(fontSize: 14,color: Colors.white,fontFamily: 'Inter')),
+                          child: Text("Négocier le prix",style: TextStyle(fontSize: 14,color: Colors.white,fontFamily: 'Inter')),
                         ),
                       ),
                     ],

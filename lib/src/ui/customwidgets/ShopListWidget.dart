@@ -157,8 +157,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                          .substring(
                                                          0, 3)
                                                          : "${widget?.shopModel?.stars}")
-                                                      ]
-                                                     ),
+                                                     ]),
                                             )
                                             : SizedBox(width: 60),
                                       ],
@@ -167,6 +166,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.7,
+
                                       child: Text("${widget?.shopModel?.address}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,

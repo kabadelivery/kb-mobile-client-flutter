@@ -13,8 +13,7 @@ class PackageModel {
   DeliveryAddressModel? recipientAddress;
   String? recipientPhoneNumber;
   String? ligneId;
-  String?telephoneDestination;
-  String?contactDestination;
+
   PackageModel({
     this.id,
     this.expeditionId,
@@ -28,8 +27,6 @@ class PackageModel {
     this.recipientAddress,
     this.recipientPhoneNumber,
     this.ligneId,
-    this.telephoneDestination,
-    this.contactDestination
   });
 
   factory PackageModel.fromJson(Map<String, dynamic> json) {
@@ -51,8 +48,6 @@ class PackageModel {
           : null,
       quantite: json['quantite'] as int?,
       ligneId: json['ligneId'] as String?,
-      telephoneDestination: json['telephoneDestination'] as String?,
-      contactDestination: json['contactDestination'] as String?,
     );
   }
 
@@ -69,20 +64,7 @@ class PackageModel {
     'recipientAddress': recipientAddress?.toJson(),
     'quantite': quantite,
     'ligneId': ligneId,
-    'telephoneDestination': telephoneDestination,
-    'contactDestination': contactDestination,
   };
-  Map<String, dynamic> toJsonApi() => {
-    'description': description,
-    'poids': poids,
-    'quantite': quantite,
-    'ligneId': ligneId,
-    'adresseDestination': adresseDestination,
-    'contactDestination': contactDestination,
-    'telephoneDestination': telephoneDestination,
-    'images': images?.where((img) => img != null).toList(),
-  };
-
 
   PackageModel copyWith({
     String? id,
@@ -97,8 +79,6 @@ class PackageModel {
     DeliveryAddressModel? recipientAddress,
     String? recipientPhoneNumber,
     String? ligneId,
-    String?telephoneDestination,
-    String?contactDestination,
   }) {
     return PackageModel(
       id: id ?? this.id,
@@ -113,8 +93,6 @@ class PackageModel {
       recipientAddress: recipientAddress ?? this.recipientAddress,
       recipientPhoneNumber: recipientPhoneNumber ?? this.recipientPhoneNumber,
       ligneId: ligneId ?? this.ligneId,
-      telephoneDestination: telephoneDestination ?? this.telephoneDestination,
-      contactDestination: contactDestination ?? this.contactDestination,
     );
   }
 }

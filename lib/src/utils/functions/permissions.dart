@@ -65,13 +65,3 @@ Future<bool> requestCameraAndGalleryPermissions() async {
 
 
 
-Future<void> askNotificationPermission() async {
-  var status = await Permission.notification.request();
-  if (status.isGranted) {
-    print("✅ Notifications permission granted");
-  } else if (status.isDenied) {
-    print("❌ Notifications permission denied");
-  } else if (status.isPermanentlyDenied) {
-    openAppSettings();
-  }
-}

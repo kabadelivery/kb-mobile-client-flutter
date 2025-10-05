@@ -45,7 +45,6 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cool_flare/flare_actor.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -53,7 +52,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
-import '../../../customwidgets/actions.dart';
 import '../../../customwidgets/header.dart';
 import 'feeds/FeedsPage.dart';
 import 'money/TransferMoneyRequestPage.dart';
@@ -198,523 +196,490 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
   _buildMyPageNew(data) {
     widget.customerData = data;
-    return Stack(
-      children: [
-        SingleChildScrollView(
-          child: Column(children: <Widget>[
-            SizedBox(height: 80),
-            /* top-up & xof */
-            GestureDetector(
-                onTap: () => _jumpToPage(
-                    context,
-                    Personal3Page(
-                        customer: widget.customerData,
-                        presenter:
-                            PersonnalPagePresenter(PersonnalPageView()))),
-                child: Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 15, horizontal: 12),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  decoration: BoxDecoration(
-
-                    borderRadius: BorderRadius.circular(16),
-                    color:Colors.grey.withOpacity(.1),
-                  ),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () => _seeProfilePicture(),
-                        child: CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.grey.shade200,
-                          backgroundImage: CachedNetworkImageProvider(
-                            Utils.inflateLink(
-                                widget.customerData!.profile_picture!),
-                            cacheKey: widget.customerData?.profile_picture,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.customerData!.nickname!,
-                              style: TextStyle(
-                                color: Colors.black54,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              _getUsername(),
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 13,
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            InkWell(
-                              onTap: () {
-                                _seeProfilePicture();
-                              },
-                              borderRadius: BorderRadius.circular(20),
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey.withOpacity(.2),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.edit,
-                                        size: 16, color: Colors.grey),
-                                    const SizedBox(width: 6),
-                                    Text(
-                                      "Edit Profile",
-                                      style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            Container(
-                color: Colors.white,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+    return SingleChildScrollView(
+      child: Column(children: <Widget>[
+        Header(),
+        /* top-up & xof */
+        GestureDetector(
+          onTap: () => _jumpToPage(
+              context,
+              Personal3Page(
+                  customer: widget.customerData,
+                  presenter: PersonnalPagePresenter(PersonnalPageView()))),
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: 15),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                    /* le solde ! */
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        onTap: () => _jumpToPage(
-                            context,
-                            TransactionHistoryPage(
-                                presenter:
-                                TransactionPresenter(TransactionView()))),
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            children: <Widget>[
-//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
-                              Icon(Icons.wallet,
-                                  color: KColors.mBlue, size: 40),
-                              SizedBox(height: 5),
-                              Center(
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.translate('balance')}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                    GestureDetector(
+                      onTap: () => _seeProfilePicture(),
+                      child: Container(
+                          height: 100,
+                          width: 100,
+                          decoration: BoxDecoration(
+                              // border: new Border.all(color: Colors.white, width: 2),
+                              shape: BoxShape.circle,
+                              color: Colors.grey.withAlpha(100),
+                              image: new DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: CachedNetworkImageProvider(
+                                      Utils.inflateLink(widget
+                                          .customerData!.profile_picture!),
+                                      cacheKey: widget
+                                          .customerData?.profile_picture)))),
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        onTap: () => _jumpToTopUpPage(),
-                        child: Container(
-                          child: Column(
+                    SizedBox(width: 20),
+                    Container(
+                        padding: EdgeInsets.only(right: 20),
+//                    decoration: BoxDecoration(border: Border),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-//                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
-                              Container(
-                                  height: 40,
-                                  width: 40,
-                                  child: Icon(
-                                    FontAwesomeIcons.creditCard,
-                                    color: CommandStateColor.delivered,
-                                    size: 30,
-                                  )),
-                              SizedBox(height: 5),
                               Text(
-                                "${AppLocalizations.of(context)!.translate('top_up')}",
+                                widget.customerData!.nickname!,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 12),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        onTap: () => _jumpToPage(
-                            context,
-                            Kaba_abonnement( presenter: TransactionPresenter(TransactionView()))
-
-                        ),
-                        child: Container(
-                          margin: EdgeInsets.only(top:5),
-                          child: Column(
-                            children: <Widget>[
-//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
-                              Image.asset(  "assets/images/png/Iconeabo.png",  width: 35,  height: 35) ,
+                                    color: KColors.new_black,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500),
+                                textAlign: TextAlign.left,
+                              ),
                               SizedBox(height: 5),
-                              Center(
-                                child: Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Text(
-                                        "${AppLocalizations.of(context)!.translate('suscription')}",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 1,
-                      child: InkWell(
-                        onTap: () => _jumpToPage(
-                            context,
-                            TransferMoneyRequestPage(
-                                presenter: TransferMoneyRequestPresenter(
-                                    TransferMoneyRequestView()))),
-                        child: Container(
-                          child: Column(
-                            children: <Widget>[
-//                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
-                              SizedBox(
-                                  height: 35,
-                                  width: 40,
-                                  child: Icon(CupertinoIcons.paperplane,size:30)),
+                              Text(_getUsername(),
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.normal),
+                                  textAlign: TextAlign.right),
                               SizedBox(height: 10),
-                              Text(
-                                "${AppLocalizations.of(context)!.translate('transfer')}",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 13),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.edit,
+                                    color: KColors.mBlue,
+                                    size: 15,
+                                  ),
+                                  SizedBox(width: 3),
+                                  Text("Edit Profile",
+                                      style: TextStyle(
+                                          // decoration: TextDecoration.underline,
+                                          color: KColors.mBlue,
+                                          fontSize: 12)),
+                                ],
                               )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                            ]))
                   ],
-                )),
-           /*
-           *  Row(
+                ),
+              ],
+            ),
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            decoration: BoxDecoration(
+              color: KColors.new_gray,
+            ),
+          ),
+        ),
+        Container(
+            color: Colors.white,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 /* le solde ! */
-                ActionsWidget(
-                  context: context,
-                  icon: Icons.wallet,
-                  label:
-                      "${AppLocalizations.of(context)!.translate('balance')}",
-                  color: Color(0xff1f9dcb),
-                  onTap: () => _jumpToPage(
-                      context,
-                      TransactionHistoryPage(
-                          presenter: TransactionPresenter(TransactionView()))),
-                ),
-                ActionsWidget(
-                    context: context,
-                    icon: CupertinoIcons.creditcard,
-                    label:
-                        "${AppLocalizations.of(context)!.translate('top_up')}",
-                    color: Color(0xff0e7c56),
-                    onTap: () => _jumpToTopUpPage()),
-                InkWell(
-                  onTap: () => _jumpToPage(
-                      context,
-                      Kaba_abonnement(
-                          presenter: TransactionPresenter(TransactionView()))),
-                  child: Container(
-                    width: 80,
-                    height: 65,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Color(0xffcb1f44).withOpacity(.3),
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        //                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
-                        Image.asset("assets/images/png/Iconeabo.png",
-                            width: 30, height: 30),
-                        Center(
-                          child: Center(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  "${AppLocalizations.of(context)!.translate('suscription')}",
-                                  style: TextStyle(
-                                      color: Color(0xffcb1f44),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 10),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                ActionsWidget(
-                    context: context,
-                    icon: CupertinoIcons.paperplane,
-                    label:
-                        "${AppLocalizations.of(context)!.translate('transfer')}",
-                    color: Color(0xfff3a712),
+                Expanded(
+                  flex: 1,
+                  child: InkWell(
                     onTap: () => _jumpToPage(
                         context,
-                        TransferMoneyRequestPage(
-                            presenter: TransferMoneyRequestPresenter(
-                                TransferMoneyRequestView())))),
-              ],
-            ),
-           * */
-            /* do you have  a suggestion ? */
-            false
-                ? Container(
-                    padding: EdgeInsets.only(top: 20, bottom: 20),
-                    color: Colors.grey.shade100,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
+                        TransactionHistoryPage(
+                            presenter:
+                                TransactionPresenter(TransactionView()))),
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
                         children: <Widget>[
-                          InkWell(
-                              onTap: () => _jumpToPage(
-                                  context,
-                                  CustomerCareChatPage(
-                                      presenter: CustomerCareChatPresenter(
-                                          CustomerCareChatView()))),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: new BorderRadius.only(
-                                          topRight: const Radius.circular(20.0),
-                                          bottomRight:
-                                              const Radius.circular(20.0))),
-                                  padding: EdgeInsets.only(left: 10),
-                                  child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                            "${AppLocalizations.of(context)!.translate('suggestions')}",
-                                            style: TextStyle(
-                                                color: KColors
-                                                    .primaryYellowColor)),
-                                        IconButton(
-                                            onPressed: null,
-                                            icon: Icon(Icons.chevron_right,
-                                                color: KColors.primaryColor))
-                                      ])))
-                        ]))
-                : Container(),
-            /* menu box */
-            SizedBox(height: 30),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: LinearGradient(
-                  colors: [
-                  Color(0xffcb1f44).withOpacity(1),
-                  Color(0xffcb1f44).withOpacity(.6),
-
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: [
-
-                 /*
-                    Positioned.fill(
-                    child: Opacity(
-                      opacity: .4,
-                      child: Stack(
-                        children: const [
-                          Positioned(
-                            top: 20,
-                            left: 40,
-                            child: Icon(Icons.star, size: 40,color: Color(0xb0ffffff),),
-                          ),
-                          Positioned(
-                            top: 80,
-                            right: 50,
-                            child: Icon(Icons.circle, size: 22,color: Color(0xb0ffffff)),
-                          ),
-                          Positioned(
-                            bottom: 20,
-                            left: 30,
-                            child: Icon(Icons.favorite, size: 28,color: Color(0xb0ffffff)),
-                          ),
-                          Positioned(
-                            bottom: 40,
-                            left: 60,
-                            child: Icon(FontAwesomeIcons.biking, size: 100,color: Color(0xb0ffffff)),
-                          ),
-                          Positioned(
-                            top: 100,
-                            left: 120,
-                            child: Icon(Icons.location_on, size: 34,color: Color(
-                                0xb0ffffff)),
-                          ),
-                          Positioned(
-                            bottom: 100,
-                            right: 100,
-                            child: Icon(Icons.shopping_bag, size: 44,color: Color(0xb0ffffff)),
-                          ),
+//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+                          Icon(Icons.account_balance_wallet,
+                              color: KColors.mBlue, size: 40),
+                          SizedBox(height: 5),
+                          Center(
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.translate('balance')}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
                   ),
-
-                 * */   // Contenu réel
-                  Column(
-                    children: [
-                      _buildMenuItem(
-                        context,
-                        icon: Icons.share_location,
-                        color: Colors.redAccent,
-                        text: AppLocalizations.of(context)!
-                            .translate('addresses'),
-                        onTap: () => _jumpToPage(
-                          context,
-                          MyAddressesPage(
-                              presenter: AddressPresenter(AddressView())),
-                        ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: InkWell(
+                    onTap: () => _jumpToTopUpPage(),
+                    child: Container(
+                      child: Column(
+                        children: <Widget>[
+//                                    IconButton (icon:Icon(Icons.show_chart, color: KColors.primaryColor, size: 40)),
+                          Container(
+                              height: 40,
+                              width: 40,
+                              child: Icon(
+                                FontAwesomeIcons.solidCreditCard,
+                                color: CommandStateColor.delivered,
+                              )),
+                          SizedBox(height: 5),
+                          Text(
+                            "${AppLocalizations.of(context)!.translate('top_up')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 12),
+                          )
+                        ],
                       ),
-                      _buildMenuItem(
-                        context,
-                        icon: Icons.shopping_bag,
-                        color: Colors.blueAccent,
-                        text: AppLocalizations.of(context)!.translate('orders'),
-                        onTap: () => _jumpToPage(context, LastOrdersPage()),
-                      ),
-                      _buildMenuItem(
-                        context,
-                        icon: Icons.notifications,
-                        color: Colors.deepPurple,
-                        text: AppLocalizations.of(context)!.translate('feeds'),
-                        onTap: () => _jumpToPage(
-                          context,
-                          FeedsPage(presenter: FeedPresenter(FeedView())),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        context,
-                        icon: FontAwesomeIcons.percent,
-                        color: Colors.orangeAccent,
-                        text: AppLocalizations.of(context)!.translate('coupon'),
-                        onTap: () => _jumpToPage(
-                          context,
-                          MyVouchersPage(
-                              presenter: VoucherPresenter(VoucherView())),
-                        ),
-                      ),
-                      _buildMenuItem(
-                        context,
-                        icon: Icons.settings,
-                        color: Colors.grey,
-                        text:
-                            AppLocalizations.of(context)!.translate('settings'),
-                        onTap: () => _jumpToPage(context, SettingsPage()),
-                        isLast: true,
-                      ),
-                    ],
-                  ),
-
-                ],
-              ),
-            ),
-            SizedBox(height: 20),
-            /* logout */
-            GestureDetector(
-              onTap: () => _logout(),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.grey.withOpacity(.3),
-                        Colors.grey.withOpacity(.1),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(15)),
-                padding: EdgeInsets.symmetric(vertical: 15),
-                child: Center(
-                  child: Text(
-                    Utils.capitalize(
-                        "${AppLocalizations.of(context)!.translate('logout')}"),
-                    style: TextStyle(
-                        color: Colors.black54,
-                      fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
+                 Expanded(
+                  flex: 1,
+                  child: InkWell(
+                     onTap: () => _jumpToPage(
+                        context,
+                        Kaba_abonnement( presenter: TransactionPresenter(TransactionView()))
+                        
+                        ), 
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: <Widget>[
+//                                    IconButton (icon:Icon(Icons.monetization_on, color: KColors.primaryColor, size: 40)),
+                          Image.asset(  "assets/images/png/Iconeabo.png",  width: 40,  height: 40) ,
+                          SizedBox(height: 5),
+                          Center(
+                            child: Center(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.translate('suscription')}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: InkWell(
+                    onTap: () => _jumpToPage(
+                        context,
+                        TransferMoneyRequestPage(
+                            presenter: TransferMoneyRequestPresenter(
+                                TransferMoneyRequestView()))),
+                    child: Container(
+                      child: Column(
+                        children: <Widget>[
+//                                    IconButton (icon:Icon(Icons.send, color: KColors.primaryColor, size: 40)),
+                          SizedBox(
+                              height: 40,
+                              width: 40,
+                              child: SvgPicture.asset(
+                                VectorsData.transfer_money,
+                              )),
+                          SizedBox(height: 10),
+                          Text(
+                            "${AppLocalizations.of(context)!.translate('transfer')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500, fontSize: 13),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            )),
+        /* do you have  a suggestion ? */
+        false
+            ? Container(
+                padding: EdgeInsets.only(top: 20, bottom: 20),
+                color: Colors.grey.shade100,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      InkWell(
+                          onTap: () => _jumpToPage(
+                              context,
+                              CustomerCareChatPage(
+                                  presenter: CustomerCareChatPresenter(
+                                      CustomerCareChatView()))),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: new BorderRadius.only(
+                                      topRight: const Radius.circular(20.0),
+                                      bottomRight:
+                                          const Radius.circular(20.0))),
+                              padding: EdgeInsets.only(left: 10),
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    Text(
+                                        "${AppLocalizations.of(context)!.translate('suggestions')}",
+                                        style: TextStyle(
+                                            color: KColors.primaryYellowColor)),
+                                    IconButton(
+                                        onPressed: null,
+                                        icon: Icon(Icons.chevron_right,
+                                            color: KColors.primaryColor))
+                                  ])))
+                    ]))
+            : Container(),
+        /* menu box */
+
+
+
+
+        InkWell (
+          onTap: () {
+              Navigator.pop(context); // close the bottom sheet
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTc1ODg5MjY5MH0.5f-Kj344ropznydjwJbEZx9xa7kPkJyqokg5gNo0vrE",
+                    receiverId: 36572,
+                  ),
+                ),
+              );
+          },
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(vertical: 20),
+            padding: EdgeInsets.only(left: 25, right: 25, top: 15, bottom: 15),
+            color: KColors.mBlue.withAlpha(15),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(children: [
+                  Icon(
+                    FontAwesomeIcons.comments,
+                    color: KColors.mBlue,
+                    size: 20,
+                  ),
+                  SizedBox(width: 20),
+                  Text(
+                      "${AppLocalizations.of(context)!.translate('customer_care')}",
+                      style: TextStyle(
+                          color: KColors.mBlue,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500))
+                ]),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    StateContainer.of(context).hasUnreadMessage
+                        ? Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)),
+                            child: Text("01",
+                                style: TextStyle(
+                                    color: KColors.mBlue,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w500)))
+                        : Container(),
+                    Icon(Icons.chevron_right, size: 30, color: KColors.mBlue),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          decoration: BoxDecoration(
+              color: KColors.new_gray, borderRadius: BorderRadius.circular(10)),
+          child: Column(children: [
+            InkWell(
+              onTap: () => _jumpToPage(context,
+                  MyAddressesPage(presenter: AddressPresenter(AddressView()))),
+              child: Container(
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, top: 15, bottom: 10),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        width: 0.8, color: Colors.grey.withAlpha(35)),
+                  ),
+                ),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Icon(Icons.share_location, color: KColors.mBlue),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      Utils.capitalize(
+                          "${AppLocalizations.of(context)!.translate('addresses')}"),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                ]),
               ),
             ),
-            SizedBox(height: 10),
             InkWell(
-              onTap: () {
-                _jumpToInfoPage();
-              },
-              child:   Image.asset("assets/images/background/pattern2.png", width:double.infinity)
+              onTap: () => _jumpToPage(context, LastOrdersPage()),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        width: 0.8, color: Colors.grey.withAlpha(35)),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Icon(Icons.rotate_left, color: CommandStateColor.delivered),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      Utils.capitalize(
+                          "${AppLocalizations.of(context)!.translate('orders')}"),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                ]),
+              ),
             ),
-
+            InkWell(
+              onTap: () => _jumpToPage(
+                  context, FeedsPage(presenter: FeedPresenter(FeedView()))),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        width: 0.8, color: Colors.grey.withAlpha(35)),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Icon(Icons.notifications, color: KColors.primaryColor),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      Utils.capitalize(
+                          "${AppLocalizations.of(context)!.translate('feeds')}"),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                ]),
+              ),
+            ),
+            InkWell(
+              onTap: () => _jumpToPage(context,
+                  MyVouchersPage(presenter: VoucherPresenter(VoucherView()))),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                        width: 0.8, color: Colors.grey.withAlpha(35)),
+                  ),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Icon(FontAwesomeIcons.percent,
+                      color: KColors.primaryYellowColor),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      Utils.capitalize(
+                          "${AppLocalizations.of(context)!.translate('coupon')}"),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                ]),
+              ),
+            ),
+            InkWell(
+              onTap: () => _jumpToPage(context, SettingsPage()),
+              child: Container(
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 15),
+                child: Row(mainAxisSize: MainAxisSize.max, children: [
+                  Icon(Icons.settings, color: Colors.grey),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                      Utils.capitalize(
+                          "${AppLocalizations.of(context)!.translate('settings')}"),
+                      style:
+                          TextStyle(fontSize: 15, fontWeight: FontWeight.w500))
+                ]),
+              ),
+            )
           ]),
         ),
-        Positioned(top:0,left:0,child: Header(),),
-
-      ],
+        SizedBox(height: 20),
+        GestureDetector(
+          onTap: () => _logout(),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            decoration: BoxDecoration(
+                color: KColors.primaryColor.withAlpha(20),
+                borderRadius: BorderRadius.circular(5)),
+            padding: EdgeInsets.symmetric(vertical: 15),
+            child: Center(
+              child: Text(
+                Utils.capitalize(
+                    "${AppLocalizations.of(context)!.translate('logout')}"),
+                style: TextStyle(
+                    color: KColors.primaryColor, fontWeight: FontWeight.w500),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+        InkWell(
+          onTap: () {
+            _jumpToInfoPage();
+          },
+          child: Container(
+            margin: EdgeInsets.only(top: 15, bottom: 25),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Icon(Icons.whatshot, size: 20, color: KColors.primaryColor),
+                SizedBox(height: 5),
+                Text(
+                  "${AppLocalizations.of(context)!.translate('powered_by_kaba_tech')}",
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                )
+              ],
+            ),
+          ),
+        )
+      ]),
     );
   }
 
@@ -1272,10 +1237,8 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
     Map results = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => TopNewUpPage(
-          presenter: TopUpPresenter(TopUpView()),
-          transactionType: TransactionType.topup,
-        ),
+        builder: (context) =>
+            TopNewUpPage(presenter: TopUpPresenter(TopUpView()),transactionType: TransactionType.topup,),
       ),
     );
 
@@ -1297,6 +1260,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                 "${AppLocalizations.of(context)!.translate('please_check_balance')}",
             svgIcon: VectorsData.account_balance);
       }
+
     }
   }
 
@@ -1657,46 +1621,5 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
       Navigator.pushNamedAndRemoveUntil(
           context, SplashPage.routeName, (r) => false);
     });
-  }
-
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required IconData icon,
-    required String text,
-    required Color color,
-    required VoidCallback onTap,
-    bool isLast = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        decoration: !isLast
-            ? const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Colors.white, width: 0.5),
-                ),
-              )
-            : null,
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white),
-            const SizedBox(width: 14),
-            Expanded(
-              child: Text(
-                Utils.capitalize(text),
-                style: const TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            const Icon(Icons.chevron_right, color: Colors.white),
-          ],
-        ),
-      ),
-    );
   }
 }

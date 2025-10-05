@@ -58,11 +58,11 @@ class ShopListPageRefined extends StatefulWidget {
 
   ShopListPageRefined(
       {this.key,
-        this.context,
-        this.location,
-        this.foodProposalPresenter,
-        this.restaurantListPresenter,
-        this.type})
+      this.context,
+      this.location,
+      this.foodProposalPresenter,
+      this.restaurantListPresenter,
+      this.type})
       : super(key: key);
 
   @override
@@ -124,7 +124,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   ];
   final Set<String> _selectedFilters = {}; // dynamic selection
 
-
+ 
 
   @override
   void initState() {
@@ -188,7 +188,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-              !.fetchShopList(widget.customer!, widget.type!, null);
+                  !.fetchShopList(widget.customer!, widget.type!, null);
             } else {
               xrint("init -- 4");
               widget.restaurantListPresenter!.fetchShopList(widget.customer!,
@@ -226,26 +226,125 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   @override
   Widget build(BuildContext context) {
-
+ 
 
     return Scaffold(
         backgroundColor: Colors.white,
-     appBar: AppBar(
-       backgroundColor:KColors.primaryColor,
-       toolbarHeight:1,
-       elevation: 0,
-     ),
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          toolbarHeight: 120, // increase height
+          backgroundColor: KColors.primaryColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(25),  // rounded bottom
+              bottomRight: Radius.circular(25),
+            ),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 24),
+            onPressed: () {
+              if (_searchMode) {
+                setState(() {
+                  _searchAutoFocus = false;
+                  _searchMode = false;
+                  _filterEditController.text = "";
+                });
+                _searchAction();
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
+          centerTitle: true,
+          actions: [
+            _searchMode || isLoading
+                ? SizedBox(width: 60)
+                : IconButton(
+              onPressed: () {
+                setState(() {
+                  _searchAutoFocus = true;
+                  _searchMode = true;
+                });
+              },
+              icon: Icon(Icons.search, size: 22, color: Colors.white),
+            )
+          ],
+          title: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(
+                      begin: Offset(1.2, 0),
+                      end: Offset(0, 0),
+                    ).animate(animation),
+                    child: child,
+                  );
+                },
+                child: _searchMode
+                    ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: TextField(
+                    autofocus: _searchAutoFocus,
+                    controller: _filterEditController,
+                    onSubmitted: (val) {
+                      _searchAction(pressButton: true);
+                    },
+                    onChanged: (val) {
+                      EasyDebounce.debounce(
+                        'search-input-debouncer',
+                        Duration(milliseconds: 700),
+                            () => {_searchAction()},
+                      );
+                    },
+                    style: TextStyle(
+                      color: KColors.new_black,
+                      fontSize: 16,
+                    ),
+                    textInputAction: TextInputAction.search,
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!
+                          .translate('find_menu_or_restaurant'),
+                      hintStyle: TextStyle(
+                        fontSize: 14,
+                        color: KColors.new_black.withAlpha(150),
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                )
+                    : Text(
+                  Utils.capitalize(getCategoryTitle(context)[0]),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
 
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
+              /// 👇 Now you can add *anything else* under the title
+              SizedBox(height: 6),
+              SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
+                  _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
+
+            ],
+          ),
+        ),
+
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: Container(
               child: isLoading
                   ? Center(child: MyLoadingProgressWidget())
                   : (hasNetworkError
-                  ? _buildNetworkErrorPage()
-                  : hasSystemError
-                  ? _buildSysErrorPage()
-                  : _buildRestaurantList(widget.restaurantList??[]))),
+                      ? _buildNetworkErrorPage()
+                      : hasSystemError
+                          ? _buildSysErrorPage()
+                          : _buildRestaurantList(widget.restaurantList??[]))),
         ));
 
     /* return Scaffold(
@@ -294,108 +393,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            Container(
-              padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
-              decoration: BoxDecoration(
-                color: KColors.primaryColor,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
-                        onPressed: () {
-                          if (_searchMode) {
-                            setState(() {
-                              _searchAutoFocus = false;
-                              _searchMode = false;
-                              _filterEditController.text = "";
-                            });
-                            _searchAction();
-                          } else {
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
-                      const Spacer(),
-                      _searchMode || isLoading
-                          ? const SizedBox(width: 48)
-                          : IconButton(
-                        icon: const Icon(Icons.search, color: Colors.white, size: 22),
-                        onPressed: () {
-                          setState(() {
-                            _searchAutoFocus = true;
-                            _searchMode = true;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-
-                  /// 🔍 Title / Search
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _searchMode
-                        ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: TextField(
-                        autofocus: _searchAutoFocus,
-                        controller: _filterEditController,
-                        onSubmitted: (val) => _searchAction(pressButton: true),
-                        onChanged: (val) {
-                          EasyDebounce.debounce(
-                            'search-input-debouncer',
-                            const Duration(milliseconds: 700),
-                                () => _searchAction(),
-                          );
-                        },
-                        style: TextStyle(color: KColors.new_black, fontSize: 16),
-                        textInputAction: TextInputAction.search,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!
-                              .translate('find_menu_or_restaurant'),
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            color: KColors.new_black.withAlpha(150),
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    )
-                        : Text(
-                      Utils.capitalize(getCategoryTitle(context)[0]),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  /// 🔘 Selection widget under title
-                  SearchSwitchWidget(
-                    searchTypePosition,
-                    _choice,
-                    _filterFunction,
-                    _listContentFilter,
-                    _scrollToTopFunction,
-                    widget.type!,
-                    filterConfiguration ?? {},
-                  ),
-                ],
-              ),
-            ),
             SizedBox(height: 10),
 
             SizedBox(height: 10),
@@ -404,114 +401,114 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                 child: Column(
                     children: <Widget>[
 //                  SizedBox(height: 40)
-                    ]..add(
-                      /* according to the search position, show a different page. */
+                ]..add(
+                        /* according to the search position, show a different page. */
                         searchTypePosition == 1
                             ? (!_searchMode
-                            ? Container(
-                          color: Colors.white,
-                          height: MediaQuery.of(context).size.height -
-                              150,
+                                ? Container(
+                                    color: Colors.white,
+                                    height: MediaQuery.of(context).size.height -
+                                        150,
 //                              padding: EdgeInsets.only(bottom:230),
-                          child: widget.restaurantList?.length ==
-                              null ||
-                              widget.restaurantList?.length == 0
-                              ? Container(
-                              child: Center(
-                                  child:
-                                  Column(children: <Widget>[
-                                    SizedBox(height: 20),
-                                    Icon(Icons.shopping_cart_sharp,
-                                        color: Colors.grey),
-                                    SizedBox(height: 10),
-                                    Text(
-                                        "${AppLocalizations.of(context)!.translate('no_content_to_show')}")
-                                  ])))
-                              : RefreshIndicator(
-                            onRefresh: () async {
-                              if (StateContainer?.of(context)
-                                  ?.location ==
-                                  null) {
-                                widget.restaurantListPresenter
-                                !.fetchShopList(
-                                    widget.customer!,
-                                    widget.type!,
-                                    null);
-                              } else
-                                widget.restaurantListPresenter
-                                !.fetchShopList(
-                                    widget.customer!,
-                                    widget.type!,
-                                    StateContainer.of(
-                                        context)
-                                        .location);
-                            },
-                            color: Colors.purple,
-                            child: Scrollbar(
-                              thumbVisibility: true,
-                              controller:
-                              _restaurantListScrollController,
-                              child: ListView.builder(
-                                controller:
-                                _restaurantListScrollController,
-                                itemCount:
-                                visibleItems?.length != null
-                                    ? visibleItems!.length +
-                                    1
-                                    : 0,
-                                itemBuilder:
-                                    (context, position) {
-                                  if (position ==
-                                      visibleItems?.length) {
-                                    if (hasMoreData()) {
-                                      return Container(
-                                          width: MediaQuery.of(
-                                              context)
-                                              .size
-                                              .width,
-                                          height: 100,
-                                          child: Center(
-                                              child:
-                                              CircularProgressIndicator()));
-                                    } else {
-                                      return Container(
-                                          width: MediaQuery.of(
-                                              context)
-                                              .size
-                                              .width,
-                                          height: 100,
-                                          child: Center(
-                                              child: Text(
-                                                "${AppLocalizations.of(context)!.translate("the_end")}",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                    FontWeight
-                                                        .bold,
-                                                    fontSize: 12,
-                                                    color: KColors
-                                                        .new_black),
-                                              )));
-                                    }
-                                  } else {
-                                    return ShopListWidget(
-                                        shopModel: visibleItems![
-                                        position]);
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        )
-                            : _showSearchPage())
+                                    child: widget.restaurantList?.length ==
+                                                null ||
+                                            widget.restaurantList?.length == 0
+                                        ? Container(
+                                            child: Center(
+                                                child:
+                                                    Column(children: <Widget>[
+                                            SizedBox(height: 20),
+                                            Icon(Icons.shopping_cart_sharp,
+                                                color: Colors.grey),
+                                            SizedBox(height: 10),
+                                            Text(
+                                                "${AppLocalizations.of(context)!.translate('no_content_to_show')}")
+                                          ])))
+                                        : RefreshIndicator(
+                                            onRefresh: () async {
+                                              if (StateContainer?.of(context)
+                                                      ?.location ==
+                                                  null) {
+                                                widget.restaurantListPresenter
+                                                    !.fetchShopList(
+                                                        widget.customer!,
+                                                        widget.type!,
+                                                        null);
+                                              } else
+                                                widget.restaurantListPresenter
+                                                    !.fetchShopList(
+                                                        widget.customer!,
+                                                        widget.type!,
+                                                        StateContainer.of(
+                                                                context)
+                                                            .location);
+                                            },
+                                            color: Colors.purple,
+                                            child: Scrollbar(
+                                              thumbVisibility: true,
+                                              controller:
+                                                  _restaurantListScrollController,
+                                              child: ListView.builder(
+                                                controller:
+                                                    _restaurantListScrollController,
+                                                itemCount:
+                                                    visibleItems?.length != null
+                                                        ? visibleItems!.length +
+                                                            1
+                                                        : 0,
+                                                itemBuilder:
+                                                    (context, position) {
+                                                  if (position ==
+                                                      visibleItems?.length) {
+                                                    if (hasMoreData()) {
+                                                      return Container(
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width,
+                                                          height: 100,
+                                                          child: Center(
+                                                              child:
+                                                                  CircularProgressIndicator()));
+                                                    } else {
+                                                      return Container(
+                                                          width: MediaQuery.of(
+                                                                  context)
+                                                              .size
+                                                              .width,
+                                                          height: 100,
+                                                          child: Center(
+                                                              child: Text(
+                                                            "${AppLocalizations.of(context)!.translate("the_end")}",
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 12,
+                                                                color: KColors
+                                                                    .new_black),
+                                                          )));
+                                                    }
+                                                  } else {
+                                                    return ShopListWidget(
+                                                        shopModel: visibleItems![
+                                                            position]);
+                                                  }
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                  )
+                                : _showSearchPage())
                             : Container(
-                            margin: EdgeInsets.only(top: 10),
-                            child: isSearchingMenus
-                                ? Center(child: MyLoadingProgressWidget())
-                                : (searchMenuHasNetworkError
-                                ? _buildSearchMenuNetworkErrorPage()
-                                : searchMenuHasSystemError
-                                ? _buildSearchMenuSysErrorPage()
-                                : _buildSearchedFoodList())))),
+                                margin: EdgeInsets.only(top: 10),
+                                child: isSearchingMenus
+                                    ? Center(child: MyLoadingProgressWidget())
+                                    : (searchMenuHasNetworkError
+                                        ? _buildSearchMenuNetworkErrorPage()
+                                        : searchMenuHasSystemError
+                                            ? _buildSearchMenuSysErrorPage()
+                                            : _buildSearchedFoodList())))),
               ),
             ),
           ],
@@ -548,11 +545,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   void _showDialog(
       {String? svgIcons,
-        Icon? icon,
-        var message,
-        bool okBackToHome = false,
-        bool isYesOrNo = false,
-        Function? actionIfYes}) {
+      Icon? icon,
+      var message,
+      bool okBackToHome = false,
+      bool isYesOrNo = false,
+      Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -563,8 +560,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                    svgIcons!,
-                  )
+                          svgIcons!,
+                        )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -573,40 +570,40 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all(
-                        BorderSide(color: Colors.grey, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('refuse')}",
-                    style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(
-                    side: MaterialStateProperty.all(BorderSide(
-                        color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('accept')}",
-                    style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  actionIfYes!();
-                },
-              ),
-            ]
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(
+                              BorderSide(color: Colors.grey, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context)!.translate('refuse')}",
+                          style: TextStyle(color: Colors.grey)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    OutlinedButton(
+                      style: ButtonStyle(
+                          side: MaterialStateProperty.all(BorderSide(
+                              color: KColors.primaryColor, width: 1))),
+                      child: new Text(
+                          "${AppLocalizations.of(context)!.translate('accept')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        actionIfYes!();
+                      },
+                    ),
+                  ]
                 : <Widget>[
-              OutlinedButton(
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('ok')}",
-                    style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ]);
+                    OutlinedButton(
+                      child: new Text(
+                          "${AppLocalizations.of(context)!.translate('ok')}",
+                          style: TextStyle(color: KColors.primaryColor)),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ]);
       },
     );
   }
@@ -830,7 +827,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         } else {
           // location is enabled
           bool isLocationServiceEnabled =
-          await Geolocator.isLocationServiceEnabled();
+              await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
             /*  ---- */
             // await Geolocator.openLocationSettings();
@@ -892,28 +889,28 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           } else {
             positionStream =
                 Geolocator.getPositionStream().listen((Position position) {
-                  /* compare current and old position */
-                  if (position?.latitude != null &&
-                      tmpLocation?.latitude != null &&
-                      (position.latitude * 100).round() ==
-                          (tmpLocation!.latitude * 100).round() &&
-                      (position.longitude * 100).round() ==
-                          (tmpLocation!.longitude * 100).round()) {
-                    widget.samePositionCount = (widget.samePositionCount ?? 0) + 1;
-                    // return;
-                  } else {
-                    widget.samePositionCount = 0;
-                    tmpLocation = StateContainer.of(widget.context!).location;
-                    if (position != null && mounted) {
-                      widget.hasGps = true;
-                      StateContainer.of(context).updateLocation(location: position);
-                      widget.restaurantListPresenter!.fetchShopList(widget.customer!,
-                          widget.type!, StateContainer.of(context).location);
-                    }
-                  }
-                  if (widget.samePositionCount! >= 3 || widget.hasGps)
-                    positionStream?.cancel();
-                });
+              /* compare current and old position */
+              if (position?.latitude != null &&
+                  tmpLocation?.latitude != null &&
+                  (position.latitude * 100).round() ==
+                      (tmpLocation!.latitude * 100).round() &&
+                  (position.longitude * 100).round() ==
+                      (tmpLocation!.longitude * 100).round()) {
+                widget.samePositionCount = (widget.samePositionCount ?? 0) + 1;
+                // return;
+              } else {
+                widget.samePositionCount = 0;
+                tmpLocation = StateContainer.of(widget.context!).location;
+                if (position != null && mounted) {
+                  widget.hasGps = true;
+                  StateContainer.of(context).updateLocation(location: position);
+                  widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+                      widget.type!, StateContainer.of(context).location);
+                }
+              }
+              if (widget.samePositionCount! >= 3 || widget.hasGps)
+                positionStream?.cancel();
+            });
           }
         }
       }
@@ -945,73 +942,73 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       return Container(
           child: Center(
               child: Column(children: <Widget>[
-                /*  SizedBox(height: 20),
+       /*  SizedBox(height: 20),
         Icon(Icons.search, color: Colors.grey),
         SizedBox(height: 10),
         Text("${AppLocalizations.of(context)!.translate('please_search_item')}") */
-                Padding(
-                  padding: const EdgeInsets.only(left: 15 , right: 15),
-                  child: TextField(
-                    decoration: InputDecoration(
-                      hintText: "Rechercher un plat...",
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-                    ),
-                  ),
+         Padding(
+          padding: const EdgeInsets.only(left: 15 , right: 15),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: "Rechercher un plat...",
+              prefixIcon: const Icon(Icons.search),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+            ),
+          ),
+        ), 
+
+        Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 16),
+  child:  Wrap(
+            spacing: 1,
+            runSpacing: 1,
+            children: _allFilters.map((filter) {
+              final isSelected = _selectedFilter == filter;
+              return ChoiceChip(
+
+                padding: EdgeInsets.symmetric(horizontal: 1),
+                label: Text("#$filter"),
+                selected: isSelected,
+                showCheckmark: false,
+                selectedColor: KColors.primaryColor,
+                backgroundColor: Colors.grey.shade200,
+                labelStyle: TextStyle(
+                  fontSize: 11 , 
+                  color: isSelected ? Colors.white : Colors.black,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 ),
+                onSelected: (_) {
+                  setState(() {
+                    _selectedFilter = filter;
+                  });
+                },
+              );
+            }).toList(),
+            
+      ),
 
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child:  Wrap(
-                    spacing: 1,
-                    runSpacing: 1,
-                    children: _allFilters.map((filter) {
-                      final isSelected = _selectedFilter == filter;
-                      return ChoiceChip(
+),
 
-                        padding: EdgeInsets.symmetric(horizontal: 1),
-                        label: Text("#$filter"),
-                        selected: isSelected,
-                        showCheckmark: false,
-                        selectedColor: KColors.primaryColor,
-                        backgroundColor: Colors.grey.shade200,
-                        labelStyle: TextStyle(
-                          fontSize: 11 ,
-                          color: isSelected ? Colors.white : Colors.black,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                        ),
-                        onSelected: (_) {
-                          setState(() {
-                            _selectedFilter = filter;
-                          });
-                        },
-                      );
-                    }).toList(),
+SizedBox(height: 10,),
 
-                  ),
-
-                ),
-
-                SizedBox(height: 10,),
-
-                Padding
-                  (
-                    padding: EdgeInsets.all(5),
-                    child:Center(
-                      child: _selectedFilter == null
-                          ? const Text(
-                        "Sélectionnez un filtre",
-                        style: TextStyle(fontSize: 16, color: Colors.grey),
-                      )
-                          : FoodGrid(foodType: _selectedFilter),
-                    )
-                )
+Padding
+( 
+  padding: EdgeInsets.all(5),
+ child:Center(
+            child: _selectedFilter == null
+                ? const Text(
+                    "Sélectionnez un filtre",
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                  )
+                : FoodGrid(foodType: _selectedFilter),
+          )
+)
 
 
-              ]))
+      ]))
       );
 
     if (foodProposals?.length == 0) {
@@ -1021,19 +1018,19 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 20),
-                    Icon(Icons.search, color: Colors.grey),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('sorry_cant_find_item')}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 12))
-                  ])));
+                SizedBox(height: 20),
+                Icon(Icons.search, color: Colors.grey),
+                SizedBox(height: 10),
+                Text(
+                    "${AppLocalizations.of(context)!.translate('sorry_cant_find_item')}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 12))
+              ])));
     }
 
     var filteredResult =
-    _filteredFoodProposal(_filterDropdownValue??"cheap_to_exp",
-        foodProposals??[]);
+        _filteredFoodProposal(_filterDropdownValue??"cheap_to_exp",
+            foodProposals??[]);
 
     if (justInflatedFoodProposal) {
       // firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
@@ -1053,11 +1050,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           addAutomaticKeepAlives: true,
           controller: _searchListScrollController,
           itemCount:
-          filteredResult?.length != null ? filteredResult.length + 1 : 0,
+              filteredResult?.length != null ? filteredResult.length + 1 : 0,
           itemBuilder: (context, index) {
             if (index == filteredResult?.length) return Container(height: 300);
             return ProductWithShopDetailsWidget(
-              // key: index == 0 ? firstItemKey : null,
+                // key: index == 0 ? firstItemKey : null,
                 food: filteredResult[index]);
           },
         ),
@@ -1078,7 +1075,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     for (var restaurant in data) {
       String sentence =
-      removeAccentFromString("${restaurant.name}".toLowerCase());
+          removeAccentFromString("${restaurant.name}".toLowerCase());
       String sentence1 = removeAccentFromString(content.trim()).toLowerCase();
 
 //      xrint("filtered string ${sentence} => ${sentence1}");
@@ -1125,7 +1122,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         .replaceAll(new RegExp(r'ú'), "u")
         .replaceAll(new RegExp(r'ū'), "u")
 
-    //
+        //
 
         .replaceAll(new RegExp(r'É'), "e")
         .replaceAll(new RegExp(r'È'), "e")
@@ -1185,11 +1182,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       return Container(
           child: Center(
               child: Column(children: <Widget>[
-                SizedBox(height: 20),
-                Icon(Icons.shopping_cart_sharp, color: Colors.grey),
-                SizedBox(height: 10),
-                Text("${AppLocalizations.of(context)!.translate('no_content_to_show')}")
-              ])));
+        SizedBox(height: 20),
+        Icon(Icons.shopping_cart_sharp, color: Colors.grey),
+        SizedBox(height: 10),
+        Text("${AppLocalizations.of(context)!.translate('no_content_to_show')}")
+      ])));
 
     return Container(
       color: Colors.white,
@@ -1214,12 +1211,12 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     height: 100,
                     child: Center(
                         child: Text(
-                          "${AppLocalizations.of(context)!.translate("the_end")}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                              color: KColors.new_black),
-                        )));
+                      "${AppLocalizations.of(context)!.translate("the_end")}",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                          color: KColors.new_black),
+                    )));
               }
             } else {
               return ShopListWidget(shopModel: visibleItems![position]);
@@ -1246,7 +1243,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
         // we get the restaurant and we switch it.
         foods[i].restaurant_entity =
-        pageRestaurants[foods[i]?.restaurant_entity?.id];
+            pageRestaurants[foods[i]?.restaurant_entity?.id];
       }
     }
     return foods;
@@ -1343,7 +1340,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             try {
               return int.parse(fd2.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                  int.parse(fd1.restaurant_entity!.delivery_pricing!));
+                      int.parse(fd1.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1367,7 +1364,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             try {
               return int.parse(fd1.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                  int.parse(fd2.restaurant_entity!.delivery_pricing!));
+                      int.parse(fd2.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1395,7 +1392,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       widget.restaurantList = restaurants;
       _setLastTimeRestaurantListRequestToNow();
       visibleItems = (widget?.restaurantList?.length != null &&
-          widget!.restaurantList!.length > PAGE_SIZE
+              widget!.restaurantList!.length > PAGE_SIZE
           ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
@@ -1462,7 +1459,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (ModalRoute.of(context)?.settings?.name == null ||
           !("/HomePage".compareTo(ModalRoute.of(context)!.settings!.name!) ==
-              0 &&
+                  0 &&
               ModalRoute.of(context)!.isCurrent)) {
         // check if time is ok
         return;
@@ -1470,8 +1467,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
       int POTENTIAL_EXECUTION_TIME = 3;
       int? diff = (DateTime.now().millisecondsSinceEpoch -
-          StateContainer.of(context)
-              .last_time_get_restaurant_list_timeout!) ~/
+              StateContainer.of(context)
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
 
       // convert different in minute seconds
@@ -1524,7 +1521,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                 horizontal: 8, vertical: 5),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                BorderRadius.all(Radius.circular(10)),
+                                    BorderRadius.all(Radius.circular(10)),
                                 color: Colors.grey.withAlpha(30)),
                             child: Text(
                                 "${AppLocalizations.of(context)!.translate('t_opened')}"
@@ -1606,8 +1603,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     } else {
       // time different since last time update
       int diff = (DateTime.now().millisecondsSinceEpoch -
-          StateContainer.of(context)
-              .last_time_get_restaurant_list_timeout!) ~/
+              StateContainer.of(context)
+                  .last_time_get_restaurant_list_timeout!) ~/
           1000;
       // convert different in minute seconds
       int min = diff ~/ 60;
@@ -1636,9 +1633,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       case "food": // food
         tmp = [
           AppLocalizations.of(context)
-          !.translate('service_restaurant_type_name'),
+              !.translate('service_restaurant_type_name'),
           AppLocalizations.of(context)
-          !.translate('service_restaurant_type_product')
+              !.translate('service_restaurant_type_product')
         ];
         break;
       case "drink": // drinks
@@ -1659,12 +1656,12 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];*/
         break;
-    //   case 1005: // movies
-    //     category_name_code = "service_category_movies";
-    //     break;
-    //   case 1006: // package delivery
-    //     category_name_code = "service_category_package_delivery";
-    //     break;
+      //   case 1005: // movies
+      //     category_name_code = "service_category_movies";
+      //     break;
+      //   case 1006: // package delivery
+      //     category_name_code = "service_category_package_delivery";
+      //     break;
       case "shop": // shopping
         tmp = [
           AppLocalizations.of(context)!.translate('service_shop_type_name'),
@@ -1675,7 +1672,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         tmp = [
           AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-          !.translate('service_drugstore_type_product')
+              !.translate('service_drugstore_type_product')
         ];
         break;
       case "book": // shopping
@@ -1700,7 +1697,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         tmp = [
           AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-          !.translate('service_drugstore_product_name')
+              !.translate('service_drugstore_product_name')
         ];
         break;
     }
@@ -1723,7 +1720,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       if (previousSearchKey == _filterEditController.text) return;
       searchKey = _filterEditController.text!.trim();
       widget.restaurantListPresenter
-      !.filterShopList(widget.finalRestaurantList!, searchKey);
+          !.filterShopList(widget.finalRestaurantList!, searchKey);
     }
   }
 
@@ -1747,7 +1744,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     setState(() {
       widget.restaurantList = shops;
       visibleItems = (widget?.restaurantList?.length != null &&
-          widget.restaurantList!.length > PAGE_SIZE
+              widget.restaurantList!.length > PAGE_SIZE
           ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
@@ -1755,7 +1752,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   _onScroll() {
     if (_restaurantListScrollController.offset >=
-        _restaurantListScrollController.position.maxScrollExtent &&
+            _restaurantListScrollController.position.maxScrollExtent &&
         !_restaurantListScrollController.position.outOfRange) {
       if (hasMoreData()) {
         setState(() {
@@ -1800,16 +1797,16 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   }
 }
 
-// 🔹 Chip widget
-Widget _buildChip(String label, bool selected) {
-  return Container(
-    margin: const EdgeInsets.only(right: 8),
-    child: FilterChip(
-      label: Text(label),
-      selected: selected,
-      selectedColor: Colors.red.shade100,
-      checkmarkColor: Colors.red,
-      onSelected: (_) {},
-    ),
-  );
-}
+  // 🔹 Chip widget
+  Widget _buildChip(String label, bool selected) {
+    return Container(
+      margin: const EdgeInsets.only(right: 8),
+      child: FilterChip(
+        label: Text(label),
+        selected: selected,
+        selectedColor: Colors.red.shade100,
+        checkmarkColor: Colors.red,
+        onSelected: (_) {},
+      ),
+    );
+  }
