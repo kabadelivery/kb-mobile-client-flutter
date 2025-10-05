@@ -152,7 +152,6 @@ class _VerificationPageState extends State<VerificationPage> {
         ),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
@@ -239,8 +238,9 @@ class _VerificationPageState extends State<VerificationPage> {
               ],
             ),
           ),
-
-          Image.asset("assets/images/background/Patternlogin.png"),
+          const SizedBox(height: 50),
+          Image.asset("assets/images/background/Patternlogin.png",
+              fit: BoxFit.cover, height: 290),
         ],
       ),
     );

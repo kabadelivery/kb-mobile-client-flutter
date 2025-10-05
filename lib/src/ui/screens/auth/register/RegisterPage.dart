@@ -151,7 +151,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         ),
         backgroundColor: Colors.white,
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
          // height: MediaQuery.of(context).size.height,
           children: [
              SingleChildScrollView(
@@ -327,10 +326,11 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         ),
       ),
         Image.asset(
-            "assets/images/background/Patternlogin.png",
-            width: double.infinity,
-            fit: BoxFit.cover
-          ),
+  "assets/images/background/Patternlogin.png",
+  width: double.infinity,
+  height: 275,
+  fit: BoxFit.cover, // scales and crops to cover the width
+),
           ]
           
         )
