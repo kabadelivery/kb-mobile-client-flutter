@@ -61,7 +61,14 @@ class _UserInformationPageState extends State<UserInformationPage> {
             width: size.width,
             height: 170,
             decoration: const BoxDecoration(
-             color:  KabaChineColors.primary,
+              gradient: LinearGradient(
+                colors: [
+                  KabaChineColors.primary,
+                  KabaChineColors.primary_darker,
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              ),
               borderRadius: BorderRadius.only(
                 bottomLeft: Radius.circular(20),
                 bottomRight: Radius.circular(20),

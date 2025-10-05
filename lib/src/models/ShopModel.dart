@@ -25,7 +25,7 @@ class ShopModel {
   String? category_id;
   bool is_certified=false;
   double distanceBetweenMeandRestaurant = 0;
-  int? cooking_time;
+
   ShopModel(
       {this.id,
       this.name,
@@ -51,7 +51,6 @@ class ShopModel {
       this.max_food,
       this.location,
       this.is_certified = false,
-        this.cooking_time
       });
 
 
@@ -103,8 +102,7 @@ class ShopModel {
         "is_new": is_new,
         "location": location,
         "category_id": category_id,
-        "is_certified":is_certified??false,
-        "cooking_time":cooking_time
+        "is_certified":is_certified??false
       };
   @override
   String toString() {

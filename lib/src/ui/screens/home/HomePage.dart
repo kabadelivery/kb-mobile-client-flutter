@@ -48,7 +48,6 @@ import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -641,12 +640,12 @@ class _HomePageState extends State<HomePage> {
         unselectedFontSize: 12,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Image.asset("assets/images/png/grey-service.png",width:20),
-            activeIcon: Image.asset("assets/images/png/service.png",width:20),
+            icon: Icon(Icons.shopping_bag_outlined),
+            activeIcon: Icon(Icons.shopping_bag,color: KabaChineColors.primary),
             label: Utils.capitalize(
-                'Services'),
+                '${AppLocalizations.of(context)!.translate('buy')}'),
             tooltip: Utils.capitalize(
-                'Services'),
+                '${AppLocalizations.of(context)!.translate('buy')}'),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.rocket_outlined), // Icon(Icons.home),

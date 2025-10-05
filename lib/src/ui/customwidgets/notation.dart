@@ -27,9 +27,9 @@ Widget Notation({required String text,int? count, ShopProductModel? food}) {
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      Text('${note.toStringAsFixed(1)}',style: TextStyle(color: KColors.primaryColor,fontSize: 14,fontWeight: FontWeight.bold),),
-
-      Icon(Icons.star, color: KColors.primaryYellowColor, size: 18) ,
+      Text('${text.substring(2,3)=="0"?text.substring(0,1):note.toStringAsFixed(1)}/5',style: TextStyle(color: KColors.primaryColor,fontSize: 12,fontWeight: FontWeight.bold),),
+      SizedBox(width: 4,),
+      Icon(Icons.star, color: KColors.primaryColor, size: 18) ,
     ],
   );
 }
@@ -54,5 +54,3 @@ Future<Map?> showReviewDialog(BuildContext context,Widget dialog) async {
     },
   );
 }
-
-

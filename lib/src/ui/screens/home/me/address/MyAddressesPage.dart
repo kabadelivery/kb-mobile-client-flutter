@@ -114,7 +114,6 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         });
       });
     }
-
     if(widget.autoCreatAddress!=null){
       Timer.run(() {
         _createAddress(autoCreate: true).then((value) {
@@ -527,13 +526,9 @@ class _MyAddressesPageState extends State<MyAddressesPage>
                 presenter: EditAddressPresenter(EditAddressView()),
                 address: widget.autoCreatAddress,
                 gps_location: widget.gps_location):
-       widget.address_type==2? EditAddressPage(
+        EditAddressPage(
             presenter: EditAddressPresenter(EditAddressView()),
-            address: widget.autoCreatAddress,
-       ):
-       EditAddressPage(
-           presenter: EditAddressPresenter(EditAddressView()),
-           gps_location: widget.gps_location),
+            gps_location: widget.gps_location),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           var begin = Offset(1.0, 0.0);
           var end = Offset.zero;

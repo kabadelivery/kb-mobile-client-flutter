@@ -123,8 +123,8 @@ class _HeaderState extends State<Header> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Image.asset("assets/images/png/abo_white.png",width: 25,height: 25,),
-                      Text("Abo.",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),)
+                      Icon(Icons.subscriptions,color: Colors.white,),
+                      Text("Abo.",style: TextStyle(color: Colors.white,fontSize: 12),)
                     ],
                   ),
                 ),
@@ -139,8 +139,8 @@ class _HeaderState extends State<Header> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.chat_bubble_outline,color: Colors.white),
-                          Text("Chat",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),
+                          Icon(Icons.chat_bubble_outline,color: Colors.white,),
+                          Text("Chat",style: TextStyle(color: Colors.white,fontSize: 12),
                           )])),
                 Container(width: 1,height: 20,color: Colors.white,),
                 GestureDetector(
@@ -151,7 +151,7 @@ class _HeaderState extends State<Header> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.call_outlined,color: Colors.white,),
-                      Text("Call",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),)
+                      Text("Call",style: TextStyle(color: Colors.white,fontSize: 12),)
                     ],
                   ),
                 ),
