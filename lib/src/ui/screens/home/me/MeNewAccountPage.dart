@@ -389,7 +389,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        "${AppLocalizations.of(context)!.translate('suscription')}",
+                                        "${AppLocalizations.of(context)!.translate('subscription')}",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12),

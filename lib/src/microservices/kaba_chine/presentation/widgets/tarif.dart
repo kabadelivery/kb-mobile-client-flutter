@@ -1,5 +1,6 @@
 import 'package:KABA/src/microservices/kaba_chine/Enums/TarifType.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
+import 'package:KABA/src/ui/customwidgets/separator.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
@@ -208,7 +209,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
               children: [
                 
                 Text(
-                  "${tarif.mode==Tariftype.boat.value?"240.000":tarif.price?.toInt()} FCFA ",
+                  "${formatCurrency(tarif.price!)} FCFA ",
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 14,
@@ -293,7 +294,7 @@ TarifWidget({required BuildContext context, required TarifEntity tarif}) {
                 padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
                 child: GestureDetector(
                   onTap: (){
-                    showShippingCostPopup(context);
+                    showShippingCostPopup(context,formatCurrency(tarif.price!));
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

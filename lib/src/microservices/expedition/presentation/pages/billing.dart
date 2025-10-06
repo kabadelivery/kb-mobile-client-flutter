@@ -299,7 +299,7 @@ class _ExpeditionBillingState extends State<ExpeditionBilling> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10)
                             ),
-                            child: Text(isLoading?"Envoie en cours...":"Envoyer la proposition",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white),),
+                            child: Text(isLoading?"${AppLocalizations.of(context)!.translate("in_progress")}":"${AppLocalizations.of(context)!.translate("send_proposal")}",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 14,color:Colors.white),),
                             onPressed: ()async{
                               setState(() {
                                 isLoading = true;

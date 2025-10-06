@@ -1,32 +1,34 @@
 import 'package:KABA/src/microservices/expedition/data/expedition/create_expedition_model.dart';
+import 'package:flutter/cupertino.dart';
 
-String handleExpeditionFormMessage(CreateExpedition createExpedition) {
+import '../../../localizations/AppLocalizations.dart';
+String handleExpeditionFormMessage(BuildContext context, CreateExpedition createExpedition) {
   if (createExpedition.adresseOrigine == null) {
-    return "Choisissez une adresse d'origine";
+    return "${AppLocalizations.of(context)!.translate('choose_origin_address')}";
   }
 
   if (createExpedition.telephoneOrigine == null) {
-    return "Entrez votre numéro de téléphone";
+    return "${AppLocalizations.of(context)!.translate('enter_phone_number')}";
   }
 
   if (createExpedition.methodeCollecte == null) {
-    return "Choisissez une méthode de collecte";
+    return "${AppLocalizations.of(context)!.translate('choose_collection_method')}";
   }
 
   if (createExpedition.colis == null) {
-    return "Ajoutez un colis à expédier";
+    return "${AppLocalizations.of(context)!.translate('add_package')}";
   }
-  if(createExpedition.methodeCollecte==null){
-    return "Choisissez une méthode de collecte";
+
+  if (createExpedition.methodeCollecte != "DEPOT_PARTENAIRE" && createExpedition.dateCollecte == null) {
+    return "${AppLocalizations.of(context)!.translate('choose_collection_date')}";
   }
-  if(createExpedition.methodeCollecte!="DEPOT_PARTENAIRE" && createExpedition.dateCollecte==null){
-    return "Choisissez une date de collecte";
+
+  if (createExpedition.methodeCollecte != "DEPOT_PARTENAIRE" && createExpedition.heureCollecte == null) {
+    return "${AppLocalizations.of(context)!.translate('choose_collection_time')}";
   }
-  if(createExpedition.methodeCollecte!="DEPOT_PARTENAIRE" &&createExpedition.heureCollecte==null){
-    return "Choisissez une heure de collecte";
-  }
+
   if (createExpedition.colis!.isEmpty) {
-    return "Ajoutez au moins un colis à expédier";
+    return "${AppLocalizations.of(context)!.translate('add_at_least_one_package')}";
   }
 
   for (var i = 0; i < createExpedition.colis!.length; i++) {
@@ -34,33 +36,33 @@ String handleExpeditionFormMessage(CreateExpedition createExpedition) {
     final numero = i + 1;
 
     if (colis.poids == null) {
-      return "Votre colis numéro $numero doit avoir un poids";
+      return AppLocalizations.of(context)!.translate('package_must_have_weight').replaceAll('{number}', '$numero');
     }
 
     if (colis.description == null) {
-      return "Votre colis numéro $numero doit avoir une description";
+      return AppLocalizations.of(context)!.translate('package_must_have_description').replaceAll('{number}', '$numero');
     }
 
-    if (colis.adresseDestination == null && colis.recipientAddress==null) {
-      return "Votre colis numéro $numero doit avoir une adresse de destination";
+    if (colis.adresseDestination == null && colis.recipientAddress == null) {
+      return AppLocalizations.of(context)!.translate('package_must_have_destination').replaceAll('{number}', '$numero');
     }
-
 
     if (colis.departureTown == null) {
-      return "Votre colis numéro $numero doit avoir une ville de départ";
+      return AppLocalizations.of(context)!.translate('package_must_have_departure_town').replaceAll('{number}', '$numero');
     }
 
     if (colis.arrivalTown == null) {
-      return "Votre colis numéro $numero doit avoir une ville d’arrivée";
+      return AppLocalizations.of(context)!.translate('package_must_have_arrival_town').replaceAll('{number}', '$numero');
     }
 
     if (colis.recipientPhoneNumber == null) {
-      return "Votre colis numéro $numero doit avoir un numéro de téléphone destinataire";
+      return AppLocalizations.of(context)!.translate('package_must_have_recipient_phone').replaceAll('{number}', '$numero');
     }
 
     if (colis.images == null || colis.images!.length < 2) {
-      return "Votre colis numéro $numero doit avoir au moins 02 images";
+      return AppLocalizations.of(context)!.translate('package_must_have_two_images').replaceAll('{number}', '$numero');
     }
   }
+
   return "";
 }
