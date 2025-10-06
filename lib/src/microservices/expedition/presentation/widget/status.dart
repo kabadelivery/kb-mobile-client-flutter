@@ -2,6 +2,7 @@ import 'package:KABA/src/microservices/expedition/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../localizations/AppLocalizations.dart';
 import '../../Enums/status.dart';
 class ExpeditionStepper extends StatelessWidget {
   final ExpeditionStatus currentStatus;
@@ -135,7 +136,7 @@ class ExpeditionStepper extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          value.replaceAll("_", " "),
+                          AppLocalizations.of(context)!.translate('${value}'),
                           style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
@@ -147,27 +148,10 @@ class ExpeditionStepper extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          value == "REJETEE"
-                              ? "Votre demande a été refusée"
-                              : value == "EN_ATTENTE"
-                              ? "En attente de traitement"
-                              : value == "ACCEPTEE"
-                              ? "Expedition acceptée"
-                              : value == "NEGOCIATION"
-                              ? "En cours de négociation"
-                              : value == "PAIEMENT"
-                              ? "Paiement confirmé"
-                              : value == "RECUPERATION_EFFECTUEE"
-                              ? "Récupération confirmée"
-                              : value == "DEPART_CONFIRME"
-                              ? "Confirmé par l'expéditeur"
-                              : value == "EN_COURS_EXPEDITION"
-                              ? "Colis en transit"
-                              : value == "ARRIVE_EN_VILLE"
-                              ? "Colis arrivé en ville"
-                              : "Livré au destinataire",
+                          AppLocalizations.of(context)!.translate('${value}_DESC'),
                           style: const TextStyle(fontSize: 14, color: Colors.grey),
                         ),
+
                       ],
                     )
                   ],

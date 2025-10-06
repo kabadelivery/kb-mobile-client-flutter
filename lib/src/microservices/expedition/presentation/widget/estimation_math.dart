@@ -28,6 +28,7 @@ class _EstimationFormState extends State<EstimationForm> {
   String? selected_departure_town="Lomé";
   String selected_arrival_town ="Accra";
   double? estimation_price =null;
+  int? estimation_day =null;
   List<Map<String,String>> map_of_town_arrival= [
   ];
   List<Map<String,String>> map_of_town_departure= [
@@ -68,6 +69,7 @@ class _EstimationFormState extends State<EstimationForm> {
           }
           if(state is EstimationCalculated){
             estimation_price =state.result.prixFinal;
+            estimation_day=state.result.dureeJours;
           }
           if(state is getAvailableLinesState){
             if(state.lines.isNotEmpty){
@@ -264,6 +266,16 @@ class _EstimationFormState extends State<EstimationForm> {
 
                         ),
                       ),
+                      SizedBox(height: 10,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.access_time_rounded,size:15,color: KabaExpeditionColor.primary,),
+                          SizedBox(width: 5,),
+                          Text("${AppLocalizations.of(context)!.translate('delivery_in')} :",style: TextStyle(fontSize: 12,color:  KabaExpeditionColor.primary),),
+                          Text("${estimation_day!=null?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                        ],
+                      ),
                       SizedBox(height: 20,),
                       error?
                       GestureDetector(
@@ -370,6 +382,15 @@ class _EstimationFormState extends State<EstimationForm> {
                                 SizedBox(height: 10,),
                                 Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
                                 FontWeight.bold,color: Color(0xFF00C35B)),),
+                                SizedBox(height: 10,),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
+                                    Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
+                                        0xFF019848)),),
+                                  ],
+                                ),
                                 SizedBox(height: 10,),
                                 Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
                                     0xFF009E47)),)

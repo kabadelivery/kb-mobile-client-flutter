@@ -411,7 +411,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                         children: [
                                           Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
                                           SizedBox(width: 5,),
-                                          Text("Livraison en ",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                          Text("${AppLocalizations.of(context)!.translate('delivery_in')}",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
                                           Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                                         ],
                                       ),
@@ -757,7 +757,6 @@ class _PickUpOptionsState extends State<PickUpOptions> {
   @override
   void initState(){
     super.initState();
-    BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: 'POSITION'));
   }
   @override
   Widget build(BuildContext context) {

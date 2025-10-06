@@ -65,8 +65,8 @@ class PreparationPopup extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
-      child: SizedBox(
-        width: MediaQuery.of(context).size.width * 0.9,
+      child: Container(
+        width: MediaQuery.of(context).size.width ,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -125,19 +125,21 @@ class PreparationPopup extends StatelessWidget {
                           Text(
                             "de votre commande:",
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 16,
                               color: Colors.black,
                             ),
                             textAlign: TextAlign.center,
                           ),
-                          Text(
-                            "$preparationTime minutes",
-                            style: const TextStyle(
-                              fontSize: 24,
-                              color: Color(0xFFD02245),
-                              fontWeight: FontWeight.bold,
+                          Container(
+                            child: Text(
+                              "$preparationTime minutes",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Color(0xFFD02245),
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
-                            textAlign: TextAlign.center,
                           ),
                         ],
                       ),

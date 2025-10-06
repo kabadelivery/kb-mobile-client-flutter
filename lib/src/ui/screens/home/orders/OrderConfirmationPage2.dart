@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionPlansSheet.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
+import 'package:cherry_toast/cherry_toast.dart';
+import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:KABA/src/StateContainer.dart';
@@ -106,6 +108,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   GlobalKey poweredByKey = GlobalKey();
   bool is_new_user=false;
   int new_user_voucher_amount=0;
+  ScrollController _scroll = ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -818,27 +821,58 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       fontSize: 14,
                       fontWeight: FontWeight.w600))
             ]) */
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      Column(
         children: [
-          Container(
-              padding: EdgeInsets.all(6),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(5),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(5),
 
+                  ),
+                  child:Icon(Icons.timer_outlined,color: Colors.blue,size:18)
               ),
-              child:Icon(Icons.timer_outlined,color: Colors.blue,size:18)
-          ),
-          SizedBox(width:15),
-          Text("${AppLocalizations.of(context)!.translate('cooking_time_estimation')}"),
-          SizedBox(width: 30),
-          Text('${widget.restaurant!.cooking_time!} min',style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold,fontSize:17),),
-          /*  ElevatedButton(
+              SizedBox(width:15),
+              Flexible(child: Text("${AppLocalizations.of(context)!.translate('cooking_time_estimation')}")),
+              SizedBox(width: 30),
+              Text('${widget.restaurant!.cooking_time!} min',style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold,fontSize:17),),
+              /*  ElevatedButton(
 
-                  onPressed: () {},
-                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
-                ) */
+                      onPressed: () {},
+                      child: Icon(Icons.plus_one_rounded, color: Colors.blue),
+                    ) */
+            ],
+          ),
+          SizedBox(height:10),
+          Container(
+            padding:EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius:BorderRadius.circular(15),
+              color: Colors.blue.withOpacity(.05)),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Icon(Icons.info_outline_rounded,
+                      color: Colors.blue, size: 17),
+                  Flexible(
+                    child: Text(
+                      "Ce temps ne dépend en aucun cas de KABA.\n"
+                          "Le marchand accepte faire tout son possible afin de le respecter.",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color:Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -863,6 +897,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     /* we get this one ... then we tend to select and address to end the purchase. */
     return SingleChildScrollView(
 //      controller: _listController,
+      controller: _scroll,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[SizedBox(height: 20)]
@@ -1005,63 +1040,37 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       : Container(),
                   color: Colors.white),
               SizedBox(height: 10),
-              /*  Container(
-                       margin: EdgeInsets.only(left:15,right:15),
-              padding: const EdgeInsets.only(
-                  top: 12, bottom: 15, left: 12, right: 12),
-                      color: Color(0xFFFFE8ED),
 
-                      child: TextField(
-                          controller: _addInfoController,
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                          style:
-                              TextStyle(color: KColors.new_black, fontSize: 14),
-                          decoration: InputDecoration(
-                            labelText:
-                                "${AppLocalizations.of(context)!.translate('additional_info')}",
-                            border: InputBorder.none,
-                          )),
-                    ), */
               Container(
-                margin: EdgeInsets.only(left:15,right:15),
+                margin: EdgeInsets.only(left: 10, right: 10),
                 padding: const EdgeInsets.only(
-                    top: 20, bottom: 20, left: 12, right: 12), // Adjust padding
+                    top: 12, bottom: 15, left: 12, right: 12),
+
                 decoration: BoxDecoration(
-
-                  color: KColors.primaryColor.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(25),
-                  border:
-                  Border.all(color: KColors.primaryColor,width: .5),
+                    color: Color(0xFFFFE8ED),
+                    border:Border.all(width:.5,color: Color(0xFFFF8CA5)),
+                    borderRadius:BorderRadius.circular(20)
                 ),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                            padding: EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: KColors.primaryColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(5),
+                child: TextField(
+                    controller: _addInfoController,
+                    textAlign: TextAlign.start,
 
-                            ),
-                            child:Icon(Icons.chat_bubble_outline,color: KColors.primaryColor,size:18)
-                        ), SizedBox(width:10),
-                        Text("${AppLocalizations.of(context)!.translate('additional_info')}",style: TextStyle(fontWeight:FontWeight.normal),),
-                        SizedBox(width:10),
-                        Icon(Icons.keyboard_arrow_down, color:KColors.primaryColor),
-                        /*  ElevatedButton(
-
-                  onPressed: () {},
-                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
-                ) */
-                      ],
-                    ),
-                  ],
-                ),
+                    maxLines: 1,
+                    style:
+                    TextStyle(color: KColors.new_black, fontSize: 14),
+                    decoration: InputDecoration(
+                      suffixIcon: Icon(Icons.messenger_outline,
+                          color:Color(0xFFCB1F44)),
+                      labelText:
+                      "${AppLocalizations.of(context)!.translate('additional_info')}",
+                      border: InputBorder.none,
+                    )),
               ),
 
+              SizedBox(height: 10),
+              //NEW USER VOUCHER
+              is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
+              _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
               SizedBox(height: 10),
               /* choose a delivery address */
               InkWell(
@@ -1100,7 +1109,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   child:Icon(Icons.location_on_outlined,color: Colors.blue,size:22)
                               ),
                               SizedBox(width:32),
-                              Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),),
+                              Flexible(child: Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),)),
                               SizedBox(width:70),
                               Icon(Icons.control_point_outlined, color: Colors.blue),
                               /*  ElevatedButton(
@@ -1153,9 +1162,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     )
                 ),
               ):Container(),
-              //NEW USER VOUCHER
-              is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
-              _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
+
               _usePoint ? Container() : SizedBox(height: 15),
               isConnecting
                   ? Center(child: MyLoadingProgressWidget())
@@ -2131,7 +2138,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           Icon(FontAwesomeIcons.wallet, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,size: 15),
                           SizedBox(width: 10),
                           Text(
-                              "${AppLocalizations.of(context)!.translate('pay_now')}",
+                              "${AppLocalizations.of(context)!.translate('pay_now')}".toLowerCase(),
                               style: TextStyle(
                                   fontSize: 15,
                                   color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,
@@ -2709,6 +2716,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     if (_selectedVoucher == null) {
       return Column(children: <Widget>[
+        SizedBox(height: 10,),
         Padding(
             padding: const EdgeInsets.only(left: 20, right: 20),
             child:   Row(
@@ -2718,6 +2726,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     onTap: () {
                       setState(() {
                         showCodeInput = !showCodeInput;
+
                       });
                     },
                     child: Container(
@@ -2736,10 +2745,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           Icon(Icons.code, color: KColors.white, size: 18),
                           const SizedBox(width: 6),
                           Text(
-                            "Ajouter Code Abon.",
+                            "Ajouter Code Abo.",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -2772,7 +2781,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             "${AppLocalizations.of(context)!.translate('add_coupon')}",
                             style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 12,
                                 fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -2791,10 +2800,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
           SizedBox(height: 12),
           Container(
             padding: EdgeInsets.all(12),
-
+            margin: EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: Colors.red[50],
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.red.shade200),
             ),
             child: Column(
@@ -2802,21 +2811,40 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 TextField(
                   controller: codeController,
                   decoration: InputDecoration(
+
                     hintText: 'Entrez le code ici',
-                    border: OutlineInputBorder(),
+                    focusedBorder:OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                    borderSide: BorderSide(color: KColors.primaryColor,width: 0)
+                    ),
+
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: KColors.primaryColor,width: 0)
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: KColors.primaryColor,width: 0)
+                    ),
+                    filled: true,
+                    fillColor:KColors.primaryColor.withOpacity(.1)
+
+
                   ),
                 ),
                 SizedBox(height: 8),
                 ElevatedButton(
                   onPressed: () {
-                    // 👉 handle validation logic here
                     SubscriptionSuccessSheet.show(context);
                     print("Code entré: ${codeController.text}");
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: KColors.primaryColor,
+                    elevation: 0
                   ),
-                  child: Text('Valider'),
+                  child: Container(
+                      width: MediaQuery.of(context).size.width*9,
+                      child: Text('Valider le code',textAlign: TextAlign.center,style:TextStyle())),
                 ),
               ],
             ),
@@ -2829,7 +2857,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       ]) ;
     } else {
 //      _selectedVoucher
-      return Column(
+      return  Column(
         children: [
           Stack(
             children: <Widget>[

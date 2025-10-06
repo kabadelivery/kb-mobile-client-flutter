@@ -7,15 +7,15 @@ String handleExpeditionFormMessage(BuildContext context, CreateExpedition create
     return "${AppLocalizations.of(context)!.translate('choose_origin_address')}";
   }
 
-  if (createExpedition.telephoneOrigine == null) {
+  if (createExpedition.telephoneOrigine == null || createExpedition.telephoneOrigine!.isEmpty) {
     return "${AppLocalizations.of(context)!.translate('enter_phone_number')}";
   }
 
-  if (createExpedition.methodeCollecte == null) {
+  if (createExpedition.methodeCollecte == null || createExpedition.methodeCollecte!.isEmpty) {
     return "${AppLocalizations.of(context)!.translate('choose_collection_method')}";
   }
 
-  if (createExpedition.colis == null) {
+  if (createExpedition.colis == null || createExpedition.colis!.isEmpty) {
     return "${AppLocalizations.of(context)!.translate('add_package')}";
   }
 
@@ -27,7 +27,7 @@ String handleExpeditionFormMessage(BuildContext context, CreateExpedition create
     return "${AppLocalizations.of(context)!.translate('choose_collection_time')}";
   }
 
-  if (createExpedition.colis!.isEmpty) {
+  if (createExpedition.colis!.isEmpty || createExpedition.colis!.length == 0) {
     return "${AppLocalizations.of(context)!.translate('add_at_least_one_package')}";
   }
 
@@ -35,27 +35,27 @@ String handleExpeditionFormMessage(BuildContext context, CreateExpedition create
     final colis = createExpedition.colis![i];
     final numero = i + 1;
 
-    if (colis.poids == null) {
+    if (colis.poids == null || colis.poids==0) {
       return AppLocalizations.of(context)!.translate('package_must_have_weight').replaceAll('{number}', '$numero');
     }
 
-    if (colis.description == null) {
+    if (colis.description == null|| colis.description!.isEmpty) {
       return AppLocalizations.of(context)!.translate('package_must_have_description').replaceAll('{number}', '$numero');
     }
 
-    if (colis.adresseDestination == null && colis.recipientAddress == null) {
+    if ((colis.adresseDestination == null && colis.recipientAddress == null) || (colis.adresseDestination!.isEmpty)) {
       return AppLocalizations.of(context)!.translate('package_must_have_destination').replaceAll('{number}', '$numero');
     }
 
-    if (colis.departureTown == null) {
+    if (colis.departureTown == null || colis.departureTown!.isEmpty) {
       return AppLocalizations.of(context)!.translate('package_must_have_departure_town').replaceAll('{number}', '$numero');
     }
 
-    if (colis.arrivalTown == null) {
+    if (colis.arrivalTown == null || colis.arrivalTown!.isEmpty) {
       return AppLocalizations.of(context)!.translate('package_must_have_arrival_town').replaceAll('{number}', '$numero');
     }
 
-    if (colis.recipientPhoneNumber == null) {
+    if (colis.recipientPhoneNumber == null || colis.recipientPhoneNumber!.isEmpty) {
       return AppLocalizations.of(context)!.translate('package_must_have_recipient_phone').replaceAll('{number}', '$numero');
     }
 
