@@ -253,35 +253,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                         ),
                       )
                     : Center(
-                  child: DropdownButton<String>(
-                    value: _filterDropdownValue,
-                    icon: Icon(
-                      FontAwesomeIcons.filter,
-                      color: KColors.white,
-                      size: 23,
-                    ),
-                    iconSize: 20,
-                    elevation: 16,
-                    style: TextStyle(color: KColors.primaryColor),
-                    underline: Container(
-//                      height: 2,
-//                      color: Colors.deepPurpleAccent,
-                    ),
-                    onChanged: (String? newValue) {
-                      widget.filterFunction(newValue);
-                    },
-                    items: <String>[
-                      '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
-                      '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
-                      '${AppLocalizations.of(context)!.translate('nearest')}',
-                      '${AppLocalizations.of(context)!.translate('farest')}'
-                    ].map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
+
                 ),
               ],
             ),

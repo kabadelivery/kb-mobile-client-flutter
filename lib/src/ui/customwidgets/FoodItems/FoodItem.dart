@@ -53,16 +53,22 @@ class FoodGrid extends StatefulWidget {
 }
 
 class _FoodGridState extends State<FoodGrid> {
-  late Future<List<FoodItem>> futureFoods;
+  late Future<Map<String,dynamic>> futureFoods;
   final RestaurantApiProvider _service = RestaurantApiProvider();
 
   /// Fetch data from API and map to FoodItem
-  Future<List<FoodItem>> fetchFoods(String query) async {
+  Future<Map<String,dynamic>> fetchFoods(String query) async {
     try {
       final List<ShopProductModel> products =
       await _service.fetchRestaurantFoodProposal2FromTag("food", query);
-
-      return products.map((p) => FoodItem.fromShopProduct(p)).toList();
+      Map<String,dynamic> food_and_products = {
+        'products':[],
+        'food':[]
+      };
+      food_and_products['products'] = products.map((p) => FoodItem.fromShopProduct(p)).toList();
+      food_and_products['foods'] =products
+      ;
+      return food_and_products;
     } catch (e, stack) {
       debugPrint("=== ERROR in fetchRestaurantFoodProposal2FromTag ===");
       debugPrint("Error type: ${e.runtimeType}");
@@ -90,7 +96,7 @@ class _FoodGridState extends State<FoodGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FoodItem>>(
+    return FutureBuilder<Map<String,dynamic>>(
       future: futureFoods,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -119,8 +125,8 @@ class _FoodGridState extends State<FoodGrid> {
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
-
-        final foods = snapshot.data!;
+        final real_foods= snapshot.data!["foods"];
+        final foods = snapshot.data!["products"];
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -134,6 +140,7 @@ class _FoodGridState extends State<FoodGrid> {
           itemCount: foods.length,
           itemBuilder: (context, index) {
             final food = foods[index];
+            final real_food = real_foods.firstWhere((f) => f.id == food.id);
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -248,7 +255,7 @@ class _FoodGridState extends State<FoodGrid> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ShopFlowerDetailsPage(
-                                food: safeFood,
+                                food: real_food,
                                 foodId: food.id,
                               ),
                             ),

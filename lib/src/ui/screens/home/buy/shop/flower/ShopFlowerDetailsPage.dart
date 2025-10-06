@@ -307,7 +307,8 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                                                           .primaryYellowColor,
                                                       fontSize: 20,
                                                       fontWeight:
-                                                          FontWeight.bold)),
+                                                          FontWeight.bold)
+                                              ),
                                             ])
                                           : Container(),
                                       SizedBox(width: 5),
@@ -697,7 +698,11 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
 
   _getTotalPrice() {
     return Utils.inflatePrice(
-        "${int.parse(widget.food!.promotion == 0 /* no promotion */
-            ? widget.food!.price.toString() : widget.food!.promotion_price.toString()) * quantity}");
+        "${int.parse(widget.food!.promotion == 0
+            ? widget.food!.price.toString() :
+        widget.food!.promotion_price.toString()) * quantity}"
+    );
+
+
   }
 }
