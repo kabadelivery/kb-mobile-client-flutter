@@ -10,11 +10,13 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
+import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../utils/_static_data/AppConfig.dart';
 import '../../utils/_static_data/ImageAssets.dart';
 import '../../utils/_static_data/Vectors.dart';
+import '../../utils/functions/NotLoggedInPopUp.dart';
 import '../screens/home/_home/InfoPage.dart';
 import '../screens/home/me/abonnement/kaba_abonnements.dart';
 
@@ -131,10 +133,18 @@ class _HeaderState extends State<Header> {
                 Container(width: 1,height: 20,color: Colors.white,),
                 GestureDetector(
                     onTap: (){
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ChatPage(token: '', receiverId: 1,)),
-                      );
+                      if (StateContainer.of(context).loggingState == 0){
+                        NotLoggedInPopUp(context);
+                      }else{
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ChatPage(
+                                    token: '',
+                                    receiverId: 1,
+                                  )),
+                        );
+                      }
                     },
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

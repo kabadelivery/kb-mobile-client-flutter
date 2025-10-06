@@ -59,7 +59,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
             context: context,
             title: "${AppLocalizations.of(context)!.translate('contact_us_whatsapp')}",
             subtitle: "${AppLocalizations.of(context)!.translate('support_7_days')}",
-            onPress: ()=>contactWhatsApp(phoneNumber: "22871499014",message: ""),
+            onPress: ()=>contactWhatsApp(phoneNumber: "22892109474",message: ""),
             icon:Icon(FontAwesomeIcons.whatsapp, color: Colors.green, size: 25, )
           ),
           contactAssitanceWidget(
@@ -67,7 +67,7 @@ Widget contactAssitanceListWidget({required BuildContext context}) {
               context: context,
               title: "${AppLocalizations.of(context)!.translate('train_yourself')}",
               subtitle: "${AppLocalizations.of(context)!.translate('link_to_training')}",
-              onPress: ()=>contactWhatsApp(phoneNumber: "22871499014",message: AppLocalizations.of(context)!.translate('kaba_chine_tutorial_message')),
+              onPress: ()=>contactWhatsApp(phoneNumber: "22892109474",message: AppLocalizations.of(context)!.translate('kaba_chine_tutorial_message')),
               icon:Icon(FontAwesomeIcons.book, color:KabaChineColors.info, size: 15, )
           ),
           SizedBox(height: 20)

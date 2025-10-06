@@ -701,7 +701,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
               child: Column(
                 children: [
                   /* hint */
-                  SizedBox(height: 70),
+                  SizedBox(height: MediaQuery.of(context).size.height*.12),
                   StateContainer.of(context).location == null
                       ? GestureDetector(
                     onTap: () {
