@@ -341,6 +341,8 @@ class ServerRoutes {
   static const String SEMOA_INIT_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/mobile/api/semoa/order";
   static const String SEMOA_STORE_TRANSACTION= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/semoa/store";
 
+
+
   //KKiapay API EndpointsKKIAPAY_CONFIRM_TRANSACTION
   static const String KKIAPAY_STORE_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/store";
   static const String KKIAPAY_CONFIRM_TRANSACTION = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/transaction/kkiapay/confirm";
@@ -348,7 +350,10 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_GET_PACKS = ServerConfig.kaba_abonnement + "/dashboard/packs";
   static const String KABA_ABONNEMENT_NEW_ABONNEMENT = ServerConfig.kaba_abonnement + "/dashboard/new_abonnement";
   static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
+  static const String KABA_UPDATE_PAYMENT_STATUS = ServerConfig.kaba_abonnement + "/dashboard/update_abo";
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
+
+  static const String KABA_CHECK_ABO_PAYMENT_STATUS = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/subscription/transaction/check";
   static const String LINK_GET_DELIVERY_RATING_PENDING =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
