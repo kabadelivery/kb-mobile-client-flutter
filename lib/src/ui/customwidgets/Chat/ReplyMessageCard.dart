@@ -21,7 +21,7 @@ class ReplyMessageCard extends StatelessWidget {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: Colors.white,
+          color: Color(0xffcb1f44),
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
@@ -38,14 +38,14 @@ class ReplyMessageCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return const Text(
                         "📷 Image not available",
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.white),
                       );
                     },
                   ),
                 )
                     : Text(
                   message,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16,color: Colors.white),
                 ),
               ),
               Positioned(
@@ -53,9 +53,9 @@ class ReplyMessageCard extends StatelessWidget {
                 right: 10,
                 child: Row(
                   children: [
-                    Text(time, style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    Text(time, style: TextStyle(fontSize: 13, color: Colors.white)),
                     SizedBox(width: 5),
-                    Icon(Icons.done_all, size: 20),
+                    Icon(Icons.done_all, size: 20,color: Colors.white,),
                   ],
                 ),
               ),

@@ -47,6 +47,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Row(
+
                         children: [
                           Icon(FontAwesomeIcons.box,color: Colors.white,size: 19,),
                           SizedBox(width: 5,),
@@ -65,6 +66,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: 10),
                             child: Stack(
+                              clipBehavior: Clip.none,
                               children: [
                                 MaterialButton(
                                   elevation: 0,
@@ -92,16 +94,17 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                   minWidth: 80,height: 30,
                                   shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(10)),),
                                 Positioned(
-                                  right:0,
-                                  top: 5,
+                                  right: -5,
+                                  top: 0,
                                   child: Container(
-                                    width: 12,
-                                    height: 12,
-                                    decoration: BoxDecoration(
-                                      color: Colors.green,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(color: Colors.white, width: 1.5),
-                                    ),
+                                      padding: EdgeInsets.all(3),
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.white, width: 1.5),
+                                      ),
+                                      child: Text("+1",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: KColors.primaryColor),)
                                   ),
                                 ),
                               ],
@@ -111,7 +114,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                             children: [
                               IconButton(onPressed: (){
                                 showBottomContactSheet(context: context);
-                              }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
+                              }, icon: Icon(Icons.phone_outlined,color: Colors.white,size: 30,)),
                               GestureDetector(
                                   onTap: (){
                                     if (StateContainer.of(context).loggingState == 0){
@@ -136,19 +139,20 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                           const Icon(
                                             Icons.chat_bubble_outline,
                                             color: Colors.white,
-                                            size: 22,
+                                            size: 30,
                                           ),
                                           Positioned(
                                             right: -2,
-                                            top: -2,
+                                            top: -5,
                                             child: Container(
-                                              width: 10,
-                                              height: 10,
-                                              decoration: BoxDecoration(
-                                                color: Colors.green,
-                                                shape: BoxShape.circle,
-                                                border: Border.all(color: Colors.white, width: 1.5),
-                                              ),
+                                                padding: EdgeInsets.all(1),
+                                                alignment: Alignment.center,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(color: Colors.white, width: 1.5),
+                                                ),
+                                                child: Text("+1",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: KColors.primaryColor),)
                                             ),
                                           ),
                                         ],

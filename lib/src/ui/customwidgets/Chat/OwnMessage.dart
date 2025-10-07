@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../utils/_static_data/KTheme.dart';
+
 class OwnMessageCard extends StatelessWidget {
   final String message;
   final String messageType;
@@ -22,7 +24,7 @@ class OwnMessageCard extends StatelessWidget {
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: const Color(0xffdcf8c6),
+          color:  KColors.white,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: Stack(
             children: [
@@ -39,14 +41,14 @@ class OwnMessageCard extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) {
                       return const Text(
                         "📷 Image not available",
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(color: Colors.white),
                       );
                     },
                   ),
                 )
                     : Text(
                   message,
-                  style: const TextStyle(fontSize: 16),
+                  style: const TextStyle(fontSize: 16,color: Colors.black54),
                 ),
               ),
               Positioned(
@@ -54,9 +56,9 @@ class OwnMessageCard extends StatelessWidget {
                 right: 10,
                 child: Row(
                   children:  [
-                    Text(time, style: TextStyle(fontSize: 13, color: Colors.grey)),
+                    Text(time, style: TextStyle(fontSize: 13, color: Colors.black54)),
                     SizedBox(width: 5),
-                    Icon(Icons.done_all, size: 20),
+                    Icon(Icons.done_all, size: 20,color: Colors.black54,),
                   ],
                 ),
               ),

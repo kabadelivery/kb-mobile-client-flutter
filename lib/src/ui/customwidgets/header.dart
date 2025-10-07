@@ -155,25 +155,24 @@ class _HeaderState extends State<Header> {
                             const Icon(
                               Icons.chat_bubble_outline,
                               color: Colors.white,
-                              size: 28,
+                              size: 25,
                             ),
-                            // ✅ Green notification dot
                             Positioned(
                               right: -2,
-                              top: -2,
+                              top: -5,
                               child: Container(
-                                width: 10,
-                                height: 10,
+                                padding: EdgeInsets.all(1),
+                                alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: Colors.green,
+                                  color: Colors.white,
                                   shape: BoxShape.circle,
                                   border: Border.all(color: Colors.white, width: 1.5),
                                 ),
+                                child: Text("+1",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: KColors.primaryColor),)
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 4),
                         const Text(
                           "Chat",
                           style: TextStyle(
