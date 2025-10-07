@@ -147,11 +147,46 @@ class _HeaderState extends State<Header> {
                       }
                     },
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.chat_bubble_outline,color: Colors.white),
-                          Text("Chat",style: TextStyle(color: Colors.white,fontSize: 12,fontWeight: FontWeight.bold),
-                          )])),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          clipBehavior: Clip.none, // allows the green dot to overflow
+                          children: [
+                            const Icon(
+                              Icons.chat_bubble_outline,
+                              color: Colors.white,
+                              size: 28,
+                            ),
+                            // ✅ Green notification dot
+                            Positioned(
+                              right: -2,
+                              top: -2,
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 1.5),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          "Chat",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    )
+
+
+                ),
                 Container(width: 1,height: 20,color: Colors.white,),
                 GestureDetector(
                   onTap: (){

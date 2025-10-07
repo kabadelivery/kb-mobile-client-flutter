@@ -204,6 +204,8 @@ class _ChatPageState extends State<ChatPage> {
     super.dispose();
   }
 
+
+
   // -------------------------- UI --------------------------
   @override
   Widget build(BuildContext context) {
@@ -243,12 +245,7 @@ class _ChatPageState extends State<ChatPage> {
                 ),
               ],
             ),
-            IconButton(
-              icon: const Icon(Icons.call, color: Colors.white),
-              onPressed: () {
-                // TODO: Implement call feature
-              },
-            ),
+
           ],
         ),
       ),
@@ -267,11 +264,13 @@ class _ChatPageState extends State<ChatPage> {
                   return OwnMessageCard(
                     message: msg.message,
                     messageType: isImage ? "image" : "text",
+                    time: "00:00"
                   );
                 } else {
                   return ReplyMessageCard(
                     message: msg.message,
                     messageType: isImage ? "image" : "text",
+                      time: "00:00"
                   );
                 }
               },
@@ -309,7 +308,7 @@ class _ChatPageState extends State<ChatPage> {
                   backgroundColor: KColors.primaryColor,
                   child: IconButton(
                     icon: Icon(
-                      sendButton ? Icons.send : Icons.mic,
+                      sendButton ? Icons.send : Icons.send,
                       color: Colors.white,
                     ),
                     onPressed: () {

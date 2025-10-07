@@ -1497,7 +1497,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             0) {
           sorryDemoAccountAlert();
         } else {
-          showLoadingPreorder(true);
+         // showLoadingPreorder(true);
           if (Utils.isCode(_mCode)) {
             CustomerModel customerModel = await CustomerUtils.getCustomer();
             widget.presenter!.payNow(

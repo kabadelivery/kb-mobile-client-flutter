@@ -6,7 +6,9 @@ import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 
-/// ✅ UI model mapped from ShopProductModel
+import '../../screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
+
+/// UI model mapped from ShopProductModel
 class FoodItem {
   final int id;
   final String name;
@@ -31,7 +33,7 @@ class FoodItem {
     return FoodItem(
       id: p.id ?? 0,
       name: p.name ?? "Plat inconnu",
-      pic : p.pic ?? "",
+      pic: p.pic ?? "",
       rating: (p.stars ?? 0).toDouble(),
       price: int.tryParse(p.price ?? "0") ?? 0,
       restaurantName: p.restaurant_entity?.name ?? "Restaurant inconnu",
@@ -40,7 +42,7 @@ class FoodItem {
   }
 }
 
-/// ✅ Grid widget displaying food list
+/// Grid widget displaying food list
 class FoodGrid extends StatefulWidget {
   final String foodType; // e.g. "Riz", "Spaghetti"
 
@@ -51,23 +53,27 @@ class FoodGrid extends StatefulWidget {
 }
 
 class _FoodGridState extends State<FoodGrid> {
-  late Future<List<FoodItem>> futureFoods;
+  late Future<Map<String,dynamic>> futureFoods;
   final RestaurantApiProvider _service = RestaurantApiProvider();
 
   /// Fetch data from API and map to FoodItem
-  Future<List<FoodItem>> fetchFoods(String query) async {
+  Future<Map<String,dynamic>> fetchFoods(String query) async {
     try {
       final List<ShopProductModel> products =
       await _service.fetchRestaurantFoodProposal2FromTag("food", query);
-
-      return products.map((p) => FoodItem.fromShopProduct(p)).toList();
+      Map<String,dynamic> food_and_products = {
+        'products':[],
+        'food':[]
+      };
+      food_and_products['products'] = products.map((p) => FoodItem.fromShopProduct(p)).toList();
+      food_and_products['foods'] =products
+      ;
+      return food_and_products;
     } catch (e, stack) {
       debugPrint("=== ERROR in fetchRestaurantFoodProposal2FromTag ===");
       debugPrint("Error type: ${e.runtimeType}");
       debugPrint("Error: $e");
       debugPrint("Stack trace:\n$stack");
-
-      // rethrow with full context
       throw Exception("Erreur lors du fetch: $e\nStack trace: $stack");
     }
   }
@@ -90,7 +96,7 @@ class _FoodGridState extends State<FoodGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<FoodItem>>(
+    return FutureBuilder<Map<String,dynamic>>(
       future: futureFoods,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -102,26 +108,25 @@ class _FoodGridState extends State<FoodGrid> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.error, color: Colors.red, size: 40),
+                  const Icon(Icons.error, color: Colors.red, size: 40),
                   const SizedBox(height: 10),
                   Text(
-                    "Oops! Something went wrong.",
+                    "Oops! Une erreur s'est produite.",
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red,
+                      color: Colors.red.shade700,
                     ),
                   ),
                 ],
               ),
             ),
           );
-        }
-        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
-
-        final foods = snapshot.data!;
+        final real_foods= snapshot.data!["foods"];
+        final foods = snapshot.data!["products"];
         return GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -135,50 +140,40 @@ class _FoodGridState extends State<FoodGrid> {
           itemCount: foods.length,
           itemBuilder: (context, index) {
             final food = foods[index];
+            ShopProductModel real_food = real_foods.firstWhere((f) => f.id == food.id);
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
-
               ),
               color: Colors.white,
               elevation: 3,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Image
+                  // Image (uses Utils.inflateLink if available)
                   ClipRRect(
                     borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(16)),
-                    child: /* Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: CachedNetworkImageProvider(
-                                Utils.inflateLink(food.pic))
-                       ) ),
-                    ) */
-
-
-
-
-                    Image.network(
-                      "https://kaba-delivery-pictures-store.s3.eu-west-3.amazonaws.com/"+food.pic,
-                      height: 130,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 130,
-                          color: Colors.grey.shade200,
-                          child: const Icon(Icons.image_not_supported,
-                              color: Colors.grey),
-                        );
-                      },
-                    ),
+                    child: Builder(builder: (context) {
+                      final imageUrl = Utils.inflateLink(food.pic);
+                      return Image.network(
+                        imageUrl,
+                        height: 130,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            height: 130,
+                            color: Colors.grey.shade200,
+                            child: const Icon(Icons.image_not_supported,
+                                color: Colors.grey),
+                          );
+                        },
+                      );
+                    }),
                   ),
 
-                  /// Title
+                  // Title
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(
@@ -192,7 +187,7 @@ class _FoodGridState extends State<FoodGrid> {
                     ),
                   ),
 
-                  /// Restaurant name
+                  // Restaurant name
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
@@ -203,14 +198,14 @@ class _FoodGridState extends State<FoodGrid> {
 
                   const SizedBox(height: 5),
 
-                  /// Rating + Price
+                  // Rating + Price
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Row(
                       children: [
                         const Icon(Icons.star, color: Colors.amber, size: 18),
                         const SizedBox(width: 4),
-                        Text(food.rating.toStringAsFixed(1)),
+                        Text(real_food.rating!.toStringAsFixed(0)),
                         const Spacer(),
                         Text(
                           "${food.price} FCFA",
@@ -223,33 +218,14 @@ class _FoodGridState extends State<FoodGrid> {
                     ),
                   ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.room_outlined, color: Colors.grey, size: 18),
-                        const SizedBox(width: 4),
-                        Text(food.rating.toStringAsFixed(1)),
-                        const Spacer(),
-                        Text(
-                          "${food.price} FCFA",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
                   const Spacer(),
 
-                  /// Button
+                  // Button -> open ShopFlowerDetailsPage safely
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
                       width: double.infinity,
-                      height: 30,
+                      height: 36,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
@@ -258,8 +234,31 @@ class _FoodGridState extends State<FoodGrid> {
                           backgroundColor: KColors.primaryColor,
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("${food.name} ajouté !")),
+                          // --- BUILD A SAFE ShopProductModel ---
+                          final safePrice = (food.price != 0)
+                              ? food.price.toString()
+                              : '0';
+
+                          final safeFood = ShopProductModel(
+                            id: food.id,
+                            name: food.name,
+                            price: safePrice, // guaranteed numeric string
+                            pic: food.pic,
+                            stars: 0, // keep 0 as placeholder (ShopFlowerDetailsPage expects a number)
+                            restaurant_entity: null, // keep null to avoid mismatch
+                          );
+
+                          debugPrint(
+                              "NAV -> ShopFlowerDetailsPage: id=${safeFood.id} price=${safeFood.price}");
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShopFlowerDetailsPage(
+                                food: real_food,
+                                foodId: food.id,
+                              ),
+                            ),
                           );
                         },
                         child: Text(food.buttonLabel),

@@ -1,17 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-// import your other pages here
-// import 'NewDesignOrderPage.dart';
-class SubscriptionSuccessSheet extends StatefulWidget {
+
+class SubscriptionSuccessSheet extends StatelessWidget {
   const SubscriptionSuccessSheet({super.key});
 
-  @override
-  State<SubscriptionSuccessSheet> createState() =>
-      _SubscriptionSuccessSheetState();
-
-  /// Show the sheet anywhere
+  /// Use this anywhere in your app to show the sheet
   static void show(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -22,78 +14,10 @@ class SubscriptionSuccessSheet extends StatefulWidget {
       builder: (_) => const SubscriptionSuccessSheet(),
     );
   }
-}
-
-class _SubscriptionSuccessSheetState extends State<SubscriptionSuccessSheet> {
-  late Future<Map<String, dynamic>> _subscriptionData;
 
   @override
-  void initState() {
-    super.initState();
-    _subscriptionData = fetchSubscriptionData();
-  }
-
-  /// Example API fetch function
-  Future<Map<String, dynamic>> fetchSubscriptionData() async {
-    try {
-      final response = await http.get(
-        Uri.parse("https://c7d355e6cbf7.ngrok-free.app/dashboard/subscribeduser/39978"),
-      );
-
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data;
-      } else {
-        return {"status_payement": 0};
-      }
-    } catch (_) {
-      return {"status_payement": 0};
-    }
-  }
-
-@override
-Widget build(BuildContext context) {
-  return FutureBuilder<Map<String, dynamic>>(
-    future: _subscriptionData,
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return const Padding(
-          padding: EdgeInsets.all(32),
-          child: Center(child: CircularProgressIndicator()),
-        );
-      } else if (snapshot.hasError || snapshot.data?['status_payement'] != 1) {
-        return Center(
-          child: Container(
-            width: 300,
-            height: 100, // fixed width for error box
-            padding: const EdgeInsets.all(24),
-            margin: const EdgeInsets.symmetric(vertical: 50),
-            decoration: BoxDecoration(
-              color: Colors.red[50],
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: Colors.red),
-            ),
-            child: const Text(
-              "Le paiement n'a pas été validé",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.red,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-          ),
-        );
-      }
-
-      // ✅ Payment successful — show the original UI
-      return Padding(
-        padding: const EdgeInsets.all(15),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
+  Widget build(BuildContext context) {
+    return Container(
       padding: const EdgeInsets.all(16),
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -103,7 +27,7 @@ Widget build(BuildContext context) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // ✅ En-tête vert
+            // ✅ Green success header
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -113,103 +37,121 @@ Widget build(BuildContext context) {
               ),
               child: Column(
                 children: const [
-                  Icon(Icons.check_circle, color: Colors.white, size: 40),
-                  SizedBox(height: 8),
+                  Icon(Icons.check_circle, color: Colors.white, size: 48),
+                  SizedBox(height: 10),
                   Text(
                     "Code d'abonnement activé",
                     style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 18,
+                      fontSize: 20,
                     ),
                   ),
-                  SizedBox(height: 4),
+                  SizedBox(height: 6),
                   Text(
                     "Vous avez maintenant accès à un abonnement partagé",
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white70),
+                    style: TextStyle(color: Colors.white70, fontSize: 14),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // ✅ Plan & prix
+            // ✅ Plan & price
             Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: const Icon(Icons.shield, color: Colors.blue),
-                title: const Text("Plan BASIC"),
-                trailing: const Text(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const ListTile(
+                leading: Icon(Icons.shield, color: Colors.blue),
+                title: Text("Plan BASIC"),
+                trailing: Text(
                   "2500 CFA",
                   style: TextStyle(
-                      fontWeight: FontWeight.bold, color: Colors.black87),
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
 
-            // ✅ Période d’activation
+            // ✅ Activation period
             Card(
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-              child: ListTile(
-                leading: const Icon(Icons.calendar_today, color: Colors.blue),
-                title: const Text("Période d’activation"),
-                subtitle: const Text("Début: 01/09/2025  •  Fin: 28/09/2025"),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const ListTile(
+                leading: Icon(Icons.calendar_today, color: Colors.blue),
+                title: Text("Période d’activation"),
+                subtitle: Text("Début: 01/09/2025  •  Fin: 28/09/2025"),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
-            // ✅ Actions rapides
-            const Text("Actions rapides",
-                style: TextStyle(fontWeight: FontWeight.bold)),
+            // ✅ Quick actions
+            const Text(
+              "Actions rapides",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(height: 8),
-            Column(
-              children: [
-                ListTile(
-                  leading: const Icon(Icons.share, color: Colors.red),
-                  title: const Text("Partager mon abonnement"),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: const Icon(Icons.shopping_cart, color: Colors.red),
-                  title: const Text("Commander un article sur KABA"),
-                  onTap: () {},
-                ),
-                ListTile(
-                  leading: const Icon(Icons.dashboard, color: Colors.red),
-                  title: const Text("Consulter mon tableau de bord"),
-                  onTap: () {},
-                ),
-              ],
+            ListTile(
+              leading: const Icon(Icons.share, color: Colors.red),
+              title: const Text("Partager mon abonnement"),
+              onTap: () {
+                // TODO: Add sharing logic
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.shopping_cart, color: Colors.red),
+              title: const Text("Commander un article sur KABA"),
+              onTap: () {
+                // TODO: Navigate to orders
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: Colors.red),
+              title: const Text("Consulter mon tableau de bord"),
+              onTap: () {
+                // TODO: Navigate to dashboard
+              },
             ),
             const SizedBox(height: 16),
 
-            // ✅ Prochaines étapes
-            const Text("Prochaines étapes",
-                style: TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text("• Commandez vos premiers produits"),
-                Text("• Invitez vos proches à rejoindre l’abonnement KABA"),
-                Text("• Consultez vos statistiques de livraison"),
-              ],
+            // ✅ Next steps
+            const Text(
+              "Prochaines étapes",
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
+            const Text("• Commandez vos premiers produits"),
+            const Text("• Invitez vos proches à rejoindre l’abonnement KABA"),
+            const Text("• Consultez vos statistiques de livraison"),
+            const SizedBox(height: 24),
+
+            // ✅ Button to close
+            Center(
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green.shade400,
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.done, color: Colors.white),
+                label: const Text(
+                  "Fermer",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
           ],
         ),
       ),
-    )
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
-
+    );
+  }
 }

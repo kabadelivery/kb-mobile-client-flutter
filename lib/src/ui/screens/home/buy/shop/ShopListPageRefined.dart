@@ -8,6 +8,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/FoodItems/FoodItem.dart';
+import 'package:KABA/src/ui/customwidgets/FoodItems/TagCarousel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ProductWithShopDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchSwitchWidget.dart';
@@ -384,6 +385,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     widget.type!,
                     filterConfiguration ?? {},
                   ),
+
                 ],
               ),
             ),
@@ -391,8 +393,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                    children: <Widget>[
-//                  SizedBox(height: 40)
+                    children:[
+                searchTypePosition==1?  TagCarousel(
+                        allFilters: _allFilters,
+                        selectedFilter: _selectedFilter,
+                        primaryColor: KColors.primaryColor,
+                        onSelect: (value) {
+                          setState(() {
+                            _selectedFilter = value;
+                            searchTypePosition=2;
+                          });
+                        },
+                      ):Container(),
                 ]..add(
                         /* according to the search position, show a different page. */
                         searchTypePosition == 1
@@ -949,40 +961,24 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               ),
               contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
             ),
+            onChanged: (value) {
+              setState(() {
+                _selectedFilter = value.trim();
+              });
+            },
           ),
-        ), 
+        ),
 
-        Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child:  Wrap(
-            spacing: 1,
-            runSpacing: 1,
-            children: _allFilters.map((filter) {
-              final isSelected = _selectedFilter == filter;
-              return ChoiceChip(
-
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                label: Text("#$filter"),
-                selected: isSelected,
-                showCheckmark: false,
-                selectedColor: KColors.primaryColor,
-                backgroundColor: Colors.grey.shade200,
-                labelStyle: TextStyle(
-                  fontSize: 11 , 
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                TagCarousel(
+                  allFilters: _allFilters,
+                  selectedFilter: _selectedFilter,
+                  primaryColor: KColors.primaryColor,
+                  onSelect: (value) {
+                    setState(() {
+                      _selectedFilter = value;
+                    });
+                  },
                 ),
-                onSelected: (_) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
-                },
-              );
-            }).toList(),
-            
-      ),
-
-),
 
 SizedBox(height: 10,),
 
