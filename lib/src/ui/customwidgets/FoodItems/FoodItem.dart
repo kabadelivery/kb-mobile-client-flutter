@@ -140,7 +140,7 @@ class _FoodGridState extends State<FoodGrid> {
           itemCount: foods.length,
           itemBuilder: (context, index) {
             final food = foods[index];
-            final real_food = real_foods.firstWhere((f) => f.id == food.id);
+            ShopProductModel real_food = real_foods.firstWhere((f) => f.id == food.id);
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -205,7 +205,7 @@ class _FoodGridState extends State<FoodGrid> {
                       children: [
                         const Icon(Icons.star, color: Colors.amber, size: 18),
                         const SizedBox(width: 4),
-                        Text(food.rating.toStringAsFixed(1)),
+                        Text(real_food.rating!.toStringAsFixed(0)),
                         const Spacer(),
                         Text(
                           "${food.price} FCFA",

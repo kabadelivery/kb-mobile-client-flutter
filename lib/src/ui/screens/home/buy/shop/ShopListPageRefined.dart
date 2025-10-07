@@ -385,6 +385,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     widget.type!,
                     filterConfiguration ?? {},
                   ),
+
                 ],
               ),
             ),
@@ -392,8 +393,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                    children: <Widget>[
-//                  SizedBox(height: 40)
+                    children:[
+                searchTypePosition==1?  TagCarousel(
+                        allFilters: _allFilters,
+                        selectedFilter: _selectedFilter,
+                        primaryColor: KColors.primaryColor,
+                        onSelect: (value) {
+                          setState(() {
+                            _selectedFilter = value;
+                            searchTypePosition=2;
+                          });
+                        },
+                      ):Container(),
                 ]..add(
                         /* according to the search position, show a different page. */
                         searchTypePosition == 1

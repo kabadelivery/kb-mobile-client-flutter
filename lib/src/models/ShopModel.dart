@@ -81,7 +81,7 @@ class ShopModel {
     location = json["location"];
     category_id = "${json["category_id"]}";
     is_certified = json['certified']?? false;
-    cooking_time =  0;
+    cooking_time =  int.parse(json['cooking_time']??"0")??0;
   }
 
   Map toJson() => {
