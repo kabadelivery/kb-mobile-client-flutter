@@ -117,15 +117,13 @@ class _ForgotenPasswordOTPState extends State<ForgotenPasswordOTP> {
                   ),
                 onPressed :() {
                  Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>NewPasswordPage(presenter: RegisterPresenter(RegisterView()),)
-      ),
-    );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>NewPasswordPage(presenter: RegisterPresenter(RegisterView()),)
+                        ),
+                  );
                 },
-                  
-                
                   child: const Text(
                     "Nouveau Mot de Passe",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
