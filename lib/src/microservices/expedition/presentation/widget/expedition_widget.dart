@@ -110,7 +110,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: KabaExpeditionColor.primary,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child:  Text(
                   AppLocalizations.of(context)!.translate(
@@ -235,7 +235,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
               elevation: 0,
               backgroundColor: KabaExpeditionColor.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             onPressed: () {
@@ -255,7 +255,14 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
               ));
 
             },
-            child:  Text("${AppLocalizations.of(context)!.translate('see_detailed_tracking')}"),
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.remove_red_eye_outlined,color: Colors.white,),
+                SizedBox(width: 10,),
+                Text("${AppLocalizations.of(context)!.translate('see_detailed_tracking')}"),
+              ],
+            ),
           ),
         )
       ],

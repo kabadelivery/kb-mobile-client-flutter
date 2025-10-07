@@ -46,6 +46,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -57,10 +58,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/permissions.dart';
+import '../../customwidgets/permission.dart';
 import '_home/HomeWelcomeNewPage.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
@@ -1245,226 +1248,105 @@ class _HomePageState extends State<HomePage> {
   Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
     SharedPreferences.getInstance().then((value) async {
       prefs = value;
+
       String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
-      /* no need to commit */
-      /* expiration date in 3months */
-      // permission has been accepted
-        LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.deniedForever) {
-          /*  ---- */
-          // await Geolocator.openAppSettings();
-          /* ---- */
-          return showDialog<void>(
+      var status = await Permission.location.status;
+      var notif_status=await Permission.notification.status;
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.deniedForever) {
+        /*  ---- */
+        // await Geolocator.openAppSettings();
+        /* ---- */
+        if(status.isDenied &&!notif_status.isDenied){
+          openLocationModal(context);
+        }else{
+          return  showDialog(
             context: context,
-            barrierDismissible: false, // user must tap button!
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(
-                    "${AppLocalizations.of(context)!.translate('permission_')}"
-                        .toUpperCase(),
-                    style: TextStyle(color: KColors.primaryColor)),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      /* add an image*/
-                      // location_permission
-                      Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              image: new DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image: new AssetImage(ImageAssets.address),
-                          ))),
-                      SizedBox(height: 10),
-                      Text(
-                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14))
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context)!.translate('refuse')}"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context)!.translate('accept')}"),
-                    onPressed: () async {
-                      /* */
-                      await Geolocator.openAppSettings();
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
+            builder: (_) => const PermissionsModal(),
           );
-          /* ---- */
         }
-        else if (permission == LocationPermission.denied) {
-          /* ---- */
-          // Geolocator.requestPermission();
-          /* ---- */
-          return showDialog<void>(
+        /* ---- */
+      } else if (permission == LocationPermission.denied) {
+        /* ---- */
+        // Geolocator.requestPermission();
+        /* ---- */
+        if(status.isDenied &&!notif_status.isDenied){
+          openLocationModal(context);
+        }else{
+          return  showDialog(
             context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text(
-                    "${AppLocalizations.of(context)!.translate('permission_')}"
-                        .toUpperCase(),
-                    style: TextStyle(color: KColors.primaryColor)),
-                content: SingleChildScrollView(
-                  child: ListBody(
-                    children: <Widget>[
-                      /* add an image*/
-                      // location_permission
-                      Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              image: new DecorationImage(
-                            fit: BoxFit.fitHeight,
-                            image: new AssetImage(ImageAssets.address),
-                          ))),
-                      SizedBox(height: 10),
-                      Text(
-                          "${AppLocalizations.of(context)!.translate('request_location_permission')}",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 14))
-                    ],
-                  ),
-                ),
-                actions: <Widget>[
-                  TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context)!.translate('refuse')}"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: Text(
-                        "${AppLocalizations.of(context)!.translate('accept')}"),
-                    onPressed: () async {
-                      /* */
-                      prefs!.setString("_has_accepted_gps", "ok");
-                      await Geolocator.requestPermission();
-                      LocationPermission permission2 =
-                          await Geolocator.checkPermission();
-                      if (permission2 == LocationPermission.always ||
-                          permission2 == LocationPermission.whileInUse) {
-                        _getLastKnowLocation(
-                            jumpToBuyPageDetails: jumpToBuyPageDetails);
-                      }
-                      Navigator.of(context).pop();
-                    },
-                  )
-                ],
-              );
-            },
+            builder: (_) => const PermissionsModal(),
           );
-        } else {
-          bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
-          if (!isLocationServiceEnabled) {
-            return showDialog<void>(
+        }
+      } else {
+        bool isLocationServiceEnabled =
+        await Geolocator.isLocationServiceEnabled();
+        var status  = await Permission.notification.status;
+        if (!isLocationServiceEnabled ) {
+          if(status.isDenied && !notif_status.isDenied){
+            openLocationModal(context);
+          }else{
+            return  showDialog(
               context: context,
-              barrierDismissible: false, // user must tap button!
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(
-                      "${AppLocalizations.of(context)!.translate('permission_')}"
-                          .toUpperCase(),
-                      style: TextStyle(color: KColors.primaryColor)),
-                  content: SingleChildScrollView(
-                    child: ListBody(
-                      children: <Widget>[
-                        Container(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                                image: new DecorationImage(
-                              fit: BoxFit.fitHeight,
-                              image: new AssetImage(
-                                  ImageAssets.location_permission),
-                            ))),
-                        SizedBox(height: 10),
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('request_location_activation_permission')}",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontSize: 14))
-                      ],
-                    ),
-                  ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    TextButton(
-                      child: Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}"),
-                      onPressed: () async {
-                        /* */
-                        Navigator.of(context).pop();
-                        prefs!.setString("_has_accepted_gps", "ok");
-
-                        await Geolocator.openLocationSettings();
-                      },
-                    )
-                  ],
-                );
-              },
+              builder: (_) => const PermissionsModal(),
             );
-            /* ---- */
-          } else {
-            /* show loading dialog until this finishes then close */
+          }
 
-            // switch to page two
-            if (jumpToBuyPageDetails) {
-              setState(() {
-                StateContainer.of(context).updateTabPosition(tabPosition: 1);
-              });
-            }
+          /* ---- */
+        } else {
+          /* show loading dialog until this finishes then close */
 
-            positionStream =
-                Geolocator.getPositionStream().listen((Position position) {
-              /* compare current and old position */
-              if (position?.latitude != null &&
-                  tmpLocation?.latitude != null &&
-                  (position.latitude * 100).round() ==
-                      (tmpLocation!.latitude! * 100).round() &&
-                  (position.longitude * 100).round() ==
-                      (tmpLocation!.longitude * 100).round()) {
-                widget.samePositionCount++;
-              } else {
-                widget.samePositionCount = 0;
-                tmpLocation = StateContainer.of(context).location;
-                if (position != null && mounted) {
-                  widget.hasGps = true;
-                  setState(() {
-                    StateContainer.of(context)
-                        .updateLocation(location: position);
-                  });
-                }
-              }
-              if (widget.samePositionCount >= 3 || widget.hasGps!)
-                positionStream?.cancel();
+          // switch to page two
+          if (jumpToBuyPageDetails) {
+            setState(() {
+              StateContainer.of(context).updateTabPosition(tabPosition: 1);
             });
           }
-        }
 
+          positionStream =Geolocator.getPositionStream().listen((Position position) {
+            /* compare current and old position */
+            if (position?.latitude != null &&
+                tmpLocation?.latitude != null &&
+                (position.latitude * 100).round() ==
+                    (tmpLocation!.latitude! * 100).round() &&
+                (position.longitude * 100).round() ==
+                    (tmpLocation!.longitude * 100).round()) {
+              widget.samePositionCount++;
+            } else {
+              widget.samePositionCount = 0;
+              tmpLocation = StateContainer.of(context).location;
+              if (position != null && mounted) {
+                widget.hasGps = true;
+                setState(() {
+                  StateContainer.of(context)
+                      .updateLocation(location: position);
+                });
+              }
+            }
+            if (widget.samePositionCount >= 3 || widget.hasGps!)
+              positionStream?.cancel();
+          });
+        }
+      }
     });
+
+    var loc_status =await Permission.location.status ;
+    var notif_status=await Permission.notification.status;
+    var storage_status = await Permission.storage.status;
+    if (Platform.isAndroid) {
+      final androidInfo = await DeviceInfoPlugin().androidInfo;
+      int sdkVersion = androidInfo.version.sdkInt;
+      if (sdkVersion <= 32) {
+        storage_status = await Permission.storage.status;
+      }
+    }
+    if(loc_status.isGranted&&notif_status.isGranted){
+      if(storage_status.isDenied){
+        //  openPhotosModal(context);
+        //   openLocationModal(context);
+        // openNotificationModal(context);
+      }
+    }
   }
 
   void _requestGpsPermissionAndLocation() {

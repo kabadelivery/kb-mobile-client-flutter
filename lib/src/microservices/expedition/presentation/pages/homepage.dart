@@ -6,8 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../../StateContainer.dart';
 import '../../../../localizations/AppLocalizations.dart';
+import '../../../../ui/screens/chat/ChatPage.dart';
 import '../../../../utils/_static_data/KTheme.dart';
+import '../../../../utils/functions/NotLoggedInPopUp.dart';
 import '../widget/contact.dart';
 import '../widget/expedition_type_box.dart';
 
@@ -59,40 +62,102 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                       ),
                       Row(
                         children: [
-                          MaterialButton(
-                            elevation: 0,
-                            onPressed: (){
-                              Navigator.of(context).push(PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => TrackingPackages(),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    var begin = Offset(1.0, 0.0);
-                                    var end = Offset.zero;
-                                    var curve = Curves.ease;
-                                    var tween = Tween(begin: begin, end: end);
-                                    var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
-                                    return SlideTransition(
-                                        position: tween.animate(curvedAnimation),
-                                        child: child
-                                    );
-                                  }
-                              ));
-                            },child: Row(
-                            children: [
-                              Icon(Icons.location_on_outlined,color: Colors.white,size: 15,),
-                              Text("${AppLocalizations.of(context)!.translate('parcel_tracking')}",style: TextStyle(color: Colors.white,fontSize: 11),),
-                            ],
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 10),
+                            child: Stack(
+                              children: [
+                                MaterialButton(
+                                  elevation: 0,
+                                  onPressed: (){
+                                    Navigator.of(context).push(PageRouteBuilder(
+                                        pageBuilder: (context, animation, secondaryAnimation) => TrackingPackages(),
+                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                          var begin = Offset(1.0, 0.0);
+                                          var end = Offset.zero;
+                                          var curve = Curves.ease;
+                                          var tween = Tween(begin: begin, end: end);
+                                          var curvedAnimation = CurvedAnimation(parent: animation, curve: curve);
+                                          return SlideTransition(
+                                              position: tween.animate(curvedAnimation),
+                                              child: child
+                                          );
+                                        }
+                                    ));
+                                  },child: Row(
+                                  children: [
+                                    Icon(Icons.location_on_outlined,color: Colors.white,size: 15,),
+                                    Text("${AppLocalizations.of(context)!.translate('parcel_tracking')}",style: TextStyle(color: Colors.white,fontSize: 11),),
+                                  ],
+                                ),
+                                  minWidth: 80,height: 30,
+                                  shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(10)),),
+                                Positioned(
+                                  right:0,
+                                  top: 5,
+                                  child: Container(
+                                    width: 12,
+                                    height: 12,
+                                    decoration: BoxDecoration(
+                                      color: Colors.green,
+                                      shape: BoxShape.circle,
+                                      border: Border.all(color: Colors.white, width: 1.5),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                            minWidth: 80,height: 30,
-                            shape: RoundedRectangleBorder(side: BorderSide(width: 1,color:Colors.white),borderRadius: BorderRadius.circular(10)),),
                           Row(
                             children: [
                               IconButton(onPressed: (){
                                 showBottomContactSheet(context: context);
                               }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
-                              IconButton(onPressed: (){
-                                contactWhatsApp(phoneNumber: "+22871499014", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
-                              }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
+                              GestureDetector(
+                                  onTap: (){
+                                    if (StateContainer.of(context).loggingState == 0){
+                                      NotLoggedInPopUp(context);
+                                    }else{
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChatPage(
+                                              token: '',
+                                              receiverId: 1,
+                                            )),
+                                      );
+                                    }
+                                  },
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Stack(
+                                        clipBehavior: Clip.none, // allows the green dot to overflow
+                                        children: [
+                                          const Icon(
+                                            Icons.chat_bubble_outline,
+                                            color: Colors.white,
+                                            size: 22,
+                                          ),
+                                          Positioned(
+                                            right: -2,
+                                            top: -2,
+                                            child: Container(
+                                              width: 10,
+                                              height: 10,
+                                              decoration: BoxDecoration(
+                                                color: Colors.green,
+                                                shape: BoxShape.circle,
+                                                border: Border.all(color: Colors.white, width: 1.5),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
 
+
+                              ),
                             ],
                           ),
                         ],

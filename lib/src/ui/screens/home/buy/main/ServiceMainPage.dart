@@ -1530,8 +1530,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
           }else{
             return  showDialog(
               context: context,
-              builder: (_) => const PermissionsModal(),
-            );
+              builder: (_) =>  PermissionsModal(),
+            ).then((_){
+              if (jumpToBuyPageDetails) {
+                setState(() {
+                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
+                });
+              }
+            });
           }
           /* ---- */
         } else if (permission == LocationPermission.denied) {
@@ -1544,7 +1550,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
             return  showDialog(
               context: context,
               builder: (_) => const PermissionsModal(),
-            );
+            ).then((_){
+              if (jumpToBuyPageDetails) {
+                setState(() {
+                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
+                });
+              }
+
+            });
           }
         } else {
           bool isLocationServiceEnabled =
@@ -1557,7 +1570,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
               return  showDialog(
                 context: context,
                 builder: (_) => const PermissionsModal(),
-              );
+              ).then((_){
+                if (jumpToBuyPageDetails) {
+                  setState(() {
+                    StateContainer.of(context).updateTabPosition(tabPosition: 1);
+                  });
+                }
+              });
             }
 
             /* ---- */
@@ -1608,7 +1627,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
         storage_status = await Permission.storage.status;
       }
     }
-
     if(loc_status.isGranted&&notif_status.isGranted){
       if(storage_status.isDenied){
       //  openPhotosModal(context);

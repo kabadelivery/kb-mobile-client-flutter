@@ -209,7 +209,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
          colis: (el['colis'] as List)
              .map((colis) => PackageModel.fromJson(colis as Map<String, dynamic>))
              .toList(),
-         createdBy: CreatedByModel.fromJson(el['createdBy']),
          createdAt: DateTime.parse(el['createdAt']),
          updatedAt: DateTime.parse(el['updatedAt']),
        );
