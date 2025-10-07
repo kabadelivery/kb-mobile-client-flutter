@@ -28,7 +28,6 @@ import '../../../../../utils/Enums/type_of_transaction.dart';
 import '../../../../../utils/functions/topups.dart';
 import '../../../webview/paymentWebView.dart';
 
-
 class TopNewUpPage extends StatefulWidget {
   static var routeName = "/TopNewUpPage";
 
@@ -835,7 +834,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               "${_phoneNumberFieldController!.text}",
               "${_amountFieldController!.text}",
               _getFees(),
-              1 
+              1
               );
         } else if (widget.selectedPosition == 2) {
           String amount = "${_amountFieldController!.text}";

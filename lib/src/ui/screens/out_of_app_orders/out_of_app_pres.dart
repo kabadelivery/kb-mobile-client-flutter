@@ -78,7 +78,7 @@ class _OutOfAppPresState extends ConsumerState<OutOfAppPres> {
                         showBottomContactSheet(context: context);
                       }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
                       IconButton(onPressed: (){
-                        contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                        contactWhatsApp(phoneNumber: "+22871499014", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
                       }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                     ],
                   )

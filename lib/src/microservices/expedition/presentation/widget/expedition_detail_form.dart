@@ -411,7 +411,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                         children: [
                                           Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
                                           SizedBox(width: 5,),
-                                          Text("Livraison en ",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                          Text("${AppLocalizations.of(context)!.translate('delivery_in')}",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
                                           Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                                         ],
                                       ),
@@ -456,7 +456,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(color: KabaExpeditionColor.primary,width: 1)
                                   ),
-                                  hintText: "Ex: Vêtements, chaussures, produits, cosmétiques, etc.",
+                                  hintText: "${AppLocalizations.of(context)!.translate('example_products')}",
                                   hintStyle: TextStyle(fontSize: 12,color: Colors.grey.shade400),
                                   contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 10)
                               ),
@@ -526,7 +526,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                       borderRadius: BorderRadius.circular(10),
                                       borderSide: BorderSide(color: KabaExpeditionColor.primary,width: 1)
                                   ),
-                                  hintText: "Ex: Près de l’Hôtel Labadi Beach, en face de...",
+                                  hintText: "${AppLocalizations.of(context)!.translate('example_address')}",
                                   hintStyle: TextStyle(fontSize: 12,color: Colors.black87),
                                   contentPadding: EdgeInsets.symmetric(horizontal: 15,vertical: 10)
                               ),
@@ -757,7 +757,6 @@ class _PickUpOptionsState extends State<PickUpOptions> {
   @override
   void initState(){
     super.initState();
-    BlocProvider.of<ExpeditionBloc>(context).add(chooseShippingMethodAddressType(method: 'POSITION'));
   }
   @override
   Widget build(BuildContext context) {
@@ -921,7 +920,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Icon(Icons.location_on_outlined,size: 20,color: !positionChoosed? KabaExpeditionColor.primary:Colors.white,),
-                                        Text(_loading?"En cours..." :"Position actuelle",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
+                                        Text(_loading?"${AppLocalizations.of(context)!.translate('in_progress')}" :"${AppLocalizations.of(context)!.translate('current_position')}",style: TextStyle(fontSize: 13,color:!positionChoosed? KabaExpeditionColor.primary:Colors.white),)
                                       ],
                                     ),
                                   ),
@@ -1081,7 +1080,7 @@ class _PickUpOptionsState extends State<PickUpOptions> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(selectedDate==null?"Sélectionnez une date":"${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",style: TextStyle(fontSize: 14,color:selectedDate==null? Colors.black54:Colors.white)),
+                                    Text(selectedDate==null?"${AppLocalizations.of(context)!.translate('select_a_date')}":"${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}",style: TextStyle(fontSize: 14,color:selectedDate==null? Colors.black54:Colors.white)),
                                     Icon(Icons.calendar_month,color:selectedDate==null? Colors.grey:Colors.white,size: 17,)
                                   ],
                                 ),
@@ -1275,7 +1274,7 @@ class PackageSelector extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Nombre de colis",
+                       "${AppLocalizations.of(context)!.translate('number_of_packages')}",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
                         SizedBox(height: 2),

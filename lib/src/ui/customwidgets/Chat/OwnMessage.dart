@@ -5,7 +5,6 @@ class OwnMessageCard extends StatelessWidget {
   final String messageType;
 
   final String time; // "text" or "image"
-
   const OwnMessageCard({
     super.key,
     required this.message,

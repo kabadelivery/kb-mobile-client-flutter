@@ -1,3 +1,4 @@
+import 'package:KABA/src/contracts/register_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/NewPasswordPage.dart';
 import 'package:flutter/material.dart';
@@ -116,15 +117,13 @@ class _ForgotenPasswordOTPState extends State<ForgotenPasswordOTP> {
                   ),
                 onPressed :() {
                  Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) =>NewPasswordPage()
-      ),
-    );
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>NewPasswordPage(presenter: RegisterPresenter(RegisterView()),)
+                        ),
+                  );
                 },
-                  
-                
                   child: const Text(
                     "Nouveau Mot de Passe",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

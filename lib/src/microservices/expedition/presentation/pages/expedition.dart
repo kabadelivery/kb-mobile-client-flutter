@@ -284,7 +284,7 @@ class _ExpeditionState extends State<Expedition> {
                                             border: Border.all(color: Colors.grey,width: .5),
                                             borderRadius: BorderRadius.circular(10)
                                         ),
-                                        child: Text("${AppLocalizations.of(context)!.translate('cancel')}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
+                                        child: Text("${AppLocalizations.of(context)!.translate('cancel')}".toUpperCase(),style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold),),
                                       ),
                                     ),
                                   ),
@@ -310,7 +310,7 @@ class _ExpeditionState extends State<Expedition> {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
-                                            Text(step==1?"Continuer":"Finaliser",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),),
+                                            Text((step==1?"${AppLocalizations.of(context)!.translate("next")}":"${AppLocalizations.of(context)!.translate("finalize")}").toUpperCase(),style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold)),
                                             SizedBox(width: 5,),
                                             Icon(Icons.arrow_forward,color: Colors.white,size: 15,)
                                           ],
@@ -368,7 +368,7 @@ class _ExpeditionState extends State<Expedition> {
                               SizedBox(height: 10),
                               PickUpOptions(),
                               SizedBox(height: 10,),
-                              handleExpeditionFormMessage(createExpedition).isNotEmpty?  Container(
+                              handleExpeditionFormMessage(context,createExpedition).isNotEmpty?  Container(
                                 width: 350,
                                 decoration: BoxDecoration(
                                   color: KabaExpeditionColor.primary.withOpacity(0.1),
@@ -382,7 +382,7 @@ class _ExpeditionState extends State<Expedition> {
                                     Icon(FontAwesomeIcons.infoCircle,color: KabaExpeditionColor.primary,size: 15,),
                                     SizedBox(width: 10,),
                                     Flexible(
-                                      child: Text(handleExpeditionFormMessage(createExpedition)
+                                      child: Text(handleExpeditionFormMessage(context,createExpedition)
                                         ,style:
                                         TextStyle(color: KabaExpeditionColor.primary),),
                                     ),
@@ -399,7 +399,7 @@ class _ExpeditionState extends State<Expedition> {
                                   ),
                                   elevation: 0,
                                   onPressed: ()async{
-                                    String message =handleExpeditionFormMessage(createExpedition);
+                                    String message =handleExpeditionFormMessage(context,createExpedition);
                                     if(message.isEmpty){
                                       setState(() {
                                         isLoading = true;
@@ -456,7 +456,8 @@ class _ExpeditionState extends State<Expedition> {
                                       children: [
                                         Icon(Icons.check_circle_outline_rounded,color: Colors.white),
                                         SizedBox(width: 10,),
-                                        Text(isLoading?"Création en cours...":"Continuer et Négocier ?",style: TextStyle(color: Colors.white,),),
+                                        Text(isLoading?"${AppLocalizations.of(context)!.translate('creating_in_progress')}"
+                                            :"${AppLocalizations.of(context)!.translate('continue_and_negotiate')}",style: TextStyle(color: Colors.white,),),
                                       ],
                                     ),
                                   ),
