@@ -489,7 +489,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
               SizedBox(height: 25),
               Text(
                 Utils.capitalize(
-                    "${AppLocalizations.of(context)?.translate('T_suscription')}"),
+                    "${AppLocalizations.of(context)?.translate('subscription')}"),
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
               Text("Choisissez la formule qui vous convient",

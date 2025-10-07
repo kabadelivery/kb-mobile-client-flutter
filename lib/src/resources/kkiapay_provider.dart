@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
-
 class KkiapayProvider {
   String temp_transaction_id="";
   bool init_launch=true;

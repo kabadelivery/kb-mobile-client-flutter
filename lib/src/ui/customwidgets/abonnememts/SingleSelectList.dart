@@ -7,7 +7,7 @@ class SingleSelectList extends StatefulWidget {
   final List<ListItem> items;
   final int? initialIndex;
   final ValueChanged<int>? onChanged;
-  final ValueChanged<String>? onItemSelected; // 👈 callback for logo or direct selection
+  final ValueChanged<String>? onItemSelected;
 
   const SingleSelectList({
     Key? key,
@@ -23,8 +23,7 @@ class SingleSelectList extends StatefulWidget {
 
 class _SingleSelectListState extends State<SingleSelectList> {
   late int? _selectedIndex = widget.initialIndex;
-  String? _selectedLogo; // 👈 track selected logo
-
+  String? _selectedLogo;
   void _showBottomSheet(ListItem item) {
     showModalBottomSheet(
       context: context,
@@ -33,8 +32,6 @@ class _SingleSelectListState extends State<SingleSelectList> {
       ),
       builder: (context) {
         Widget content;
-
-        // 👇 Decide what to show depending on the clicked item
         if (item.title == "Mobile Money") {
           content = Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

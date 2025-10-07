@@ -1256,8 +1256,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       launch_other_payment=true;
       }
     }
-    /*
-    * if(launch_other_payment){
+
+    if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
       String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
       kkiapayProvider.launchKkiapayPayment(
@@ -1271,7 +1271,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       setState(() {
         showLoading(true);
       });
-    }*/
+    }
     }
   _onSwitch(int i) {
     setState(() {

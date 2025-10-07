@@ -1,3 +1,5 @@
+// Paste this file replacing your current SubscriptionBottomSheet.dart
+import 'dart:convert';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/SingleSelectList.dart';
@@ -8,23 +10,24 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart'; 
- import 'dart:convert';
- import 'package:http/http.dart' as http;
- import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
- // 👈 import your SingleSelectList file
+import 'package:url_launcher/url_launcher.dart';
+import 'package:http/http.dart' as http;
+
+// <-- Adjust this import if your KkiapayProvider is elsewhere
+import 'package:KABA/src/resources/kkiapay_provider.dart';
+
+import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 
 class SubscriptionBottomSheet extends StatefulWidget {
-
   final int idPack;
   final String title;
   final String price;
   final String currency;
   final Color accentColor;
-  final String livraisons ; 
-  final String validite ;
-  final String rayon ;
-  final String min ; 
+  final String livraisons;
+  final String validite;
+  final String rayon;
+  final String min;
 
   const SubscriptionBottomSheet({
     Key? key,
@@ -33,7 +36,7 @@ class SubscriptionBottomSheet extends StatefulWidget {
     required this.price,
     required this.currency,
     required this.accentColor,
-     required this.livraisons,
+    required this.livraisons,
     required this.validite,
     required this.rayon,
     required this.min,
@@ -43,15 +46,18 @@ class SubscriptionBottomSheet extends StatefulWidget {
   State<SubscriptionBottomSheet> createState() =>
       _SubscriptionBottomSheetState();
 
-  // 👇 Helper to show it
   static void show(
-    BuildContext context, {
-    required int idPack,
-    required String title,
-    required String price,
-    required String currency,
-    required Color accentColor, required String livraison, required String validite, required String rayon, required String min,
-  }) {
+      BuildContext context, {
+        required int idPack,
+        required String title,
+        required String price,
+        required String currency,
+        required Color accentColor,
+        required String livraison,
+        required String validite,
+        required String rayon,
+        required String min,
+      }) {
     showModalBottomSheet(
       backgroundColor: Colors.white,
       context: context,
@@ -65,94 +71,130 @@ class SubscriptionBottomSheet extends StatefulWidget {
         price: price,
         currency: currency,
         accentColor: accentColor,
-         livraisons: livraison, 
-         validite: validite,
-         min: min,
-         rayon: rayon,
+        livraisons: livraison,
+        validite: validite,
+        min: min,
+        rayon: rayon,
       ),
     );
   }
 }
 
 class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
-   int? customerId;
-   String? customer_phone = '' ;
+  int? customerId;
+  String? customer_phone = '';
+  bool isProcessing = false;
 
-
-   void showProcessingBottomSheet(BuildContext context) {
-     showModalBottomSheet(
-       context: context,
-       isDismissible: false,
-       enableDrag: false,
-       backgroundColor: Colors.white,
-       shape: const RoundedRectangleBorder(
-         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-       ),
-       builder: (context) {
-         return Padding(
-           padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-           child: Column(
-             mainAxisSize: MainAxisSize.min,
-             children: [
-               const CircularProgressIndicator(
-                 color: Colors.green,
-                 strokeWidth: 3,
-               ),
-               const SizedBox(height: 20),
-               const Text(
-                 "Traitement en cours...",
-                 style: TextStyle(
-                   fontSize: 18,
-                   fontWeight: FontWeight.w600,
-                   color: Colors.black87,
-                 ),
-               ),
-               const SizedBox(height: 10),
-               Text(
-                 "Veuillez patienter un instant",
-                 style: TextStyle(color: Colors.grey[600], fontSize: 14),
-               ),
-               const SizedBox(height: 10),
-             ],
-           ),
-         );
-       },
-     );
-   }
-
-
-
-
-   int? selectedIndex;
+  int? selectedIndex;
   String? selectedMethodLabel;
+
+  final items = [
+    ListItem(
+        title: "Mobile Money",
+        subtitle: "Mix, MTN, Wave…",
+        icon: Icons.phone_android),
+    ListItem(
+        title: "Carte Bancaire",
+        subtitle: "Visa, MasterCard",
+        icon: Icons.credit_card),
+    ListItem(
+        title: "PorteFeuille KABA",
+        subtitle: "Votre solde KABA",
+        icon: Icons.account_balance_wallet),
+  ];
 
   @override
   void initState() {
     super.initState();
-    _loadCustomer(); // fetch customer id when bottom sheet opens
+    _loadCustomer();
   }
 
   Future<void> _loadCustomer() async {
     CustomerModel customer = await CustomerUtils.getCustomer();
     setState(() {
       customerId = customer.id;
-      customer_phone = customer.phone_number; // store the user id
+      customer_phone = customer.phone_number;
     });
   }
 
- 
+  void showProcessingBottomSheet(BuildContext context) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(color: Colors.green),
+            SizedBox(height: 16),
+            Text("Traitement en cours..."),
+          ],
+        ),
+      ),
+    );
+  }
 
-  // Example items for SingleSelectList
-  final items = [
-    ListItem(title: "Mobile Money", subtitle: "Mix, MTN, Wave…", icon: Icons.phone_android),
-    ListItem(title: "Carte Bancaire", subtitle: "Visa, MasterCard", icon: Icons.credit_card),
-    ListItem(title: "PorteFeuille KABA", subtitle: "Votre solde KABA", icon: Icons.account_balance_wallet),
-  ];
+  /// Launch Kkiapay as a fallback or direct gateway
+  Future<void> _launchKkiapayPayment({
+    required BuildContext context,
+    required int amount,
+    required String customerNickname,
+    required String typeOfTransaction,
+    String selectedCard = 'card',
+  }) async {
+    try {
+      CustomerModel  cusModel = await CustomerUtils.getCustomer();
+      KkiapayProvider kkiapayProvider = new KkiapayProvider();
+      kkiapayProvider.launchKkiapayPayment(
+        context,
+        amount: amount,
+        customer: cusModel,
+        selectedCard: selectedCard,
+        feesAmount: 0,
+        typeOfTransaction: typeOfTransaction,
+      );
+    } catch (e) {
+      debugPrint('Kkiapay launch error: $e');
+    }
+  }
+
+  /// Ask the user to pick the mobile money operator (Mix, Flooz, Moov, MTN, Wave)
+  Future<String?> _selectMomoOperatorDialog() async {
+    String? picked;
+    final options = <Map<String, String>>[
+      {'label': 'Mix', 'value': 'mix'},
+      {'label': 'Flooz', 'value': 'flooz'},
+      {'label': 'Moov Togo', 'value': 'moov'},
+      {'label': 'MTN', 'value': 'mtn'},
+      {'label': 'Wave', 'value': 'wave'},
+    ];
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (ctx) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: options.map((op) {
+              return ListTile(
+                title: Text(op['label']!),
+                onTap: () {
+                  picked = op['value'];
+                  Navigator.of(ctx).pop();
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+    return picked;
+  }
 
   @override
   Widget build(BuildContext context) {
-     double number = double.parse(widget.price);
-     String formatted = NumberFormat("#,###").format(number);
+    double number = double.tryParse(widget.price) ?? 0.0;
+    String formatted = NumberFormat("#,###").format(number);
     return DraggableScrollableSheet(
       expand: false,
       initialChildSize: 0.9,
@@ -164,7 +206,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // --- HEADER
               const Text(
                 "Facture d'abonnement",
                 style: TextStyle(
@@ -178,10 +219,8 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                 "Vérifiez les détails de votre abonnement et procédez au paiement sécurisé",
                 style: TextStyle(fontSize: 14, color: Colors.black54),
               ),
-
               const SizedBox(height: 20),
-
-              // --- SUBSCRIPTION DETAILS
+              // subscription card
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -198,7 +237,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         Text(widget.title,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text(formatted+""+ "${widget.currency}",
+                        Text(formatted + "" + "${widget.currency}",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -207,33 +246,31 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       ],
                     ),
                     const SizedBox(height: 10),
-                    Row(children:  [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 6),
-                      Text(widget.livraisons+" Livraisons"),
+                    Row(children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 6),
+                      Text("${widget.livraisons} Livraisons"),
                     ]),
-                    Row(children:  [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 6),
-                      Text("Valide ${widget.livraisons} jours"),
+                    Row(children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 6),
+                      Text("Valide ${widget.validite} jours"),
                     ]),
-                    Row(children:  [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 6),
+                    Row(children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 6),
                       Text("Rayon de ${widget.rayon} Kms"),
                     ]),
-                    Row(children:  [
-                      Icon(Icons.check_circle, color: Colors.green),
-                      SizedBox(width: 6),
+                    Row(children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 6),
                       Text("Min. ${widget.min} F"),
                     ]),
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // --- FACTURATION DETAILS
+              // Billing details
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -258,21 +295,19 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                     const SizedBox(height: 12),
                     const Divider(),
                     const SizedBox(height: 15),
-                     Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         const Text("Total a Payer"),
-                        Text("${formatted}",style: TextStyle(color: KColors.primaryColor),),
+                        Text("${formatted}",
+                            style: TextStyle(color: KColors.primaryColor)),
                       ],
-                    )
-                  ,
+                    ),
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // --- PAYMENT METHODS
+              // payment methods
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -287,8 +322,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 12),
-
-                    // --- SingleSelectList
                     SingleSelectList(
                       items: items,
                       onChanged: (i) {
@@ -298,10 +331,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         setState(() => selectedMethodLabel = label);
                       },
                     ),
-
                     const Divider(),
-
-                    // --- Selected Method Display
                     if (selectedMethodLabel != null)
                       Container(
                         padding: const EdgeInsets.all(16),
@@ -324,10 +354,8 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 20),
-
-              // --- ACTION BUTTONS
+              // actions
               Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -336,42 +364,78 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFFCD1F45),
                     ),
-                    onPressed: () async {
+                    onPressed: isProcessing
+                        ? null
+                        : () async {
                       if (selectedMethodLabel == null) {
-                       debugPrint("No Payement Selected");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content:
+                            Text("Veuillez sélectionner un mode de paiement."),
+                            backgroundColor: Colors.orange,
+                          ),
+                        );
+                        return;
                       }
-                     
-                      debugPrint("Pay with $selectedMethodLabel , abo_id:${widget.idPack} , price:${widget.price} , customer id ${customerId }");
-                     ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text("Traitement en cours..."),
-      backgroundColor: Colors.green,
-      duration: Duration(seconds: 2),
-    ),
-  );
 
-                     var response = await sendSubscriptiondata(
-                        context,               // ✅ add this line first
+                      // Handle submission depending on selected method
+                      setState(() => isProcessing = true);
+
+                      String? methodToSend;
+
+                      if (selectedMethodLabel == "Mobile Money") {
+                        final op = await _selectMomoOperatorDialog();
+                        if (op == null) {
+                          setState(() => isProcessing = false);
+                          return;
+                        }
+                        methodToSend = op; // 'mix','flooz','moov','mtn','wave'
+                      } else if (selectedMethodLabel == "Carte Bancaire") {
+                        methodToSend = 'card';
+                      } else if (selectedMethodLabel == "PorteFeuille KABA") {
+                        methodToSend = 'portefeuille';
+                      } else {
+                        methodToSend = selectedMethodLabel!.toLowerCase();
+                      }
+
+                      debugPrint(
+                          "Pay with $methodToSend , abo_id:${widget.idPack} , price:${widget.price} , customer id ${customerId }");
+
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Traitement en cours..."),
+                          backgroundColor: Colors.green,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+
+                      final response = await sendSubscriptiondata(
+                        context,
                         '$customerId',
                         '${widget.idPack}',
-                        "$selectedMethodLabel",
+                        methodToSend!,
                         "${widget.price}",
                       );
-   if (response['status'] == "success") {
-    
-   Navigator.pop(context);
-    await Future.delayed(const Duration(seconds: 5));
-    SubscriptionSuccessSheet.show(context);
 
-  } else {
-   Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text( response['message']),
-        backgroundColor: Colors.red,
-      ),
-    );
-  } 
+                      setState(() => isProcessing = false);
+
+                      if (response['status'] == "success" ||
+                          response['status'] == "pending") {
+                        // close bottom sheet and show success (or pending)
+                        Navigator.pop(context);
+                        // delay to let UI breathe
+                        await Future.delayed(const Duration(seconds: 1));
+                        SubscriptionSuccessSheet.show(context);
+                      } else {
+                        // failure: show error
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(response['message'] ?? 'Erreur'),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                      }
                     },
                     child: const Text("Payer ",
                         style: TextStyle(color: Colors.white)),
@@ -379,7 +443,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                   const SizedBox(height: 8),
                   ElevatedButton(
                     style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    ElevatedButton.styleFrom(backgroundColor: Colors.white),
                     onPressed: () => Navigator.pop(context),
                     child: const Text("Annuler",
                         style: TextStyle(color: Colors.black)),
@@ -393,167 +457,319 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
     );
   }
 
+  /// Orchestrator: send subscription -> choose payment path -> check status -> update backend
+  Future<Map<String, dynamic>> sendSubscriptiondata(
+      BuildContext context,
+      String userid,
+      String suscription_id,
+      String payement_method,
+      String price,
+      ) async {
+    try {
+      // 1) Create subscription record on backend
+      final response = await http.post(
+        Uri.parse(ServerRoutes.KABA_ABONNEMENT_NEW_ABONNEMENT),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "user_id": userid,
+          "subscription_id": suscription_id,
+          "start_date": DateTime.now().toIso8601String().split("T").first,
+          "payement_method": payement_method,
+          "transaction_id": "",
+          "price": price,
+        }),
+      );
 
+      if (response.statusCode < 200 || response.statusCode >= 300) {
+        debugPrint("❌ Error during subscription insert: ${response.body}");
+        return {
+          "status": "error",
+          "message": "Échec de l'enregistrement de l'abonnement.",
+        };
+      }
 
-   Future<Map<String, dynamic>> sendSubscriptiondata(
-       BuildContext context,
-       String userid,
-       String suscription_id,
-       String payement_method,
-       String price,
-       ) async {
-     try {
-       // Step 1 — Send subscription to backend
-       final response = await http.post(
-         Uri.parse(ServerRoutes.KABA_ABONNEMENT_NEW_ABONNEMENT),
-         headers: {"Content-Type": "application/json"},
-         body: jsonEncode({
-           "user_id": userid,
-           "subscription_id": suscription_id,
-           "start_date": DateTime.now().toIso8601String().split("T").first,
-           "payement_method": payement_method,
-           "transaction_id": "",
-           "price": price,
-         }),
-       );
+      // If the user chose portefeuille, call wallet endpoint and return result immediately
+      if (payement_method.toLowerCase() == 'portefeuille') {
+        final res = await paySubscriptionWithWallet(
+          context,
+          int.tryParse(userid) ?? (customerId ?? 0),
+          double.tryParse(price) ?? 0.0,
+          suscription_id,
+        );
+        // paySubscriptionWithWallet returns a Map
+        return res;
+      }
 
-       if (response.statusCode < 200 || response.statusCode >= 300) {
-         debugPrint("❌ Error during subscription insert: ${response.body}");
-         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(
-             content: Text("Erreur lors de l'enregistrement de l'abonnement."),
-             backgroundColor: Colors.redAccent,
-           ),
-         );
-         return {
-           "status": "error",
-           "message": "Échec de l'enregistrement de l'abonnement.",
-         };
-       }else {
-         await PaymentProcessor.processPayment( method: payement_method, price: double.parse(price), );
+      // For international momo (mtn, wave) -> use Kkiapay directly
+      final lower = payement_method.toLowerCase();
+      if (lower == 'mtn' || lower == 'wave') {
+        // Launch Kkiapay
+        final customer = await CustomerUtils.getCustomer();
+        await _launchKkiapayPayment(
+          context: context,
+          amount: (double.tryParse(price) ?? 0.0).toInt(),
+          customerNickname: customer.nickname ?? '',
+          typeOfTransaction: 'momo',
+        );
 
-         showDialog(
-           context: context,
-           barrierDismissible: false,
-           builder: (_) => const Center(
-             child: Column(
-               mainAxisSize: MainAxisSize.min,
-               children: [
-                 CircularProgressIndicator(color: Colors.green),
-                 SizedBox(height: 16),
-                 Text("Traitement en cours..."),
-               ],
-             ),
-           ),
-         );
+        // after launching Kkiapay, we return "pending" and let backend confirm (the check below will also run)
+        await Future.delayed(const Duration(seconds: 8));
+        return await _checkPaymentStatus(context, userid);
+      }
 
-         await Future.delayed(const Duration(seconds: 20));
+      // Otherwise try primary channel (local momo or card)
+      final procResult = await PaymentProcessor.processPayment(
+        method: payement_method,
+        price: double.tryParse(price) ?? 0.0,
+      );
 
-         // Step 3 — Check payment status
-         final statusResponse = await http.post(
-           Uri.parse(ServerRoutes.KABA_CHECK_ABO_PAYMENT_STATUS),
-           headers: {
-             "Content-Type": "application/json",
-             "Authorization": "Bearer eyJhbGciOiJSUzI1NiJ9.eyJyb2xlcyI6WyJST0xFX1VTRVIiXSwidXNlcm5hbWUiOiI5NzMxMTQ5OCIsImlhdCI6MTc1NjExMzY2OSwiZXhwIjoxNzg3MjE3NjY5fQ.p22dRpsy7I1fd-IlSYCXa6C6zhxSyiCvObQ2fpHAys3AUCzGEZcUmjz9C8kLxNt8mFLU21Y3k8_-Eo149wVGj59ZWzH2BAGQmdJ24eqxO0x0P6g7dLDV2F619uY92QoPwxTgJINr1X3Dniw1fr7JrLW8fJISJgyJdfExLgP-vXwbu0C9xvbK_BU_zZgpVVfbJj-yQTMrhefKJh1cfNzqbBygZJe2mhcqJpx0q0TrVH3hxBRIlpQ_4xqKx8lE18eNkDAvNSgXQSY7KWl0zqUF7pqLSiMPd2oT6_tZmJWMnFgx51CidQABWqZa4cK-pOcTM2s-JJA1fsVuLddsphW3PleeUXYHDARl-rRXTP2HHrWc0frYQdXnjUWBKGepo5XYySlaZifHxbBd1D9ySNFSM5TXArSm4vLoL0_4DJ3tyeHlrK8lzEfpK1YEDGXtP1aEn38dmLpC54rofoBR3QoW0-HcOq7fyHg-9if3FknTKuFl5iPbD3yaFdCncZecBjDKXeaWEiln1jJXZrnAOVaAs7s8sXeqVuA4JFv0Dot-7mLzUpEBw9hNcjJaItlDDU0uo6-kU6iXxR6VjNQu_M86G0Ju1bvlX9UTme5WAqr2gudEh1KRVx-w70gGUJl9bNVoXlfuYdGT2Y9Kut1f-00KrUIhxyoEASHUvfOsjK9imG0",
-           },
-           body: jsonEncode({
-             "user_id": userid,
-           }),
-         );
+      // if primary succeeded -> wait then check status
+      if (procResult['status'] == 'success') {
+        // Give backend some time to process the payment callback
+        await Future.delayed(const Duration(seconds: 8));
+        final check = await _checkPaymentStatus(context, userid);
+        return check;
+      } else {
+        // primary method failed -> fallback to Kkiapay
+        debugPrint('Primary payment method failed: ${procResult['message']} - launching Kkiapay fallback');
 
-         // Close loader
-         Navigator.of(context).pop();
+        final customer = await CustomerUtils.getCustomer();
+        await _launchKkiapayPayment(
+          context: context,
+          amount: (double.tryParse(price) ?? 0.0).toInt(),
+          customerNickname: customer.nickname ?? '',
+          typeOfTransaction:
+          (payement_method.toLowerCase() == 'card') ? 'card' : 'momo',
+        );
 
-         if (statusResponse.statusCode >= 200 &&
-             statusResponse.statusCode < 300) {
-           final data = jsonDecode(statusResponse.body);
+        // wait a bit then check payment status
+        await Future.delayed(const Duration(seconds: 8));
+        final check = await _checkPaymentStatus(context, userid);
+        return check;
+      }
+    } catch (e) {
+      debugPrint("Exception in sendSubscriptiondata: $e");
+      return {
+        "status": "error",
+        "message": "Exception: $e",
+      };
+    }
+  }
 
-           if (data["status"] == 1) {
-             // ✅ Payment successful
-             showModalBottomSheet(
-               context: context,
-               isScrollControlled: true,
-               shape: const RoundedRectangleBorder(
-                 borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-               ),
-               builder: (_) => SubscriptionSuccessSheet(),
-             );
+  /// Poll/check payment status endpoint once (you can improve with repeated polling)
+  Future<Map<String, dynamic>> _checkPaymentStatus(
+      BuildContext context, String userId) async {
+    try {
+      // show loader
+      // showProcessingBottomSheet(context); // optional
+      CustomerModel  cusModel = await CustomerUtils.getCustomer();
+      final statusResponse = await http.post(
+        Uri.parse(ServerRoutes.KABA_CHECK_ABO_PAYMENT_STATUS),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization":
+          "Bearer ${cusModel.token}",
+        },
+        body: jsonEncode({"user_id": userId}),
+      );
 
-             try {
-               final updateResponse = await http.post(
-                 Uri.parse(ServerRoutes.KABA_UPDATE_PAYMENT_STATUS),
-                 headers: {
-                   "Content-Type": "application/json",
+      if (statusResponse.statusCode >= 200 &&
+          statusResponse.statusCode < 300) {
+        final data = jsonDecode(statusResponse.body);
+        if (data["status"] == 1) {
+          // Payment validated
+          try {
+            final updateResponse = await http.post(
+              Uri.parse(ServerRoutes.KABA_UPDATE_PAYMENT_STATUS),
+              headers: {"Content-Type": "application/json"},
+              body: jsonEncode({
+                "id": customerId,
+                "status_payement": 1,
+                "transaction_id": data["transaction_id"] ?? "00000",
+              }),
+            );
+            if (updateResponse.statusCode == 200) {
+              debugPrint(
+                  "✅ Subscription successfully updated: ${updateResponse.body}");
+            } else {
+              debugPrint(
+                  "❌  Subscription update failed: ${updateResponse.body}");
+            }
+          } catch (e) {
+            debugPrint("⚠️ Error updating Subscription: $e");
+          }
 
-                 },
-                 body: jsonEncode({
-                   "id":  customerId,
-                   "status_payement": 1,
-                   "transaction_id": data["transaction_id"] ?? "00000", // if exists
+          return {"status": "success", "message": "Paiement validé", "data": data};
+        } else {
+          return {
+            "status": "failed",
+            "message": "Le paiement n’a pas été validé.",
+            "data": data
+          };
+        }
+      } else {
+        return {
+          "status": "error",
+          "message": "Erreur lors de la vérification du statut du paiement",
+        };
+      }
+    } catch (e) {
+      debugPrint("Exception in _checkPaymentStatus: $e");
+      return {"status": "error", "message": "Exception: $e"};
+    } finally {
+      // close loader if you opened one
+      if (Navigator.canPop(context)) {
+        // avoid popping the main sheet accidentally; use only if you opened a dialog
+      }
+    }
+  }
 
-                 }),
-               );
+  // Wallet payment now returns a Map result for the orchestrator to handle
+  Future<Map<String, dynamic>> paySubscriptionWithWallet(
+      BuildContext context,
+      int userId,
+      double amount,
+      String subscriptionId,
+      ) async {
+    try {
+      final url = Uri.parse(
+          "https://dev.pay.kaba-delivery.com/api/subscription/pay-with-wallet");
 
-               if (updateResponse.statusCode == 200) {
-                 print("✅ Subscription successfully updated: ${updateResponse.body}");
-               } else {
-                 print("❌  Subscription update failed: ${updateResponse.body}");
-               }
-             } catch (e) {
-               print("⚠️ Error updating Subscription: $e");
-             }
-           } else {
-             // ❌ Payment failed
-             ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(
-                 content: Text("Le paiement n’a pas été validé."),
-                 backgroundColor: Colors.redAccent,
-               ),
-             );
-             return {
-               "status": "failed",
-               "message": "Le paiement n’a pas été validé.",
-             };
-           }
-         } else {
-           return {
-             "status": "error",
-             "message": "Erreur lors de la vérification du statut du paiement",
-           };
-         }
-         return {
-           "status": "error",
-           "message": "nothing.",
-         };
-       }
+      final response = await http.post(
+        url,
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: jsonEncode({
+          "user_id": userId,
+          "amount": amount,
+          "subscription_id": subscriptionId,
+        }),
+      );
 
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-     } catch (e) {
-       debugPrint("Exception: $e");
-       return {
-         "status": "error",
-         "message": "Exception: $e",
-       };
-     }
-   }
+        if (data['status'] == 1) {
+          showModalBottomSheet(
+            context: context,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            ),
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.check_circle, color: Colors.green, size: 80),
+                    const SizedBox(height: 16),
+                    const Text(
+                      "Paiement Réussi 🎉",
+                      style:
+                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      "Votre abonnement a été payé avec succès via le portefeuille.",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child:
+                      const Text("Fermer", style: TextStyle(color: Colors.white)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+          return {"status": "success", "message": "Paiement portefeuille OK"};
+        } else {
+          _showError(context, "Erreur lors du paiement. Veuillez réessayer.");
+          return {"status": "error", "message": "Erreur paiement portefeuille"};
+        }
+      } else {
+        _showError(context, "Erreur serveur (${response.statusCode})");
+        return {"status": "error", "message": "Erreur serveur"};
+      }
+    } catch (e) {
+      _showError(context, "Une erreur s'est produite: $e");
+      return {"status": "error", "message": "Exception: $e"};
+    }
+  }
 
-
+  void _showError(BuildContext context, String message) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 80),
+              const SizedBox(height: 16),
+              const Text(
+                "Échec du paiement",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Fermer", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 }
 
-
-enum PaymentCategory { flooz, internationaux, card, unsupported, local,portefeuille }
+/// Payment processor helpers (keeps your existing provider usage)
+enum PaymentCategory { flooz, internationaux, card, unsupported, local, portefeuille }
 
 class PaymentProcessor {
-  // 👉 Groupes de moyens de paiement
-  static final List<String> local = ["flooz","mix"];
+  static final List<String> local = ["flooz", "mix", "moov"];
   static final List<String> internationaux = ["mtn", "wave"];
-  static final List<String> cards = ["visa", "mastercard", "american"];
+  static final List<String> cards = ["visa", "mastercard", "american", "card"];
   static final List<String> portefeuille = ["portefeuille"];
 
-  // 🔹 Convertir une string en catégorie
   static PaymentCategory getCategory(String method) {
     final normalized = method.toLowerCase();
-
     if (local.contains(normalized)) return PaymentCategory.local;
     if (internationaux.contains(normalized)) return PaymentCategory.internationaux;
     if (cards.contains(normalized)) return PaymentCategory.card;
@@ -568,305 +784,110 @@ class PaymentProcessor {
     final category = getCategory(method);
 
     switch (category) {
-    case PaymentCategory.local:
-      return await launchNewMomoTopUp(price);
-
-    case PaymentCategory.internationaux:
-      return {"status": "error", "message": "Méthode internationale pas encore implémentée"};
-
-    case PaymentCategory.card:
-      return await launchNewCardTopUp(price);
-
-    case PaymentCategory.unsupported:
-      return {"status": "error", "message": "Méthode non supportée"};
-
-    case PaymentCategory.flooz:
-      return {"status": "error", "message": "Flooz direct non implémenté"};
-
-
+      case PaymentCategory.local:
+        return await launchNewMomoTopUp(price);
+      case PaymentCategory.internationaux:
+      // For internationals we expect to be launched via Kkiapay - let orchestrator handle it.
+        return {"status": "error", "message": "International -> use Kkiapay"};
+      case PaymentCategory.card:
+        return await launchNewCardTopUp(price);
       case PaymentCategory.portefeuille:
+      // handled by orchestration (we kept it separate)
+        return {"status": "error", "message": "Portefeuille handled separately"};
+      case PaymentCategory.flooz:
         return {"status": "error", "message": "Flooz direct non implémenté"};
-  }
+      case PaymentCategory.unsupported:
+      default:
+        return {"status": "error", "message": "Méthode non supportée"};
+    }
   }
 
-  // 🔹 Méthodes privées
   static Future<Map<String, dynamic>> launchNewMomoTopUp(double price) async {
-  
-    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
+    ClientPersonalApiProvider provider = ClientPersonalApiProvider();
     CustomerModel customer = await CustomerUtils.getCustomer();
-    bool launch_other_payment = false ;
-    String? user_phone_number = customer.phone_number ;
-    String abo_price = price.toString() ;
-    bool isMomoFromTogo   = await detectTogoMomoOperator(user_phone_number!);
-    if(!isMomoFromTogo){
-       
-    }
-    if(!launch_other_payment){
-      try {
-    Map result = await provider.launchTopUp(customer, user_phone_number!, price.toString(), 0.0 , 2);
-    debugPrint('result $result');
+    String? user_phone_number = customer.phone_number;
+    bool launch_other_payment = false;
 
-    if (result != null && result['error'] == 0) {
-      return {"status": "success", "message": "Paiement réussi", "data": result};
-    } else {
-      return {"status": "error", "message": "Échec du paiement", "data": result};
-    }
-  } catch (e) {
-    return {"status": "error", "message": "Exception: $e"};
-  }
-} 
-    }
-   
-    /*
-    *     if(launch_other_payment){
-      KkiapayProvider kkiapayProvider = new KkiapayProvider();
-      kkiapayProvider.launchKkiapayPayment(
-        context,
-        amount:int.parse(_amountFieldController!.text),
-        customer: customer,
-        phone_number: _phoneNumberFieldController!.text,
-        feesAmount: _getFees(), typeOfTransaction: 'momo',
-        );
-    }
-*/
-  }
-
-  
-    /*
-    * if(launch_other_payment){
-      KkiapayProvider kkiapayProvider = new KkiapayProvider();
-      String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
-      kkiapayProvider.launchKkiapayPayment(
-        context,
-        amount:int.parse(_amountFieldController!.text),
-        customer: customer,
-        selectedCard: picked_card,
-        feesAmount: _getFees(),
-        typeOfTransaction: 'card',
-      );
-      setState(() {
-        showLoading(true);
-      });
-    }*/
-    Future<Map<String, dynamic>> launchNewCardTopUp(double price) async {
-  bool launch_other_payment = false;
-  ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
-  CustomerModel customer = await CustomerUtils.getCustomer();
-  Map<String, dynamic> semoaResult = {};
-
-  try {
-    debugPrint("_getRealInitialAmountFromTotal ");
-    Map<String, dynamic> paymentData = {
-      "amount": price,
-      "description": "Paiement Abonnement",
-      "user": {
-        "lastname": "${customer.nickname}",
-        "firstname": "",
-        "phone": "${customer.username}",
+    // If detectTogoMomoOperator exists and returns whether it's local; keep it if available
+    try {
+      bool isMomoFromTogo = true;
+      if (user_phone_number != null) {
+        isMomoFromTogo =
+        await detectTogoMomoOperator(user_phone_number); // keep existing helper if present
       }
-    };
-    semoaResult = await provider.launchSemoa(customer, paymentData);
-  } catch (_) {
-    launch_other_payment = true;
+      // If not local, indicate failure to make orchestration fallback to Kkiapay
+      if (!isMomoFromTogo) {
+        return {"status": "error", "message": "Momo non local - use Kkiapay"};
+      }
+    } catch (e) {
+      debugPrint("detectTogoMomoOperator error: $e");
+      // ignore detection error and attempt provider
+    }
+
+    try {
+      Map result = await provider.launchTopUp(
+          customer, user_phone_number ?? '', price.toString(), 0.0, 2);
+      debugPrint('result $result');
+      if (result != null && result['error'] == 0) {
+        return {"status": "success", "message": "Paiement réussi", "data": result};
+      } else {
+        return {"status": "error", "message": "Échec du paiement", "data": result};
+      }
+    } catch (e) {
+      return {"status": "error", "message": "Exception: $e"};
+    }
   }
 
-  if (semoaResult != null && semoaResult.isNotEmpty) {
-    debugPrint('semoaResult $semoaResult');
-    if (semoaResult['order_reference'] != null) {
-      Map<String, dynamic> semoaData = semoaResult;
-      List<dynamic> paymentsMethods = semoaData['payments_method'] ?? [];
-      String orderReference = semoaData['order_reference'] ?? '';
-      Map<String, dynamic> semoaStoreData = {
-        'transaction_id': orderReference,
-        'amount': price,
-        'user_id': customer?.id,
-        'fees': '',
-        'details': 'Paiement pour Abonnement',
-        'transaction_motif_id': 2
-      };
-      Map result = await provider.launchStoreSemoaTransaction(customer, semoaStoreData);
-      debugPrint('paymentsMethods: $paymentsMethods');
+  static Future<Map<String, dynamic>> launchNewCardTopUp(double price) async {
+    ClientPersonalApiProvider provider = ClientPersonalApiProvider();
+    CustomerModel customer = await CustomerUtils.getCustomer();
 
-      if (result != null && result['data']['success'] && paymentsMethods.isNotEmpty) {
-        Map<String, dynamic>? firstPaymentMethod;
-        if (paymentsMethods.isNotEmpty && paymentsMethods[0] is List) {
-          List<dynamic> firstGroup = paymentsMethods[0];
-          if (firstGroup.isNotEmpty) {
-            firstPaymentMethod = firstGroup[0];
-          }
+    try {
+      Map<String, dynamic> paymentData = {
+        "amount": price,
+        "description": "Paiement Abonnement",
+        "user": {
+          "lastname": "${customer.nickname}",
+          "firstname": "",
+          "phone": "${customer.username}",
         }
+      };
+      final semoaResult = await provider.launchSemoa(customer, paymentData);
 
-        if (firstPaymentMethod != null) {
-          String actionUrl = firstPaymentMethod['action'] ?? '';
-          String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
-          String description = firstPaymentMethod['description'] ?? '';
+      if (semoaResult != null && semoaResult.isNotEmpty) {
+        if (semoaResult['order_reference'] != null) {
+          List<dynamic> paymentsMethods = semoaResult['payments_method'] ?? [];
+          if (paymentsMethods.isNotEmpty) {
+            Map<String, dynamic>? firstPaymentMethod;
+            if (paymentsMethods[0] is List) {
+              List<dynamic> firstGroup = paymentsMethods[0];
+              if (firstGroup.isNotEmpty) firstPaymentMethod = firstGroup[0];
+            } else if (paymentsMethods[0] is Map) {
+              firstPaymentMethod = paymentsMethods[0];
+            }
 
-          if (firstPaymentMethod['gateway'].toString().contains("Ecobank-Semoa")) {
-            var textActionSemoaAvailable = true;
-            var textActionSemoa = firstPaymentMethod['action'];
-          }
-
-          if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
-            final uri = Uri.parse(actionUrl);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-              return {
-                "status": "success",
-                "message": "Paiement carte initié",
-                "data": semoaResult
-              };
-            } else {
-              launch_other_payment = true;
+            if (firstPaymentMethod != null) {
+              final actionUrl = firstPaymentMethod['action'] ?? '';
+              if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
+                final uri = Uri.parse(actionUrl);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                  return {
+                    "status": "success",
+                    "message": "Paiement carte initié",
+                    "data": semoaResult
+                  };
+                } else {
+                  return {"status": "error", "message": "Impossible d'ouvrir la page de paiement"};
+                }
+              }
             }
           }
         }
       }
-    } else {
-      CherryToast.error(
-        title: Text("Error"),
-        description: Text("Error"),
-        autoDismiss: true,
-      );
-      launch_other_payment = true;
+      return {"status": "error", "message": "Impossible d’initier le paiement"};
+    } catch (e) {
+      return {"status": "error", "message": "Exception: $e"};
     }
   }
-
-  // ✅ Default return to satisfy Dart
-  return {
-    "status": "error",
-    "message": "Impossible d’initier le paiement",
-    "data": {}
-  };
 }
-Future<void> paySubscriptionWithWallet(
-    BuildContext context,
-    int userId,
-    double amount,
-    String subscriptionId,
-    ) async {
-  try {
-    final url = Uri.parse("https://dev.pay.kaba-delivery.com/api/subscription/pay-with-wallet");
-
-    final response = await http.post(
-      url,
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      body: jsonEncode({
-        "user_id": userId,
-        "amount": amount,
-        "subscription_id": subscriptionId,
-      }),
-    );
-
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-
-      if (data['status'] == 1) {
-        // ✅ Success bottom sheet
-        showModalBottomSheet(
-          context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          ),
-          builder: (context) {
-            return Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.green, size: 80),
-                  const SizedBox(height: 16),
-                  const Text(
-                    "Paiement Réussi 🎉",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Votre abonnement a été payé avec succès via le portefeuille.",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.grey[700]),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Fermer", style: TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      } else {
-        _showError(context, "Erreur lors du paiement. Veuillez réessayer.");
-      }
-    } else {
-      _showError(context, "Erreur serveur (${response.statusCode})");
-    }
-  } catch (e) {
-    _showError(context, "Une erreur s'est produite: $e");
-  }
-}
-
-void _showError(BuildContext context, String message) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (_) {
-      return Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 80),
-            const SizedBox(height: 16),
-            Text(
-              "Échec du paiement",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Fermer", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
-
-
-    
-    
-     
-/// Sends JSON data to an endpoint and returns true if successful, false otherwise.
-
-
