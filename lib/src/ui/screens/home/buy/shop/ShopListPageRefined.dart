@@ -230,14 +230,223 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
       body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child: Container(
-              child: isLoading
-                  ? Center(child: MyLoadingProgressWidget())
-                  : (hasNetworkError
-                      ? _buildNetworkErrorPage()
-                      : hasSystemError
-                          ? _buildSysErrorPage()
-                          : _buildRestaurantList(widget.restaurantList??[]))),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 20,),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                            onPressed: () {
+                              if (_searchMode) {
+                                setState(() {
+                                  _searchAutoFocus = false;
+                                  _searchMode = false;
+                                  _filterEditController.text = "";
+                                });
+                                _searchAction();
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                          SizedBox(width: 70,),
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: _searchMode
+                                ? Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: TextField(
+                                autofocus: _searchAutoFocus,
+                                controller: _filterEditController,
+                                onSubmitted: (val) => _searchAction(pressButton: true),
+                                onChanged: (val) {
+                                  EasyDebounce.debounce(
+                                    'search-input-debouncer',
+                                    const Duration(milliseconds: 700),
+                                        () => _searchAction(),
+                                  );
+                                },
+                                style: TextStyle(color: KColors.new_black, fontSize: 16),
+                                textInputAction: TextInputAction.search,
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!
+                                      .translate('find_menu_or_restaurant'),
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: KColors.new_black.withAlpha(150),
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            )
+                                : Text("Restos & Repas",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container()
+                        ],
+                      ),
+
+                      /// 🔍 Title / Search
+
+                      const SizedBox(height: 8),
+                      SearchSwitchWidget(
+                        searchTypePosition,
+                        _choice,
+                        _filterFunction,
+                        _listContentFilter,
+                        _scrollToTopFunction,
+                        widget.type!,
+                        filterConfiguration ?? {},
+                      ),
+                    ],
+                  ),
+                ),
+                searchTypePosition==1?    SizedBox(height: 20):Container(),
+                searchTypePosition==1?     Container(
+                  width: MediaQuery.of(context).size.width*.9,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        )
+                      ]
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white.withAlpha(100)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Expanded(
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    if (hasFocus) {
+                                      // do staff
+                                      _searchMode = true;
+                                    } else {
+                                      // out search mode
+                                      _searchMode = false;
+                                    }
+                                  },
+                                  child: TextField(
+
+                                      autofocus: _searchAutoFocus,
+                                      controller: _filterEditController,
+                                      onSubmitted: (val) {
+                                        _searchAction(pressButton: true);
+                                        xrint("on submitted");
+                                      },
+                                      onChanged: (val) {
+                                        if (_searchAutoFocus)
+                                          setState(() {
+                                            _searchAutoFocus = false;
+                                          });
+                                        xrint("on onChanged");
+                                        xrint("${val.toString()}");
+                                        EasyDebounce.debounce(
+                                            'search-input-debouncer',
+                                            Duration(milliseconds: 700),
+                                                () => {_searchAction()});
+                                      },
+                                      style: TextStyle(
+                                          color: KColors.new_black,
+                                          fontSize: 14),
+                                      textInputAction: TextInputAction.search,
+
+                                      decoration: InputDecoration.collapsed(
+
+                                          hintText:
+                                          "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
+                                          hintStyle: TextStyle(
+                                              fontSize: 14,
+                                              color: KColors.new_black
+                                                  .withAlpha(150))),
+                                      enabled: true),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _clearFocus();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 5, right: 5, bottom: 3, top: 3),
+                                  child: Center(
+                                    child: Icon(Icons.close,
+                                        size: 20, color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ):Container(),
+                searchTypePosition==1?  TagCarousel(
+                  allFilters: _allFilters,
+                  selectedFilter: _selectedFilter,
+                  primaryColor: KColors.primaryColor,
+                  onSelect: (value) {
+                    setState(() {
+                      _selectedFilter = value;
+                      searchTypePosition=2;
+                    });
+                  },
+                ):Container(),
+                 SizedBox(height: 10,),
+                Container(
+
+                    child: isLoading
+                        ? Center(child: MyLoadingProgressWidget())
+                        : (hasNetworkError
+                            ? _buildNetworkErrorPage()
+                            : hasSystemError
+                                ? _buildSysErrorPage()
+                                : _buildRestaurantList(widget.restaurantList??[]))),
+              ],
+            ),
+          ),
         ));
 
     /* return Scaffold(
@@ -278,123 +487,19 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     d.forEach((restaurant) {
       pageRestaurants[restaurant.id] = restaurant;
     });
-
     // category / 1001 / shop
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+    return Container(
+      color: Colors.white,
       child: Container(
-        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - 400,
         child: Column(
           children: <Widget>[
-            Container(
-              padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
-              decoration: BoxDecoration(
-                color: KColors.primaryColor,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(25),
-                  bottomRight: Radius.circular(25),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(width: 20,),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
-                        onPressed: () {
-                          if (_searchMode) {
-                            setState(() {
-                              _searchAutoFocus = false;
-                              _searchMode = false;
-                              _filterEditController.text = "";
-                            });
-                            _searchAction();
-                          } else {
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
-                      SizedBox(width: 70,),
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 300),
-                        child: _searchMode
-                            ? Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: TextField(
-                            autofocus: _searchAutoFocus,
-                            controller: _filterEditController,
-                            onSubmitted: (val) => _searchAction(pressButton: true),
-                            onChanged: (val) {
-                              EasyDebounce.debounce(
-                                'search-input-debouncer',
-                                const Duration(milliseconds: 700),
-                                    () => _searchAction(),
-                              );
-                            },
-                            style: TextStyle(color: KColors.new_black, fontSize: 16),
-                            textInputAction: TextInputAction.search,
-                            decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)!
-                                  .translate('find_menu_or_restaurant'),
-                              hintStyle: TextStyle(
-                                fontSize: 14,
-                                color: KColors.new_black.withAlpha(150),
-                              ),
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        )
-                            : Text("Restos & Repas",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      Container()
-                    ],
-                  ),
-
-                  /// 🔍 Title / Search
-
-                  const SizedBox(height: 8),
-                  SearchSwitchWidget(
-                    searchTypePosition,
-                    _choice,
-                    _filterFunction,
-                    _listContentFilter,
-                    _scrollToTopFunction,
-                    widget.type!,
-                    filterConfiguration ?? {},
-                  ),
-
-                ],
-              ),
-            ),
-            SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
                     children:[
-                searchTypePosition==1?  TagCarousel(
-                        allFilters: _allFilters,
-                        selectedFilter: _selectedFilter,
-                        primaryColor: KColors.primaryColor,
-                        onSelect: (value) {
-                          setState(() {
-                            _selectedFilter = value;
-                            searchTypePosition=2;
-                          });
-                        },
-                      ):Container(),
-
                 ]..add(
                         /* according to the search position, show a different page. */
                         searchTypePosition == 1
@@ -403,7 +508,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                     color: Colors.white,
                                     height: MediaQuery.of(context).size.height -
                                         150,
-//                              padding: EdgeInsets.only(bottom:230),
+            //                              padding: EdgeInsets.only(bottom:230),
                                     child: widget.restaurantList?.length ==
                                                 null ||
                                             widget.restaurantList?.length == 0
@@ -505,6 +610,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                             : _buildSearchedFoodList())))),
               ),
             ),
+
           ],
         ),
       ),
@@ -934,7 +1040,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   _buildSearchedFoodList() {
     if (foodProposals == null)
       return Container(
-
           child: Center(
               child: Column(
                   children: <Widget>[
