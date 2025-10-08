@@ -62,7 +62,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   TextEditingController _loginFieldController = new TextEditingController();
 
-
+  bool _loading = false;
 
   @override
   void didChangeDependencies() {
@@ -136,6 +136,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 8 , vertical:8),
                 decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 10)
+                    )
+                  ],
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: KColors.primaryColor, width: 1.2),
                 ),
@@ -225,6 +234,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                    if (isPhoneSelected) ...[
                 TextFormField(
                   controller: _loginFieldController,
+                  onChanged: (_){
+                    setState(() {
+                      _loading=false;
+                    });
+                  },
                   enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
@@ -232,6 +246,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       child: CountryCodePicker(
                 onChanged: (code) {
                   debugPrint("New country selected: ${code.dialCode}");
+
                 },
                 initialSelection: 'TG', // default to Togo
                 favorite: const ['+228', 'TG'], // keep Togo as favorite
@@ -247,7 +262,16 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         const BoxConstraints(minWidth: 0, minHeight: 0),
                     hintText: "Entrez votre numéro",
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
+                      borderRadius: BorderRadius.circular(50),
                     ),
                   ),
                   keyboardType: TextInputType.phone,
@@ -278,7 +302,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 ),
               ],
               SizedBox(height: 20),
-               SizedBox(
+                    _loading?CircularProgressIndicator():
+                    SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -289,6 +314,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     ),
                   ),
                   onPressed: () {
+
                      _checklogin();
                   },
                   child: const Text(
@@ -396,7 +422,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
 
    Future _checklogin() async {
-
+     setState(() {
+       _loading = true;
+     });
     String login = _loginFieldController.text;
 
     // control login stuff
@@ -417,6 +445,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       String _mCode = '0000';
 //      int type = results['type'];
       showLoading(true);
+
       if (Utils.isCode(_mCode)) {
         /* check if it's important to send another sms according to the time lapsed after the last sending
       * 1. check last time sent message, if before 5 minutes, then dont send,

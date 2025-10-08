@@ -1,5 +1,6 @@
 import 'package:KABA/src/state_management/out_of_app_order/location_state.dart';
 import 'package:KABA/src/state_management/out_of_app_order/products_state.dart';
+import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,8 @@ import '../../_static_data/AppConfig.dart';
 import '../../recustomlib/place_picker_removed_nearbyplaces.dart';
 import '../CustomerUtils.dart';
 import 'package:geolocator/geolocator.dart';
+
+import '../google_map_name.dart';
 
 Future PickShippingAddress(BuildContext context, WidgetRef ref,
     GlobalKey poweredByKey, int address_type,bool is_actual_position) async {
@@ -71,14 +74,18 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
         }));
     if(address_type==2 && !is_actual_position && results!=null){
       AddressApiProvider address_api = AddressApiProvider();
+      String addresse_name = await getPlaceNameFromCoords(
+          results.latitude,
+          results.longitude
+      );
        DeliveryAddressModel address = DeliveryAddressModel(
-        name: "${productState[0]['name']}",
+        name: addresse_name,
         location: "${"${results.latitude}:${results.longitude}"}",
         phone_number:customer.phone_number,
         description: "achat de produit",
-         near: "Inconnu",
+         near: "addresse_name",
          user_id: customer.id.toString(),
-         quartier:"Inconnu"
+         quartier:"addresse_name"
       );
       Map? addressRes = await address_api.updateOrCreateAddress(address, customer) as Map;
       order_address = [];
@@ -90,6 +97,9 @@ Future PickShippingAddress(BuildContext context, WidgetRef ref,
       }
      }else
     if (results != null && results.containsKey('selection')) {
+      CherryToast.success(
+        title: Text("Adresse de livraison choisi"),
+      ).show(context);
       if (address_type == 1) {
         shipping_address = results['selection'];
         locationNotifier.pickShippingAddress(shipping_address);

@@ -573,8 +573,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                           user_id: customer.id.toString(),
                                           quartier:"Inconnu"
                                       );
-                                      Map? addressRes = await address_api.updateOrCreateAddress(address, customer) as Map;
-                                      packageModel.recipientAddress = addressRes['address'] as DeliveryAddressModel;
+                                      packageModel.recipientAddress = address;
                                       expeditionBloc.add(ChangeRecipientAddressEvent(address: packageModel.recipientAddress!, packageIndex: widget.index));
                                       gpsAddressChoosed = true;
                                     }
@@ -666,7 +665,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                     child: Row(
                                       children: [
                                         Icon(Icons.location_on_outlined,size: 20,color: KabaExpeditionColor.primary,),
-                                        Flexible(child: Text("${packageModel.recipientAddress!.name}",maxLines: 3,softWrap: true,overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary))),
+                                        Flexible(child: Text("coords : ${packageModel.recipientAddress!.location!}",maxLines: 3,softWrap: true,overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary))),
                                       ],
                                     ),
                                   ),

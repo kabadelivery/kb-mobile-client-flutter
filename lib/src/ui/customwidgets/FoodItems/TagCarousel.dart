@@ -78,8 +78,8 @@ class _TagCarouselState extends State<TagCarousel> {
                         else if (filter.toLowerCase().contains('riz')) emoji = '🍚';
                         else if (filter.toLowerCase().contains('glac')) emoji = '🍦';
 
-                        return SizedBox(
-                          width: chipWidth,
+                        return Container(
+                          margin: EdgeInsets.only(left: 4),
                           child: ChoiceChip(
                             materialTapTargetSize:
                             MaterialTapTargetSize.shrinkWrap,

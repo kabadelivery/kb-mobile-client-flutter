@@ -152,179 +152,178 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         backgroundColor: Colors.white,
         body: Column(
          // height: MediaQuery.of(context).size.height,
+            mainAxisAlignment:MainAxisAlignment.spaceBetween,
           children: [
-             SingleChildScrollView(
+             Padding(
+                       padding: const EdgeInsets.all(20),
+                       child: Column(
+             crossAxisAlignment: CrossAxisAlignment.start,
 
-            child:Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 15),
-                     Row(mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                       Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
-                       SizedBox(width: 10),
-                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
-                        SizedBox(width: 5),
-                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
-                      ],
-                    ),
-                     SizedBox(height: 20),
-                      Center(
-                        child: 
-                       Text("Creer votre Compte avec ${widget.login} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
-                      ),
-                      
-                   /*  Container(margin: EdgeInsets.only(left:40, right: 40),
-                    child:   
-                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)), */
-              const SizedBox(height: 20),
-
-              // Username
-              TextField(
-                controller: _nicknameFieldController,
-                decoration: InputDecoration(
-                  hintText: "Nom d'utilisateur",
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-
-              // Password
-              TextField(
-                controller: passwordFieldController,
-               // obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  hintText: "Mot de passe",
-                  prefixIcon: const Icon(Icons.lock_outline),
-                 /*  suffixIcon: IconButton(
-                   // icon: Icon(
-                   //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                      //  _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ), */
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-
-              // Confirm Password
-              TextField(
-                controller: secondpassController,
-                //obscureText: _obscureConfirmPassword,
-                decoration: InputDecoration(
-                  hintText: "Confirmer le mot de passe",
-                  prefixIcon: const Icon(Icons.lock_outline),
-                 /*  suffixIcon: IconButton(
-                    icon: Icon(_obscureConfirmPassword
-                        ? Icons.visibility_off
-                        : Icons.visibility),
-                    onPressed: () {
-                      setState(() {
-                        _obscureConfirmPassword = !_obscureConfirmPassword;
-                      });
-                    },
-                  ) */
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              // Create account button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: KColors.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                 onPressed: () {
-                     _sendCodeAction();
-                    
-                 },
-                   // Handle create account action,
-                  child: const Text(
-                    "Créer le compte",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              
-
-              // Back button
-              Center(
-                child: TextButton.icon(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text("Retour"),
-                ),
-              ),
+             children: [
                SizedBox(height: 15),
-                    /* (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
-                    SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
-                        height: 15, width: 15) : Container(),
-
-                    SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "TTT",
-                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:<Widget>[
-                          isCodeSent ?
-                          SizedBox(width: 80,
-                              child: Container(
-                                  padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
-//                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                          ) : Container(),
-                          isCodeSent ? SizedBox(width:20) : Container(),
-                          /* OutlinedButton(
-                              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
-                              child: Row(
-                            children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                              /* stream builder, that shows that the code is been sent */
-                              isCodeSent == false &&  isCodeSending ? Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
-                                ],
-                              ) : Container(),
-                            ],
-                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}), */
-                        ]),
-                    SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text("FRD", style: TextStyle(fontSize: 14, color: Colors.white)),
+                      Row(mainAxisAlignment: MainAxisAlignment.center,
+                       children: <Widget>[
+                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
                         SizedBox(width: 10),
-                        (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
-                      ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
-                    SizedBox(height: 30),
-            ],
-          ),
-        ),
-      ),
+                         Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                         SizedBox(width: 5),
+                         //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
+                       ],
+                     ),
+                      SizedBox(height: 20),
+                       Center(
+                         child:
+                        Text("Créer votre Compte avec ${widget.login} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                       ),
+
+                    /*  Container(margin: EdgeInsets.only(left:40, right: 40),
+                     child:
+                     Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)), */
+               const SizedBox(height: 20),
+
+               // Username
+               TextField(
+                 controller: _nicknameFieldController,
+                 decoration: InputDecoration(
+                   hintText: "Nom d'utilisateur",
+                   prefixIcon: const Icon(Icons.person_outline),
+                   border: OutlineInputBorder(
+                     borderRadius: BorderRadius.circular(30),
+                   ),
+                 ),
+               ),
+               const SizedBox(height: 15),
+
+               // Password
+               TextField(
+                 controller: passwordFieldController,
+                // obscureText: _obscurePassword,
+                 decoration: InputDecoration(
+                   hintText: "Mot de passe",
+                   prefixIcon: const Icon(Icons.lock_outline),
+                  /*  suffixIcon: IconButton(
+                    // icon: Icon(
+                    //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                     onPressed: () {
+                       setState(() {
+                       //  _obscurePassword = !_obscurePassword;
+                       });
+                     },
+                   ), */
+                   border: OutlineInputBorder(
+                     borderRadius: BorderRadius.circular(30),
+                   ),
+                 ),
+               ),
+               const SizedBox(height: 15),
+
+               // Confirm Password
+               TextField(
+                 controller: secondpassController,
+                 //obscureText: _obscureConfirmPassword,
+                 decoration: InputDecoration(
+                   hintText: "Confirmer le mot de passe",
+                   prefixIcon: const Icon(Icons.lock_outline),
+                  /*  suffixIcon: IconButton(
+                     icon: Icon(_obscureConfirmPassword
+                         ? Icons.visibility_off
+                         : Icons.visibility),
+                     onPressed: () {
+                       setState(() {
+                         _obscureConfirmPassword = !_obscureConfirmPassword;
+                       });
+                     },
+                   ) */
+                   border: OutlineInputBorder(
+                     borderRadius: BorderRadius.circular(30),
+                   ),
+                 ),
+               ),
+               const SizedBox(height: 20),
+
+               // Create account button
+               SizedBox(
+                 width: double.infinity,
+                 child: ElevatedButton(
+                   style: ElevatedButton.styleFrom(
+                     backgroundColor: KColors.primaryColor,
+                     padding: const EdgeInsets.symmetric(vertical: 15),
+                     shape: RoundedRectangleBorder(
+                       borderRadius: BorderRadius.circular(30),
+                     ),
+                   ),
+                  onPressed: () {
+                      _sendCodeAction();
+
+                  },
+                    // Handle create account action,
+                   child: const Text(
+                     "Créer le compte",
+                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                   ),
+                 ),
+               ),
+
+
+               // Back button
+               Center(
+                 child: TextButton.icon(
+                   onPressed: () {
+                     Navigator.pop(context);
+                   },
+                   icon: const Icon(Icons.arrow_back),
+                   label: const Text("Retour"),
+                 ),
+               ),
+                SizedBox(height: 15),
+                     /* (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
+                     SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
+                         height: 15, width: 15) : Container(),
+
+                     SizedBox(height: 10),
+                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
+                         "TTT",
+                         textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                     SizedBox(height: 10),
+                     Row(
+                         mainAxisAlignment: MainAxisAlignment.center,
+                         children:<Widget>[
+                           isCodeSent ?
+                           SizedBox(width: 80,
+                               child: Container(
+                                   padding: EdgeInsets.all(14),
+                                   child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
+             //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
+                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
+                           ) : Container(),
+                           isCodeSent ? SizedBox(width:20) : Container(),
+                           /* OutlinedButton(
+                               style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
+                               child: Row(
+                             children: <Widget>[
+                               Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                               /* stream builder, that shows that the code is been sent */
+                               isCodeSent == false &&  isCodeSending ? Row(
+                                 children: <Widget>[
+                                   SizedBox(width: 10),
+                                   SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                 ],
+                               ) : Container(),
+                             ],
+                           ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}), */
+                         ]),
+                     SizedBox(height: 30),
+                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                       children: <Widget>[
+                         Text("FRD", style: TextStyle(fontSize: 14, color: Colors.white)),
+                         SizedBox(width: 10),
+                         (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
+                       ],
+                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
+                     SizedBox(height: 30),
+             ],
+                       ),
+                     ),
         Image.asset(
   "assets/images/background/Patternlogin.png",
   width: double.infinity,

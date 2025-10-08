@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
+
+import '../utils/functions/topups.dart';
 class KkiapayProvider {
   String temp_transaction_id="";
   bool init_launch=true;
@@ -23,11 +25,14 @@ class KkiapayProvider {
         break;
       case 'PAYMENT_INIT':
         debugPrint('PAYMENT_INIT');
-        if(init_launch)
-        _sendPendingTransactionData(context,response, paymentData);
+        if(init_launch) {
+          _sendPendingTransactionData(context, response, paymentData);
+        }
         break;
       case 'PENDING_PAYMENT':
+
         debugPrint('PENDING_PAYMENT');
+
         break;
       case 'PAYMENT_SUCCESS':
         Navigator.pop(context);

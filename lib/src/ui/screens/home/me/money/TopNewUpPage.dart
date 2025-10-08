@@ -696,24 +696,24 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                   style: TextStyle(color: KColors.mBlue, fontSize: 14),
                 )) : Container(),
                 SizedBox(height: 10),
-                Container(width: MediaQuery.of(context).size.width * 0.9,
-                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  decoration: BoxDecoration(
-                      color: KColors.primaryColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: GestureDetector(
-                    onTap: () async{
-                      if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
-                        if(widget.selectedPosition==1)
-                          launchNewMomoTopUp();
-                        else
-                          launchNewCardTopUp();
-                      }
-                      else if(widget.transactionType == TransactionType.kaba_chine)
-                        kabaChinePay();
-                      else if(widget.transactionType == TransactionType.expedition)
-                        ExpeditionPay();
-                    },
+                GestureDetector(
+                  onTap: () async{
+                    if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
+                      if(widget.selectedPosition==1)
+                        launchNewMomoTopUp();
+                      else
+                        launchNewCardTopUp();
+                    }
+                    else if(widget.transactionType == TransactionType.kaba_chine)
+                      kabaChinePay();
+                    else if(widget.transactionType == TransactionType.expedition)
+                      ExpeditionPay();
+                  },
+                  child: Container(width: MediaQuery.of(context).size.width * 0.9,
+                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    decoration: BoxDecoration(
+                        color: KColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10)),
                     child: Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

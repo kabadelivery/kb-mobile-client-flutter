@@ -435,32 +435,19 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                           duration: Duration(seconds: 2),
                         ),
                       );
-
-                      final response = await sendSubscriptiondata(
-                        context,
-                        '$customerId',
-                        '${widget.idPack}',
-                        methodToSend!,
-                        "${widget.price}",
-                      );
-                      setState(() => isProcessing = false);
-                      if (response['status'] == "success" ||
-                          response['status'] == "pending") {
-                        // close bottom sheet and show success (or pending)
-                        Navigator.pop(context);
-                        // delay to let UI breathe
-                        await Future.delayed(const Duration(seconds: 1));
-                        SubscriptionSuccessSheet.show(context);
-                      } else {
-                        // failure: show error
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(response['message'] ?? 'Erreur'),
-                            backgroundColor: Colors.red,
-                          ),
+                      checkPaymentStatus(context).then((_)async{
+                          await sendSubscriptiondata(
+                          context,
+                          '$customerId',
+                          '${widget.idPack}',
+                          methodToSend!,
+                          "${widget.price}",
                         );
-                      }
+                      }).then((_){
+                        Navigator.pop(context);
+                      });
+
+
                     },
                     child: const Text("Payer ",
                         style: TextStyle(color: Colors.white)),
@@ -483,7 +470,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
   }
 
   /// Orchestrator: send subscription -> choose payment path -> check status -> update backend
-  Future<Map<String, dynamic>> sendSubscriptiondata(
+  Future<Map<String, dynamic>?> sendSubscriptiondata(
       BuildContext context,
       String userid,
       String suscription_id,
@@ -536,14 +523,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           customerNickname: customer.nickname ?? '',
           typeOfTransaction: 'momo',
         );
-       Map<String,dynamic> status ={"status":"pending"};
-        while (status['status'] == 'pending' || status['status']=="error") {
-          await Future.delayed(const Duration(seconds: 5));
-          status = await _checkPaymentStatus(context, userid);
-        }
-        return status;
       }
-      // Otherwise try primary channel (local momo or card)
       final procResult = await PaymentProcessor.processPayment(
         method: payement_method,
         price: double.tryParse(price) ?? 0.0,
@@ -552,9 +532,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       // if primary succeeded -> wait then check status
       if (procResult['status'] == 'success') {
         // Give backend some time to process the payment callback
-        await Future.delayed(const Duration(seconds: 8));
-        final check = await _checkPaymentStatus(context, userid);
-        return check;
+       Navigator.pop(context);
       } else {
         // primary method failed -> fallback to Kkiapay
         debugPrint('Primary payment method failed: ${procResult['message']} - launching Kkiapay fallback');
@@ -569,12 +547,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           (payement_method.toLowerCase() == 'card') ? 'card' : 'momo',
         );
 
-        Map<String,dynamic> status ={"status":"pending"};
-        while (status['status'] == 'pending'||status['status']=="error") {
-          await Future.delayed(const Duration(seconds: 5));
-          status = await _checkPaymentStatus(context, userid);
-        }
-        return status;
+
       }
     } catch (e) {
       debugPrint("Exception in sendSubscriptiondata: $e");
@@ -585,81 +558,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
     }
   }
 
-  /// Poll/check payment status endpoint once (you can improve with repeated polling)
-  Future<Map<String, dynamic>> _checkPaymentStatus(
-      BuildContext context, String userId) async {
-    try {
-      // show loader
-      // showProcessingBottomSheet(context); // optional
-      CustomerModel  cusModel = await CustomerUtils.getCustomer();
-      final statusResponse = await http.post(
-        Uri.parse(ServerRoutes.KABA_CHECK_ABO_PAYMENT_STATUS),
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization":
-          "Bearer ${cusModel.token}",
-        },
-        body: jsonEncode({"user_id": userId}),
-      );
 
-      if (statusResponse.statusCode >= 200 &&
-          statusResponse.statusCode < 300) {
-        final data = jsonDecode(statusResponse.body);
-        if (data["status"] == 1) {
-          // Payment validated
-          try {
-            final updateResponse = await http.post(
-              Uri.parse(ServerRoutes.KABA_UPDATE_PAYMENT_STATUS),
-              headers: {"Content-Type": "application/json"},
-              body: jsonEncode({
-                "id": customerId,
-                "status_payement": 1,
-                "transaction_id": data["transaction_id"] ?? "00000",
-              }),
-            );
-            if (updateResponse.statusCode == 200) {
-              debugPrint(
-                  "✅ Subscription successfully updated: ${updateResponse.body}");
-            } else {
-              debugPrint(
-                  "❌  Subscription update failed: ${updateResponse.body}");
-            }
-          } catch (e) {
-            debugPrint("⚠️ Error updating Subscription: $e");
-          }
-
-          return {"status": "success", "message": "Paiement validé", "data": data};
-        }
-        else if(data['status']==-1){
-          return {
-            "status": "failed",
-            "message": "Le paiement est en cours.",
-            "data": data
-          };
-        }
-        else {
-          return {
-            "status": "pending",
-            "message": "Le paiement n’a pas été validé.",
-            "data": data
-          };
-        }
-      } else {
-        return {
-          "status": "error",
-          "message": "Erreur lors de la vérification du statut du paiement",
-        };
-      }
-    } catch (e) {
-      debugPrint("Exception in _checkPaymentStatus: $e");
-      return {"status": "error", "message": "Exception: $e"};
-    } finally {
-      // close loader if you opened one
-      if (Navigator.canPop(context)) {
-        // avoid popping the main sheet accidentally; use only if you opened a dialog
-      }
-    }
-  }
 
   // Wallet payment now returns a Map result for the orchestrator to handle
   Future<Map<String, dynamic>> paySubscriptionWithWallet(

@@ -163,10 +163,10 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size: 25),
+                    children:  [
+                      Icon(widget.type!=3?FontAwesomeIcons.rightFromBracket:Icons.shopping_bag, color: KColors.primaryColor, size: 25),
                       SizedBox(width: 10),
-                      Text("Connexion",
+                      Text(widget.type!=3?  "Connexion" : "Valider la commande",
                           style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
                     ],
                   ),
@@ -213,7 +213,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                         ),
                       ),
                       onPressed: _submitCode,
-                      child: const Text("Se connecter",
+                      child:  Text(widget.type!=3? "Se connecter":"Valider",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
                   ),
