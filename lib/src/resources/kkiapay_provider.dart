@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
@@ -58,6 +59,7 @@ class KkiapayProvider {
         'fees': feesAmount,
         'details': 'payment Kkiapay for user $userId',
         'is_momo': isMomo,
+
       };
       String apiUrl = ServerRoutes.KKIAPAY_STORE_TRANSACTION;
       debugPrint('KKIAPAY_STORE_TRANSACTION');
@@ -145,8 +147,8 @@ class KkiapayProvider {
     }
     final kkiapay = KKiaPay(
       amount: amount,
-      apikey: '8e0dfba3c74c9693a19f3e77cbd8998fe567428a',
-      sandbox: false,
+      apikey: !kDebugMode?'8e0dfba3c74c9693a19f3e77cbd8998fe567428a':"d991dc8063b911f08da44b2b59e422d0",
+      sandbox: kDebugMode,
       callback: (response, ctx) => kkiapayCallback(context,response,paymentData ),
       reason: typeOfTransaction=="momo"?"Recharge Mobile Money":'Recharge carte bancaire',
       phone: phone_number,

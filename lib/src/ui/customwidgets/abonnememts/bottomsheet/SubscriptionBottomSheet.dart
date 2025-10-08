@@ -87,7 +87,14 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 
   int? selectedIndex;
   String? selectedMethodLabel;
+  var fees = 0;
 
+  double? fees_tmoney = 4.0;
+
+  double? fees_flooz = 4.0;
+
+  double? fees_bankcard = 5.0;
+  double? fees_momo = 4.0;
   final items = [
     ListItem(
         title: "Mobile Money",
@@ -102,11 +109,29 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
         subtitle: "Votre solde KABA",
         icon: Icons.account_balance_wallet),
   ];
+  void getFees()async{
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    ClientPersonalApiProvider provider =ClientPersonalApiProvider();
+    var fees_obj = await provider.fetchFees(customer);
+     fees_flooz = double.parse("${fees_obj["fees_flooz"]}");
+     fees_tmoney = double.parse("${fees_obj["fees_tmoney"]}");
+     fees_bankcard = double.parse("${fees_obj["fees_bankcard"]}");
+  }
+  double calculateAmountWithFees(){
+    double amount = double.parse(widget.price);
+    if (selectedMethodLabel == "Mobile Money") {
+      amount = amount + fees_momo!;
+    } else if (selectedMethodLabel == "Carte Bancaire") {
 
+    }
+
+    return amount;
+  }
   @override
   void initState() {
     super.initState();
     _loadCustomer();
+    getFees();
   }
 
   Future<void> _loadCustomer() async {
@@ -145,6 +170,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
     try {
       CustomerModel  cusModel = await CustomerUtils.getCustomer();
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
+      debugPrint("Amount $amount");
       kkiapayProvider.launchKkiapayPayment(
         context,
         amount: amount,
@@ -152,6 +178,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
         selectedCard: selectedCard,
         feesAmount: 0,
         typeOfTransaction: typeOfTransaction,
+        phone_number: cusModel.phone_number,
       );
     } catch (e) {
       debugPrint('Kkiapay launch error: $e');
@@ -416,9 +443,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         methodToSend!,
                         "${widget.price}",
                       );
-
                       setState(() => isProcessing = false);
-
                       if (response['status'] == "success" ||
                           response['status'] == "pending") {
                         // close bottom sheet and show success (or pending)
@@ -503,20 +528,21 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       // For international momo (mtn, wave) -> use Kkiapay directly
       final lower = payement_method.toLowerCase();
       if (lower == 'mtn' || lower == 'wave') {
-        // Launch Kkiapay
         final customer = await CustomerUtils.getCustomer();
+        debugPrint("amount ${double.parse(price)}");
         await _launchKkiapayPayment(
           context: context,
-          amount: (double.tryParse(price) ?? 0.0).toInt(),
+          amount: (double.parse(price)).toInt(),
           customerNickname: customer.nickname ?? '',
           typeOfTransaction: 'momo',
         );
-
-        // after launching Kkiapay, we return "pending" and let backend confirm (the check below will also run)
-        await Future.delayed(const Duration(seconds: 8));
-        return await _checkPaymentStatus(context, userid);
+       Map<String,dynamic> status ={"status":"pending"};
+        while (status['status'] == 'pending' || status['status']=="error") {
+          await Future.delayed(const Duration(seconds: 5));
+          status = await _checkPaymentStatus(context, userid);
+        }
+        return status;
       }
-
       // Otherwise try primary channel (local momo or card)
       final procResult = await PaymentProcessor.processPayment(
         method: payement_method,
@@ -532,20 +558,23 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       } else {
         // primary method failed -> fallback to Kkiapay
         debugPrint('Primary payment method failed: ${procResult['message']} - launching Kkiapay fallback');
+        debugPrint("amount ${double.parse(price)}");
 
         final customer = await CustomerUtils.getCustomer();
         await _launchKkiapayPayment(
           context: context,
-          amount: (double.tryParse(price) ?? 0.0).toInt(),
+          amount: (double.parse(price)).toInt(),
           customerNickname: customer.nickname ?? '',
           typeOfTransaction:
           (payement_method.toLowerCase() == 'card') ? 'card' : 'momo',
         );
 
-        // wait a bit then check payment status
-        await Future.delayed(const Duration(seconds: 8));
-        final check = await _checkPaymentStatus(context, userid);
-        return check;
+        Map<String,dynamic> status ={"status":"pending"};
+        while (status['status'] == 'pending'||status['status']=="error") {
+          await Future.delayed(const Duration(seconds: 5));
+          status = await _checkPaymentStatus(context, userid);
+        }
+        return status;
       }
     } catch (e) {
       debugPrint("Exception in sendSubscriptiondata: $e");
@@ -600,9 +629,17 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           }
 
           return {"status": "success", "message": "Paiement validé", "data": data};
-        } else {
+        }
+        else if(data['status']==-1){
           return {
             "status": "failed",
+            "message": "Le paiement est en cours.",
+            "data": data
+          };
+        }
+        else {
+          return {
+            "status": "pending",
             "message": "Le paiement n’a pas été validé.",
             "data": data
           };
@@ -760,17 +797,18 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 }
 
 /// Payment processor helpers (keeps your existing provider usage)
-enum PaymentCategory { flooz, internationaux, card, unsupported, local, portefeuille }
+enum PaymentCategory { flooz, internationaux, card, unsupported, mix, portefeuille }
 
 class PaymentProcessor {
-  static final List<String> local = ["flooz", "mix", "moov"];
+  static final List<String> mix = ["mix"];
+  static final List<String> flooz = ["flooz"];
   static final List<String> internationaux = ["mtn", "wave"];
   static final List<String> cards = ["visa", "mastercard", "american", "card"];
   static final List<String> portefeuille = ["portefeuille"];
 
   static PaymentCategory getCategory(String method) {
     final normalized = method.toLowerCase();
-    if (local.contains(normalized)) return PaymentCategory.local;
+    if (mix.contains(normalized)) return PaymentCategory.mix;
     if (internationaux.contains(normalized)) return PaymentCategory.internationaux;
     if (cards.contains(normalized)) return PaymentCategory.card;
     if (portefeuille.contains(normalized)) return PaymentCategory.portefeuille;
@@ -784,7 +822,7 @@ class PaymentProcessor {
     final category = getCategory(method);
 
     switch (category) {
-      case PaymentCategory.local:
+      case PaymentCategory.mix:
         return await launchNewMomoTopUp(price);
       case PaymentCategory.internationaux:
       // For internationals we expect to be launched via Kkiapay - let orchestrator handle it.
@@ -795,7 +833,7 @@ class PaymentProcessor {
       // handled by orchestration (we kept it separate)
         return {"status": "error", "message": "Portefeuille handled separately"};
       case PaymentCategory.flooz:
-        return {"status": "error", "message": "Flooz direct non implémenté"};
+        return await launchNewMomoTopUp(price);
       case PaymentCategory.unsupported:
       default:
         return {"status": "error", "message": "Méthode non supportée"};

@@ -26,9 +26,6 @@ class SubscriptionCard extends StatelessWidget {
   final bool partageable;
   //final List<String> features;
   static int width = 170;
-
-  
-
    SubscriptionCard({
     Key? key,
     width,
@@ -51,7 +48,7 @@ class SubscriptionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     double number = double.parse(price);
    String formatted = NumberFormat("#,###").format(number);
-
+    debugPrint("XXX Price ${price}");
     return Container(
       margin:  title=="VIC" ? const EdgeInsets.only(left: 35) :  const EdgeInsets.all(8) ,
       padding: const EdgeInsets.all(16),
@@ -92,9 +89,7 @@ class SubscriptionCard extends StatelessWidget {
             ),
           ),
          ]),
-
           const SizedBox(height: 8),
-
           /// Price
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -120,8 +115,6 @@ class SubscriptionCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 12),
-
-          /// Features list
               Row(
                 children: [
                   Icon(Icons.check, color: accentColor, size: 18),
@@ -187,7 +180,6 @@ class SubscriptionCard extends StatelessWidget {
                 ],
               ),
               title == "VIC" ? Row(children: [
-                      
                    Container(
   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
   decoration: BoxDecoration(
@@ -246,7 +238,7 @@ class SubscriptionCard extends StatelessWidget {
       context,
       idPack:id_pack ,
       title: title,
-      price: price.toString(),
+      price: number.toString(),
       livraison:livraisons , 
       validite:validite , 
       rayon:rayon ,
