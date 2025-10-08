@@ -298,6 +298,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               child: Column(
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
@@ -314,68 +315,54 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                           }
                         },
                       ),
-                      const Spacer(),
-                      _searchMode || isLoading
-                          ? const SizedBox(width: 48)
-                          : IconButton(
-                        icon: const Icon(Icons.search, color: Colors.white, size: 22),
-                        onPressed: () {
-                          setState(() {
-                            _searchAutoFocus = true;
-                            _searchMode = true;
-                          });
-                        },
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: _searchMode
+                            ? Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: TextField(
+                            autofocus: _searchAutoFocus,
+                            controller: _filterEditController,
+                            onSubmitted: (val) => _searchAction(pressButton: true),
+                            onChanged: (val) {
+                              EasyDebounce.debounce(
+                                'search-input-debouncer',
+                                const Duration(milliseconds: 700),
+                                    () => _searchAction(),
+                              );
+                            },
+                            style: TextStyle(color: KColors.new_black, fontSize: 16),
+                            textInputAction: TextInputAction.search,
+                            decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!
+                                  .translate('find_menu_or_restaurant'),
+                              hintStyle: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black.withAlpha(150),
+                              ),
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        )
+                            : Text("Restos & Repas",
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
+                      Container()
                     ],
                   ),
 
                   /// 🔍 Title / Search
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _searchMode
-                        ? Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: TextField(
-                        autofocus: _searchAutoFocus,
-                        controller: _filterEditController,
-                        onSubmitted: (val) => _searchAction(pressButton: true),
-                        onChanged: (val) {
-                          EasyDebounce.debounce(
-                            'search-input-debouncer',
-                            const Duration(milliseconds: 700),
-                                () => _searchAction(),
-                          );
-                        },
-                        style: TextStyle(color: KColors.new_black, fontSize: 16),
-                        textInputAction: TextInputAction.search,
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!
-                              .translate('find_menu_or_restaurant'),
-                          hintStyle: TextStyle(
-                            fontSize: 14,
-                            color: KColors.new_black.withAlpha(150),
-                          ),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    )
-                        : Text(
-                      Utils.capitalize(getCategoryTitle(context)[0]),
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
 
                   const SizedBox(height: 8),
-
-                  /// 🔘 Selection widget under title
                   SearchSwitchWidget(
                     searchTypePosition,
                     _choice,
@@ -944,28 +931,48 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   _buildSearchedFoodList() {
     if (foodProposals == null)
       return Container(
+
           child: Center(
-              child: Column(children: <Widget>[
-       /*  SizedBox(height: 20),
-        Icon(Icons.search, color: Colors.grey),
-        SizedBox(height: 10),
-        Text("${AppLocalizations.of(context)!.translate('please_search_item')}") */
-         Padding(
+              child: Column(
+                  children: <Widget>[
+          Padding(
           padding: const EdgeInsets.only(left: 15 , right: 15),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: "Rechercher un plat...",
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                  )
+                ]
             ),
-            onChanged: (value) {
-              setState(() {
-                _selectedFilter = value.trim();
-              });
-            },
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Rechercher un plat...",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: .0,color: Colors.transparent)
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(width: .0,color: Colors.transparent)
+            ),
+                enabledBorder:OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: .0,color: Colors.transparent)
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+              ),
+              onChanged: (value) {
+                setState(() {
+                  _selectedFilter = value.trim();
+                });
+              },
+            ),
           ),
         ),
 
