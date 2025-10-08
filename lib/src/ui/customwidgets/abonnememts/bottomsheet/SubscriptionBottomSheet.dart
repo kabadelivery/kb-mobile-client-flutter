@@ -8,7 +8,7 @@ import 'package:cherry_toast/cherry_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:intl/intl.dart';
-import 'package:url_launcher/url_launcher.dart'; 
+import 'package:url_launcher/url_launcher.dart';
  import 'dart:convert';
  import 'package:http/http.dart' as http;
  import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
@@ -21,10 +21,10 @@ class SubscriptionBottomSheet extends StatefulWidget {
   final String price;
   final String currency;
   final Color accentColor;
-  final String livraisons ; 
+  final String livraisons ;
   final String validite ;
   final String rayon ;
-  final String min ; 
+  final String min ;
 
   const SubscriptionBottomSheet({
     Key? key,
@@ -65,7 +65,7 @@ class SubscriptionBottomSheet extends StatefulWidget {
         price: price,
         currency: currency,
         accentColor: accentColor,
-         livraisons: livraison, 
+         livraisons: livraison,
          validite: validite,
          min: min,
          rayon: rayon,
@@ -140,7 +140,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
     });
   }
 
- 
+
 
   // Example items for SingleSelectList
   final items = [
@@ -340,7 +340,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       if (selectedMethodLabel == null) {
                        debugPrint("No Payement Selected");
                       }
-                     
+
                       debugPrint("Pay with $selectedMethodLabel , abo_id:${widget.idPack} , price:${widget.price} , customer id ${customerId }");
                      ScaffoldMessenger.of(context).showSnackBar(
     const SnackBar(
@@ -358,7 +358,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         "${widget.price}",
                       );
    if (response['status'] == "success") {
-    
+
    Navigator.pop(context);
     await Future.delayed(const Duration(seconds: 5));
     SubscriptionSuccessSheet.show(context);
@@ -371,7 +371,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
         backgroundColor: Colors.red,
       ),
     );
-  } 
+  }
                     },
                     child: const Text("Payer ",
                         style: TextStyle(color: Colors.white)),
@@ -447,8 +447,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
            ),
          );
 
-         await Future.delayed(const Duration(seconds: 20));
-
          // Step 3 — Check payment status
          final statusResponse = await http.post(
            Uri.parse(ServerRoutes.KABA_CHECK_ABO_PAYMENT_STATUS),
@@ -462,7 +460,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
          );
 
          // Close loader
-         Navigator.of(context).pop();
+
 
          if (statusResponse.statusCode >= 200 &&
              statusResponse.statusCode < 300) {
@@ -591,7 +589,7 @@ class PaymentProcessor {
 
   // 🔹 Méthodes privées
   static Future<Map<String, dynamic>> launchNewMomoTopUp(double price) async {
-  
+
     ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
     CustomerModel customer = await CustomerUtils.getCustomer();
     bool launch_other_payment = false ;
@@ -599,7 +597,7 @@ class PaymentProcessor {
     String abo_price = price.toString() ;
     bool isMomoFromTogo   = await detectTogoMomoOperator(user_phone_number!);
     if(!isMomoFromTogo){
-       
+
     }
     if(!launch_other_payment){
       try {
@@ -614,9 +612,9 @@ class PaymentProcessor {
   } catch (e) {
     return {"status": "error", "message": "Exception: $e"};
   }
-} 
+}
     }
-   
+
     /*
     *     if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
@@ -631,7 +629,7 @@ class PaymentProcessor {
 */
   }
 
-  
+
     /*
     * if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
@@ -648,96 +646,89 @@ class PaymentProcessor {
         showLoading(true);
       });
     }*/
-    Future<Map<String, dynamic>> launchNewCardTopUp(double price) async {
-  bool launch_other_payment = false;
-  ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
-  CustomerModel customer = await CustomerUtils.getCustomer();
-  Map<String, dynamic> semoaResult = {};
+Future<Map<String, dynamic>> launchNewCardTopUp(double price) async {
+  final provider = ClientPersonalApiProvider();
+  final customer = await CustomerUtils.getCustomer();
 
   try {
-    debugPrint("_getRealInitialAmountFromTotal ");
-    Map<String, dynamic> paymentData = {
+    // Step 1: Prepare payload
+    final paymentData = {
       "amount": price,
       "description": "Paiement Abonnement",
       "user": {
-        "lastname": "${customer.nickname}",
+        "lastname": customer.nickname ?? "",
         "firstname": "",
-        "phone": "${customer.username}",
+        "phone": customer.username ?? "",
       }
     };
-    semoaResult = await provider.launchSemoa(customer, paymentData);
-  } catch (_) {
-    launch_other_payment = true;
-  }
 
-  if (semoaResult != null && semoaResult.isNotEmpty) {
-    debugPrint('semoaResult $semoaResult');
-    if (semoaResult['order_reference'] != null) {
-      Map<String, dynamic> semoaData = semoaResult;
-      List<dynamic> paymentsMethods = semoaData['payments_method'] ?? [];
-      String orderReference = semoaData['order_reference'] ?? '';
-      Map<String, dynamic> semoaStoreData = {
-        'transaction_id': orderReference,
-        'amount': price,
-        'user_id': customer?.id,
-        'fees': '',
-        'details': 'Paiement pour Abonnement',
-        'transaction_motif_id': 2
-      };
-      Map result = await provider.launchStoreSemoaTransaction(customer, semoaStoreData);
-      debugPrint('paymentsMethods: $paymentsMethods');
+    // Step 2: Call Semoa
+    final semoaResult = await provider.launchSemoa(customer, paymentData);
 
-      if (result != null && result['data']['success'] && paymentsMethods.isNotEmpty) {
-        Map<String, dynamic>? firstPaymentMethod;
-        if (paymentsMethods.isNotEmpty && paymentsMethods[0] is List) {
-          List<dynamic> firstGroup = paymentsMethods[0];
-          if (firstGroup.isNotEmpty) {
-            firstPaymentMethod = firstGroup[0];
-          }
-        }
+    // Step 3: Extract data safely
+    final orderRef = semoaResult['order_reference']?.toString();
+    final paymentsMethods = (semoaResult['payments_method'] as List?) ?? [];
 
-        if (firstPaymentMethod != null) {
-          String actionUrl = firstPaymentMethod['action'] ?? '';
-          String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
-          String description = firstPaymentMethod['description'] ?? '';
+    if (orderRef == null || orderRef.isEmpty) {
+      throw Exception("Référence de commande manquante (order_reference)");
+    }
 
-          if (firstPaymentMethod['gateway'].toString().contains("Ecobank-Semoa")) {
-            var textActionSemoaAvailable = true;
-            var textActionSemoa = firstPaymentMethod['action'];
-          }
+    // Step 4: Save transaction in backend
+    Map<String, dynamic> semoaStoreData = {
+      'transaction_id': orderRef,
+      'amount': price,
+      'user_id': customer.id,
+      'fees': '',
+      'details': 'Paiement pour Abonnement',
+      'transaction_motif_id': 2
+    };
 
-          if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
-            final uri = Uri.parse(actionUrl);
-            if (await canLaunchUrl(uri)) {
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-              return {
-                "status": "success",
-                "message": "Paiement carte initié",
-                "data": semoaResult
-              };
-            } else {
-              launch_other_payment = true;
-            }
-          }
+    Map result =
+    await provider.launchStoreSemoaTransaction(customer, semoaStoreData);
+
+    if (result != null && result['data']['success'] && paymentsMethods.isNotEmpty) {
+      Map<String, dynamic>? firstPaymentMethod;
+      if (paymentsMethods.isNotEmpty && paymentsMethods[0] is List) {
+        List<dynamic> firstGroup = paymentsMethods[0];
+        if (firstGroup.isNotEmpty) {
+          firstPaymentMethod = firstGroup[0];
         }
       }
-    } else {
-      CherryToast.error(
-        title: Text("Error"),
-        description: Text("Error"),
-        autoDismiss: true,
-      );
-      launch_other_payment = true;
-    }
-  }
 
-  // ✅ Default return to satisfy Dart
-  return {
-    "status": "error",
-    "message": "Impossible d’initier le paiement",
-    "data": {}
-  };
+      if (firstPaymentMethod != null) {
+        String actionUrl = firstPaymentMethod['action'] ?? '';
+        if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
+          final uri = Uri.parse(actionUrl);
+          if (await canLaunchUrl(uri)) {
+            await launchUrl(uri, mode: LaunchMode.externalApplication);
+          }
+          return {
+            "status": "success",
+            "gateway": firstPaymentMethod['gateway'] ?? '',
+            "transaction_id": orderRef,
+            "message": "Paiement carte lancé avec succès",
+          };
+        }
+      }
+    }
+
+    // 🔹 Fallback when no valid payment method is found
+    return {
+      "status": "error",
+      "message": "Aucune méthode de paiement valide trouvée",
+      "code": -2,
+    };
+  } catch (e, st) {
+    debugPrint('🚨 launchNewCardTopUp failed: $e\n$st');
+    return {
+      "status": "error",
+      "message": e.toString(),
+      "code": -1,
+    };
+  }
 }
+
+
 Future<void> paySubscriptionWithWallet(
     BuildContext context,
     int userId,
@@ -764,7 +755,7 @@ Future<void> paySubscriptionWithWallet(
       final data = jsonDecode(response.body);
 
       if (data['status'] == 1) {
-        // ✅ Success bottom sheet
+        // ✅ Success bottom sheet with transaction info
         showModalBottomSheet(
           context: context,
           shape: const RoundedRectangleBorder(
@@ -788,6 +779,12 @@ Future<void> paySubscriptionWithWallet(
                     textAlign: TextAlign.center,
                     style: TextStyle(color: Colors.grey[700]),
                   ),
+                  const SizedBox(height: 16),
+                  Text(
+                    "Transaction ID : ${data['transaction_id']}\nDate : ${data['date']}",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: Colors.black87),
+                  ),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -808,7 +805,7 @@ Future<void> paySubscriptionWithWallet(
           },
         );
       } else {
-        _showError(context, "Erreur lors du paiement. Veuillez réessayer.");
+        _showError(context, data['error'] ?? "Erreur lors du paiement. Veuillez réessayer.");
       }
     } else {
       _showError(context, "Erreur serveur (${response.statusCode})");
@@ -818,55 +815,53 @@ Future<void> paySubscriptionWithWallet(
   }
 }
 
-void _showError(BuildContext context, String message) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (_) {
-      return Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline, color: Colors.red, size: 80),
-            const SizedBox(height: 16),
-            Text(
-              "Échec du paiement",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey[700]),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+  void _showError(BuildContext context, String message) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline, color: Colors.red, size: 80),
+              const SizedBox(height: 16),
+              Text(
+                "Échec du paiement",
+                style: const TextStyle(
+                    fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text("Fermer", style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+              const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 24, vertical: 12),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                    "Fermer", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
 
-    
-    
-     
-/// Sends JSON data to an endpoint and returns true if successful, false otherwise.
-
-
+  /// Sends JSON data to an endpoint and returns true if successful, false otherwise
