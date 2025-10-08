@@ -298,8 +298,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               child: Column(
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
+                      SizedBox(width: 20,),
                       IconButton(
                         icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
                         onPressed: () {
@@ -315,6 +316,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                           }
                         },
                       ),
+                      SizedBox(width: 70,),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         child: _searchMode
@@ -392,6 +394,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                           });
                         },
                       ):Container(),
+
                 ]..add(
                         /* according to the search position, show a different page. */
                         searchTypePosition == 1
