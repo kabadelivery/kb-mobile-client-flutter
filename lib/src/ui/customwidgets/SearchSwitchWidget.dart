@@ -210,47 +210,7 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                           widget
                               .listContentFilter();
                         }, //widget.scrollToTopFunction,
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          width: 70,
-                          child: widget.filterConfiguration != null &&
-                                  widget.filterConfiguration["opened_filter"] ==
-                                      true
-                              ? Container(
-                                  height: 40,
-                                  width: 30,
-                                  child: Image.asset(
-                                    ImageAssets.opened,
-
-                                    height: 40.0,
-                                    width: 40.0,
-                                    fit: BoxFit.fitHeight,
-                                    alignment: Alignment.center,
-                                  )
-                          )
-                              :
-                          // ShakeItem(autoPlay: _autoPlay, shakeList: [ShakeDefaultConstant1(),ShakeDefaultConstant2()]),
-                          ShakeWidget(
-                            duration: Duration(milliseconds: 1000),
-                            shakeConstant: ShakeLittleConstant1(),
-                            autoPlay: true,
-                            enableWebMouseHover: true,
-
-                          child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: Image.asset(
-                                      ImageAssets.filter_red,
-                                      color: Colors.white,
-                                      height: 20.0,
-                                      width: 20.0,
-                                      alignment: Alignment.center,
-                                    )),
-                              ),
-                          decoration: BoxDecoration(
-                              /* color: KColors.primaryColor.withAlpha(30),*/
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
+                        child: Container() ,
                       )
                     : Center(
 

@@ -127,15 +127,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     SizedBox(height: 40),
                    
                      
-                      Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
+                      Text("${AppLocalizations.of(context)!.translate('welcome_to_kaba')}", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
                       SizedBox(height: 10),
                     Container(
-                        margin: EdgeInsets.only(left:35, right: 35),
+                        margin: EdgeInsets.only(left:25, right: 25),
                     child:   
                     Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 30),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 8 , vertical:8),
+                        padding: EdgeInsets.symmetric(horizontal: 3 , vertical:3),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(color: KColors.primaryColor, width: 1.2),
@@ -229,26 +229,28 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   enabled:!isConnecting, maxLength: TextField.noMaxLength,
                   decoration: InputDecoration(
                     prefixIcon: Padding(
-                      padding: const EdgeInsets.only(top:1),
+                      padding: const EdgeInsets.only(top:0),
                       child: CountryCodePicker(
-                onChanged: (code) {
-                  debugPrint("New country selected: ${code.dialCode}");
-                },
-                initialSelection: 'TG', // default to Togo
-                favorite: const ['+228', 'TG'], // keep Togo as favorite
-                showFlag: true,
+                        onChanged: (code) {
+                          debugPrint("New country selected: ${code.dialCode}");
+                        },
+                        initialSelection: 'TG', // default to Togo
+                        favorite: const ['+228', 'TG'], // keep Togo as favorite
+                        showFlag: true,
                         showDropDownButton: true,
-                textStyle: const TextStyle(color: Colors.black, fontSize: 16),
-                showCountryOnly: false,
-                showOnlyCountryWhenClosed: false,
-                alignLeft: false,
-              ) ,
+                        textStyle: const TextStyle(color: Colors.black, fontSize: 16),
+                        showCountryOnly: false,
+                        showOnlyCountryWhenClosed: false,
+                        alignLeft: false,
+                        padding: const EdgeInsets.all(0), // 👈 removes internal padding
+                      ) ,
                     ),
                     prefixIconConstraints:
                         const BoxConstraints(minWidth: 0, minHeight: 0),
-                    hintText: "Entrez votre numéro",
+                    hintText: "${AppLocalizations.of(context)!.translate('phone_number_hint')}",
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(50 ,)
+
                     ),
                   ),
                   keyboardType: TextInputType.phone,
@@ -284,7 +286,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: KColors.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),

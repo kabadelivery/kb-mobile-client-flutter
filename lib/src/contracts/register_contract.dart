@@ -51,6 +51,8 @@ class RegisterPresenter implements RegisterContract {
     provider = new ClientPersonalApiProvider();
   }
 
+  set NewPasswordView(NewPasswordView) {}
+
   @override
   Future checkVerificationCode(String code, String requestId) async {
 

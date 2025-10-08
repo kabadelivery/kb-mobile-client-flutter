@@ -136,7 +136,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
             children: [
               Text(
                   Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('register')}"),
+                      "${AppLocalizations.of(context)!.translate('new_password_recover')}"),
                   style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -165,28 +165,18 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                         //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
                       ],
                     ),
-                     SizedBox(height: 40),
+                     SizedBox(height: 20),
                       Center(
                         child: 
-                       Text("Creer votre Compte ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                       Text("${AppLocalizations.of(context)!.translate('new_password_recover')}", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
                       ),
                       SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),
-                    child:   
-                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-              const SizedBox(height: 40),
+
+
+              const SizedBox(height: 20),
 
               // Username
-              TextField(
-                controller: _nicknameFieldController,
-                decoration: InputDecoration(
-                  hintText: "Nom d'utilisateur",
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-              ),
+
               const SizedBox(height: 15),
 
               // Password
@@ -252,7 +242,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                  },
                    // Handle create account action,
                   child: const Text(
-                    "Créer le compte",
+                    "Se Connecter",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -275,9 +265,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                         height: 15, width: 15) : Container(),
 
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                        "TTT",
-                        textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+
                     SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -291,20 +279,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlinedButton(
-                              style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
-                              child: Row(
-                            children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                              /* stream builder, that shows that the code is been sent */
-                              isCodeSent == false &&  isCodeSending ? Row(
-                                children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
-                                ],
-                              ) : Container(),
-                            ],
-                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
+
                         ]),
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
