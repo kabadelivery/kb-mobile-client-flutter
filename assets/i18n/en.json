@@ -118,7 +118,7 @@
   "sorry_empty_transactions": "Sorry, you have no recent transactions !",
   "top_kaba_account": "TO KABA ACCOUNT",
   "insert_transfer_amount": "Please enter the amount you want to transfer",
-  "pay": "PAY",
+  "pay": "Pay",
   "amount_greater_than_0": "Sorry, balance must be > 0 and valuable",
   "balance_not_sufficient": "Sorry, Balance not enough. Please top up your account by T-money and Flooz and try again.",
   "password_wrong_": "Sorry, Password wrong. Check your password and try again",

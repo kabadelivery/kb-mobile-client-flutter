@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -261,7 +262,7 @@ class _FoodGridState extends State<FoodGrid> {
                             ),
                           );
                         },
-                        child: Text(food.buttonLabel),
+                        child: Text("${AppLocalizations.of(context)!.translate("pay")}"),
                       ),
                     ),
                   ),

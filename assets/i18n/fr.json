@@ -122,7 +122,7 @@
   "sorry_empty_transactions": "Désolé, Aucune transaction récente !",
   "top_kaba_account": "VERS COMPTE KABA",
   "insert_transfer_amount": "Veuillez entrer le montant que vous voulez transférer",
-  "pay": "PAYER",
+  "pay": "Payer",
   "amount_greater_than_0": "Désolé, votre Solde doit être > (supérieur) 0",
   "balance_not_sufficient": "Désolé, votre solde est insuffisant pour transférer ce montant. Veuillez recharger votre compte avec Flooz / T-money et réessayer",
   "password_wrong_": "Désolé, Mot de Passe erroné. Veuillez vérifier votre mot de passe et réessayer",

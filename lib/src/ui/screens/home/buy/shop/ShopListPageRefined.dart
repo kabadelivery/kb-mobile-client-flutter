@@ -501,8 +501,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                 child: Column(
                     children:[
                 ]..add(
-                        /* according to the search position, show a different page. */
-                        searchTypePosition == 1
+                         searchTypePosition == 1
                             ? (!_searchMode
                                 ? Container(
                                     color: Colors.white,
