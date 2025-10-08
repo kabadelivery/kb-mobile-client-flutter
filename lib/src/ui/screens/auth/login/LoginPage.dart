@@ -106,8 +106,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
             child:Column(
-      
-              
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:[ Padding(
                 padding: EdgeInsets.all(20) ,
                 child:Column(
@@ -326,7 +325,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   ]
               ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 90),
               Image.asset(
   "assets/images/background/Patternlogin.png",
   width: double.infinity,

@@ -151,13 +151,15 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        physics: const NeverScrollableScrollPhysics(),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -227,11 +229,10 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                 ],
               ),
             ),
-            const SizedBox(height: 80),
+
                     Image.asset(
           "assets/images/background/Patternlogin.png",
           width: double.infinity,
-          height: 275,
           fit: BoxFit.cover, // scales and crops to cover the width
         ),
           ],

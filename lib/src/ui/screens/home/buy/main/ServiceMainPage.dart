@@ -1508,118 +1508,90 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
     /* location is saved locally */
     CustomerUtils.saveAddressLocally(StateContainer.of(context).location!);
-
     setState(() {
       isPickLocation = false;
     });
   }
   Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
-    SharedPreferences.getInstance().then((value) async {
-      prefs = value;
-
-        String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
-        var status = await Permission.location.status;
-        var notif_status=await Permission.notification.status;
-        LocationPermission permission = await Geolocator.checkPermission();
-        if (permission == LocationPermission.deniedForever) {
-          /*  ---- */
-          // await Geolocator.openAppSettings();
-          /* ---- */
-          if(status.isDenied &&!notif_status.isDenied){
-            openLocationModal(context);
-          }else{
-            return  showDialog(
-              context: context,
-              builder: (_) =>  PermissionsModal(),
-            ).then((_){
-              if (jumpToBuyPageDetails) {
-                setState(() {
-                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
-                });
-              }
-            });
-          }
-          /* ---- */
-        } else if (permission == LocationPermission.denied) {
-          /* ---- */
-          // Geolocator.requestPermission();
-          /* ---- */
-          if(status.isDenied &&!notif_status.isDenied){
-            openLocationModal(context);
-          }else{
-            return  showDialog(
-              context: context,
-              builder: (_) => const PermissionsModal(),
-            ).then((_){
-              if (jumpToBuyPageDetails) {
-                setState(() {
-                  StateContainer.of(context).updateTabPosition(tabPosition: 1);
-                });
-              }
-
-            });
-          }
+    prefs = await SharedPreferences.getInstance();
+    String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
+    var status = await Permission.location.status;
+    var notif_status = await Permission.notification.status;
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.deniedForever) {
+      if (status.isDenied && !notif_status.isDenied) {
+        openLocationModal(context);
+      } else {
+        await showDialog(
+          context: context,
+          builder: (_) => PermissionsModal(),
+        );
+        _getLastKnowLocation(jumpToBuyPageDetails: true);
+      }
+      return;
+    }
+    else if (permission == LocationPermission.denied) {
+      if (status.isDenied && !notif_status.isDenied) {
+        openLocationModal(context);
+      } else {
+        await showDialog(
+          context: context,
+          builder: (_) => const PermissionsModal(),
+        );
+        _getLastKnowLocation(jumpToBuyPageDetails: true);
+      }
+      return;
+    }
+    else {
+      bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+      var notifStatus = await Permission.notification.status;
+      if (!isLocationServiceEnabled) {
+        if (status.isDenied && !notifStatus.isDenied) {
+          openLocationModal(context);
         } else {
-          bool isLocationServiceEnabled =
-          await Geolocator.isLocationServiceEnabled();
-          var status  = await Permission.notification.status;
-          if (!isLocationServiceEnabled ) {
-            if(status.isDenied && !notif_status.isDenied){
-              openLocationModal(context);
-            }else{
-              return  showDialog(
-                context: context,
-                builder: (_) => const PermissionsModal(),
-              ).then((_){
-                if (jumpToBuyPageDetails) {
-                  setState(() {
-                    StateContainer.of(context).updateTabPosition(tabPosition: 1);
-                  });
-                }
-              });
-            }
+          await showDialog(
+            context: context,
+            builder: (_) => const PermissionsModal(),
+          );
+          _getLastKnowLocation(jumpToBuyPageDetails: true);
+        }
+        return;
+      }
+       if (jumpToBuyPageDetails) {
+        setState(() {
+          StateContainer.of(context).updateTabPosition(tabPosition: 0);
+        });
+      }
 
-            /* ---- */
-          } else {
-            /* show loading dialog until this finishes then close */
+      positionStream = Geolocator.getPositionStream().listen((Position position) {
+        if (position.latitude != null &&
+            tmpLocation?.latitude != null &&
+            (position.latitude * 100).round() ==
+                (tmpLocation!.latitude! * 100).round() &&
+            (position.longitude * 100).round() ==
+                (tmpLocation!.longitude * 100).round()) {
+          widget.samePositionCount++;
+        } else {
+          widget.samePositionCount = 0;
+          tmpLocation = StateContainer.of(context).location;
 
-            // switch to page two
-            if (jumpToBuyPageDetails) {
-              setState(() {
-                StateContainer.of(context).updateTabPosition(tabPosition: 1);
-              });
-            }
-
-            positionStream =Geolocator.getPositionStream().listen((Position position) {
-                  /* compare current and old position */
-                  if (position?.latitude != null &&
-                      tmpLocation?.latitude != null &&
-                      (position.latitude * 100).round() ==
-                          (tmpLocation!.latitude! * 100).round() &&
-                      (position.longitude * 100).round() ==
-                          (tmpLocation!.longitude * 100).round()) {
-                    widget.samePositionCount++;
-                  } else {
-                    widget.samePositionCount = 0;
-                    tmpLocation = StateContainer.of(context).location;
-                    if (position != null && mounted) {
-                      widget.hasGps = true;
-                      setState(() {
-                        StateContainer.of(context)
-                            .updateLocation(location: position);
-                      });
-                    }
-                  }
-                  if (widget.samePositionCount >= 3 || widget.hasGps!)
-                    positionStream?.cancel();
-                });
+          if (mounted) {
+            widget.hasGps = true;
+            setState(() {
+              StateContainer.of(context).updateLocation(location: position);
+            });
           }
         }
-    });
 
-    var loc_status =await Permission.location.status ;
-    var notif_status=await Permission.notification.status;
+        if (widget.samePositionCount >= 3 || widget.hasGps!) {
+          positionStream?.cancel();
+        }
+      });
+    }
+    var loc_status = await Permission.location.status;
+    var notif_status2 = await Permission.notification.status;
     var storage_status = await Permission.storage.status;
+
     if (Platform.isAndroid) {
       final androidInfo = await DeviceInfoPlugin().androidInfo;
       int sdkVersion = androidInfo.version.sdkInt;
@@ -1627,14 +1599,18 @@ class ServiceMainPageState extends State<ServiceMainPage>
         storage_status = await Permission.storage.status;
       }
     }
-    if(loc_status.isGranted&&notif_status.isGranted){
-      if(storage_status.isDenied){
-      //  openPhotosModal(context);
-     //   openLocationModal(context);
-       // openNotificationModal(context);
+
+    if (loc_status.isGranted && notif_status2.isGranted) {
+      if (storage_status.isDenied) {
+        // Tu peux réactiver ce que tu veux ici :
+        // openPhotosModal(context);
+        // openLocationModal(context);
+        // openNotificationModal(context);
       }
     }
+
   }
+
   getCurrentTile() {
     if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile(key: null,);
     return _myCurrentTile;

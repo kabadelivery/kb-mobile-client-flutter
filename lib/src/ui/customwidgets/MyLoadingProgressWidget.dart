@@ -23,8 +23,8 @@ class _MyLoadingProgressWidgetState extends State<MyLoadingProgressWidget> {
     //   color: widget.color,
     // );
     return SizedBox(
-      width: 50,
-      height: 50,
+      width: 35,
+      height: 35,
       child: CircularProgressIndicator(color: KColors.primaryColor,)
       // LoadingAnimationWidget.twistingDots(
       //   leftDotColor: const Color(0xFF1A1A3F),

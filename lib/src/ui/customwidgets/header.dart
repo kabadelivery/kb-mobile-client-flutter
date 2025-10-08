@@ -35,11 +35,11 @@ class _HeaderState extends State<Header> {
   }
   @override void initState() {
     super.initState();
-    getPerf();
+
   }
   @override
   Widget build(BuildContext context) {
-
+    getPerf();
    return  Container(
       height: 80,
       padding: EdgeInsets.symmetric(horizontal: 15),
