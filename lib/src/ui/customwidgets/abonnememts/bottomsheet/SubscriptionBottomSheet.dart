@@ -352,7 +352,11 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                     SingleSelectList(
                       items: items,
                       onChanged: (i) {
-                        setState(() => selectedIndex = i);
+                        setState(()  {
+                          selectedIndex = i;
+                          isProcessing=false;
+                        });
+
                       },
                       onItemSelected: (label) {
                         setState(() => selectedMethodLabel = label);
@@ -435,19 +439,14 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                           duration: Duration(seconds: 2),
                         ),
                       );
-                      checkPaymentStatus(context).then((_)async{
-                          await sendSubscriptiondata(
-                          context,
-                          '$customerId',
-                          '${widget.idPack}',
-                          methodToSend!,
-                          "${widget.price}",
-                        );
-                      }).then((_){
-                        Navigator.pop(context);
-                      });
-
-
+                     await checkPaymentStatus(context);
+                      await sendSubscriptiondata(
+                        context,
+                        '$customerId',
+                        '${widget.idPack}',
+                        methodToSend!,
+                        "${widget.price}",
+                      );
                     },
                     child: const Text("Payer ",
                         style: TextStyle(color: Colors.white)),
@@ -491,7 +490,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           "price": price,
         }),
       );
-
       if (response.statusCode < 200 || response.statusCode >= 300) {
         debugPrint("❌ Error during subscription insert: ${response.body}");
         return {
@@ -514,7 +512,8 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 
       // For international momo (mtn, wave) -> use Kkiapay directly
       final lower = payement_method.toLowerCase();
-      if (lower == 'mtn' || lower == 'wave') {
+      debugPrint("XXX PAYMENT METHOD ${lower}");
+      if (lower !="flooz" && lower!="mix") {
         final customer = await CustomerUtils.getCustomer();
         debugPrint("amount ${double.parse(price)}");
         await _launchKkiapayPayment(
@@ -537,7 +536,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
         // primary method failed -> fallback to Kkiapay
         debugPrint('Primary payment method failed: ${procResult['message']} - launching Kkiapay fallback');
         debugPrint("amount ${double.parse(price)}");
-
         final customer = await CustomerUtils.getCustomer();
         await _launchKkiapayPayment(
           context: context,
@@ -546,8 +544,6 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           typeOfTransaction:
           (payement_method.toLowerCase() == 'card') ? 'card' : 'momo',
         );
-
-
       }
     } catch (e) {
       debugPrint("Exception in sendSubscriptiondata: $e");
@@ -568,8 +564,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       String subscriptionId,
       ) async {
     try {
-      final url = Uri.parse(
-          "https://dev.pay.kaba-delivery.com/api/subscription/pay-with-wallet");
+      final url = Uri.parse(ServerRoutes.LINK_PAY_BY_WALLET);
 
       final response = await http.post(
         url,
@@ -660,22 +655,16 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, color: Colors.red, size: 80),
+              const Icon(Icons.error_outline, color:KColors.primaryColor, size: 80),
               const SizedBox(height: 16),
               const Text(
                 "Échec du paiement",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey[700]),
-              ),
-              const SizedBox(height: 24),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
+                  backgroundColor: KColors.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),

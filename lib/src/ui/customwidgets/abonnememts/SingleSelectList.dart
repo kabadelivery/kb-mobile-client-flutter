@@ -94,7 +94,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
       onTap: () {
         setState(() => _selectedLogo = label); // 👈 update state
         widget.onItemSelected?.call(label); // 👈 send selection to parent
-        Navigator.pop(context); // close bottomsheet
+        Navigator.of(context).pop(true);
       },
       child: Column(
         children: [
@@ -187,13 +187,25 @@ class _SingleSelectListState extends State<SingleSelectList> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        item.subtitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color:
-                          isSelected ? Colors.black : Colors.grey.shade600,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            item.subtitle,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color:
+                              isSelected ? Colors.black : Colors.grey.shade600,
+                            ),
+
+                          ),
+                          SizedBox(width: 5,),
+                          item.title.contains("Porte")?  Text(
+                              " : " +"${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                              style: TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600)):Container(),
+                        ],
                       ),
                     ],
                   ),

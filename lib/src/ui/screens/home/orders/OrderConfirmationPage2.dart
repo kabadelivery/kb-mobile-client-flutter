@@ -2138,7 +2138,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           Icon(FontAwesomeIcons.wallet, color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,size: 15),
                           SizedBox(width: 10),
                           Text(
-                              "${AppLocalizations.of(context)!.translate('pay_now')}".toLowerCase(),
+                              "${AppLocalizations.of(context)!.translate('pay_now')}",
                               style: TextStyle(
                                   fontSize: 15,
                                   color: pay_now_button_pressed==false? KColors.primaryColor: Colors.white,
@@ -2187,11 +2187,11 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         children: <Widget>[
                           Icon(Icons.directions_bike,
                               color: pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,size: 16),
-                          SizedBox(width: 5),
+                          SizedBox(width: 10),
                           Text(
                               "${AppLocalizations.of(context)!.translate('pay_at_arrival')}",
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 15,
                                 color:pay_at_delivery_button_pressed==false? KColors.primaryColor: Colors.white,
                                 fontWeight: FontWeight.w500,
                               )),
@@ -3281,9 +3281,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                                 Radius.circular(5))),
                                         child:  Text(
                                             "${AppLocalizations.of(context)!.translate('top_up')}"
-                                                .toUpperCase(),
+                                                ,
                                             style: TextStyle(
-                                                fontSize: 12,
+                                                fontSize: 14,
                                                 color:topup_button_pressed==false?KColors.primaryColor: Colors.white,
                                                 fontWeight:
                                                 FontWeight.w500)),

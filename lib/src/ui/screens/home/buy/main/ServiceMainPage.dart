@@ -1573,7 +1573,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
           widget.samePositionCount++;
         } else {
           widget.samePositionCount = 0;
-          tmpLocation = StateContainer.of(context).location;
+          if(mounted){
+            tmpLocation = StateContainer.of(context).location;
+          }
 
           if (mounted) {
             widget.hasGps = true;

@@ -360,4 +360,5 @@ class ServerRoutes {
   static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_expedition + "/dashboard/sharedCodeSuscriber";
   static const String LINK_GET_SKIP_NOTATION_STATUS = ServerConfig.SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
   static const String LINK_GET_PERFORMANCE_RATING =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/rating/v4/get";
+  static const String LINK_PAY_BY_WALLET = ServerConfig.PAY_SERVER_ADDRESS_SECURE+"/api/subscription/pay/wallet";
 }

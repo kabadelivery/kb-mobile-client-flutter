@@ -138,11 +138,16 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        livreurName,
-                        style: const TextStyle(fontWeight: FontWeight.bold,
-                        fontSize: 16, color: Colors.black87),
-
+                        livreurName.contains(RegExp('new', caseSensitive: false))
+                            ? livreurName.replaceAll(RegExp('new', caseSensitive: false), '').trim()
+                            : livreurName,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                          color: Colors.black87,
+                        ),
                       ),
+
                     ],
                   ),
 

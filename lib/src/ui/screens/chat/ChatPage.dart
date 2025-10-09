@@ -264,7 +264,7 @@ class _ChatPageState extends State<ChatPage> {
                   return OwnMessageCard(
                     message: msg.message,
                     messageType: isImage ? "image" : "text",
-                    time: "00:00"
+                    time: msg.time??"${DateTime.now().hour}:${DateTime.now().minute}"
                   );
                 } else {
                   return ReplyMessageCard(

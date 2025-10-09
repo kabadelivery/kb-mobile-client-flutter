@@ -30,11 +30,11 @@ class KkiapayProvider {
         }
         break;
       case 'PENDING_PAYMENT':
-
         debugPrint('PENDING_PAYMENT');
 
         break;
       case 'PAYMENT_SUCCESS':
+        Navigator.pop(context);
         Navigator.pop(context);
         debugPrint('PAYMENT_SUCCESS');
         if(success_launch)
