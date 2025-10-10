@@ -15,7 +15,11 @@ import 'package:KABA/src/contracts/service_category_contract.dart';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/contracts/vouchers_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
+import 'package:KABA/src/microservices/expedition/data/expedition/remote_data_source.dart';
+import 'package:KABA/src/microservices/expedition/domain/expedition/repo.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/homepage.dart';
+import 'package:KABA/src/microservices/expedition/usecases/getUserExpedition.dart';
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/page_holder.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
@@ -60,6 +64,8 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../microservices/expedition/presentation/widget/expedition_widget.dart';
+import '../../../microservices/expedition/presentation/widget/tracked_package_widget.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/permissions.dart';
@@ -311,19 +317,26 @@ class _HomePageState extends State<HomePage> {
     flutterLocalNotificationsPlugin!.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        final String? payload = response.payload;
-        xrint("onDidReceiveNotificationResponse ${payload}");
-        if (payload != null) {
-          _handlePayLoad(payload);
+        xrint("onDidReceiveNotificationResponse: ${response.payload.toString()}");
+        final payload = response.payload;
+
+        if (payload != null && payload.isNotEmpty) {
+          final uuidRegex = RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
+          if (uuidRegex.hasMatch(payload)) {
+            _handlePayLoad(payload);
+          } else {
+            _handleExpeditionPayload(payload);
+          }
+        } else {
+          xrint("⚠️ No payload in notification tap");
         }
       },
     );
 
     // new try
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-
       xrint('pnotif Got a message whilst in the foreground!');
-      xrint("FirebaseMessaging.onMessage.listen");
+      xrint("FirebaseMessaging.onMessage.listen ${message}");
       var notificationPayload ={
         "title": jsonDecode(message.data["notification"])["title"] ?? "",
         "body":  jsonDecode(message.data["notification"])["body"]  ?? "",
@@ -341,14 +354,34 @@ class _HomePageState extends State<HomePage> {
 
       if (localNotif != null) {
         xrint(
-            'pnotif Message also contained a notification: ${localNotif.toString()}');
-
-        NotificationItem? notificationItem =
-            _notificationFromMessage(message.data);
-        if (message.messageId != messageId) {
-          iLaunchNotifications(notificationItem!);
-          messageId = message.messageId!;
+            'pnotif Message also contained a notification: ${message.data['notification']}');
+        final notifString = message.data['notification'];
+        Map<String, dynamic>? notif;
+        try {
+          notif = jsonDecode(notifString);
+        } catch (e) {
         }
+        if (notif != null && notif['expedition_id'] != null) {
+          final expeditionId = notif['expedition_id'] ?? '';
+          final title = notif['title'] ?? '';
+          final body = notif['body'] ?? '';
+          if (message.messageId != messageId) {
+             iLaunchExpeditionNotification(
+            title: title,
+            body: body,
+            expeditionId: expeditionId,
+            );
+            messageId = message.messageId!;
+          }
+        }else{
+          NotificationItem? notificationItem =
+          _notificationFromMessage(message.data);
+          if (message.messageId != messageId) {
+            iLaunchNotifications(notificationItem!);
+            messageId = message.messageId!;
+          }
+        }
+
       }
     });
 
@@ -493,34 +526,104 @@ class _HomePageState extends State<HomePage> {
   Future<void> _firebaseMessagingOpenedAppHandler(RemoteMessage message) async {
     await Firebase.initializeApp();
     xrint('p_notify Message also contained a notification: ${message.data}');
-    NotificationItem? notificationItem = _notificationFromMessage(message.data);
-    _handlePayLoad(notificationItem!.destination!.toSpecialString());
-  }
 
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    await Firebase.initializeApp();
+    final data = message.data;
 
-    xrint("_firebaseMessagingBackgroundHandler: ${message.data})");
-    if (message.notification != null) {
-      xrint('p_notify Message also contained a notification: ${message.data}');
-      NotificationItem? notificationItem =
-          _notificationFromMessage(message.data);
-
+    if (!data.containsKey('product_id')) {
+      try {
+        final notif = jsonDecode(data['notification']);
+        final expeditionId = notif['expedition_id'];
+        if (expeditionId != null && expeditionId.toString().isNotEmpty) {
+          _handleExpeditionPayload(expeditionId.toString());
+          return;
+        }
+      } catch (e) {
+        xrint('⚠️ Error decoding notification JSON: $e');
+      }
+    }
+    NotificationItem? notificationItem = _notificationFromMessage(data);
+    if (notificationItem?.destination != null) {
       _handlePayLoad(notificationItem!.destination!.toSpecialString());
+    } else {
+      _handlePayLoad('');
     }
   }
 
-  Future? onDidReceiveLocalNotification(
-      int? id, String? title, String? body, String? payload) {
-    xrint("onDidReceiveLocalNotification ${payload}");
-    _handlePayLoad(payload!);
+
+  Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    await Firebase.initializeApp();
+
+    xrint("_firebaseMessagingBackgroundHandler: ${message.data}");
+
+    if (message.notification != null) {
+      final data = message.data;
+
+      // Check for expedition notification
+      if (!data.containsKey('product_id')) {
+        try {
+          final notif = jsonDecode(data['notification']);
+          final expeditionId = notif['expedition_id'];
+          if (expeditionId != null && expeditionId.toString().isNotEmpty) {
+            _handleExpeditionPayload(expeditionId.toString());
+            return;
+          }
+        } catch (e) {
+          xrint('⚠️ Error decoding notification JSON: $e');
+        }
+      }
+   xrint('p_notify Message also contained a notification: $data');
+      NotificationItem? notificationItem = _notificationFromMessage(data);
+
+      if (notificationItem?.destination != null) {
+        _handlePayLoad(notificationItem!.destination!.toSpecialString());
+      } else {
+        _handlePayLoad('');
+      }
+    }
   }
 
-  Future? onSelectNotification(String? payload) {
-    xrint("onSelectedNotification ${payload}");
-    _handlePayLoad(payload!);
+  Future<void> onDidReceiveLocalNotification(
+      int? id,
+      String? title,
+      String? body,
+      String? payload,
+      ) async {
+    xrint("onDidReceiveLocalNotification payload: $payload");
+    if (payload != null && payload.isNotEmpty) {
+      final uuidRegex = RegExp(
+        r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      );
+
+      if (payload != null && payload.isNotEmpty) {
+        uuidRegex.hasMatch(payload)
+            ? _handlePayLoad(payload)        // generic notification
+            : _handleExpeditionPayload(payload); // expedition ID
+      }
+    } else {
+      xrint("⚠️ No payload in local notification");
+    }
   }
+
+
+  Future<void> onSelectNotification(String? payload) async {
+    xrint("onSelectedNotification payload: $payload");
+
+    if (payload != null && payload.isNotEmpty) {
+      // If payload looks like an expedition ID
+      final uuidRegex = RegExp(
+        r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$',
+      );
+
+      if (payload != null && payload.isNotEmpty) {
+        uuidRegex.hasMatch(payload)
+            ? _handlePayLoad(payload)        // generic notification
+            : _handleExpeditionPayload(payload); // expedition ID
+      }
+    } else {
+      xrint("⚠️ No payload found in selected notification");
+    }
+  }
+
 
   void _handlePayLoad(String payload) {
     print('payloader $payload');
@@ -572,7 +675,61 @@ class _HomePageState extends State<HomePage> {
         break;
     }
   }
+  void _handleExpeditionPayload(String payload) async {
+   String? expeditionId = payload;
+    if (expeditionId != null) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            backgroundColor: KColors.primaryColor,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    "${AppLocalizations.of(context)!.translate("in_progress")}",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
 
+      await Future.delayed(Duration(seconds: 2));
+      await _redirectUser(expeditionId);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Aucun lien disponible pour cette notification")),
+      );
+    }
+  }
+  Future<void> _redirectUser(String id) async {
+
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
+    GetUserExpedition getUserExpeditionUseCase = GetUserExpedition(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
+    final expeditions = await getUserExpeditionUseCase(
+      customerToken: customerModel.token!,
+    );
+    ExpeditionModel expedition =expeditions.where((element) => element.id == id).first;
+    Navigator.pop(context);
+    _jumpToPage(context, TrackingPackage(expeditionModel: expedition));
+
+   }
   void _jumpToFoodDetailsWithId(int productId) {
     _jumpToPage(
         context,
@@ -1454,3 +1611,42 @@ Future<void> iLaunchNotifications(NotificationItem notificationItem) async {
   );
 }
 
+
+Future<void> iLaunchExpeditionNotification({
+  required String title,
+  required String body,
+  required String expeditionId,
+}) async {
+  try {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
+      'expedition_channel', // ID unique du canal
+      'Expéditions',        // Nom affiché
+      channelDescription: 'Notifications liées aux expéditions',
+      importance: Importance.max,
+      priority: Priority.high,
+      ticker: 'Expédition',
+    );
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+    DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'default',
+    );
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await flutterLocalNotificationsPlugin!.show(
+      expeditionId.hashCode,
+      title,
+      body,
+      platformChannelSpecifics,
+      payload: expeditionId,
+    );
+    debugPrint("✅ Notification d’expédition affichée : $expeditionId");
+  } catch (e) {
+    debugPrint("❌ Erreur lors de l’affichage de la notification : $e");
+  }
+}
