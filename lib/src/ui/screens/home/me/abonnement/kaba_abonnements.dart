@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:KABA/src/contracts/transaction_contract.dart';
-
 import 'package:KABA/src/ui/customwidgets/abonnememts/SuscriptionCard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -42,14 +41,47 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     _initData();
   }
 
-  // Initialize data: load customer first, then fetch subscription & plans
+  // ------------------- Initialize Data -------------------
   Future<void> _initData() async {
+    // 1️⃣ Load customer
     await _loadCustomer();
+
+    if (customerId == null) {
+      setState(() {
+        isLoadingSubscription = false;
+        subscriptionFetchFailed = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("⚠️ Customer ID not found.")),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoadingSubscription = true; // show loading until subscription is confirmed
+    });
+
+    // 2️⃣ Check and update subscription
+    final result = await checkAndUpdateSubscription(customerId!.toString());
+
+    // 3️⃣ Refetch subscription to ensure latest status
     await _fetchSubscription();
+
+    // 4️⃣ Fetch subscription plans
     await _fetchSubscriptionPlans();
+
+    if (mounted) {
+      setState(() {
+        isLoadingSubscription = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("🔔 ${result["message"]}")),
+      );
+    }
   }
 
-  // Load customer and store ID
+
+  // ------------------- Load Customer -------------------
   Future<void> _loadCustomer() async {
     CustomerModel customer = await CustomerUtils.getCustomer();
     setState(() {
@@ -70,7 +102,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     }
 
     final url =
-        Uri.parse(ServerRoutes.KABA_ABONNEMENT_SUSCRIBED_USER + "/$customerId");
+    Uri.parse(ServerRoutes.KABA_ABONNEMENT_SUSCRIBED_USER + "/$customerId");
 
     try {
       final response = await http.get(url);
@@ -123,6 +155,50 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     }
   }
 
+  // ------------------- Check & Update Subscription -------------------
+  Future<Map<String, dynamic>> checkAndUpdateSubscription(String userId) async {
+    Map<String, dynamic> result = {"status": "none", "message": ""};
+
+    final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription");
+
+    try {
+      final checkResponse = await http.post(
+        checkUrl,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: jsonEncode({
+          "user_id": userId.toString(),
+        }),
+      );
+
+      if (checkResponse.statusCode == 200) {
+        if (checkResponse.body.isNotEmpty) {
+          final data = jsonDecode(checkResponse.body);
+          print("✅ Subscription check result: $data");
+          return data;
+        } else {
+          print("⚠️ Empty response body from server.");
+          return {"error": true, "message": "Empty response from server"};
+        }
+      } else {
+        print("❌ Server returned status: ${checkResponse.statusCode}");
+        print("Body: ${checkResponse.body}");
+        return {
+          "error": true,
+          "message": "Server error: ${checkResponse.statusCode}",
+        };
+      }
+    } catch (e) {
+      print("🔥 Error fetching subscription for $userId: $e");
+      return {"error": true, "message": e.toString()};
+    }
+
+
+    return result;
+  }
+
+
   // ------------------- Active Subscription Card -------------------
   Widget _buildActiveCard(Map<String, dynamic> data) {
     return Card(
@@ -132,7 +208,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
+            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
             child: Row(
               children: [
                 Image.asset(
@@ -142,30 +218,30 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                 ),
                 SizedBox(width: 12),
                 RichText(
-  text: TextSpan(
-    children: [
-      TextSpan(
-        text: "Mon abonnement\n",
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ),
-      TextSpan(
-        text: data["subscription_id"],
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.grey[700],
-        ),
-      ),
-    ],
-  ),
-),
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: "Mon abonnement\n",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      TextSpan(
+                        text: data["subscription_id"],
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 Spacer(),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(8)),
@@ -178,7 +254,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
             icon: "Package.png",
             title: "Livraisons",
             subtitle:
-                "${data["deliveriesUsed"] ?? 0}/${data["deliveriesTotal"] ?? 0}",
+            "${data["deliveriesUsed"] ?? 0}/${data["deliveriesTotal"] ?? 0}",
             isSvg: false,
             iconBgColor: Color(0xFFFFC8D4),
           ),
@@ -190,31 +266,24 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
             iconColor: Color(0xFFCD1F45),
             iconBgColor: Color(0xFFFFC8D4),
           ),
-          /* _buildCardRow(
-            icon: "code",
-            title: "Code",
-            subtitle: data["codeAbonnement"] ?? "********",
-            isIcon: true,
-            iconColor: Color(0xFFCD1F45),
-            iconBgColor: Color(0xFFFFC8D4),
-          ), */
           Padding(
             padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0, vertical: 8.0), // internal padding
+                    horizontal: 12.0, vertical: 8.0),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFE9EE), // grey background
-                  borderRadius: BorderRadius.circular(8), // small border radius
+                  color: Color(0xFFFFE9EE),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                height: 300 , // fixed width
+                height: 300,
                 child: Column(children: [
                   SizedBox(height: 5),
-                  Text('Partager votre Abonnement',style: TextStyle(color: KColors.primaryColor),),
+                  Text('Partager votre Abonnement',
+                      style: TextStyle(color: KColors.primaryColor)),
                   SizedBox(height: 25),
                   SizedBox(
-                    width: 300, // set your desired width here
+                    width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -234,7 +303,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                   ),
                   SizedBox(height: 5),
                   SizedBox(
-                    width: 300, // set your desired width here
+                    width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -246,9 +315,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        // CopyButton( textToCopy: data["codeAbonnement"]);
-                        _copyToClipboard(context,
-                            data["codeAbonnement"]); // <-- ta fonction ici
+                        _copyToClipboard(context, data["codeAbonnement"]);
                       },
                       icon: const Icon(Icons.link),
                       label: const Text("Copier le Lien"),
@@ -256,7 +323,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                   ),
                   SizedBox(height: 5),
                   SizedBox(
-                    width: 300, // set your desired width here
+                    width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: KColors.primaryColor,
@@ -268,16 +335,15 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _shareText(data[
-                            "codeAbonnement"]); // <-- appelle la fonction partager
+                        _shareText(data["codeAbonnement"]);
                       },
                       icon: const Icon(Icons.share),
                       label: const Text("Partager"),
                     ),
                   ),
                   SizedBox(height: 5),
-                   SizedBox(
-                    width: 300, // set your desired width here
+                  SizedBox(
+                    width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
@@ -289,28 +355,12 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        // CopyButton( textToCopy: data["codeAbonnement"]);
-                        _copyToClipboard(context,
-                            data["codeAbonnement"]); // <-- ta fonction ici
+                        _copyToClipboard(context, data["codeAbonnement"]);
                       },
-                      
-                      label: Text("Code :" + data["codeAbonnement"],style: TextStyle(color: Colors.black),),
+                      label: Text("Code :" + data["codeAbonnement"],
+                          style: TextStyle(color: Colors.black)),
                     ),
                   ),
-                  /* SizedBox(
-                    width: 300, // set your desired width here
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {},
-                      label: Text("Code :" + data["codeAbonnement"]),
-                    ),
-                  ), */
                 ])),
           ),
         ],
@@ -327,7 +377,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
         children: [
           Padding(
             padding:
-                const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
+            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
             child: Row(
               children: [
                 Image.asset(
@@ -346,7 +396,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                 Spacer(),
                 Container(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                       color: Colors.grey[700],
                       borderRadius: BorderRadius.circular(8)),
@@ -409,14 +459,14 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                 padding: const EdgeInsets.all(8.0),
                 child: isSvg
                     ? SvgPicture.asset(
-                        "assets/images/png/abonnement-icons/$icon",
-                        fit: BoxFit.contain,
-                        color: iconColor)
+                    "assets/images/png/abonnement-icons/$icon",
+                    fit: BoxFit.contain,
+                    color: iconColor)
                     : isIcon
-                        ? Icon(Icons.code, color: iconColor)
-                        : Image.asset(
-                            "assets/images/png/abonnement-icons/$icon",
-                            fit: BoxFit.contain),
+                    ? Icon(Icons.code, color: iconColor)
+                    : Image.asset(
+                    "assets/images/png/abonnement-icons/$icon",
+                    fit: BoxFit.contain),
               ),
             ),
             SizedBox(width: 15),
@@ -510,18 +560,16 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-
-              Center(child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 55, top: 35, right: 25), // top spacing
+              Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 55, top: 35, right: 25),
                     child: Center(
                       child: RichText(
-                        textAlign: TextAlign.center, // center the text
+                        textAlign: TextAlign.center,
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text:
-                                  "Profitez des ", // line break before "Gratuite"
+                              text: "Profitez des ",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -529,8 +577,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                               ),
                             ),
                             TextSpan(
-                              text:
-                                  "livraisons \n", // line break before "Gratuite"
+                              text: "livraisons \n",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -538,11 +585,11 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                               ),
                             ),
                             TextSpan(
-                              text: "GRATUITES", // "Gratuite" in red
+                              text: "GRATUITES",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
-                                color: KColors.primaryColor, // red color
+                                color: KColors.primaryColor,
                               ),
                             ),
                           ],
@@ -551,7 +598,6 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                     ),
                   )),
               SizedBox(height: 15),
-              // ----------------- Current Subscription -----------------
               if (isLoadingSubscription)
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -560,12 +606,10 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
               else if (subscriptionFetchFailed || subscriptionData == null)
                 _buildInactiveCard()
               else if (subscriptionData!["status_abonnement"] == 1)
-                _buildActiveCard(subscriptionData!)
-              else
-                _buildInactiveCard(),
-
+                  _buildActiveCard(subscriptionData!)
+                else
+                  _buildInactiveCard(),
               SizedBox(height: 20),
-              // ----------------- Subscription Plans -----------------
               _buildSubscriptionPlans(),
             ],
           ),
