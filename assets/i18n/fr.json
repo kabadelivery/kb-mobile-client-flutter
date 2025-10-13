@@ -988,5 +988,6 @@
   "fast_delivery": "Livraison rapide à domicile",
   "buy_pharma_product": "Acheter un produit pharmaceutique",
   "non_listed_pharmacies": "Commandez depuis des pharmacies non référencées sur notre plateforme",
-  "search_city": "Rechercher une ville"
+  "search_city": "Rechercher une ville",
+  "subscription_failed": "Abonnement échoué"
 }

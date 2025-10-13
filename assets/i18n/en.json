@@ -976,6 +976,6 @@
   "non_listed_pharmacies": "Order from pharmacies not listed on our platform",
   "order_congratz_praise_out_of_app_1": "Congratulations on successfully placing your order.",
   "order_congratz_praise_out_of_app_2": "Please keep your phone nearby to receive real-time updates on your order status. Thank you.",
-  "search_city": "Search for a city"
-
+  "search_city": "Search for a city",
+  "subscription_failed": "The Subscription failed"
 }

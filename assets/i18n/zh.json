@@ -982,6 +982,7 @@
   "non_listed_pharmacies": "从未在我们平台上注册的药房订购",
   "order_congratz_praise_out_of_app_1": "恭喜您成功下单。",
   "order_congratz_praise_out_of_app_2": "请保持手机在身边，以便实时了解您的订单状态。谢谢。",
-  "search_city": "搜索城市"
+  "search_city": "搜索城市",
+  "subscription_failed": "订阅失败"
 
 }

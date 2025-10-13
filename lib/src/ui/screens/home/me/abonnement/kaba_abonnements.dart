@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/SuscriptionCard.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;
@@ -61,10 +62,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       isLoadingSubscription = true; // show loading until subscription is confirmed
     });
 
-    // 2️⃣ Check and update subscription
     final result = await checkAndUpdateSubscription(customerId!.toString());
-
-    // 3️⃣ Refetch subscription to ensure latest status
     await _fetchSubscription();
 
     // 4️⃣ Fetch subscription plans
@@ -74,9 +72,6 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       setState(() {
         isLoadingSubscription = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("🔔 ${result["message"]}")),
-      );
     }
   }
 
@@ -159,7 +154,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
   Future<Map<String, dynamic>> checkAndUpdateSubscription(String userId) async {
     Map<String, dynamic> result = {"status": "none", "message": ""};
 
-    final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription");
+    final checkUrl = Uri.parse("${ServerConfig.PAY_SERVER_ADDRESS_SECURE}/api/check/subscription");
 
     try {
       final checkResponse = await http.post(
@@ -172,7 +167,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
         }),
       );
 
-      if (checkResponse.statusCode == 200) {
+      if (checkResponse.statusCode == 200 ||checkResponse.statusCode==201) {
         if (checkResponse.body.isNotEmpty) {
           final data = jsonDecode(checkResponse.body);
           print("✅ Subscription check result: $data");
