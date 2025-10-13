@@ -236,6 +236,7 @@ void _showDialog({
   String? iccon,
   Icon? icon,
   required String message,
+  String? message2,
   bool okBackToHome = false,
   bool isYesOrNo = false,
   Function? actionIfYes,
@@ -293,7 +294,17 @@ void _showDialog({
                   height: 1.3,
                 ),
               ),
-
+              message2!=null?
+              Text(
+                message2,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
+              ):Container(),
               const SizedBox(height: 18),
 
               // Actions
@@ -472,7 +483,9 @@ void _showOrderSuccessDialog(BuildContext context, WidgetRef ref) {
       okBackToHome: true,
       iccon: VectorsData.delivery_nam,
       message:
-          "${AppLocalizations.of(context)!.translate('order_congratz_praise')}",
+          "${AppLocalizations.of(context)!.translate('order_congratz_praise_out_of_app_1')}",
+      message2:
+          "${AppLocalizations.of(context)!.translate('order_congratz_praise_out_of_app_2')}",
       isYesOrNo: false,
       context: context,
       ref: ref);

@@ -71,6 +71,7 @@ import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/permissions.dart';
 import '../../customwidgets/permission.dart';
 import '_home/HomeWelcomeNewPage.dart';
+import 'me/abonnement/kaba_abonnements.dart';
 import 'me/money/TransactionHistoryPage.dart';
 import 'me/vouchers/AddVouchersPage.dart';
 import 'me/vouchers/MyVouchersPage.dart';
@@ -322,7 +323,7 @@ class _HomePageState extends State<HomePage> {
 
         if (payload != null && payload.isNotEmpty) {
           final uuidRegex = RegExp(r'^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$');
-          if (uuidRegex.hasMatch(payload)) {
+          if (!uuidRegex.hasMatch(payload)) {
             _handlePayLoad(payload);
           } else {
             _handleExpeditionPayload(payload);
@@ -374,6 +375,7 @@ class _HomePageState extends State<HomePage> {
             messageId = message.messageId!;
           }
         }else{
+          debugPrint('XXX message.data ${message.data}');
           NotificationItem? notificationItem =
           _notificationFromMessage(message.data);
           if (message.messageId != messageId) {
@@ -595,7 +597,7 @@ class _HomePageState extends State<HomePage> {
       );
 
       if (payload != null && payload.isNotEmpty) {
-        uuidRegex.hasMatch(payload)
+        !uuidRegex.hasMatch(payload)
             ? _handlePayLoad(payload)        // generic notification
             : _handleExpeditionPayload(payload); // expedition ID
       }
@@ -615,7 +617,7 @@ class _HomePageState extends State<HomePage> {
       );
 
       if (payload != null && payload.isNotEmpty) {
-        uuidRegex.hasMatch(payload)
+        !uuidRegex.hasMatch(payload)
             ? _handlePayLoad(payload)        // generic notification
             : _handleExpeditionPayload(payload); // expedition ID
       }
@@ -673,6 +675,9 @@ class _HomePageState extends State<HomePage> {
       case NotificationFDestination.MESSAGE_SERVICE_CLIENT:
         _jumpToServiceClient();
         break;
+      case NotificationFDestination.SUBSCRIPTION_PAGE:
+        _jumpToSubscriptionPAge();
+
     }
   }
   void _handleExpeditionPayload(String payload) async {
@@ -768,7 +773,10 @@ class _HomePageState extends State<HomePage> {
         RestaurantMenuPage(
             menuId: productId, presenter: MenuPresenter(MenuView())));
   }
-
+  void _jumpToSubscriptionPAge() {
+    _jumpToPage(
+        context,Kaba_abonnement(presenter: TransactionPresenter(TransactionView()),));
+  }
   void _jumpToServiceClient() {
     _jumpToPage(
         context,
@@ -1186,6 +1194,13 @@ class _HomePageState extends State<HomePage> {
                 _jumpToPage(context, PharmacyPage());
               }
             }
+            else if (pathSegments[1] == "code_abonnement") {
+              if (StateContainer.of(context).loggingState == 0) {
+                NotLoggedInPopUp(context);
+              } else {
+                _jumpToPage(context, PharmacyPage());
+              }
+            }
 
             else {
               _jumpToPage(
@@ -1530,7 +1545,9 @@ NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
         priority: destinationData['priority'].toString(),
         destination: NotificationFDestination(
             type: int.parse(destinationData['type'].toString()),
-            product_id: int.parse(destinationData["product_id"].toString()),
+            product_id:  destinationData["product_id"] != null
+                ? int.parse(destinationData["product_id"].toString())
+                : 0,
             is_out_of_app:
                 int.parse(destinationData['is_out_of_app'].toString())));
     return notificationItem;

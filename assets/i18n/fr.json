@@ -220,6 +220,8 @@
   "307_unable_preorder": "Désolé, Précommande non autorisée",
   "309_system_error": "Désolé. Notre service rencontre des difficultés. Veuillez réessayer plutard. Merci",
   "order_congratz_praise": "Félicitations pour avoir passé votre commande avec succès. Veuillez garder votre téléphone à proximité pour vous informer en temps réel sur l'état de votre commande. Merci",
+  "order_congratz_praise_out_of_app_1": "Félicitations pour avoir passé votre commande avec succès.",
+  "order_congratz_praise_out_of_app_2": "Veuillez garder votre téléphone à proximité pour vous informer en temps réel sur l'état de votre commande. Merci",
   "order_get_delivered_now_hint": "Commandez et faites-vous livrer maintenant",
   "preorder_now_hint": "Précommandez maintenant et faites-vous livrer à une heure spécifique",
   "confirm_preorder": "Confirmer la Précommande",
@@ -228,7 +230,7 @@
   "pay_with_kaba_balance": "Payer maintenant avec votre Solde KABA",
   "pay_with_cash_at_delivery": "Payer à la livraison en remettant l'argent au Livreur directement.",
   "out_of_delivery_range": "Désolé, l'adresse de livraison est hors zone. Veuillez sélectionner une boutique plus proche de vous et réessayez. Merci",
-  "pay_at_arrival": "Payer à l'arrivé",
+  "pay_at_arrival": "Payer à l'arrivée",
   "coupon": "BONS",
   "last_orders": "COMMANDES RECENTES",
   "waiting": "en attente",
@@ -985,5 +987,6 @@
   "secure_service": "Service sécurisé et professionnel",
   "fast_delivery": "Livraison rapide à domicile",
   "buy_pharma_product": "Acheter un produit pharmaceutique",
-  "non_listed_pharmacies": "Commandez depuis des pharmacies non référencées sur notre plateforme"
+  "non_listed_pharmacies": "Commandez depuis des pharmacies non référencées sur notre plateforme",
+  "search_city": "Rechercher une ville"
 }
