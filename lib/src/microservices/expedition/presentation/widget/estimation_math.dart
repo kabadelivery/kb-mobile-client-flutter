@@ -378,6 +378,11 @@ class _EstimationFormState extends State<EstimationForm> {
                           },
                           onChanged: (value){
                             estimationBloc.add(WeightChanged(double.parse(_weight.text)));
+                            estimationBloc.add(
+                                CalculateEstimation(arrivalTown: selected_arrival_town,
+                                    departureTown: selected_departure_town!,
+                                    weight: double.parse(value),
+                                    availableLines: availableLines));
                           },
                           maxLines: 1,
                           decoration: InputDecoration(
@@ -448,44 +453,9 @@ class _EstimationFormState extends State<EstimationForm> {
                           ),
                         ),
                       ):
-                      GestureDetector(
-                        onTap: (){
-                          if(_formKey.currentState!=null && (_formKey.currentState as FormState).validate()){
-                            estimationBloc.add(
-                                CalculateEstimation(arrivalTown: selected_arrival_town,
-                                    departureTown: selected_departure_town!,
-                                    weight: double.parse(_weight.text),
-                                    availableLines: availableLines));
-                          }
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 330,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                  colors:_weight.text.isEmpty? [
-                                    Color(0xFFCC1E44).withOpacity(.5),
-                                    Color(0xFFB71B3E).withOpacity(.5),
-                                    Color(0xFFA11738).withOpacity(.5),
-                                  ]: [
-                                    Color(0xFFCC1E44),
-                                    Color(0xFFB71B3E),
-                                    Color(0xFFA11738),
-                                  ]
-                              ),
-                              borderRadius: BorderRadius.circular(5)
-                          ),
-                          child:   Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FormTitleWithIcon(title: state is EstimationLoading?"${AppLocalizations.of(context)!.translate("calculating_estimation")}":"${AppLocalizations.of(context)!.translate("calculate_estimation")}", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
-                            ],
-                          ),
-                        ),
-                      ),
+                      state is EstimationLoading?    GestureDetector(
+                        child: Text("${AppLocalizations.of(context)!.translate("calculating_estimation")}",style: TextStyle(fontSize: 14,color: KabaExpeditionColor.primary))
+                      ):Container(),
                       estimation_price!=null &&(_weight.text.isNotEmpty)?
                       Column(
                         children: [

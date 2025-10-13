@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +10,9 @@ import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 
+import '../../../StateContainer.dart';
+import '../../../models/CustomerModel.dart';
+import '../../../xrint.dart';
 import '../../screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
 
 /// UI model mapped from ShopProductModel
@@ -18,6 +24,10 @@ class FoodItem {
   final int price;
   final String restaurantName;
   final String buttonLabel;
+  List<Map>? food_review_array = [];
+  int?review_count;
+  ShopModel? restaurant_entity;
+
 
   FoodItem({
     required this.id,
@@ -27,10 +37,15 @@ class FoodItem {
     required this.price,
     required this.restaurantName,
     required this.buttonLabel,
+    this.food_review_array,
+    this.review_count,
+    this.restaurant_entity
   });
 
   /// Factory to convert ShopProductModel → FoodItem
   factory FoodItem.fromShopProduct(ShopProductModel p) {
+    
+    
     return FoodItem(
       id: p.id ?? 0,
       name: p.name ?? "Plat inconnu",
@@ -39,6 +54,9 @@ class FoodItem {
       price: int.tryParse(p.price ?? "0") ?? 0,
       restaurantName: p.restaurant_entity?.name ?? "Restaurant inconnu",
       buttonLabel: "Commander",
+      food_review_array: p.food_review_array,
+      review_count: p.review_count,
+      restaurant_entity: p.restaurant_entity,
     );
   }
 }
@@ -60,15 +78,46 @@ class _FoodGridState extends State<FoodGrid> {
   /// Fetch data from API and map to FoodItem
   Future<Map<String,dynamic>> fetchFoods(String query) async {
     try {
+      CustomerModel user = await CustomerUtils.getCustomer();
       final List<ShopProductModel> products =
       await _service.fetchRestaurantFoodProposal2FromTag("food", query);
       Map<String,dynamic> food_and_products = {
         'products':[],
         'food':[]
       };
+      String? myBillingArray =await CustomerUtils.getLastStoredBilling();
+
+      Map<String, String> billingMap = {};
+
+      if (myBillingArray != null) {
+        var billingData = json.decode(myBillingArray);
+        var billingData2 = billingData[user.email != null ? "email" : "phoneNumber"];
+
+        for (var entry in billingData2) {
+          int from = int.parse(entry["from"]);
+          int to = int.parse(entry["to"]);
+          String value = entry["value"].toString();
+
+          for (int i = from; i < to; i++) {
+            billingMap["$i"] = value;
+          }
+        }
+
+        debugPrint('myBillingArray $billingMap');
+      }
+
+      for(var product in products){
+        if(product.restaurant_entity!=null){
+          final double dist = Utils.locationDistance(StateContainer.of(context).location,product.restaurant_entity!);
+          debugPrint('distance ${product.restaurant_entity}');
+          product.restaurant_entity!.distanceBetweenMeandRestaurant = double.parse(dist > 100 ? "100" : dist.toStringAsFixed(2));
+          product.restaurant_entity!.delivery_pricing =_getShippingPrice((dist).toString(),billingMap);
+        }
+      }
       food_and_products['products'] = products.map((p) => FoodItem.fromShopProduct(p)).toList();
       food_and_products['foods'] =products
       ;
+      
       return food_and_products;
     } catch (e, stack) {
       debugPrint("=== ERROR in fetchRestaurantFoodProposal2FromTag ===");
@@ -134,7 +183,7 @@ class _FoodGridState extends State<FoodGrid> {
           padding: const EdgeInsets.all(8),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisExtent: 280,
+            mainAxisExtent: 300,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
@@ -145,6 +194,7 @@ class _FoodGridState extends State<FoodGrid> {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
+                side: BorderSide(width: .5,color: KColors.primaryColor)
               ),
               color: Colors.white,
               elevation: 3,
@@ -202,19 +252,42 @@ class _FoodGridState extends State<FoodGrid> {
                   // Rating + Price
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Row(
+                    child: Column(
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 18),
-                        const SizedBox(width: 4),
-                        Text(real_food.rating!.toStringAsFixed(0)),
-                        const Spacer(),
-                        Text(
-                          "${food.price} FCFA",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.red,
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.star, color: Colors.amber, size: 18),
+                                const SizedBox(width: 4),
+                                Text(real_food.rating!.toStringAsFixed(0)),
+                                SizedBox(width: 5,),
+                                real_food.review_count!=0? Text("(${real_food.review_count})"):Container(),
+                              ],
+                            ),
+                            Text(
+                              "${food.price} FCFA",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
                         ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.location_on_outlined),
+                                Text("${real_food.restaurant_entity!.distanceBetweenMeandRestaurant}Km "),
+                              ],
+                            ),
+                            SizedBox(height: 5,),
+                            Text("${real_food.restaurant_entity!.delivery_pricing??0} FCFA",style: TextStyle(color: Colors.black54,fontWeight: FontWeight.bold),)
+                          ],
+                        )
                       ],
                     ),
                   ),
@@ -273,5 +346,15 @@ class _FoodGridState extends State<FoodGrid> {
         );
       },
     );
+  }
+  String? _getShippingPrice(String distance, Map<String, String> myBillingArray) {
+    try {
+      int distanceInt = double.parse(distance).round();
+      debugPrint("distanceInt ${myBillingArray["$distanceInt"]}");
+      return myBillingArray["$distanceInt"] ?? "~";
+    } catch (e) {
+      debugPrint("Error: $e");
+      return "~";
+    }
   }
 }

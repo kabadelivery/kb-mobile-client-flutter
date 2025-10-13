@@ -51,31 +51,43 @@ class _ExpeditionState extends State<Expedition> {
     expeditionBloc.add(getAvailableLines());
     super.initState();
   }
-
+  late AppLocalizations appLocalizations;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appLocalizations = AppLocalizations.of(context)!;
+  }
+  String errorHandler ="";
   @override
   Widget build(BuildContext context) {
-    expeditionBloc.stream.listen((state){
-      if (state is ExpeditionInitial) {}
+     expeditionBloc.stream.listen((state){
+      if (state is ExpeditionInitial) {
+         errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
+      }
       else if (state is ExpeditionCreated) {
       } else if (state is NegociationCreated) {
       } else if (state is PackagesUpdatedState) {
         createExpedition.colis = state.packages;
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       }
       else if (state is chooseShippingMethodState) {
         createExpedition.methodeCollecte = state.method;
         createExpedition.adresseDestination = "319 Rue AGP, Agbalépédo, Lomé TOGO";
-
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       } else if (state is chooseShippingMethodAddressTypeState) {
         createExpedition.adresseOrigine = state.coords;
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       }
       else if(state is enterSendPhoneNumberState){
         createExpedition.telephoneOrigine = state.phoneNumber;
-        debugPrint("phone number ${state.phoneNumber}");
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       }
       else if (state is chooseFetchDateState) {
         createExpedition.dateCollecte = state.date;
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       } else if (state is chooseFetchTimeState) {
         createExpedition.heureCollecte = state.hour;
+        errorHandler = handleExpeditionFormMessage(appLocalizations, createExpedition);
       }
 
     });
@@ -99,7 +111,12 @@ class _ExpeditionState extends State<Expedition> {
       },
       child: Scaffold(
           backgroundColor: Colors.white,
-          body:Container(
+          body:BlocConsumer<ExpeditionBloc, ExpeditionState>(
+        listener: (context, state) {
+          // TODO: implement listener
+        },
+        builder: (context, state) {
+    return Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: Column(
@@ -368,7 +385,7 @@ class _ExpeditionState extends State<Expedition> {
                               SizedBox(height: 10),
                               PickUpOptions(),
                               SizedBox(height: 10,),
-                              handleExpeditionFormMessage(context,createExpedition).isNotEmpty?  Container(
+                              errorHandler.isNotEmpty?  Container(
                                 width: 350,
                                 decoration: BoxDecoration(
                                   color: KabaExpeditionColor.primary.withOpacity(0.1),
@@ -382,7 +399,7 @@ class _ExpeditionState extends State<Expedition> {
                                     Icon(FontAwesomeIcons.infoCircle,color: KabaExpeditionColor.primary,size: 15,),
                                     SizedBox(width: 10,),
                                     Flexible(
-                                      child: Text(handleExpeditionFormMessage(context,createExpedition)
+                                      child: Text(errorHandler
                                         ,style:
                                         TextStyle(color: KabaExpeditionColor.primary),),
                                     ),
@@ -399,7 +416,7 @@ class _ExpeditionState extends State<Expedition> {
                                   ),
                                   elevation: 0,
                                   onPressed: ()async{
-                                    String message =handleExpeditionFormMessage(context,createExpedition);
+                                    String message =errorHandler;
                                     if(message.isEmpty){
                                       setState(() {
                                         isLoading = true;
@@ -459,7 +476,9 @@ class _ExpeditionState extends State<Expedition> {
                         )),
                   ]
               )
-          )
+          );
+  },
+)
       ),
     );
   }
