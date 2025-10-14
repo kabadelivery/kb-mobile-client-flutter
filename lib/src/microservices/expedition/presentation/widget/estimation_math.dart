@@ -15,7 +15,7 @@ import '../../../kaba_chine/presentation/widgets/package_form_info.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/line_model.dart';
 import '../bloc/estimation/estimation_bloc.dart';
-
+import 'package:KABA/src/microservices/expedition/presentation/widget/popAnimation.dart';
 class EstimationForm extends StatefulWidget {
   const EstimationForm({super.key});
 
@@ -34,7 +34,6 @@ class _EstimationFormState extends State<EstimationForm> {
   late List<Map<String, String>> filteredDepartureList;
   final TextEditingController searchArrivalController = TextEditingController();
   final TextEditingController searchDepartureController = TextEditingController();
-
   List<Map<String,String>> map_of_town_arrival= [
   ];
   List<Map<String,String>> map_of_town_departure= [
@@ -116,6 +115,12 @@ class _EstimationFormState extends State<EstimationForm> {
                       .toList();
                 });
               });
+              estimationBloc.add(
+                  CalculateEstimation(arrivalTown: selected_arrival_town,
+                      departureTown: selected_departure_town!,
+                      weight: 1,
+                      availableLines: availableLines));
+              _weight.text="1";
             }else{
               error = true;
               isLoading = false;
@@ -475,51 +480,54 @@ class _EstimationFormState extends State<EstimationForm> {
                       Column(
                         children: [
                           SizedBox(height: 20,),
-                          Container(
-                            width: 330,
-                            decoration: BoxDecoration(
-                                color: Color(0x2092FFC1),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.green.shade300,width: .5)
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(50),
-                                          color:  Color(0xFF00C35B)
+                          PopInWidget(
+                            duration: Duration(milliseconds: 500),
+                            child: Container(
+                              width: 330,
+                              decoration: BoxDecoration(
+                                  color: Color(0x2092FFC1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.green.shade300,width: .5)
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50),
+                                            color:  Color(0xFF00C35B)
+                                        ),
+                                        child: Icon(FontAwesomeIcons.calculator,color:Colors.white,size:15),
                                       ),
-                                      child: Icon(FontAwesomeIcons.calculator,color:Colors.white,size:15),
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Text("${AppLocalizations.of(context)!.translate('estimate_done')}",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
-                                FontWeight.bold,color: Color(0xFF00C35B)),),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
-                                    Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
-                                        0xFF019848)),),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
-                                    0xFF009E47)),)
+                                      SizedBox(width: 10,),
+                                      Text("${AppLocalizations.of(context)!.translate('estimate_done')}",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
+                                  FontWeight.bold,color: Color(0xFF00C35B)),),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
+                                      Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
+                                          0xFF019848)),),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
+                                      0xFF009E47)),)
 
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],

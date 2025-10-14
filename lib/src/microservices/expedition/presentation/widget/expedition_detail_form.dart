@@ -103,7 +103,16 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
               BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: selected_arrival_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
               BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: selected_departure_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
             }
-
+            WidgetsBinding.instance.addPostFrameCallback((_){
+              expeditionBloc.add(ChangeWeightEvent(weight: double.parse("1.0"), packageIndex: widget.index));
+              BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                departureTown: selected_departure_town!,
+                arrivalTown: selected_arrival_town!,
+                weight: 1.0,
+                availableLines: availableLines,
+              ));
+              _weight.text = "1";
+            });
             filteredArrivalList = map_of_town_arrival;
             searchArrivalController.addListener(() {
               final value = searchArrivalController.text.toLowerCase();
@@ -113,6 +122,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                     .toList();
               });
             });
+
             filteredDepartureList = map_of_town_departure;
             searchDepartureController.addListener(() {
               final value = searchDepartureController.text.toLowerCase();
@@ -122,6 +132,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                     .toList();
               });
             });
+
           }
         }
         if(state is PackagesUpdatedState){
