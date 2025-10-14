@@ -409,8 +409,8 @@ class _ExpeditionState extends State<Expedition> {
                                       CustomerModel customer = await CustomerUtils.getCustomer();
                                       CreateExpeditionUseCase createExpeditionUseCase = CreateExpeditionUseCase(ExpeditionRepositoryImpl(ExpeditionRemoteDataSourceImpl()));
                                       List<ExpeditionModel> expeditionModels = [];
-                                      try{
-                                        List<ExpeditionModel> expeditionModels = await createExpeditionUseCase.call(
+
+                                        expeditionModels = await createExpeditionUseCase.call(
                                           body: createExpedition,
                                           customer: customer,
                                         );
@@ -435,16 +435,6 @@ class _ExpeditionState extends State<Expedition> {
                                               );
                                             }
                                         ));
-                                      }catch(e){
-                                        debugPrint("XXX ERROR CREATING EXPEDITION ${e}");
-                                        CherryToast.error(
-                                          title: Text("${AppLocalizations.of(context)!.translate('create_error')}"),
-                                          toastPosition: Position.center,
-                                        ).show(context);
-                                        setState(() {
-                                          isLoading =false;
-                                        });
-                                      }
                                     }else{
                                       setState(() {
                                       });
