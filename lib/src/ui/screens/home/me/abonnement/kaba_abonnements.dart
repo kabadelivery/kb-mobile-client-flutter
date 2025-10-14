@@ -89,6 +89,11 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     });
   }
 
+
+
+
+
+
   // ------------------- Fetch Current Subscription -------------------
   Future<void> _fetchSubscription() async {
     if (customerId == null) {
@@ -155,47 +160,211 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     }
   }
 
-  // ------------------- Check & Update Subscription -------------------
-  Future<Map<String, dynamic>> checkAndUpdateSubscription(String userId) async {
-    Map<String, dynamic> result = {"status": "none", "message": ""};
 
-    final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription");
+  final TextEditingController _codeController = TextEditingController();
+  bool _loading = false;
+
+  Future<void> _validateAndSendCode() async {
+    final code = _codeController.text.trim();
+
+    // Vérifier si le code contient exactement 6 chiffres
+    if (code.length != 6) {
+      _showModal("Code invalide", "Veuillez entrer un code à 6 chiffres.");
+      return;
+    }
+
+    setState(() => _loading = true);
 
     try {
-      final checkResponse = await http.post(
-        checkUrl,
-        headers: {
-          "Content-Type": "application/json",
-        },
+      final response = await http.post(
+        Uri.parse("http://168.231.101.119:4040/dashboard/sharedCodeSuscriber"), // 🟡 Replace with your endpoint
+        headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "user_id": userId.toString(),
+          "user_id":customerId.toString(),
+          "Code": code
+
         }),
       );
 
-      if (checkResponse.statusCode == 200) {
-        if (checkResponse.body.isNotEmpty) {
-          final data = jsonDecode(checkResponse.body);
-          print("✅ Subscription check result: $data");
-          return data;
-        } else {
-          print("⚠️ Empty response body from server.");
-          return {"error": true, "message": "Empty response from server"};
-        }
+      setState(() => _loading = false);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        print(response.body);
+        Navigator.pop(context); // fermer le bottomsheet
+       _codeController.clear();
+        _refreshPage();
       } else {
-        print("❌ Server returned status: ${checkResponse.statusCode}");
-        print("Body: ${checkResponse.body}");
-        return {
-          "error": true,
-          "message": "Server error: ${checkResponse.statusCode}",
-        };
+        try {
+          print(response.body);
+          // 🧠 Try to decode the error message returned by the server
+          final errorBody = jsonDecode(response.body);
+          final errorMessage = errorBody["message"] ?? "Une erreur inconnue est survenue";
+
+          _showModal("Erreur", errorMessage);
+        } catch (e) {
+          // 🛑 If parsing fails, show a generic error
+          _showModal("Error lors du partage du Code ! ",'lo');
+        }
       }
     } catch (e) {
-      print("🔥 Error fetching subscription for $userId: $e");
+      setState(() => _loading = false);
+      _showModal("Erreur", "Une erreur est survenue. Réessayez.");
+    }
+  }
+
+  void _refreshPage() {
+    setState(() {});
+  }
+
+  void _showModal(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("OK", style: TextStyle(color: Colors.blueAccent)),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+void _showAddBottomSheet() {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    backgroundColor: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: EdgeInsets.only(
+          left: 20,
+          right: 20,
+          top: 20,
+          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+
+                Expanded(
+                  child: TextField(
+                    controller: _codeController,
+                    keyboardType: TextInputType.text,
+                    maxLength: 7,
+                    decoration: InputDecoration(
+                      counterText: "",
+                      hintText: "Entrer le code",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 14,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: _loading ? null : _validateAndSendCode,
+                  child: _loading
+                      ? SizedBox(
+                    width: 18,
+                    height: 18,
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 2,
+                    ),
+                  )
+                      : Text("Valider", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+            Text(
+              "Entrez ici le code d'abonnement qui vous éte partagé !(Code a Six Chiffres) .",
+              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      );
+    },
+  );
+}
+
+  // ------------------- Check & Update Subscription -------------------
+  Future<Map<String, dynamic>> checkAndUpdateSubscription(String userId) async {
+    final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription"); // Server A
+    final updateUrl = Uri.parse("http://168.231.101.119:4040/dashboard/update_abo");    // Server B
+
+    try {
+      // STEP 1: Ask Server A about payment/subscription state
+      final checkResponse = await http.post(
+        checkUrl,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({"user_id": userId}),
+      ).timeout(const Duration(seconds: 15));
+
+      if (checkResponse.statusCode == 200 && checkResponse.body.isNotEmpty) {
+        final checkData = jsonDecode(checkResponse.body);
+        print("✅ Server A response: $checkData");
+
+        final state = checkData["state"];
+        if (state == 1) {
+          // STEP 2: Payment is successful, notify Server B to update subscription
+          final updateResponse = await http.post(
+            updateUrl,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "user_id": userId,
+              "status_payement":1,
+              "status_abonnement" : 1 ,
+              "transaction_id": checkData["transaction_id"] ?? "0", // optional
+            }
+
+
+            ),
+          ).timeout(const Duration(seconds: 15));
+
+          if (updateResponse.statusCode == 200 || updateResponse.statusCode == 201) {
+            final updateData = jsonDecode(updateResponse.body);
+            print("🟢 Server B subscription updated: $updateData");
+            return {"success": true, "message": "Subscription updated successfully"};
+          } else {
+            print("❌ Server B update failed: ${updateResponse.statusCode}");
+            return {"error": true, "message": "Failed to update subscription"};
+          }
+        } else {
+          // Payment not confirmed
+          print("⚠️ Payment not confirmed for user $userId");
+          return {"status": "pending", "message": "Payment not yet confirmed"};
+        }
+      } else {
+        print("❌ Invalid response from Server A: ${checkResponse.statusCode}");
+        return {"error": true, "message": "Failed to fetch payment status"};
+      }
+    } catch (e) {
+      print("🔥 Error in checkAndUpdateSubscription for $userId: $e");
       return {"error": true, "message": e.toString()};
     }
-
-
-    return result;
   }
 
 
@@ -546,6 +715,12 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
                   style: TextStyle(fontSize: 12, color: Colors.white70)),
             ],
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add, color: Colors.white, size: 26),
+              onPressed: _showAddBottomSheet,
+            ),
+          ],
         ),
       ),
       body: Container(

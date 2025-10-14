@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
-
 import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
