@@ -29,25 +29,51 @@ class OrderApiProvider {
       VoucherModel? voucher,
       bool useKabaPoints) async {
     xrint("entered computeBillingAction");
-    if (await Utils.hasNetwork()) {
-      List<Object> food_quantity = [];
-      foods.forEach((food_item, quantity) => {
-            food_quantity.add({'food_id': food_item.id, 'quantity': quantity})
-          });
 
-      var _data = json.encode({
-        'food_command': food_quantity,
-        'restaurant_id': restaurant.id,
-        'shipping_address': address.id,
-        "voucher_id": voucher?.id,
-        "use_kaba_point": useKabaPoints
-      });
+    if (!await Utils.hasNetwork()) {
+      throw Exception(-2); // pas de réseau
+    }
 
-      xrint(_data.toString());
+    // Préparer la liste des aliments
+    List<Object> food_quantity = [];
+    foods.forEach((food_item, quantity) {
+      food_quantity.add({'food_id': food_item.id, 'quantity': quantity});
+    });
+
+    Map<String, dynamic> requestData = {
+      'food_command': food_quantity,
+      'restaurant_id': restaurant.id,
+      'shipping_address': address.id,
+      "voucher_id": voucher?.id,
+      "use_kaba_point": useKabaPoints
+    };
+
+    // === Appel à l'endpoint KABA_ABONNEMENT_GET_BY_USER avant le compute billing ===
+    try {
+      var dio = Dio();
+      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
+      var abonnementResponse =
+      await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
+
+      if (abonnementResponse.statusCode == 200) {
+        requestData['user_abonnement'] = abonnementResponse.data;
+      } else {
+        xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
+        requestData['user_abonnement'] = {};
+      }
+    } catch (e) {
+      xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
+      requestData['user_abonnement'] = {};
+    }
+    var _data = json.encode(requestData);
+    xrint(_data.toString());
+
+    try {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 10000;
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -55,6 +81,7 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+
       xrint("customer.token! ${customer.token!}");
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING).toString(),
@@ -66,12 +93,14 @@ class OrderApiProvider {
             mJsonDecode(response.data)["data"]);
       } else {
         xrint("computeBilling error ${response.statusCode}");
-        throw Exception(-1); // there is an error in your request
+        throw Exception(-1); // erreur côté serveur
       }
-    } else {
-      throw Exception(-2); // you have no right to do this
+    } catch (e) {
+      xrint("computeBilling exception: $e");
+      throw Exception(-1);
     }
   }
+
 
   Future<Map> launchOrder(
       bool isPayAtDelivery,
@@ -93,10 +122,9 @@ class OrderApiProvider {
       xrint(e);
     }
 
+    // Récupération des infos device
     if (Platform.isAndroid) {
-      // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      xrint("Running on ${androidInfo.model}"); // e.g. "Moto G (4)"
       device = {
         "os_version": "${androidInfo.version.baseOS}",
         "build_device": "${androidInfo.device}",
@@ -107,45 +135,66 @@ class OrderApiProvider {
       };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      xrint("Running on ${iosInfo.utsname.machine}"); // e.g. "iPod7,1"
       device = {
         "os_version": "${iosInfo.systemVersion}",
         "build_device": "${iosInfo.utsname.sysname}",
         "version_sdk": "${iosInfo.utsname.version}",
-        'build_model': '${iosInfo.utsname.machine}',
+        "build_model": "${iosInfo.utsname.machine}",
         "build_product": "${iosInfo.model}",
         "push_token": "$token"
       };
     }
 
-    xrint("entered payAtDelivery");
-    xrint("entered payAtDelivery");
-    var voucher_id=voucher==null? null:voucher.id;
-    if (await Utils.hasNetwork()) {
-      List<Object> food_quantity = [];
+    xrint("entered launchOrder");
 
-      foods.forEach((food_item, quantity) => {
-            food_quantity.add({'food_id': food_item.id, 'quantity': quantity})
-          });
+    if (!await Utils.hasNetwork()) {
+      throw Exception(-2); // pas de réseau
+    }
 
-      var _data = json.encode({
-        'food_command': food_quantity,
-        'pay_at_delivery': isPayAtDelivery,
-        'shipping_address': selectedAddress.id,
-        'transaction_password': '$mCode',
-        'infos': '$infos',
-        'device': device, // device informations
-        'push_token': '$token', // push token
-        "voucher_id": voucher_id,
-        "use_kaba_point": useKabaPoint
-      });
+    // Préparer la liste des aliments
+    List<Object> food_quantity = [];
+    foods.forEach((food_item, quantity) {
+      food_quantity.add({'food_id': food_item.id, 'quantity': quantity});
+    });
 
-      xrint("000 _ " + _data.toString());
+    // Préparer le JSON de base
+    Map<String, dynamic> requestData = {
+      'food_command': food_quantity,
+      'pay_at_delivery': isPayAtDelivery,
+      'shipping_address': selectedAddress.id,
+      'transaction_password': mCode,
+      'infos': infos,
+      'device': device,
+      'push_token': token,
+      "voucher_id": voucher?.id,
+      "use_kaba_point": useKabaPoint
+    };
+    var abonnementData ={};
+    try {
+      var dio = Dio();
+      dio.options.headers = Utils.getHeadersWithToken(customer!.token!);
+      var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
+
+      if (abonnementResponse.statusCode == 200) {
+        abonnementData= abonnementResponse.data;
+        requestData['user_abonnement'] = abonnementResponse.data;
+      } else {
+        xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
+        requestData['user_abonnement'] = {};
+      }
+    } catch (e) {
+      xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
+      requestData['user_abonnement'] = {};
+    }
+    var _data = json.encode(requestData);
+    xrint("Request data: $_data");
+    try {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer!.token!)
         ..connectTimeout = 90000
         ..headers['Cache-Control'] = 'no-cache';
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -153,22 +202,35 @@ class OrderApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
-          data: _data);
 
-      xrint("001 _ " + response.data.toString());
-      xrint("002 _status code  " + response.statusCode.toString());
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
+        data: _data,
+      );
+
+      xrint("Response data: ${response.data}");
+      xrint("Status code: ${response.statusCode}");
 
       if (response.statusCode == 200) {
-        // if ok, send true or false
+        try{
+          var response = await dio.post(
+            Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
+            data: {
+              'user_id':customer.id,
+              'subcription':abonnementData['suscription_id']
+            },
+          );
+        }catch(_){}
         return mJsonDecode(response.data);
-      } else
-        throw Exception(-1); // there is an error in your request
-    } else {
-      throw Exception(-2); // you have no right to do this
+      } else {
+        throw Exception(-1); // erreur côté serveur
+      }
+    } catch (e) {
+      xrint("launchOrder exception: $e");
+      throw Exception(-1);
     }
   }
+
 
   loadOrderFromId(CustomerModel customer, int orderId, {bool is_out_of_app_order = false}) async {
     xrint("entered loadOrderFromId");

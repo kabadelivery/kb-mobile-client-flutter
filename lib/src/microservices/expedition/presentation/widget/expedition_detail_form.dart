@@ -111,7 +111,12 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                 weight: 1.0,
                 availableLines: availableLines,
               ));
-              _weight.text = "1";
+              BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                departureTown: selected_departure_town!,
+                arrivalTown: selected_arrival_town!,
+                weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                availableLines: availableLines,
+              ));
             });
             filteredArrivalList = map_of_town_arrival;
             searchArrivalController.addListener(() {
@@ -291,7 +296,12 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           .id!,
                     ),
                   );
-
+                  BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                    departureTown: selected_departure_town!,
+                    arrivalTown: selected_arrival_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines,
+                  ));
                   if (_weight.text.isNotEmpty) {
                     BlocProvider.of<EstimationBloc>(context).add(
                       CalculateEstimation(
@@ -403,7 +413,12 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                           .id!,
                     ),
                   );
-
+                  BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                    departureTown: selected_departure_town!,
+                    arrivalTown: selected_arrival_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines,
+                  ));
                   if (_weight.text.isNotEmpty) {
                     BlocProvider.of<EstimationBloc>(context).add(
                       CalculateEstimation(
@@ -450,10 +465,10 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                   height: 40,
                 ),
                 menuItemStyleData: const MenuItemStyleData(height: 45),
-              ),
-            ),
-          )
-          ],
+                     ),
+                      ),
+                    )
+                    ],
                           ),
                         ],
                       ),
@@ -564,7 +579,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                           Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
                                           SizedBox(width: 5,),
                                           Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
-                                          Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                          Text("${estimation_day.toString()} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                                         ],
                                       ),
                                     ],

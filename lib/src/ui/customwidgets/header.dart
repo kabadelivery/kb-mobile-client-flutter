@@ -1,6 +1,7 @@
 import 'package:KABA/src/ui/customwidgets/performance_ui.dart';
 import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
+import '../../models/CustomerModel.dart';
 import '../../utils/_static_data/AppConfig.dart';
 import '../../utils/_static_data/ImageAssets.dart';
 import '../../utils/_static_data/Vectors.dart';
@@ -31,11 +33,12 @@ class _HeaderState extends State<Header> {
   Map<String, dynamic>? performance;
   void getPerf()async{
     performance = await Utils.getAppPerformance();
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
+   // debugPrint("CustomerModel token ${customerModel.token}");
     setState(() {});
   }
   @override void initState() {
     super.initState();
-
   }
   @override
   Widget build(BuildContext context) {

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kkiapay_flutter_sdk/app/app.dart';
 
 import '../../../../localizations/AppLocalizations.dart';
 
@@ -68,9 +69,19 @@ class _EstimationFormState extends State<EstimationForm> {
           debugPrint("XXX state ${state}");
           if(state is DepartureTownChosen){
             selected_departure_town = state.town;
+            estimationBloc.add(
+                CalculateEstimation(arrivalTown: selected_arrival_town,
+                    departureTown: selected_departure_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines));
           }
           if(state is ArrivalTownChosen){
             selected_arrival_town = state.town;
+            estimationBloc.add(
+                CalculateEstimation(arrivalTown: selected_arrival_town,
+                    departureTown: selected_departure_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines));
           }
           if(state is EstimationCalculated){
             estimation_price =state.result.prixFinal;
@@ -120,7 +131,6 @@ class _EstimationFormState extends State<EstimationForm> {
                       departureTown: selected_departure_town!,
                       weight: 1,
                       availableLines: availableLines));
-              _weight.text="1";
             }else{
               error = true;
               isLoading = false;
@@ -348,7 +358,7 @@ class _EstimationFormState extends State<EstimationForm> {
           ),
           ),
           ),
-                      FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
+                      FormTitleWithIcon(title:"${AppLocalizations.of(context)!.translate("approximate_weight")}", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
                       SizedBox(height: 10,),
                       Container(
                         width: 330,
@@ -471,12 +481,12 @@ class _EstimationFormState extends State<EstimationForm> {
                           child:   Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              FormTitleWithIcon(title: state is EstimationLoading?"Calcul en cours...":"Calculer l'estimation", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
+                              FormTitleWithIcon(title: state is EstimationLoading?"${AppLocalizations.of(context)!.translate("calculating_estimation")}":"${AppLocalizations.of(context)!.translate("calculate_estimation")}", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
                             ],
                           ),
                         ),
                       ),
-                      estimation_price!=null?
+                      estimation_price!=null &&(_weight.text.isNotEmpty)?
                       Column(
                         children: [
                           SizedBox(height: 20,),
@@ -518,7 +528,7 @@ class _EstimationFormState extends State<EstimationForm> {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
-                                      Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
+                                      Text("${estimation_day.toString()} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
                                           0xFF019848)),),
                                     ],
                                   ),
@@ -587,9 +597,7 @@ Widget  FormTitleWithIcon({required String title, required Icon icon,Color?textC
 }
 
 void showNegotiationDialog(BuildContext context) {
-
   showDialog(
-
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(
@@ -597,17 +605,17 @@ void showNegotiationDialog(BuildContext context) {
       ),
       title: Row(
         children: [
-          Icon(Icons.info_outline, color:KabaExpeditionColor.primary),
-          SizedBox(width: 8),
+          Icon(Icons.info_outline, color: KabaExpeditionColor.primary),
+          const SizedBox(width: 8),
           Text(
-            "Négociation de prix",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            "${AppLocalizations.of(context)!.translate('price_negotiation')}",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],
       ),
-      content:  Text(
-        "La négociation du prix n’est possible qu’après l’étape 2 (détails du colis).\n\n",
-        style: TextStyle(fontSize: 14, height: 1.4),
+      content: Text(
+        "${AppLocalizations.of(context)!.translate('negotiation_unavailable_message')}",
+        style: const TextStyle(fontSize: 14, height: 1.4),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
@@ -615,16 +623,16 @@ void showNegotiationDialog(BuildContext context) {
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: KabaExpeditionColor.primary, // couleur du bouton
+              backgroundColor: KabaExpeditionColor.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              "J'ai compris",
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            child: Text(
+              "${AppLocalizations.of(context)!.translate('understood')}",
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
         ),

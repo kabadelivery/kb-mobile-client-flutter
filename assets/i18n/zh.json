@@ -983,6 +983,12 @@
   "order_congratz_praise_out_of_app_1": "恭喜您成功下单。",
   "order_congratz_praise_out_of_app_2": "请保持手机在身边，以便实时了解您的订单状态。谢谢。",
   "search_city": "搜索城市",
-  "subscription_failed": "订阅失败"
+  "subscription_failed": "订阅失败",
+  "calculate_estimation": "计算估算",
+  "calculating_estimation": "正在计算...",
+  "approximate_weight": "大约重量 (公斤)",
+  "price_negotiation": "价格协商",
+  "negotiation_unavailable_message": "价格协商仅在第二步（包裹详情）之后才可进行。\n\n",
+  "understood": "我明白了"
 
 }

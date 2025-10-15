@@ -944,7 +944,7 @@
   "delivery_in": "Delivery in",
   "send_proposal": "Send proposal",
   "last_update": "Last update",
-  "subscription": "Subscription",
+  "subscription": "Subscriptions",
   "status": "status",
   "EN_COURS_EXPEDITION": "In transit",
   "ARRIVE_EN_VILLE": "Arrived in city",
@@ -977,5 +977,11 @@
   "order_congratz_praise_out_of_app_1": "Congratulations on successfully placing your order.",
   "order_congratz_praise_out_of_app_2": "Please keep your phone nearby to receive real-time updates on your order status. Thank you.",
   "search_city": "Search for a city",
-  "subscription_failed": "The Subscription failed"
+  "subscription_failed": "The Subscription failed",
+  "calculate_estimation": "Calculate estimation",
+  "calculating_estimation": "Calculating...",
+  "approximate_weight": "Approximate weight (Kg)",
+  "price_negotiation": "Price negotiation",
+  "negotiation_unavailable_message": "Price negotiation is only possible after step 2 (package details).\n\n",
+  "understood": "Got it"
 }
