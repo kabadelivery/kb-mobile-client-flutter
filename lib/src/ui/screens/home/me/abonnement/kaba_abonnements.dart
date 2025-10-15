@@ -51,9 +51,9 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
         isLoadingSubscription = false;
         subscriptionFetchFailed = true;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+     /* ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("⚠️ Customer ID not found.")),
-      );
+      );*/
       return;
     }
 
@@ -74,9 +74,9 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       setState(() {
         isLoadingSubscription = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
+     /* ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("🔔 ${result["message"]}")),
-      );
+      );*/
     }
   }
 
@@ -167,7 +167,6 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
   Future<void> _validateAndSendCode() async {
     final code = _codeController.text.trim();
 
-    // Vérifier si le code contient exactement 6 chiffres
     if (code.length != 6) {
       _showModal("Code invalide", "Veuillez entrer un code à 6 chiffres.");
       return;
@@ -177,32 +176,35 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://168.231.101.119:4040/dashboard/sharedCodeSuscriber"), // 🟡 Replace with your endpoint
+        Uri.parse("http://168.231.101.119:4040/dashboard/sharedCodeSuscriber"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
-          "user_id":customerId.toString(),
+          "user_id": customerId.toString(),
           "Code": code
-
         }),
       );
 
       setState(() => _loading = false);
       if (response.statusCode == 200 || response.statusCode == 201) {
         print(response.body);
-        Navigator.pop(context); // fermer le bottomsheet
-       _codeController.clear();
+        Navigator.pop(context);
+        _codeController.clear();
+
+        // 🆕 ADDED: Wait 5 seconds then refresh subscription and UI
+        setState(() => isLoadingSubscription = true);
+        await Future.delayed(Duration(seconds: 10));
+        await _fetchSubscription();
+        setState(() => isLoadingSubscription = false);
         _refreshPage();
+
       } else {
         try {
           print(response.body);
-          // 🧠 Try to decode the error message returned by the server
           final errorBody = jsonDecode(response.body);
           final errorMessage = errorBody["message"] ?? "Une erreur inconnue est survenue";
-
           _showModal("Erreur", errorMessage);
         } catch (e) {
-          // 🛑 If parsing fails, show a generic error
-          _showModal("Error lors du partage du Code ! ",'lo');
+          _showModal("Error lors du partage du Code ! ", 'lo');
         }
       }
     } catch (e) {
@@ -210,6 +212,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       _showModal("Erreur", "Une erreur est survenue. Réessayez.");
     }
   }
+
 
   void _refreshPage() {
     setState(() {});
@@ -335,25 +338,27 @@ void _showAddBottomSheet() {
             headers: {"Content-Type": "application/json"},
             body: jsonEncode({
               "user_id": userId,
-              "status_payement":1,
-              "status_abonnement" : 1 ,
+              "status_payement": 1,
+              "status_abonnement": 1,
               "transaction_id": checkData["transaction_id"] ?? "0", // optional
-            }
-
-
-            ),
+            }),
           ).timeout(const Duration(seconds: 15));
 
           if (updateResponse.statusCode == 200 || updateResponse.statusCode == 201) {
             final updateData = jsonDecode(updateResponse.body);
             print("🟢 Server B subscription updated: $updateData");
+
+            // 🆕 ADDED: Wait 5 seconds before refreshing
+            await Future.delayed(Duration(seconds: 5));
+            await _fetchSubscription(); // refresh subscription after delay
+            if (mounted) setState(() {}); // refresh UI
+
             return {"success": true, "message": "Subscription updated successfully"};
           } else {
             print("❌ Server B update failed: ${updateResponse.statusCode}");
             return {"error": true, "message": "Failed to update subscription"};
           }
         } else {
-          // Payment not confirmed
           print("⚠️ Payment not confirmed for user $userId");
           return {"status": "pending", "message": "Payment not yet confirmed"};
         }
@@ -366,6 +371,7 @@ void _showAddBottomSheet() {
       return {"error": true, "message": e.toString()};
     }
   }
+
 
 
   // ------------------- Active Subscription Card -------------------
@@ -805,3 +811,5 @@ void _copyToClipboard(BuildContext context, String text) async {
 void _shareText(String text) {
   Share.share("Voici mon code Abonnement:" + text, subject: "Voici mon code");
 }
+
+
