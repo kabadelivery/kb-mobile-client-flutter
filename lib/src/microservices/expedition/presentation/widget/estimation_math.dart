@@ -1,11 +1,13 @@
 import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kkiapay_flutter_sdk/app/app.dart';
 
 import '../../../../localizations/AppLocalizations.dart';
 
@@ -14,7 +16,7 @@ import '../../../kaba_chine/presentation/widgets/package_form_info.dart';
 import '../../core/utils.dart';
 import '../../data/expedition/line_model.dart';
 import '../bloc/estimation/estimation_bloc.dart';
-
+import 'package:KABA/src/microservices/expedition/presentation/widget/popAnimation.dart';
 class EstimationForm extends StatefulWidget {
   const EstimationForm({super.key});
 
@@ -29,6 +31,10 @@ class _EstimationFormState extends State<EstimationForm> {
   String selected_arrival_town ="Accra";
   double? estimation_price =null;
   int? estimation_day =null;
+  late List<Map<String, String>> filteredArrivalList;
+  late List<Map<String, String>> filteredDepartureList;
+  final TextEditingController searchArrivalController = TextEditingController();
+  final TextEditingController searchDepartureController = TextEditingController();
   List<Map<String,String>> map_of_town_arrival= [
   ];
   List<Map<String,String>> map_of_town_departure= [
@@ -63,9 +69,19 @@ class _EstimationFormState extends State<EstimationForm> {
           debugPrint("XXX state ${state}");
           if(state is DepartureTownChosen){
             selected_departure_town = state.town;
+            estimationBloc.add(
+                CalculateEstimation(arrivalTown: selected_arrival_town,
+                    departureTown: selected_departure_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines));
           }
           if(state is ArrivalTownChosen){
             selected_arrival_town = state.town;
+            estimationBloc.add(
+                CalculateEstimation(arrivalTown: selected_arrival_town,
+                    departureTown: selected_departure_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines));
           }
           if(state is EstimationCalculated){
             estimation_price =state.result.prixFinal;
@@ -92,6 +108,29 @@ class _EstimationFormState extends State<EstimationForm> {
                   map_of_town_arrival.add(lineArrivalMap);
                 }
               }
+              filteredArrivalList = map_of_town_arrival;
+              searchArrivalController.addListener(() {
+                final value = searchArrivalController.text.toLowerCase();
+                setState(() {
+                  filteredArrivalList = map_of_town_arrival
+                      .where((t) => t['name']!.toLowerCase().contains(value))
+                      .toList();
+                });
+              });
+              filteredDepartureList = map_of_town_departure;
+              searchDepartureController.addListener(() {
+                final value = searchDepartureController.text.toLowerCase();
+                setState(() {
+                  filteredArrivalList = map_of_town_departure
+                      .where((t) => t['name']!.toLowerCase().contains(value))
+                      .toList();
+                });
+              });
+              estimationBloc.add(
+                  CalculateEstimation(arrivalTown: selected_arrival_town,
+                      departureTown: selected_departure_town!,
+                      weight: 1,
+                      availableLines: availableLines));
             }else{
               error = true;
               isLoading = false;
@@ -145,81 +184,181 @@ class _EstimationFormState extends State<EstimationForm> {
                   child: Column(
                     children: [
                       FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("departure_town")}", icon: Icon(Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        width: 330,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Color(0xFFCD1F45).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6),
-                            )),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: DropdownButton<String>(
-                          hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
-                          value: selected_departure_town,
-                          isExpanded: true,
-                          elevation: 16,
-                          underline: Container(
-                            height: 0,
-                          ),
-                          icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
-                          items: map_of_town_departure.map((town){
-                            return DropdownMenuItem<String>(
-                                value: town['name'],
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
-                                    SizedBox(width: 10,),
-                                    Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
-                                  ],
-                                ));
-                          }).toList(),
-                          onChanged: (value){
-                            estimationBloc.add(ChooseDepartureTown(value.toString()));
-                          },
-                        ),
-                      ),
-                      FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("arrival_town")}", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 10),
-                        width: 330,
-                        height: 40,
-                        decoration: BoxDecoration(
-                            color: Color(0xFFCD1F45).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(5),
-                            border: Border.all(width: 1,color: Color(0xFFCD1F45).withOpacity(0.6),
-                            )),
-                        padding: EdgeInsets.symmetric(horizontal: 10),
-                        child: DropdownButton<String>(
-                          hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
-                          value: selected_arrival_town,
-                          isExpanded: true,
-                          elevation: 16,
-                          underline: Container(
-                            height: 0,
-                          ),
-                          icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFFCD1F45),),
-                          items: map_of_town_arrival.map((town){
-                            return DropdownMenuItem<String>(
-                                value: town['name'],
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+          Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          width: 330,
+          height: 40,
+          decoration: BoxDecoration(
+          color: const Color(0xFFCD1F45).withOpacity(0.1),
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+          width: 1,
+          color: const Color(0xFFCD1F45).withOpacity(0.6),
+          ),
+          ),
+          child: DropdownButtonHideUnderline(
+          child: DropdownButton2<String>(
+          isExpanded: true,
+          hint: Text(
+          AppLocalizations.of(context)!.translate('select_departure_city'),
+          style: const TextStyle(fontSize: 14),
+          ),
+          value: selected_departure_town,
+          items: map_of_town_departure.map((town) {
+          return DropdownMenuItem<String>(
+          value: town['name'],
+          child: Row(
+          children: [
+          Text(
+          town['country_code']!,
+          style: const TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+          const SizedBox(width: 10),
+          Text(
+          town['name']!,
+          style: const TextStyle(
+          fontWeight: FontWeight.normal, fontSize: 14),
+          ),
+          ],
+          ),
+          );
+          }).toList(),
+          onChanged: (value) {
+          estimationBloc.add(ChooseDepartureTown(value.toString()));
+          },
 
-                                  children: [
-                                    Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
-                                    SizedBox(width: 10,),
-                                    Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
-                                  ],
-                                ));
-                          }).toList(),
-                          onChanged: (value){
-                            estimationBloc.add(ChooseArrivalTown(value.toString()));
-                          },
-                        ),
-                      ),
-                      FormTitleWithIcon(title: "Poids approximatif (Kg)", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
+          // 🔍 Fixed built-in search
+          dropdownSearchData: DropdownSearchData(
+          searchController: searchDepartureController,
+          searchInnerWidgetHeight: 50,
+          searchInnerWidget: Padding(
+          padding: const EdgeInsets.all(8),
+          child: TextField(
+          controller: searchDepartureController,
+          decoration: InputDecoration(
+          isDense: true,
+          contentPadding:
+          const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          hintText: AppLocalizations.of(context)!.translate('search_city'),
+          prefixIcon: const Icon(Icons.search, size: 18),
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          ),
+          ),
+          ),
+          ),
+          searchMatchFn: (item, searchValue) {
+          return item.value!
+              .toLowerCase()
+              .contains(searchValue.toLowerCase());
+          },
+          ),
+
+          // ⚙️ Optional styling
+          buttonStyleData: const ButtonStyleData(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          height: 50,
+          ),
+          iconStyleData: const IconStyleData(
+          icon: Icon(Icons.keyboard_arrow_down_outlined,
+          color: Color(0xFFCD1F45)),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+          height: 45,
+          ),
+          ),
+          ),
+          ),
+          FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("arrival_town")}", icon: Icon(Icons.add_circle_outline,color: Color(0xFFCD1F45),)),
+          Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          width: 330,
+          height: 40,
+          decoration: BoxDecoration(
+          color: const Color(0xFFCD1F45).withOpacity(0.1),
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+          width: 1,
+          color: const Color(0xFFCD1F45).withOpacity(0.6),
+          ),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: DropdownButtonHideUnderline(
+          child: DropdownButton2<String>(
+          isExpanded: true,
+          hint: Text(
+          AppLocalizations.of(context)!.translate('select_arrival_city'),
+          style: const TextStyle(fontSize: 14),
+          ),
+          value: selected_arrival_town,
+          items: map_of_town_arrival.map((town) {
+          return DropdownMenuItem<String>(
+          value: town['name'],
+          child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+          Text(
+          town['country_code']!,
+          style: const TextStyle(
+          fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+          const SizedBox(width: 10),
+          Text(
+          town['name']!,
+          style: const TextStyle(
+          fontWeight: FontWeight.normal, fontSize: 14),
+          ),
+          ],
+          ),
+          );
+          }).toList(),
+          onChanged: (value) {
+          estimationBloc.add(ChooseArrivalTown(value.toString()));
+          },
+
+          // ✅ Fixed search bar
+          dropdownSearchData: DropdownSearchData(
+          searchController: searchArrivalController,
+          searchInnerWidgetHeight: 50,
+          searchInnerWidget: Padding(
+          padding: const EdgeInsets.all(8),
+          child: TextField(
+          controller: searchArrivalController,
+          decoration: InputDecoration(
+          isDense: true,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          hintText: AppLocalizations.of(context)!.translate('search_city'),
+          prefixIcon: const Icon(Icons.search, size: 18),
+          border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          ),
+          ),
+          ),
+          ),
+          searchMatchFn: (item, searchValue) {
+          // ✅ Directly compare the item value (town name) to the search text
+          return item.value!
+              .toLowerCase()
+              .contains(searchValue.toLowerCase());
+          },
+          ),
+
+          buttonStyleData: const ButtonStyleData(
+          padding: EdgeInsets.symmetric(horizontal: 12),
+          height: 40,
+          ),
+          iconStyleData: const IconStyleData(
+          icon: Icon(Icons.keyboard_arrow_down_outlined,
+          color: Color(0xFFCD1F45)),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+          height: 45,
+          ),
+          ),
+          ),
+          ),
+                      FormTitleWithIcon(title:"${AppLocalizations.of(context)!.translate("approximate_weight")}", icon: Icon(FontAwesomeIcons.box,size:19,color: Color(0xFFCD1F45),)),
                       SizedBox(height: 10,),
                       Container(
                         width: 330,
@@ -267,7 +406,7 @@ class _EstimationFormState extends State<EstimationForm> {
                         ),
                       ),
                       SizedBox(height: 10,),
-                      Row(
+                      estimation_day!=null?    Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           Icon(Icons.access_time_rounded,size:15,color: KabaExpeditionColor.primary,),
@@ -275,7 +414,7 @@ class _EstimationFormState extends State<EstimationForm> {
                           Text("${AppLocalizations.of(context)!.translate('delivery_in')} :",style: TextStyle(fontSize: 12,color:  KabaExpeditionColor.primary),),
                           Text("${estimation_day!=null?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                         ],
-                      ),
+                      ):Container(),
                       SizedBox(height: 20,),
                       error?
                       GestureDetector(
@@ -342,60 +481,63 @@ class _EstimationFormState extends State<EstimationForm> {
                           child:   Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              FormTitleWithIcon(title: state is EstimationLoading?"Calcul en cours...":"Calculer l'estimation", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
+                              FormTitleWithIcon(title: state is EstimationLoading?"${AppLocalizations.of(context)!.translate("calculating_estimation")}":"${AppLocalizations.of(context)!.translate("calculate_estimation")}", icon: Icon(FontAwesomeIcons.calculator,size:19,color: Colors.white,),textColor: Colors.white ),
                             ],
                           ),
                         ),
                       ),
-                      estimation_price!=null?
+                      estimation_price!=null &&(_weight.text.isNotEmpty)?
                       Column(
                         children: [
                           SizedBox(height: 20,),
-                          Container(
-                            width: 330,
-                            decoration: BoxDecoration(
-                                color: Color(0x2092FFC1),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: Colors.green.shade300,width: .5)
-                            ),
-                            padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.all(10),
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(50),
-                                          color:  Color(0xFF00C35B)
+                          PopInWidget(
+                            duration: Duration(milliseconds: 500),
+                            child: Container(
+                              width: 330,
+                              decoration: BoxDecoration(
+                                  color: Color(0x2092FFC1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.green.shade300,width: .5)
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 10,vertical: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(50),
+                                            color:  Color(0xFF00C35B)
+                                        ),
+                                        child: Icon(FontAwesomeIcons.calculator,color:Colors.white,size:15),
                                       ),
-                                      child: Icon(FontAwesomeIcons.calculator,color:Colors.white,size:15),
-                                    ),
-                                    SizedBox(width: 10,),
-                                    Text("${AppLocalizations.of(context)!.translate('estimate_done')}",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
-                                FontWeight.bold,color: Color(0xFF00C35B)),),
-                                SizedBox(height: 10,),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
-                                    Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
-                                        0xFF019848)),),
-                                  ],
-                                ),
-                                SizedBox(height: 10,),
-                                Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
-                                    0xFF009E47)),)
+                                      SizedBox(width: 10,),
+                                      Text("${AppLocalizations.of(context)!.translate('estimate_done')}",textAlign:TextAlign.start, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold,color: Color(0xFF00C35B)),)
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("${formatCurrency(double.parse(estimation_price.toString()))} FCFA",style: TextStyle(fontSize: 22,fontWeight:
+                                  FontWeight.bold,color: Color(0xFF00C35B)),),
+                                  SizedBox(height: 10,),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 16,color: Color(0xFF00C35B)),),
+                                      Text("${estimation_day.toString()} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Color(
+                                          0xFF019848)),),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10,),
+                                  Text("${AppLocalizations.of(context)!.translate('final_price_check')}",style: TextStyle(fontSize: 12,color: Color(
+                                      0xFF009E47)),)
 
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -455,9 +597,7 @@ Widget  FormTitleWithIcon({required String title, required Icon icon,Color?textC
 }
 
 void showNegotiationDialog(BuildContext context) {
-
   showDialog(
-
     context: context,
     builder: (ctx) => AlertDialog(
       shape: RoundedRectangleBorder(
@@ -465,17 +605,17 @@ void showNegotiationDialog(BuildContext context) {
       ),
       title: Row(
         children: [
-          Icon(Icons.info_outline, color:KabaExpeditionColor.primary),
-          SizedBox(width: 8),
+          Icon(Icons.info_outline, color: KabaExpeditionColor.primary),
+          const SizedBox(width: 8),
           Text(
-            "Négociation de prix",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            "${AppLocalizations.of(context)!.translate('price_negotiation')}",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ],
       ),
-      content:  Text(
-        "La négociation du prix n’est possible qu’après l’étape 2 (détails du colis).\n\n",
-        style: TextStyle(fontSize: 14, height: 1.4),
+      content: Text(
+        "${AppLocalizations.of(context)!.translate('negotiation_unavailable_message')}",
+        style: const TextStyle(fontSize: 14, height: 1.4),
       ),
       actionsAlignment: MainAxisAlignment.center,
       actions: [
@@ -483,16 +623,16 @@ void showNegotiationDialog(BuildContext context) {
           width: double.infinity,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: KabaExpeditionColor.primary, // couleur du bouton
+              backgroundColor: KabaExpeditionColor.primary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.symmetric(vertical: 14),
             ),
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text(
-              "J'ai compris",
-              style: TextStyle(color: Colors.white, fontSize: 16),
+            child: Text(
+              "${AppLocalizations.of(context)!.translate('understood')}",
+              style: const TextStyle(color: Colors.white, fontSize: 16),
             ),
           ),
         ),

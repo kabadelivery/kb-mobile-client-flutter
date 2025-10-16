@@ -116,21 +116,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- App Links -->
+            <!-- Deep linking / App Links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-
-                <data android:host="app.kaba-delivery.com" />
-                <!--   <data
-                       android:scheme="https"
-                       android:host="app.kaba-delivery.com" />-->
+                <data
+                    android:scheme="https"
+                    android:host="app.kaba-delivery.com"
+                    android:pathPrefix="/" />
             </intent-filter>
+
 
             <!-- opening maps in kaba -->
             <intent-filter>

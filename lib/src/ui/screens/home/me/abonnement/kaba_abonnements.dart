@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/SuscriptionCard.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:http/http.dart' as http;

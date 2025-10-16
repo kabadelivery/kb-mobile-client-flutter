@@ -3,9 +3,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../../../localizations/AppLocalizations.dart';
 String handleExpeditionFormMessage(BuildContext context, CreateExpedition createExpedition) {
-  if (createExpedition.adresseOrigine == null) {
-    return "${AppLocalizations.of(context)!.translate('choose_origin_address')}";
-  }
 
   if (createExpedition.telephoneOrigine == null || createExpedition.telephoneOrigine!.isEmpty) {
     return "${AppLocalizations.of(context)!.translate('enter_phone_number')}";

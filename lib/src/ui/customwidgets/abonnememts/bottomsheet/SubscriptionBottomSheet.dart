@@ -1,9 +1,11 @@
 // Paste this file replacing your current SubscriptionBottomSheet.dart
 import 'dart:convert';
+import 'package:KABA/src/contracts/transaction_contract.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/SingleSelectList.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
+import 'package:KABA/src/ui/screens/home/me/abonnement/kaba_abonnements.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/topups.dart';
 import 'package:cherry_toast/cherry_toast.dart';
@@ -619,7 +621,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Kaba_abonnement(presenter: TransactionPresenter(TransactionView()))));
                       },
                       child:
                       const Text("Fermer", style: TextStyle(color: Colors.white)),
