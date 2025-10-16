@@ -276,7 +276,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       borderRadius: BorderRadius.circular(50),
                     ),
                   ),
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.text,
                 ),
                  /* SizedBox(width: 250,
                         child: Container(
