@@ -352,13 +352,15 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String KABA_UPDATE_PAYMENT_STATUS = ServerConfig.kaba_abonnement + "/dashboard/update_abo";
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
+  static const String KABA_ABONNEMENT_GET_BY_USER = ServerConfig.kaba_abonnement + "dashboard/currentUserAbodetails";
+  static const String KABA_ABONNEMENT_SAVE_USER_ORDER = ServerConfig.kaba_abonnement + "/dashboard/saveUserOrderwithAbo";
   static const String ABO_CHECK_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/check/subscription";
 
   static const String KABA_CHECK_ABO_PAYMENT_STATUS = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/subscription/transaction/check";
   static const String LINK_GET_DELIVERY_RATING_PENDING =
       ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/delivery_rating_pending/v4/get";
   static const String LINK_SEND_ORDER_FEEDBACK =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/v4/rate";
-  static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_expedition + "/dashboard/sharedCodeSuscriber";
+  static const String LINK_SUBSCRIBE_BY_CODE = ServerConfig.kaba_abonnement + "/dashboard/sharedCodeSuscriber";
   static const String LINK_GET_SKIP_NOTATION_STATUS = ServerConfig.SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
   static const String LINK_GET_PERFORMANCE_RATING =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/rating/v4/get";
   static const String LINK_PAY_BY_WALLET = ServerConfig.PAY_SERVER_ADDRESS_SECURE+"/api/subscription/pay/wallet";
