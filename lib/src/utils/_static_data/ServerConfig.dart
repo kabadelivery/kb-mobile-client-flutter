@@ -20,6 +20,7 @@ class ServerConfig {
   //static const String pay_ip_address = "8b5523ac7a6e.ngrok-free.app";
   //static const String stat_ip_address="65fd82667d4e.ngrok-free.app";//dev
   //static const String pay_ip_address = "pay.kaba-technology.com";
+    //static const String kaba_abonnement = "https://0724fb80c46d.ngrok-free.app";
   static const String UNSECURE_SERVER_ADDRESS = "http://" + ip_address;
   static const String SERVER_ADDRESS = "https://" + ip_address;
   static const String STAT_SERVER_ADDRESS = "https://" + stat_ip_address;

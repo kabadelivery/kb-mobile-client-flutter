@@ -49,9 +49,18 @@ class OutOfAppOrderApiProvider{
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
-      var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
-
-      if (abonnementResponse.statusCode == 200) {
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         requestData['user_abonnement'] = abonnementResponse.data;
       } else {
         xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
@@ -196,7 +205,7 @@ class OutOfAppOrderApiProvider{
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
       var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
 
-      if (abonnementResponse.statusCode == 200) {
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
         requestData['user_abonnement'] = abonnementResponse.data;
       } else {

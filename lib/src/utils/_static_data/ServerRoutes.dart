@@ -352,8 +352,8 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String KABA_UPDATE_PAYMENT_STATUS = ServerConfig.kaba_abonnement + "/dashboard/update_abo";
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
-  static const String KABA_ABONNEMENT_GET_BY_USER = ServerConfig.kaba_abonnement + "dashboard/currentUserAbodetails";
-  static const String KABA_ABONNEMENT_SAVE_USER_ORDER = ServerConfig.kaba_abonnement + "/dashboard/saveUserOrderwithAbo";
+  static const String KABA_ABONNEMENT_GET_BY_USER = ServerConfig.kaba_abonnement + "/dashboard/currentUserAbodetails";
+  static const String KABA_ABONNEMENT_SAVE_USER_ORDER = ServerConfig.kaba_abonnement + "/dashboard/create-order";
   static const String ABO_CHECK_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/check/subscription";
 
   static const String KABA_CHECK_ABO_PAYMENT_STATUS = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/subscription/transaction/check";

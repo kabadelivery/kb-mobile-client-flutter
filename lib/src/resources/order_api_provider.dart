@@ -52,10 +52,19 @@ class OrderApiProvider {
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
-      var abonnementResponse =
-      await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
 
-      if (abonnementResponse.statusCode == 200) {
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         requestData['user_abonnement'] = abonnementResponse.data;
       } else {
         xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
@@ -175,7 +184,7 @@ class OrderApiProvider {
       dio.options.headers = Utils.getHeadersWithToken(customer!.token!);
       var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
 
-      if (abonnementResponse.statusCode == 200) {
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
         requestData['user_abonnement'] = abonnementResponse.data;
       } else {
@@ -217,7 +226,7 @@ class OrderApiProvider {
             Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
             data: {
               'user_id':customer.id,
-              'subcription':abonnementData['suscription_id']
+              'subcription_id':abonnementData['suscription_id']
             },
           );
         }catch(_){}
