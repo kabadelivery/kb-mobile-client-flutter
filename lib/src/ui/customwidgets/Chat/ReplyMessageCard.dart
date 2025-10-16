@@ -1,68 +1,110 @@
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ReplyMessageCard extends StatelessWidget {
   final String message;
-  final String messageType; // "text" or "image"
-  final String time;
+  final String messageType; // 'text', 'image', 'link'
+  final DateTime time;
+  final String senderName;
+
   const ReplyMessageCard({
-    super.key,
+    Key? key,
     required this.message,
-    this.messageType = "text",  required this.time,
-  });
+    required this.messageType,
+    required this.time,
+    required this.senderName,
+  }) : super(key: key);
+
+  bool _isLink(String text) {
+    final urlRegExp = RegExp(
+        r'^(https?:\/\/)?([\w\-]+\.)+[a-zA-Z]{2,}(:\d+)?(\/[\w\-._~:/?#[\]@!$&\()*+,;=]*)?$',
+    );
+    return urlRegExp.hasMatch(text);
+    }
+
+  Future<void> _launchUrl(String url) async {
+    final Uri uri = Uri.parse(url.startsWith('http') ? url : 'https://$url');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final formattedTime = DateFormat('HH:mm').format(time);
+    final formattedDate = DateFormat('yyyy-MM-dd').format(time);
+
     return Align(
       alignment: Alignment.centerLeft,
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width - 45,
+      child: Container(
+        margin: const EdgeMargin(),
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: KColors.primaryColor,
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(20),
+            bottomLeft: Radius.circular(20),
+            bottomRight: Radius.circular(20),
+          ),
         ),
-        child: Card(
-          elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          color: Color(0xffcb1f44),
-          margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 80, top: 10, bottom: 20),
-                child: messageType == "image"
-                    ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.network(
-                    message,
-                    width: 200,
-                    height: 200,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Text(
-                        "📷 Image not available",
-                        style: TextStyle(color: Colors.white),
-                      );
-                    },
-                  ),
-                )
-                    : Text(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Sender name
+            Text(
+              senderName,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 5),
+
+            // Message content
+            if (messageType == "text" || _isLink(message)) ...[
+              GestureDetector(
+                onTap: _isLink(message) ? () => _launchUrl(message) : null,
+                child: Text(
                   message,
-                  style: const TextStyle(fontSize: 16,color: Colors.white),
+                  style: TextStyle(
+                    color: _isLink(message) ? Colors.blue : Colors.white,
+                    decoration: _isLink(message)
+                        ? TextDecoration.underline
+                        : TextDecoration.none,
+                  ),
                 ),
               ),
-              Positioned(
-                bottom: 4,
-                right: 10,
-                child: Row(
-                  children: [
-                    Text(time, style: TextStyle(fontSize: 13, color: Colors.white)),
-                    SizedBox(width: 5),
-                    Icon(Icons.done_all, size: 20,color: Colors.white,),
-                  ],
+            ] else if (messageType == "image") ...[
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  message,
+                  width: 200,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
               ),
             ],
-          ),
+
+            const SizedBox(height: 5),
+
+            // Time and date
+            Text(
+              "$formattedDate • $formattedTime",
+              style: TextStyle(
+                fontSize: 11,
+                color: Colors.white,
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class EdgeMargin extends EdgeInsets {
+  const EdgeMargin() : super.symmetric(vertical: 5, horizontal: 15);
 }
