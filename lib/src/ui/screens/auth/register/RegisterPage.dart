@@ -191,6 +191,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                      borderRadius: BorderRadius.circular(30),
                    ),
                  ),
+                 keyboardType: TextInputType.number,
                ),
                const SizedBox(height: 15),
 
@@ -214,6 +215,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                      borderRadius: BorderRadius.circular(30),
                    ),
                  ),
+                 keyboardType: TextInputType.number,
                ),
                const SizedBox(height: 15),
 
@@ -408,13 +410,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   // Mot de passe trop court
    mDialog("❌ Le mot de passe doit contenir au moins 4 caractères");
 
-} else if (_nickname.trim().length > 4  ) {
-        setState(() {
-          isNicknameError = true;
-        });
-    mDialog("❌ Mot de Passe doit etre de 4 Chiffres ");
-
-  } else {
+} else {
     setState(() {
       isCodeSending = true;
     });
