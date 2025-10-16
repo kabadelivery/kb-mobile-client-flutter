@@ -413,7 +413,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
           isNicknameError = true;
         });
     mDialog("❌ Mot de Passe doit etre de 4 Chiffres ");
-    return;
+
   } else {
     setState(() {
       isCodeSending = true;
