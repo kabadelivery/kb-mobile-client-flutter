@@ -90,7 +90,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
-      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) && widget?.password?.length == 4)
+      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) )
+
+        debugPrint("Mot de Passe is : "+widget!.password.toString());
         widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
     } else {
       // we dont do any another login here
@@ -446,7 +448,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 //      int type = results['type'];
       showLoading(true);
 
-      if (Utils.isCode(_mCode)) {
+
         /* check if it's important to send another sms according to the time lapsed after the last sending
       * 1. check last time sent message, if before 5 minutes, then dont send,
       * 2. otherwise send
@@ -454,8 +456,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
 
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
-              widget.autoLogin = true;
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 ) {
+             // widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
               this.widget.presenter!.login(true, login, _mCode, widget.version!);
@@ -464,7 +466,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             this.widget.presenter!.login(false, login, _mCode, widget.version!);
           }
         });
-      }
+
     
   }
 

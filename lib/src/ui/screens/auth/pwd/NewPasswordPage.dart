@@ -65,7 +65,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
   bool isWhaNumberError = false;
 
 
-  String userlogin = "kokougomgom@gmail.com" ;
+  String userlogin = "richardgobe@gmail.com" ;
 
 
   /* circle loading progressing */
@@ -168,16 +168,16 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                      SizedBox(height: 40),
                       Center(
                         child: 
-                       Text("Creer votre Compte ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                       Text("Réinitialisez votre mot de passe KABA", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
                       ),
                       SizedBox(height: 10),
                     Container(margin: EdgeInsets.only(left:40, right: 40),
                     child:   
-                    Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-              const SizedBox(height: 40),
+                    Text("", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+              const SizedBox(height: 10),
 
               // Username
-              TextField(
+             /* TextField(
                 controller: _nicknameFieldController,
                 decoration: InputDecoration(
                   hintText: "Nom d'utilisateur",
@@ -186,7 +186,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
-              ),
+              ),*/
               const SizedBox(height: 15),
 
               // Password
@@ -252,7 +252,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
                  },
                    // Handle create account action,
                   child: const Text(
-                    "Créer le compte",
+                    "Se Connecter",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -342,7 +342,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
   void _sendCodeAction() {
 
     /* logins */
-    String login = "kokougomgom@gmail.com";
+    String login = "richardgobe@gmail.com";
     /* check the fields */
    
       /* /* phone number */

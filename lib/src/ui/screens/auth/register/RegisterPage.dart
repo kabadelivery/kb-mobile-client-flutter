@@ -42,7 +42,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   List<String> recoverModeHints = ["",""];
   /*"Insert your E-mail address"*/
 
-   String userlogin =  "" ; 
+
 
   List<String>? _loginFieldHint;
 
@@ -92,7 +92,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     _nicknameFieldHint = "";
     _whatsappPhoneNumberHint = "";
 
-    userlogin = widget.login ?? "" ;
+    var userlogin = widget.login ?? "" ;
 
     this.widget.presenter!.registerView = this;
     /* retrieve state of the app */
@@ -352,9 +352,9 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Future<void> _sendCodeAction() async {
 
     /* logins */
-    String login = userlogin;
+    String? login = widget.login;
     /* check the fields */
-   
+
       /* /* phone number */
       String phoneNumber = login;
       if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
@@ -378,8 +378,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     String _nickname = _nicknameFieldController.text;
     String password = passwordFieldController.text;
     String secondpassword = secondpassController.text ;
-    
-  
+
+
     /* check the fields */
     if (_nickname.trim().length==0 || password.trim().length==0 || secondpassword.trim().length==0) {
       setState(() {
@@ -393,9 +393,12 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       setState(() {
         isNicknameError = true;
       });
-       mDialog("❌ Le Nom doit contenir au moins 2 characteres");
+       mDialog("❌ Le Nom doit contenir au moins 4 characteres");
       return;
     }
+
+
+
 
     if (password != secondpassword) {
   // Les mots de passe ne correspondent pas
@@ -405,7 +408,13 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   // Mot de passe trop court
    mDialog("❌ Le mot de passe doit contenir au moins 4 caractères");
 
-} else {
+} else if (_nickname.trim().length > 4  ) {
+        setState(() {
+          isNicknameError = true;
+        });
+    mDialog("❌ Mot de Passe doit etre de 4 Chiffres ");
+    return;
+  } else {
     setState(() {
       isCodeSending = true;
     });
@@ -594,55 +603,45 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   @override
+  @override
   Future codeIsOk(bool isOk) async {
-
-    /* jump to setup code activity */
+    // Stop loading spinner
     setState(() {
       isCodeSending = false;
     });
-    String? _mCode1, _mCode2;
+  
     if (isOk) {
-      /* clear shared preferences */
-      _clearSharedPreferences();
-      var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) {
-          return new RetrievePasswordPage(type: 1);
-        },
-      ));
-      if (results != null && results.containsKey('code') && results.containsKey('type')) {
-        _mCode1 = results['code'];
-        int type = results['type'];
-        /* launch confirmation */
-        _mCode2 = "";
-        do {
-          var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-            builder: (BuildContext context) {
-              return new RetrievePasswordPage(type: 2);
-            },
-          ));
-          if (results != null && results.containsKey('code') && results.containsKey('type')) {
-            _mCode2 = results['code'];
-          }
-        } while (_mCode1 != _mCode2);
-      }
-
+      // ✅ 1. Clear any stored request info
+      await _clearSharedPreferences();
+  
+      // ✅ 2. We already have the password from the user input fields
+      String password = passwordFieldController.text.trim();
+      String nickname = _nicknameFieldController.text.trim();
+  
       setState(() {
         isAccountRegistering = true;
       });
-
-      String whatsapp_number = "${countryDialCode.dialCode}${_whatsappPhonenumberController.text}"; // append entered phone number
-
-      xrint("whatsappNo ${whatsapp_number}");
-
-      /* launch create account request, and if success*/
-      this.widget.presenter!.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
-          phone_number: Utils.isPhoneNumber_TGO(userlogin) ? userlogin : "",
-          email: Utils.isEmailValid(userlogin) ? userlogin : "",
-          request_id: this._requestId, whatsapp_number: whatsapp_number
+  
+      // ✅ 3. Prepare WhatsApp number if any
+      String whatsapp_number = "${countryDialCode.dialCode}${_whatsappPhonenumberController.text}";
+      xrint("whatsappNo $whatsapp_number");
+  
+      // ✅ 4. Get login (email or phone)
+      String? userlogin = widget.login;
+  
+      // ✅ 5. Call the presenter to create the account directly
+      this.widget.presenter!.createAccount(
+        nickname: nickname,
+        password: password,
+        phone_number: Utils.isPhoneNumber_TGO(userlogin!) ? userlogin : "",
+        email: Utils.isEmailValid(userlogin) ? userlogin : "",
+        request_id: this._requestId,
+        whatsapp_number: whatsapp_number,
       );
     }
   }
 
+ 
   @override
   void disableCodeButton(bool isDisabled) {
   }
@@ -858,8 +857,8 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       isCodeSending = true;
     });
             
-        this.widget.presenter!.sendVerificationCode(userlogin);
-      
+        this.widget.presenter!.sendVerificationCode(widget.login.toString());
+        print("OTP sENT "+widget.login.toString());
             _checkCodeAndCreateAccount();
            
                
