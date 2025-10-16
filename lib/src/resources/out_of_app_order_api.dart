@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../models/CustomerModel.dart';
@@ -203,8 +204,17 @@ class OutOfAppOrderApiProvider{
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
-      var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
-
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
         requestData['user_abonnement'] = abonnementResponse.data;
@@ -245,12 +255,16 @@ class OutOfAppOrderApiProvider{
       xrint("Status code: ${response.statusCode}");
       if (response.statusCode == 200) {
         try{
-          var response = await dio.post(
+          var sentData ={
+            'user_id':customer.id.toString(),
+            'subscription_id':abonnementData['pack']['id'].toString(),
+            'codeAbo':abonnementData['codeAbonnement'].toString(),
+            'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
+          };
+          debugPrint("sentData $sentData");
+          var responseAbo = await dio.post(
             Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
-            data: {
-              'user_id':customer.id,
-              'subcription':abonnementData['suscription_id']
-            },
+            data:sentData,
           );
         }catch(_){}
         return mJsonDecode(response.data)["error"];

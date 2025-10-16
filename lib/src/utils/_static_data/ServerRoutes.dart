@@ -21,7 +21,7 @@ class ServerRoutes {
 
   /* create command db */
   static const String LINK_CREATE_COMMAND =
-      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/v4/create";
+      ServerConfig.STAT_SERVER_ADDRESS +"/mobile/api/command/v5/create";
 
   /* get command details */
   static const String LINK_GET_COMMAND_DETAILS =
@@ -148,7 +148,7 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/api/resto/state/get";
 
   static const String LINK_COMPUTE_BILLING =
-      ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/command/billing/v4/get";
+      ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/command/billing/v5/get";
 
   static const String LINK_GET_LASTEST_FEEDS =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/feeds/get";
@@ -352,9 +352,14 @@ class ServerRoutes {
   static const String KABA_ABONNEMENT_SUSCRIBED_USER = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
   static const String KABA_UPDATE_PAYMENT_STATUS = ServerConfig.kaba_abonnement + "/dashboard/update_abo";
   static const String KABA_ABONNEMENT_SHARED_CODE = ServerConfig.kaba_abonnement + "/dashboard/subscribeduser";
-  static const String KABA_ABONNEMENT_GET_BY_USER = ServerConfig.kaba_abonnement + "dashboard/currentUserAbodetails";
-  static const String KABA_ABONNEMENT_SAVE_USER_ORDER = ServerConfig.kaba_abonnement + "/dashboard/saveUserOrderwithAbo";
+  static const String KABA_ABONNEMENT_GET_BY_USER = ServerConfig.kaba_abonnement + "/dashboard/currentUserAbodetails";
+  static const String KABA_ABONNEMENT_SAVE_USER_ORDER = ServerConfig.kaba_abonnement + "/dashboard/create-order";
   static const String ABO_CHECK_PAYMENT= ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/check/subscription";
+  static const String KABA_ABONNEMENT_SHARING_CODE_USER = ServerConfig.kaba_abonnement + "/dashboard/sharedCodeSuscriber";
+  static const String KABA_UPDATE_PAYMENT_STATUS_ABO = ServerConfig.kaba_abonnement + "/dashboard/update_abo";
+  //static const String KABA_
+
+  static const String KABA_CHAT = ServerConfig.kaba_chat  ;
 
   static const String KABA_CHECK_ABO_PAYMENT_STATUS = ServerConfig.PAY_SERVER_ADDRESS_SECURE + "/api/subscription/transaction/check";
   static const String LINK_GET_DELIVERY_RATING_PENDING =

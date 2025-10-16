@@ -18,6 +18,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 
 class OrderApiProvider {
 
@@ -182,8 +183,17 @@ class OrderApiProvider {
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer!.token!);
-      var abonnementResponse = await dio.get(ServerRoutes.KABA_ABONNEMENT_GET_BY_USER);
-
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
         requestData['user_abonnement'] = abonnementResponse.data;
@@ -219,14 +229,22 @@ class OrderApiProvider {
 
       xrint("Response data: ${response.data}");
       xrint("Status code: ${response.statusCode}");
-
+      var sentData ={
+        'user_id':customer.id.toString(),
+        'subscription_id':abonnementData['pack']['id'].toString(),
+        'codeAbo':abonnementData['codeAbonnement'].toString(),
+        'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
+      };
+      debugPrint("sentData $sentData");
       if (response.statusCode == 200) {
         try{
-          var response = await dio.post(
+          await dio.post(
             Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
             data: {
-              'user_id':customer.id,
-              'subcription_id':abonnementData['suscription_id']
+              'user_id':customer.id.toString(),
+              'subscription_id':abonnementData['pack']['id'].toString(),
+              'codeAbo':abonnementData['codeAbonnement'].toString(),
+              'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
             },
           );
         }catch(_){}
