@@ -436,7 +436,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         const SnackBar(
                           content: Text("Traitement en cours..."),
                           backgroundColor: Colors.green,
-                          duration: Duration(seconds: 2),
+                          duration: Duration(seconds: 10),
                         ),
                       );
                      await checkPaymentStatus(context);
@@ -618,6 +618,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                             horizontal: 24, vertical: 12),
                       ),
                       onPressed: () {
+                        Navigator.pop(context);
                         Navigator.pop(context);
                       },
                       child:

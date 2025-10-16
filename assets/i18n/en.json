@@ -7,6 +7,7 @@
   "choice": "Choice",
   "choice_desc": "Choose menu",
   "payment": "Payment",
+  "suscription": "Suscription",
   "payment_desc": "Pay with cash or online as you wish",
   "address": "Address",
   "address_desc": "Choose a delivery address",
@@ -973,5 +974,10 @@
   "secure_service": "Secure and professional service",
   "fast_delivery": "Fast home delivery",
   "buy_pharma_product": "Buy a pharmaceutical product",
-  "non_listed_pharmacies": "Order from pharmacies not listed on our platform"
+  "non_listed_pharmacies": "Order from pharmacies not listed on our platform",
+  "enjoy_text" : "Enjoy",
+  "Delivery_text" : "Free",
+  "free_del_text" : "DELIVERY"
+
+
 }

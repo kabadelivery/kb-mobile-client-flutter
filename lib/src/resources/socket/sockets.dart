@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+import '../../utils/_static_data/ServerRoutes.dart';
+
 class SocketService {
   static final SocketService _instance = SocketService._internal();
   factory SocketService() => _instance;
@@ -17,7 +19,7 @@ class SocketService {
     if (socket != null && _connected) return;
 
     socket = IO.io(
-      "http://168.231.101.119:5000",
+      ServerRoutes.KABA_CHAT,
       IO.OptionBuilder()
           .setTransports(['websocket'])
           .enableAutoConnect()

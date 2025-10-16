@@ -8,6 +8,7 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../models/CustomerModel.dart';
 import '../../../models/MessageModel/messageModel.dart';
+import '../../../utils/_static_data/ServerRoutes.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../customwidgets/Chat/OwnMessage.dart';
 import '../../customwidgets/Chat/ReplyMessageCard.dart';
@@ -62,7 +63,7 @@ class _ChatPageState extends State<ChatPage> {
 
   void _connectSocket() {
     socket = IO.io(
-      "http://168.231.101.119:5000",
+      ServerRoutes.KABA_CHAT,
       IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build(),
     );
 
@@ -146,7 +147,7 @@ class _ChatPageState extends State<ChatPage> {
 
     try {
       final file = File(image.path);
-      final uploadUrl = "http://168.231.101.119:5000/upload-image";
+      final uploadUrl = ServerRoutes.KABA_CHAT+"/upload-image";
       final fileName = path.basename(file.path);
 
       final formData = FormData.fromMap({

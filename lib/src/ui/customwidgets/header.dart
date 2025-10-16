@@ -4,9 +4,11 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
+import '../../models/CustomerModel.dart';
 import '../../resources/socket/sockets.dart';
 import '../../utils/_static_data/KTheme.dart';
 import '../../utils/_static_data/AppConfig.dart';
+import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/NotLoggedInPopUp.dart';
 import '../../utils/functions/Utils.dart';
 import '../screens/chat/ChatPage.dart';
@@ -22,13 +24,26 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   Map<String, dynamic>? performance;
-  final String userId = '90171212';
+   String userId = ''; // normall si je met mon numero ici je recois mon la notif +1,,,, +n du
   int unreadMessages = 0;
 
   @override
   void initState() {
     super.initState();
     getPerf();
+    _loadCustomer() ;
+    _initSocketListener();
+
+  }
+
+
+  Future<void> _loadCustomer() async {
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    
+    setState(() {
+      userId = customer.phone_number.toString();
+    });
+
     _initSocketListener();
   }
 

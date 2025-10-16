@@ -39,6 +39,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
   void initState() {
     super.initState();
     _initData();
+    _fetchSubscriptionPlans();
   }
 
   // ------------------- Initialize Data -------------------
@@ -62,13 +63,14 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
     });
 
     // 2️⃣ Check and update subscription
-    final result = await checkAndUpdateSubscription(customerId!.toString());
+
+    final result = await checkAndUpdateSubscription(customerId!);
 
     // 3️⃣ Refetch subscription to ensure latest status
     await _fetchSubscription();
 
     // 4️⃣ Fetch subscription plans
-    await _fetchSubscriptionPlans();
+
 
     if (mounted) {
       setState(() {
@@ -106,23 +108,41 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       return;
     }
 
-    final url =
-    Uri.parse(ServerRoutes.KABA_ABONNEMENT_SUSCRIBED_USER + "/$customerId");
+    final url = Uri.parse(
+      "${ServerRoutes.KABA_ABONNEMENT_SUSCRIBED_USER}/$customerId",
+    );
 
     try {
       final response = await http.get(url);
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final rawData = json.decode(response.body);
+
+        if (rawData is! Map<String, dynamic>) {
+          throw Exception("Unexpected response format: not a JSON object");
+        }
+
+        // ✅ Safe normalization of values to String
+        Map<String, dynamic> normalizedData = Map<String, dynamic>.from(rawData);
+
+        normalizedData["subscription_id"] =
+            (rawData["subscription_id"] ?? "").toString();
+        normalizedData["end_date"] = (rawData["end_date"] ?? "").toString();
+        normalizedData["codeAbonnement"] =
+            (rawData["codeAbonnement"] ?? "").toString();
+        normalizedData["deliveriesUsed"] =
+            (rawData["deliveriesUsed"] ?? "0").toString();
+        normalizedData["deliveriesTotal"] =
+            (rawData["deliveriesTotal"] ?? "0").toString();
+
         if (!mounted) return;
 
         setState(() {
-          subscriptionData = data;
+          subscriptionData = normalizedData;
           isLoadingSubscription = false;
         });
       } else {
-        throw Exception(
-            "Failed to fetch subscription for customer $customerId");
+        throw Exception("Failed to fetch subscription for customer $customerId");
       }
     } catch (e) {
       print("❌ Error fetching subscription for $customerId: $e");
@@ -134,6 +154,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
       });
     }
   }
+
 
   // ------------------- Fetch Available Plans -------------------
   Future<void> _fetchSubscriptionPlans() async {
@@ -176,7 +197,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
 
     try {
       final response = await http.post(
-        Uri.parse("http://168.231.101.119:4040/dashboard/sharedCodeSuscriber"),
+        Uri.parse(ServerRoutes.KABA_ABONNEMENT_SHARING_CODE_USER),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode({
           "user_id": customerId.toString(),
@@ -314,17 +335,18 @@ void _showAddBottomSheet() {
 }
 
   // ------------------- Check & Update Subscription -------------------
-  Future<Map<String, dynamic>> checkAndUpdateSubscription(String userId) async {
+  Future<Map<String, dynamic>> checkAndUpdateSubscription(int? userId) async {
+     String user_id = userId.toString();
     final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription"); // Server A
-    final updateUrl = Uri.parse("http://168.231.101.119:4040/dashboard/update_abo");    // Server B
+    final updateUrl = Uri.parse(ServerRoutes.KABA_UPDATE_PAYMENT_STATUS_ABO);    // Server B
 
     try {
       // STEP 1: Ask Server A about payment/subscription state
       final checkResponse = await http.post(
         checkUrl,
         headers: {"Content-Type": "application/json"},
-        body: jsonEncode({"user_id": userId}),
-      ).timeout(const Duration(seconds: 15));
+        body: jsonEncode({"user_id": user_id}),
+      ).timeout(const Duration(seconds: 6));
 
       if (checkResponse.statusCode == 200 && checkResponse.body.isNotEmpty) {
         final checkData = jsonDecode(checkResponse.body);
@@ -337,7 +359,7 @@ void _showAddBottomSheet() {
             updateUrl,
             headers: {"Content-Type": "application/json"},
             body: jsonEncode({
-              "user_id": userId,
+              "user_id": user_id,
               "status_payement": 1,
               "status_abonnement": 1,
               "transaction_id": checkData["transaction_id"] ?? "0", // optional
@@ -348,16 +370,32 @@ void _showAddBottomSheet() {
             final updateData = jsonDecode(updateResponse.body);
             print("🟢 Server B subscription updated: $updateData");
 
-            // 🆕 ADDED: Wait 5 seconds before refreshing
-            await Future.delayed(Duration(seconds: 5));
-            await _fetchSubscription(); // refresh subscription after delay
-            if (mounted) setState(() {}); // refresh UI
+            // ⏳ Poll up to 5 times (every 2s) until subscription data changes
+            bool updated = false;
+            for (int i = 0; i < 5; i++) {
+              print("🔁 Checking updated subscription (try ${i + 1}/5)...");
+              await Future.delayed(Duration(seconds: 2));
+              await _fetchSubscription();
+
+              // if backend marks it as active or data changes, break loop
+              if (subscriptionData != null &&
+                  (subscriptionData!["status_abonnement"] == 1 ||
+                      subscriptionData!["end_date"] != null)) {
+                updated = true;
+                break;
+              }
+            }
+
+            print(updated
+                ? "✅ Subscription successfully refreshed"
+                : "⚠️ No change detected after waiting");
 
             return {"success": true, "message": "Subscription updated successfully"};
           } else {
             print("❌ Server B update failed: ${updateResponse.statusCode}");
             return {"error": true, "message": "Failed to update subscription"};
           }
+
         } else {
           print("⚠️ Payment not confirmed for user $userId");
           return {"status": "pending", "message": "Payment not yet confirmed"};
@@ -382,8 +420,7 @@ void _showAddBottomSheet() {
       child: Column(
         children: [
           Padding(
-            padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
             child: Row(
               children: [
                 Image.asset(
@@ -395,7 +432,7 @@ void _showAddBottomSheet() {
                 RichText(
                   text: TextSpan(
                     children: [
-                      TextSpan(
+                      const TextSpan(
                         text: "Mon abonnement\n",
                         style: TextStyle(
                           fontSize: 18,
@@ -404,7 +441,7 @@ void _showAddBottomSheet() {
                         ),
                       ),
                       TextSpan(
-                        text: data["subscription_id"],
+                        text: data["subscription_id"]?.toString() ?? "",
                         style: TextStyle(
                           fontSize: 14,
                           color: Colors.grey[700],
@@ -413,15 +450,14 @@ void _showAddBottomSheet() {
                     ],
                   ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                       color: Colors.green,
                       borderRadius: BorderRadius.circular(8)),
-                  child: Text("Actif", style: TextStyle(color: Colors.white)),
-                )
+                  child: const Text("Actif", style: TextStyle(color: Colors.white)),
+                ),
               ],
             ),
           ),
@@ -429,34 +465,35 @@ void _showAddBottomSheet() {
             icon: "Package.png",
             title: "Livraisons",
             subtitle:
-            "${data["deliveriesUsed"] ?? 0}/${data["deliveriesTotal"] ?? 0}",
+            "${data["deliveriesUsed"] ?? '0'}/${data["deliveriesTotal"] ?? '0'}",
             isSvg: false,
-            iconBgColor: Color(0xFFFFC8D4),
+            iconBgColor: const Color(0xFFFFC8D4),
           ),
           _buildCardRow(
             icon: "Clock.svg",
             title: "Expire Le ",
-            subtitle: data["end_date"] ?? "********",
+            subtitle: data["end_date"]?.toString() ?? "********",
             isSvg: true,
-            iconColor: Color(0xFFCD1F45),
-            iconBgColor: Color(0xFFFFC8D4),
+            iconColor: const Color(0xFFCD1F45),
+            iconBgColor: const Color(0xFFFFC8D4),
           ),
           Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 12.0, vertical: 8.0),
-                decoration: BoxDecoration(
-                  color: Color(0xFFFFE9EE),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                height: 300,
-                child: Column(children: [
-                  SizedBox(height: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFE9EE),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              height: 300,
+              child: Column(
+                children: [
+                  const SizedBox(height: 5),
                   Text('Partager votre Abonnement',
                       style: TextStyle(color: KColors.primaryColor)),
-                  SizedBox(height: 25),
+                  const SizedBox(height: 25),
+
+                  // --- Copier le code ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
@@ -470,13 +507,16 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"]);
+                        _copyToClipboard(context, data["codeAbonnement"].toString());
                       },
                       icon: const Icon(Icons.code),
                       label: const Text("Copier le code "),
                     ),
                   ),
-                  SizedBox(height: 5),
+
+                  const SizedBox(height: 5),
+
+                  // --- Copier le lien ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
@@ -490,13 +530,16 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"]);
+                        _copyToClipboard(context, data["codeAbonnement"].toString());
                       },
                       icon: const Icon(Icons.link),
                       label: const Text("Copier le Lien"),
                     ),
                   ),
-                  SizedBox(height: 5),
+
+                  const SizedBox(height: 5),
+
+                  // --- Partager ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
@@ -510,13 +553,16 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _shareText(data["codeAbonnement"]);
+                        _shareText(data["codeAbonnement"].toString());
                       },
                       icon: const Icon(Icons.share),
                       label: const Text("Partager"),
                     ),
                   ),
-                  SizedBox(height: 5),
+
+                  const SizedBox(height: 5),
+
+                  // --- Code Display ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
@@ -530,18 +576,23 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"]);
+                        _copyToClipboard(context, data["codeAbonnement"].toString());
                       },
-                      label: Text("Code :" + data["codeAbonnement"],
-                          style: TextStyle(color: Colors.black)),
+                      label: Text(
+                        "Code : ${data["codeAbonnement"].toString()}",
+                        style: const TextStyle(color: Colors.black),
+                      ),
                     ),
                   ),
-                ])),
+                ],
+              ),
+            ),
           ),
         ],
       ),
     );
   }
+
 
   // ------------------- Inactive Subscription Card -------------------
   Widget _buildInactiveCard() {
@@ -750,7 +801,7 @@ void _showAddBottomSheet() {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: "Profitez des ",
+                              text: "${AppLocalizations.of(context)!.translate('enjoy_text')}",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -758,7 +809,7 @@ void _showAddBottomSheet() {
                               ),
                             ),
                             TextSpan(
-                              text: "livraisons \n",
+                              text: "${AppLocalizations.of(context)!.translate('Delivery_text')} \n",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
@@ -766,7 +817,7 @@ void _showAddBottomSheet() {
                               ),
                             ),
                             TextSpan(
-                              text: "GRATUITES",
+                              text: "${AppLocalizations.of(context)!.translate('free_del_text')}",
                               style: TextStyle(
                                 fontSize: 28,
                                 fontWeight: FontWeight.bold,
