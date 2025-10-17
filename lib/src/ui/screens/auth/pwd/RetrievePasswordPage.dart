@@ -62,6 +62,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   }
 
   void _jumpToOTPPage() {
+
     Navigator.of(context).pop();
     Navigator.push(
       context,
@@ -192,6 +193,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
+                      keyboardType: TextInputType.number
                   ),
 
                   if (errorMessage.isNotEmpty) ...[

@@ -69,7 +69,7 @@ class ReplyMessageCard extends StatelessWidget {
                 child: Text(
                   message,
                   style: TextStyle(
-                    color: _isLink(message) ? Colors.blue : Colors.white,
+                    color: _isLink(message) ? Colors.white : Colors.white,
                     decoration: _isLink(message)
                         ? TextDecoration.underline
                         : TextDecoration.none,
