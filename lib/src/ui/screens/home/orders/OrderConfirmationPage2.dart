@@ -51,6 +51,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../../../utils/Enums/type_of_transaction.dart';
+import '../../../../utils/functions/subscription.dart';
 import '../../../customwidgets/voucher_widgets.dart';
 
 class OrderConfirmationPage2 extends StatefulWidget {
@@ -93,6 +94,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   bool isPayNowLoading = false;
   bool showCodeInput = false;
   bool checkIsRestaurantOpenConfigIsLoading = true;
+  bool has_subscription = false;
   TextEditingController codeController = TextEditingController();
 
   TextEditingController? _addInfoController;
@@ -2433,7 +2435,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   @override
-  void inflateBillingConfiguration2(OrderBillConfiguration configuration) {
+  void inflateBillingConfiguration2(OrderBillConfiguration configuration)async {
     StateContainer.of(context).balance = configuration.account_balance;
     _orderBillConfiguration.account_balance = configuration.account_balance;
     _orderBillConfiguration.max_pay = configuration.max_pay;
@@ -2466,10 +2468,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             configuration.shipping_pricing!.toDouble() /
             100))
         .toInt();
-
+   bool sub  = await fetchSubscription();
     setState(() {
       _orderBillConfiguration.isBillBuilt = true;
+      if(sub==true){
+        has_subscription = true;
+      }
       showBillingPopUp();
+
     });
 //    Timer(Duration(milliseconds: 1000), () => _listController.jumpTo(_listController.position.maxScrollExtent));
     Future.delayed(Duration(milliseconds: 500), () {
@@ -3130,7 +3136,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                             SizedBox(height: 10),
                             _buildBill(),
                             SizedBox(height: 10),
-                            Container(
+                         Container(
                               width: MediaQuery.of(context).size.width,
                               color: Colors.white,
                               padding: EdgeInsets.only( right: 5, top: 5, bottom: 5),
@@ -3138,7 +3144,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                 mainAxisAlignment:MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Container(
+                                  !has_subscription?              Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
@@ -3234,7 +3240,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
 
                                     ),
-                                  ),
+                                  ):Container(),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

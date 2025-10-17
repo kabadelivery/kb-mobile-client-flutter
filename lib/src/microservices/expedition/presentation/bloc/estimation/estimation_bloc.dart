@@ -42,6 +42,7 @@ class EstimationBloc extends Bloc<EstimationEvent, EstimationState> {
       CustomerModel customerModel = await CustomerUtils.getCustomer();
       List<LineModel> linesList = await lines.call(customerToken: customerModel.token!);
       debugPrint("XXX lines ${linesList.length}");
+
       emit(getAvailableLinesState(linesList));
     }catch(e){
       emit(getAvailableLinesState([]));

@@ -2,33 +2,30 @@ import 'package:KABA/src/microservices/expedition/data/expedition/create_expedit
 import 'package:flutter/cupertino.dart';
 
 import '../../../localizations/AppLocalizations.dart';
-String handleExpeditionFormMessage(BuildContext context, CreateExpedition createExpedition) {
-  if (createExpedition.adresseOrigine == null) {
-    return "${AppLocalizations.of(context)!.translate('choose_origin_address')}";
-  }
+String handleExpeditionFormMessage(AppLocalizations loc, CreateExpedition createExpedition) {
 
   if (createExpedition.telephoneOrigine == null || createExpedition.telephoneOrigine!.isEmpty) {
-    return "${AppLocalizations.of(context)!.translate('enter_phone_number')}";
+    return "${loc.translate('enter_phone_number')}";
   }
 
   if (createExpedition.methodeCollecte == null || createExpedition.methodeCollecte!.isEmpty) {
-    return "${AppLocalizations.of(context)!.translate('choose_collection_method')}";
+    return "${loc.translate('choose_collection_method')}";
   }
 
   if (createExpedition.colis == null || createExpedition.colis!.isEmpty) {
-    return "${AppLocalizations.of(context)!.translate('add_package')}";
+    return "${loc.translate('add_package')}";
   }
 
   if (createExpedition.methodeCollecte != "DEPOT_PARTENAIRE" && createExpedition.dateCollecte == null) {
-    return "${AppLocalizations.of(context)!.translate('choose_collection_date')}";
+    return "${loc.translate('choose_collection_date')}";
   }
 
   if (createExpedition.methodeCollecte != "DEPOT_PARTENAIRE" && createExpedition.heureCollecte == null) {
-    return "${AppLocalizations.of(context)!.translate('choose_collection_time')}";
+    return "${loc.translate('choose_collection_time')}";
   }
 
   if (createExpedition.colis!.isEmpty || createExpedition.colis!.length == 0) {
-    return "${AppLocalizations.of(context)!.translate('add_at_least_one_package')}";
+    return "${loc.translate('add_at_least_one_package')}";
   }
 
   for (var i = 0; i < createExpedition.colis!.length; i++) {
@@ -36,31 +33,31 @@ String handleExpeditionFormMessage(BuildContext context, CreateExpedition create
     final numero = i + 1;
 
     if (colis.poids == null || colis.poids==0) {
-      return AppLocalizations.of(context)!.translate('package_must_have_weight').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_weight').replaceAll('{number}', '$numero');
     }
 
     if (colis.description == null|| colis.description!.isEmpty) {
-      return AppLocalizations.of(context)!.translate('package_must_have_description').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_description').replaceAll('{number}', '$numero');
     }
 
     if ((colis.adresseDestination == null && colis.recipientAddress == null) || (colis.adresseDestination!.isEmpty)) {
-      return AppLocalizations.of(context)!.translate('package_must_have_destination').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_destination').replaceAll('{number}', '$numero');
     }
 
     if (colis.departureTown == null || colis.departureTown!.isEmpty) {
-      return AppLocalizations.of(context)!.translate('package_must_have_departure_town').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_departure_town').replaceAll('{number}', '$numero');
     }
 
     if (colis.arrivalTown == null || colis.arrivalTown!.isEmpty) {
-      return AppLocalizations.of(context)!.translate('package_must_have_arrival_town').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_arrival_town').replaceAll('{number}', '$numero');
     }
 
     if (colis.recipientPhoneNumber == null || colis.recipientPhoneNumber!.isEmpty) {
-      return AppLocalizations.of(context)!.translate('package_must_have_recipient_phone').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_recipient_phone').replaceAll('{number}', '$numero');
     }
 
     if (colis.images == null || colis.images!.length < 2) {
-      return AppLocalizations.of(context)!.translate('package_must_have_two_images').replaceAll('{number}', '$numero');
+      return loc.translate('package_must_have_two_images').replaceAll('{number}', '$numero');
     }
   }
 

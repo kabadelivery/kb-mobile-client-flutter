@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import '../models/CustomerModel.dart';
@@ -20,38 +21,73 @@ class OutOfAppOrderApiProvider{
   Future<OrderBillConfiguration> computeBillingAction(
       CustomerModel customer,
       List<DeliveryAddressModel>? order_adress,
-      List<Map<String,dynamic>> foods,
+      List<Map<String, dynamic>> foods,
       DeliveryAddressModel? shipping_adress,
       VoucherModel? voucher,
       bool useKabaPoints) async {
-      xrint("entered computeBillingAction");
-    if (await Utils.hasNetwork()) {
-       var order_adress_ids= [];
-       if(order_adress!=null){
-         for(DeliveryAddressModel adress in order_adress){
-           order_adress_ids.add(adress.id);
-         }
-       }
+    xrint("entered computeBillingAction");
 
-      var _data = json.encode({
-        'order_details': foods,
-        'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
-        'shipping_address': shipping_adress!.id,
-        "voucher_id": voucher?.id,
-        "use_kaba_point": useKabaPoints,
-        "pay_at_delivery":true
-      });
+    if (!await Utils.hasNetwork()) {
+      throw Exception(-2); // pas de réseau
+    }
 
-      xrint(_data.toString());
+    // Préparer les IDs des adresses
+    var order_adress_ids = <int>[];
+    if (order_adress != null) {
+      for (DeliveryAddressModel adress in order_adress) {
+        order_adress_ids.add(adress.id!);
+      }
+    }
+    // JSON de base
+    Map<String, dynamic> requestData = {
+      'order_details': foods,
+      'order_address': order_adress_ids.isEmpty ? [0] : order_adress_ids,
+      'shipping_address': shipping_adress!.id,
+      "voucher_id": voucher?.id,
+      "use_kaba_point": useKabaPoints,
+      "pay_at_delivery": true,
+    };
+    try {
+      var dio = Dio();
+      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
+        requestData['user_abonnement'] = abonnementResponse.data;
+      } else {
+        xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
+        requestData['user_abonnement'] = {};
+      }
+    } catch (e) {
+      xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
+      requestData['user_abonnement'] = {};
+    }
+
+    // Encode le JSON final
+    var _data = json.encode(requestData);
+    xrint(_data.toString());
+
+    // === Appel à LINK_OUT_OF_APP_COMPUTE_BILLING ===
+    try {
       var dio = Dio();
       dio.options
-      ..headers = {
-    ...Utils.getHeadersWithToken(customer.token!),
-      "Cache-Control": "no-cache, no-store, must-revalidate",
-      "Pragma": "no-cache",
-      "Expires": "0"
-       }
+        ..headers = {
+          ...Utils.getHeadersWithToken(customer.token!),
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        }
         ..connectTimeout = 10000;
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -59,10 +95,12 @@ class OutOfAppOrderApiProvider{
           return validateSSL(cert, host, port);
         };
       };
+
       xrint("customer.token! ${customer.token!}");
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_OUT_OF_APP_COMPUTE_BILLING).toString(),
-          data: _data);
+        Uri.parse(ServerRoutes.LINK_OUT_OF_APP_COMPUTE_BILLING).toString(),
+        data: _data,
+      );
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
@@ -70,12 +108,14 @@ class OutOfAppOrderApiProvider{
             mJsonDecode(response.data)["data"]);
       } else {
         xrint("computeBilling error ${response.statusCode}");
-        throw Exception(-1); // there is an error in your request
+        throw Exception(-1); // erreur côté serveur
       }
-    } else {
-      throw Exception(-2); // you have no right to do this
+    } catch (e) {
+      xrint("computeBilling exception: $e");
+      throw Exception(-1);
     }
   }
+
   Future<int> launchOrder(
       bool isPayAtDelivery,
       CustomerModel customer,
@@ -89,10 +129,9 @@ class OutOfAppOrderApiProvider{
       int order_type,
       String phone_number,
       String infos_image
-      )async{
+      ) async {
 
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
     var device;
 
     String? token = "";
@@ -103,10 +142,9 @@ class OutOfAppOrderApiProvider{
       xrint(e);
     }
 
+    // Récupération des infos device
     if (Platform.isAndroid) {
-      // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      xrint("Running on ${androidInfo.model}"); // e.g. "Moto G (4)"
       device = {
         "os_version": "${androidInfo.version.baseOS}",
         "build_device": "${androidInfo.device}",
@@ -115,61 +153,91 @@ class OutOfAppOrderApiProvider{
         "build_product": "${androidInfo.product}",
         "push_token": "$token"
       };
-    }
-    else if (Platform.isIOS) {
+    } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      xrint("Running on ${iosInfo.utsname.machine}"); // e.g. "iPod7,1"
       device = {
         "os_version": "${iosInfo.systemVersion}",
         "build_device": "${iosInfo.utsname.sysname}",
         "version_sdk": "${iosInfo.utsname.version}",
-        'build_model': '${iosInfo.utsname.machine}',
+        "build_model": "${iosInfo.utsname.machine}",
         "build_product": "${iosInfo.model}",
         "push_token": "$token"
       };
     }
-    xrint("entered payAtDelivery");
-    if (await Utils.hasNetwork()) {
-      var order_adress_ids= [];
-      if(order_address!=null){
-        for(DeliveryAddressModel adress in order_address){
-          order_adress_ids.add(adress.id);
-        }
-      }
 
-      List<Map<String,dynamic>> formData = [];
+    xrint("entered launchOrder");
 
-      for (int i = 0; i < foods.length; i++) {
-        formData.add(
-            {'name':  foods[i]['name'],
-              'price': foods[i]['price'].toString(),
-              'quantity': foods[i]['quantity'].toString(),
-              'image': foods[i]['image'].toString(),
-            }
-        );
-      }
-
-      var _data = json.encode({
-        'order_details': formData,
-        'order_address': order_adress_ids.isEmpty?[0]:order_adress_ids,
-        'pay_at_delivery': isPayAtDelivery,
-        'shipping_address': selectedAddress.id,
-        'transaction_password': '$mCode',
-        'infos': '$infos',
-        "infos_image":infos_image,
-        'device': device, // device informations
-        'push_token': '$token', // push token
-        "voucher_id": voucher?.id,
-        "use_kaba_point": useKabaPoint,
-        "order_type":order_type,
-        "phone_number":phone_number
+    if (!await Utils.hasNetwork()) {
+      throw Exception(-2); // pas de réseau
+    }
+    var order_adress_ids = <int>[];
+    for (DeliveryAddressModel adress in order_address) {
+      order_adress_ids.add(adress.id!);
+    }
+    List<Map<String,dynamic>> formData = [];
+    for (var food in foods) {
+      formData.add({
+        'name': food['name'],
+        'price': food['price'].toString(),
+        'quantity': food['quantity'].toString(),
+        'image': food['image'].toString(),
       });
+    }
 
-      xrint("000 _ " + _data.toString());
+    // JSON de base
+    Map<String,dynamic> requestData = {
+      'order_details': formData,
+      'order_address': order_adress_ids.isEmpty ? [0] : order_adress_ids,
+      'pay_at_delivery': isPayAtDelivery,
+      'shipping_address': selectedAddress.id,
+      'transaction_password': mCode,
+      'infos': infos,
+      "infos_image": infos_image,
+      'device': device,
+      'push_token': token,
+      "voucher_id": voucher?.id,
+      "use_kaba_point": useKabaPoint,
+      "order_type": order_type,
+      "phone_number": phone_number,
+    };
+     var abonnementData ={};
+    try {
+      var dio = Dio();
+      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
+      var abonnementResponse = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {
+          "userId": customer.id!,
+        },
+        options: Options(
+          headers: {
+            "Content-Type": "application/json",
+          },
+        ),
+      );
+      if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
+        abonnementData= abonnementResponse.data;
+        requestData['user_abonnement'] = abonnementResponse.data;
+      } else {
+        xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
+        requestData['user_abonnement'] = {};
+      }
+    } catch (e) {
+      xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
+      requestData['user_abonnement'] = {};
+    }
+
+    // Encode le JSON final
+    var _data = json.encode(requestData);
+    xrint("Request data: $_data");
+
+    // === Appel à LINK_OUT_OF_APP_CREATE_COMMAND ===
+    try {
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 90000;
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
         client.badCertificateCallback =
@@ -177,22 +245,39 @@ class OutOfAppOrderApiProvider{
           return validateSSL(cert, host, port);
         };
       };
+
       var response = await dio.post(
-          Uri.parse(ServerRoutes.LINK_OUT_OF_APP_CREATE_COMMAND).toString(),
-          data: _data);
+        Uri.parse(ServerRoutes.LINK_OUT_OF_APP_CREATE_COMMAND).toString(),
+        data: _data,
+      );
 
-      xrint("001 _ " + response.data.toString());
-      xrint("002 _status code  " + response.statusCode.toString());
-
+      xrint("Response data: ${response.data}");
+      xrint("Status code: ${response.statusCode}");
       if (response.statusCode == 200) {
-        // if ok, send true or false
+        try{
+          var sentData ={
+            'user_id':customer.id.toString(),
+            'subscription_id':abonnementData['pack']['id'].toString(),
+            'codeAbo':abonnementData['codeAbonnement'].toString(),
+            'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
+          };
+          debugPrint("sentData $sentData");
+          var responseAbo = await dio.post(
+            Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
+            data:sentData,
+          );
+        }catch(_){}
         return mJsonDecode(response.data)["error"];
-      } else
-        throw Exception(-1); // there is an error in your request
-    } else {
-      throw Exception(-2); // you have no right to do this
+
+      } else {
+        throw Exception(-1); // erreur côté serveur
+      }
+    } catch (e) {
+      xrint("launchOrder exception: $e");
+      throw Exception(-1);
     }
   }
+
 
   Future<dynamic> uploadMultipleImages(List<Map<String, dynamic>> formDataList,CustomerModel customer) async {
     try {

@@ -8,6 +8,7 @@ import 'package:KABA/src/models/DeliveryAddressModel.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,6 +62,10 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
   late ExpeditionBloc expeditionBloc;
   bool gpsAddressChoosed =false;
   bool registeredAddressChoosed =false;
+  final TextEditingController searchDepartureController = TextEditingController();
+  final TextEditingController searchArrivalController = TextEditingController();
+  late List<Map<String, String>> filteredArrivalList;
+  late List<Map<String, String>> filteredDepartureList;
   @override
   void initState() {
     expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
@@ -98,6 +103,41 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
               BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: selected_arrival_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
               BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: selected_departure_town!, lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
             }
+            WidgetsBinding.instance.addPostFrameCallback((_){
+              expeditionBloc.add(ChangeWeightEvent(weight: double.parse("1.0"), packageIndex: widget.index));
+              BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                departureTown: selected_departure_town!,
+                arrivalTown: selected_arrival_town!,
+                weight: 1.0,
+                availableLines: availableLines,
+              ));
+              BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                departureTown: selected_departure_town!,
+                arrivalTown: selected_arrival_town!,
+                weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                availableLines: availableLines,
+              ));
+            });
+            filteredArrivalList = map_of_town_arrival;
+            searchArrivalController.addListener(() {
+              final value = searchArrivalController.text.toLowerCase();
+              setState(() {
+                filteredArrivalList = map_of_town_arrival
+                    .where((t) => t['name']!.toLowerCase().contains(value))
+                    .toList();
+              });
+            });
+
+            filteredDepartureList = map_of_town_departure;
+            searchDepartureController.addListener(() {
+              final value = searchDepartureController.text.toLowerCase();
+              setState(() {
+                filteredArrivalList = map_of_town_departure
+                    .where((t) => t['name']!.toLowerCase().contains(value))
+                    .toList();
+              });
+            });
+
           }
         }
         if(state is PackagesUpdatedState){
@@ -201,107 +241,234 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               FormTitleWithIcon(title: "${AppLocalizations.of(context)!.translate("departure_town")}", icon: Icon(size:15,Icons.rocket_launch_outlined,color: Color(0xFFCD1F45),)),
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                width: 150,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF3F3F5),
-                                  borderRadius: BorderRadius.circular(5),
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            width: 150,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3F3F5),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<String>(
+                hint: Text(
+                  AppLocalizations.of(context)!.translate('select_departure_city'),
+                  style: const TextStyle(fontSize: 14),
+                ),
+                value: selected_departure_town,
+                isExpanded: true,
+                items: map_of_town_departure.map((town) {
+                  return DropdownMenuItem<String>(
+                    value: town['name'],
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          town['country_code']!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          town['name']!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selected_departure_town = value;
+                  });
 
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: DropdownButton<String>(
-                                  hint: Text("${AppLocalizations.of(context)!.translate('select_departure_city')}"),
-                                  value: selected_departure_town,
-                                  isExpanded: true,
-                                  elevation: 16,
-                                  underline: Container(
-                                    height: 0,
-                                  ),
-                                  icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(0xFF9A9A9A),),
-                                  items: map_of_town_departure.map((town){
-                                    return DropdownMenuItem<String>(
-                                        value: town['name'],
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
-                                            SizedBox(width: 10,),
-                                            Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
+                  BlocProvider.of<ExpeditionBloc>(context).add(
+                    ChooseDepartureTownEvent(
+                      packageIndex: widget.index,
+                      town: value.toString(),
+                      lineId: availableLines
+                          .where((element) =>
+                      element.depart!.nom == selected_departure_town &&
+                          element.arrivee!.nom == selected_arrival_town)
+                          .first
+                          .id!,
+                    ),
+                  );
+                  BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                    departureTown: selected_departure_town!,
+                    arrivalTown: selected_arrival_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines,
+                  ));
+                  if (_weight.text.isNotEmpty) {
+                    BlocProvider.of<EstimationBloc>(context).add(
+                      CalculateEstimation(
+                        departureTown: selected_departure_town!,
+                        arrivalTown: selected_arrival_town!,
+                        weight: double.parse(_weight.text),
+                        availableLines: availableLines,
+                      ),
+                    );
+                  }
+                },
 
-                                          ],
-                                        ));
-                                  }).toList(),
-                                  onChanged: (value){
-                                    setState(() {
-                                      selected_departure_town = value;
-                                    });
-                                    BlocProvider.of<ExpeditionBloc>(context).add(ChooseDepartureTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.depart!.nom==selected_departure_town && element.arrivee!.nom==selected_arrival_town).first.id!));
-                                    if(_weight.text.isNotEmpty){
-                                      BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
-                                          departureTown: selected_departure_town!,
-                                          arrivalTown: selected_arrival_town!,
-                                          weight: double.parse(_weight.text),
-                                          availableLines: availableLines));
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
+                // 🔍 Built-in search
+                dropdownSearchData: DropdownSearchData(
+                  searchController: searchDepartureController,
+                  searchInnerWidgetHeight: 50,
+                  searchInnerWidget: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextField(
+                      controller: searchDepartureController,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        hintText: AppLocalizations.of(context)!.translate('search_city'),
+                        prefixIcon: const Icon(Icons.search, size: 18),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  searchMatchFn: (item, searchValue) {
+                    return item.value!
+                        .toLowerCase()
+                        .contains(searchValue.toLowerCase());
+                  },
+                ),
+
+                // 🎨 Styling
+                buttonStyleData: const ButtonStyleData(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  height: 40,
+                ),
+                menuItemStyleData: const MenuItemStyleData(height: 45),
+              ),
+            ),
+          )
+          ],
                           ),
                           Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               FormTitleWithIcon(title:  "${AppLocalizations.of(context)!.translate("arrival_town")}", icon: Icon(size:15,Icons.location_on_outlined,color: Color(0xFFCD1F45),)),
-                              Container(
-                                margin: EdgeInsets.symmetric(vertical: 10),
-                                width: 150,
-                                height: 40,
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFF3F3F5),
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: DropdownButton<String>(
-                                  hint: Text("${AppLocalizations.of(context)!.translate('select_arrival_city')}"),
-                                  value: selected_arrival_town,
-                                  isExpanded: true,
-                                  elevation: 16,
-                                  underline: Container(
-                                    height: 0,
-                                  ),
-                                  icon: Icon(Icons.keyboard_arrow_down_outlined,color: Color(
-                                      0xFF9A9A9A),),
-                                  items: map_of_town_arrival.map((town){
-                                    return DropdownMenuItem<String>(
-                                        value: town['name'],
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            Text('${town['country_code']}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 12),),
-                                            SizedBox(width: 10,),
-                                            Text(town['name']!,style: TextStyle(fontWeight: FontWeight.normal,fontSize: 14),),
-                                          ],
-                                        ));
-                                  }).toList(),
-                                  onChanged: (value){
-                                    setState(() {
-                                      selected_arrival_town = value!;
-                                    });
-                                    BlocProvider.of<ExpeditionBloc>(context).add(ChooseArrivalTownEvent(packageIndex: widget.index, town: value.toString(), lineId: availableLines.where((element) => element.arrivee!.nom==selected_arrival_town && element.depart!.nom==selected_departure_town).first.id!));
-                                    if(_weight.text.isNotEmpty){
-                                      BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
-                                          departureTown: selected_departure_town!,
-                                          arrivalTown: selected_arrival_town!,
-                                          weight: double.parse(_weight.text),
-                                          availableLines: availableLines));
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 10),
+            width: 150,
+            height: 40,
+            decoration: BoxDecoration(
+              color: const Color(0xFFF3F3F5),
+              borderRadius: BorderRadius.circular(5),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton2<String>(
+                hint: Text(
+                  AppLocalizations.of(context)!.translate('select_arrival_city'),
+                  style: const TextStyle(fontSize: 14),
+                ),
+                value: selected_arrival_town,
+                isExpanded: true,
+
+                items: map_of_town_arrival.map((town) {
+                  return DropdownMenuItem<String>(
+                    value: town['name'],
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          town['country_code']!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(
+                          town['name']!,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.normal, fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selected_arrival_town = value!;
+                  });
+
+                  BlocProvider.of<ExpeditionBloc>(context).add(
+                    ChooseArrivalTownEvent(
+                      packageIndex: widget.index,
+                      town: value.toString(),
+                      lineId: availableLines
+                          .where((element) =>
+                      element.arrivee!.nom == selected_arrival_town &&
+                          element.depart!.nom == selected_departure_town)
+                          .first
+                          .id!,
+                    ),
+                  );
+                  BlocProvider.of<EstimationBloc>(context).add(CalculateEstimation(
+                    departureTown: selected_departure_town!,
+                    arrivalTown: selected_arrival_town!,
+                    weight: double.tryParse(_weight.text.trim()) ?? 1.0,
+                    availableLines: availableLines,
+                  ));
+                  if (_weight.text.isNotEmpty) {
+                    BlocProvider.of<EstimationBloc>(context).add(
+                      CalculateEstimation(
+                        departureTown: selected_departure_town!,
+                        arrivalTown: selected_arrival_town!,
+                        weight: double.parse(_weight.text),
+                        availableLines: availableLines,
+                      ),
+                    );
+                  }
+                },
+
+                // 🔍 Built-in search
+                dropdownSearchData: DropdownSearchData(
+                  searchController: searchArrivalController,
+                  searchInnerWidgetHeight: 50,
+                  searchInnerWidget: Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: TextField(
+                      controller: searchArrivalController,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        hintText:
+                        AppLocalizations.of(context)!.translate('search_city'),
+                        prefixIcon: const Icon(Icons.search, size: 18),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  searchMatchFn: (item, searchValue) {
+                    return item.value!
+                        .toLowerCase()
+                        .contains(searchValue.toLowerCase());
+                  },
+                ),
+
+                // 🎨 Styling
+                buttonStyleData: const ButtonStyleData(
+                  padding: EdgeInsets.symmetric(horizontal: 12),
+                  height: 40,
+                ),
+                menuItemStyleData: const MenuItemStyleData(height: 45),
+                     ),
+                      ),
+                    )
+                    ],
                           ),
                         ],
                       ),
@@ -411,8 +578,8 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                                         children: [
                                           Icon(Icons.circle,size:7,color: KabaExpeditionColor.primary,),
                                           SizedBox(width: 5,),
-                                          Text("${AppLocalizations.of(context)!.translate('delivery_in')}",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
-                                          Text("${_weight.text.isNotEmpty?estimation_day.toString():"0"} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                                          Text("${AppLocalizations.of(context)!.translate('delivery_in')} ",style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: Colors.black87),),
+                                          Text("${estimation_day.toString()} ${AppLocalizations.of(context)!.translate('days')}", style: TextStyle(fontSize: 12,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                                         ],
                                       ),
                                     ],
@@ -681,7 +848,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
 
                         child: Column(
                           children: [
-                            Text("${AppLocalizations.of(context)!.translate('current_position')}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                            Text("${AppLocalizations.of(context)!.translate('select_image')}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                             SizedBox(height: 10,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,

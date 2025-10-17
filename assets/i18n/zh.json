@@ -867,7 +867,7 @@
   "estimate_done": "估价已完成",
   "final_price_check": "最终价格将在包裹核实后确认",
   "parcel": "包裹 {index}",
-  "requirements": "必要条件",
+  "requirements": "5件衣服，3双鞋子，1件化妆品等。",
   "select_arrival_city": "选择到达城市",
   "parcel_weight": "包裹重量",
   "estimated_cost": "预估费用：",
@@ -979,5 +979,16 @@
   "secure_service": "安全且专业的服务",
   "fast_delivery": "快速送货上门",
   "buy_pharma_product": "购买药品产品",
-  "non_listed_pharmacies": "从未在我们平台上注册的药房订购"
+  "non_listed_pharmacies": "从未在我们平台上注册的药房订购",
+  "order_congratz_praise_out_of_app_1": "恭喜您成功下单。",
+  "order_congratz_praise_out_of_app_2": "请保持手机在身边，以便实时了解您的订单状态。谢谢。",
+  "search_city": "搜索城市",
+  "subscription_failed": "订阅失败",
+  "calculate_estimation": "计算估算",
+  "calculating_estimation": "正在计算...",
+  "approximate_weight": "大约重量 (公斤)",
+  "price_negotiation": "价格协商",
+  "negotiation_unavailable_message": "价格协商仅在第二步（包裹详情）之后才可进行。\n\n",
+  "understood": "我明白了"
+
 }

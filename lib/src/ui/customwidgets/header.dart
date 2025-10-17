@@ -1,3 +1,9 @@
+import 'package:KABA/src/ui/customwidgets/performance_ui.dart';
+import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
+import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../StateContainer.dart';
@@ -54,6 +60,8 @@ class _HeaderState extends State<Header> {
 
   void getPerf() async {
     performance = await Utils.getAppPerformance();
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
+   // debugPrint("CustomerModel token ${customerModel.token}");
     setState(() {});
   }
 

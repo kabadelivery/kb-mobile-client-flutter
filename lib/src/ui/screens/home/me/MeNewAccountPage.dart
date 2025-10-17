@@ -260,7 +260,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                             const SizedBox(height: 12),
                             InkWell(
                               onTap: () {
-                                _seeProfilePicture();
+                                _jumpToPage(context, Personal3Page(customer:widget.customer  ,presenter: PersonnalPagePresenter(PersonnalPageView()),));
                               },
                               borderRadius: BorderRadius.circular(20),
                               child: Container(

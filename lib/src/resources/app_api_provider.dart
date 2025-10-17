@@ -477,7 +477,6 @@ class AppApiProvider {
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return json.encode(response.data["data"]);
-
       } else {
         throw Exception(response.statusCode); // you have no right to do this
       }
