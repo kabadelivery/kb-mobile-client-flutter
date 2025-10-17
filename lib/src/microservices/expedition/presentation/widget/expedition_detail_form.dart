@@ -848,7 +848,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
 
                         child: Column(
                           children: [
-                            Text("${AppLocalizations.of(context)!.translate('current_position')}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
+                            Text("${AppLocalizations.of(context)!.translate('select_image')}",style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,color: KabaExpeditionColor.primary),),
                             SizedBox(height: 10,),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
