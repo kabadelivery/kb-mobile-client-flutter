@@ -193,6 +193,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
+                      keyboardType: TextInputType.number
                   ),
 
                   if (errorMessage.isNotEmpty) ...[

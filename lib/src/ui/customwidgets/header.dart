@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../models/CustomerModel.dart';
 import '../../resources/socket/sockets.dart';
 import '../../utils/_static_data/KTheme.dart';
-import '../../utils/_static_data/AppConfig.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/NotLoggedInPopUp.dart';
 import '../../utils/functions/Utils.dart';
@@ -24,27 +22,34 @@ class Header extends StatefulWidget {
 
 class _HeaderState extends State<Header> {
   Map<String, dynamic>? performance;
-   String userId = ''; // normall si je met mon numero ici je recois mon la notif +1,,,, +n du
+  String userId = '';
   int unreadMessages = 0;
 
   @override
   void initState() {
     super.initState();
     getPerf();
-    _loadCustomer() ;
-    _initSocketListener();
+    _loadCustomer();
 
+    // 👇 Listen globally to unread count
+    SocketService().unreadStream.listen((count) {
+      if (mounted) {
+        setState(() {
+          unreadMessages = count;
+        });
+      }
+    });
   }
-
 
   Future<void> _loadCustomer() async {
     CustomerModel customer = await CustomerUtils.getCustomer();
-    
     setState(() {
       userId = customer.phone_number.toString();
     });
 
-    _initSocketListener();
+    if (userId.isNotEmpty) {
+      SocketService().init(userId);
+    }
   }
 
   void getPerf() async {
@@ -52,25 +57,8 @@ class _HeaderState extends State<Header> {
     setState(() {});
   }
 
-  void _initSocketListener() {
-    final socketService = SocketService();
-    socketService.init(userId);
-
-    // Listen globally for incoming messages
-    socketService.messagesStream.listen((data) {
-      final senderId = data["senderId"];
-      if (senderId != userId) {
-        setState(() {
-          unreadMessages++;
-        });
-      }
-    });
-  }
-
   void _resetUnread() {
-    setState(() {
-      unreadMessages = 0;
-    });
+    SocketService().resetUnread();
   }
 
   void _navigateToChat() {
@@ -83,7 +71,7 @@ class _HeaderState extends State<Header> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ChatPage(token: '', receiverId: 1),
+        builder: (context) => ChatPage(token: '', receiverId: 92109474),
       ),
     );
   }
@@ -206,7 +194,7 @@ class _HeaderState extends State<Header> {
                 ),
                 Container(width: 1, height: 20, color: Colors.white),
 
-                // Chat button with notification badge
+                // Chat button with persistent unread badge
                 GestureDetector(
                   onTap: _navigateToChat,
                   child: Column(
@@ -215,8 +203,7 @@ class _HeaderState extends State<Header> {
                       Stack(
                         clipBehavior: Clip.none,
                         children: [
-                          const Icon(Icons.chat_bubble_outline,
-                              color: Colors.white, size: 25),
+                          const Icon(Icons.chat_bubble_outline, color: Colors.white, size: 25),
                           if (unreadMessages > 0)
                             Positioned(
                               right: -2,

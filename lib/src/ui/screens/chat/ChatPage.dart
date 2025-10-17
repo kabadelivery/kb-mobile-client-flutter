@@ -4,10 +4,10 @@ import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 import '../../../models/CustomerModel.dart';
 import '../../../models/MessageModel/messageModel.dart';
+import '../../../resources/socket/sockets.dart';
 import '../../../utils/_static_data/ServerRoutes.dart';
 import '../../../utils/functions/CustomerUtils.dart';
 import '../../customwidgets/Chat/OwnMessage.dart';
@@ -24,7 +24,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  late IO.Socket socket;
   final Dio _dio = Dio();
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _controller = TextEditingController();
@@ -35,81 +34,62 @@ class _ChatPageState extends State<ChatPage> {
   int? customerId;
   String customerName = '';
   bool sendButton = false;
-  bool _isLoading = true; // loading state
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
     _initData();
+
+    // 🔹 Reset unread count when opening chat
+    SocketService().resetUnread();
+
+    // 🔹 Listen to new incoming messages
+    SocketService().messagesStream.listen((msg) {
+      final senderId = msg["senderId"];
+      final text = msg["text"];
+      if (senderId.toString() != customerId.toString()) {
+        _addMessage(MessageModel(
+          message: text,
+          type: "destination",
+          messageType: text.startsWith("http") ? "image" : "text",
+          senderName: msg["senderName"] ?? "Service Client",
+          time: DateTime.parse(msg["createdAt"]),
+        ));
+      }
+    });
   }
 
   Future<void> _initData() async {
     CustomerModel customer = await CustomerUtils.getCustomer();
-    String? digitsOnly = customer.phone_number?.replaceAll(RegExp(r'\D'), '');
-    customerId = int.parse(digitsOnly!);
-    customerName = customer.nickname!;
+    customerId = int.parse(customer.phone_number!.replaceAll(RegExp(r'\D'), ''));
+    customerName = customer.nickname ?? "";
 
-    _connectSocket();
+    // Initialize socket
+    SocketService().init(customerId.toString());
 
-    Future.delayed(const Duration(milliseconds: 700), () {
-      if (socket.connected && customerId != null) {
-        socket.emit("/getMessages", {
-          "userId": customerId,
-          "otherId": 92109474,
-        });
-      }
+    // 🔹 Fetch chat history from backend
+    SocketService().fetchChatHistory(widget.receiverId.toString());
+
+    // 🔹 Listen for chat history once it arrives
+    SocketService().historyStream.listen((history) {
+      setState(() {
+        messages = history.map((m) {
+          final isMine = m['senderId'].toString() == customerId.toString();
+          return MessageModel(
+            message: m['text'] ?? '',
+            type: isMine ? 'source' : 'destination',
+            messageType: (m['text'] ?? '').startsWith('http') ? 'image' : 'text',
+            senderName: m['senderName'] ?? (isMine ? 'You' : 'Service Client'),
+            time: DateTime.parse(m['createdAt']),
+          );
+        }).toList();
+        _isLoading = false;
+      });
+      _scrollToBottom();
     });
   }
 
-  void _connectSocket() {
-    socket = IO.io(
-      ServerRoutes.KABA_CHAT,
-      IO.OptionBuilder().setTransports(['websocket']).disableAutoConnect().build(),
-    );
-
-    socket.connect();
-
-    socket.onConnect((_) {
-      if (customerId != null) socket.emit("/register", customerId);
-    });
-
-    socket.on("messages", (history) {
-      for (var msg in history) {
-        _addMessage(MessageModel(
-          message: msg["text"],
-          type: msg["senderId"] == customerId ? "source" : "destination",
-          messageType: msg["text"].startsWith("http") ? "image" : "text",
-          senderName: msg["senderId"] == 92109474
-              ? "Service Client"
-              : (msg["senderId"] == customerId ? "You" : (msg["senderName"] ?? "Unknown")),
-          time: DateTime.parse(msg["createdAt"]),
-        ));
-      }
-      setState(() => _isLoading = false);
-    });
-
-    socket.on("message", (msg) {
-      final senderId = msg["senderId"];
-      final text = msg["text"];
-
-      final isDuplicate = messages.isNotEmpty &&
-          messages.last.message == text &&
-          senderId == customerId;
-      if (isDuplicate) return;
-
-      _addMessage(MessageModel(
-        message: text,
-        type: senderId == customerId ? "source" : "destination",
-        messageType: text.startsWith("http") ? "image" : "text",
-        senderName: senderId == 92109474
-            ? "Service Client"
-            : (senderId == customerId ? "You" : (msg["senderName"] ?? "Unknown")),
-        time: DateTime.parse(msg["createdAt"]),
-      ));
-    });
-
-    socket.onDisconnect((_) {});
-  }
 
   void _addMessage(MessageModel msg) {
     messages.add(msg);
@@ -122,12 +102,12 @@ class _ChatPageState extends State<ChatPage> {
 
     final messageData = {
       "senderId": customerId,
-      "receiverId": 92109474,
+      "receiverId": widget.receiverId,
       "text": text.trim(),
       "senderName": customerName,
     };
 
-    socket.emit("/message", messageData);
+    SocketService().socket?.emit("/message", messageData);
 
     _addMessage(MessageModel(
       message: text.trim(),
@@ -147,7 +127,7 @@ class _ChatPageState extends State<ChatPage> {
 
     try {
       final file = File(image.path);
-      final uploadUrl = ServerRoutes.KABA_CHAT+"/upload-image";
+      final uploadUrl = ServerRoutes.KABA_CHAT + "/upload-image";
       final fileName = path.basename(file.path);
 
       final formData = FormData.fromMap({
@@ -156,6 +136,7 @@ class _ChatPageState extends State<ChatPage> {
 
       final response = await _dio.post(uploadUrl, data: formData);
       final imageUrl = response.data["url"];
+
       _addMessage(MessageModel(
         message: imageUrl,
         type: "source",
@@ -163,9 +144,10 @@ class _ChatPageState extends State<ChatPage> {
         senderName: "You",
         time: DateTime.now(),
       ));
-      socket.emit("/message", {
+
+      SocketService().socket?.emit("/message", {
         "senderId": customerId,
-        "receiverId": 92109474,
+        "receiverId": widget.receiverId,
         "text": imageUrl,
         "senderName": customerName,
       });
@@ -188,7 +170,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   void dispose() {
-    socket.dispose();
     _controller.dispose();
     _scrollController.dispose();
     super.dispose();
@@ -279,7 +260,7 @@ class _ChatPageState extends State<ChatPage> {
                 CircleAvatar(
                   backgroundColor: KColors.primaryColor,
                   child: IconButton(
-                    icon: Icon(Icons.send, color: Colors.white),
+                    icon: const Icon(Icons.send, color: Colors.white),
                     onPressed: () {
                       if (_controller.text.trim().isNotEmpty) sendMessage(_controller.text.trim());
                     },

@@ -18,6 +18,9 @@ import 'package:KABA/src/resources/kkiapay_provider.dart';
 
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 
+import '../../../../contracts/transaction_contract.dart';
+import '../../../screens/home/me/abonnement/kaba_abonnements.dart';
+
 class SubscriptionBottomSheet extends StatefulWidget {
   final int idPack;
   final String title;
@@ -620,6 +623,14 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                       onPressed: () {
                         Navigator.pop(context);
                         Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Kaba_abonnement(
+                              presenter: TransactionPresenter(TransactionView()),
+                            ),
+                          ),
+                        );
                       },
                       child:
                       const Text("Fermer", style: TextStyle(color: Colors.white)),

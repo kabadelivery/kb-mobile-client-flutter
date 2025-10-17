@@ -213,10 +213,21 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
 
         // 🆕 ADDED: Wait 5 seconds then refresh subscription and UI
         setState(() => isLoadingSubscription = true);
-        await Future.delayed(Duration(seconds: 10));
-        await _fetchSubscription();
-        setState(() => isLoadingSubscription = false);
+        await Future.delayed(Duration(seconds: 3));
+
+        // ✅ Immediately refresh subscription *after* modal is closed
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => Kaba_abonnement(
+              presenter: TransactionPresenter(TransactionView()),
+            ),
+          ),
+        );
+
         _refreshPage();
+
+
 
       } else {
         try {
@@ -837,7 +848,7 @@ void _showAddBottomSheet() {
                 )
               else if (subscriptionFetchFailed || subscriptionData == null)
                 _buildInactiveCard()
-              else if (subscriptionData!["status_abonnement"] == 1)
+              else if (subscriptionData!["status_abonnement"].toString() == "1")
                   _buildActiveCard(subscriptionData!)
                 else
                   _buildInactiveCard(),
