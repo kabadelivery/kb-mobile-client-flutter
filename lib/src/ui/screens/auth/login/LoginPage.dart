@@ -430,11 +430,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     String login = _loginFieldController.text;
 
     // control login stuff
-    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+  /*  if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
       mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
-    }
+    }*/
     
     /* // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
@@ -475,11 +475,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     String login = _loginFieldController.text;
 
     // control login stuff
-    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+   /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
       mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
-    }
+    }*/
     
     // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(

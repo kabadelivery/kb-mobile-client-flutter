@@ -67,7 +67,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>ForgotenPasswordOTP()
+        builder: (context) =>RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView()),)
       ),
     );
   }
