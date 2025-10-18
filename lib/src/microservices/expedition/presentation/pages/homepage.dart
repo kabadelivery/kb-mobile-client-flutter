@@ -1,9 +1,11 @@
 import 'package:KABA/src/microservices/expedition/Enums/expedition_type.dart';
+import 'package:KABA/src/microservices/expedition/data/expedition/expedition_model.dart';
+import 'package:KABA/src/microservices/expedition/presentation/bloc/expedition/expedition_bloc.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/tracking_package.dart';
-import 'package:KABA/src/microservices/kaba_chine/core/utils.dart';
-import 'package:KABA/src/microservices/kaba_chine/functions/contact.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../StateContainer.dart';
@@ -24,6 +26,11 @@ class KabaExpeditionHomePage extends StatefulWidget {
 class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
 
   ExpeditionType selectedType = ExpeditionType.international;
+  List<ExpeditionModel> expeditions = [];
+  @override
+  void initState(){
+    BlocProvider.of<ExpeditionBloc>(context).add(GetUserExpeditionEvent());
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,7 +103,15 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                 Positioned(
                                   right: -5,
                                   top: 0,
-                                  child: Container(
+                                  child: BlocSelector<ExpeditionBloc, ExpeditionState, ExpeditionState>(
+                                    selector: (state) {
+                                      return state;
+                                    },
+                                    builder: (context, state) {
+                                      if(state is UserExpeditionsLoaded){
+                                        expeditions = state.expeditions;
+                                      }
+                                      return expeditions.isNotEmpty?Container(
                                       padding: EdgeInsets.all(3),
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
@@ -104,8 +119,10 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                                         shape: BoxShape.circle,
                                         border: Border.all(color: Colors.white, width: 1.5),
                                       ),
-                                      child: Text("+1",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: KColors.primaryColor),)
-                                  ),
+                                      child: Text("+${expeditions.length}",textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold,fontSize: 10,color: KColors.primaryColor),)
+                                  ):Container();
+  },
+),
                                 ),
                               ],
                             ),
@@ -113,7 +130,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           Row(
                             children: [
                               IconButton(onPressed: (){
-                                showBottomContactSheet(context: context);
+                                showBottomContactSheet(context: context, number: '+22871499014}');
                               }, icon: Icon(Icons.phone_outlined,color: Colors.white,size: 30,)),
                               GestureDetector(
                                   onTap: (){
@@ -187,7 +204,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             SizedBox(height: 30,),
-                            Text('Expédier un colis',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22,color: KColors.primaryColor,fontFamily: 'Inter'),),
+                            Text('${AppLocalizations.of(context)!.translate('ship_a_package')}',style: TextStyle(fontWeight: FontWeight.bold,fontSize: 22,color: KColors.primaryColor,fontFamily: 'Inter'),),
                             SizedBox(height: 5,),
                             Container(
                                 width: 270,

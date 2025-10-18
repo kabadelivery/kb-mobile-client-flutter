@@ -61,8 +61,7 @@ class _HeaderState extends State<Header> {
   void getPerf() async {
     performance = await Utils.getAppPerformance();
     CustomerModel customerModel = await CustomerUtils.getCustomer();
-   // debugPrint("CustomerModel token ${customerModel.token}");
-    setState(() {});
+     setState(() {});
   }
 
   void _resetUnread() {
@@ -90,6 +89,9 @@ class _HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      getPerf();
+    });
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 15),

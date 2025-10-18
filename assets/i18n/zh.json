@@ -989,6 +989,6 @@
   "approximate_weight": "大约重量 (公斤)",
   "price_negotiation": "价格协商",
   "negotiation_unavailable_message": "价格协商仅在第二步（包裹详情）之后才可进行。\n\n",
-  "understood": "我明白了"
-
+  "understood": "我明白了",
+  "ship_a_package": "寄送包裹"
 }

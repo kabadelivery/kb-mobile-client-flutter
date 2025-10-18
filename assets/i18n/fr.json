@@ -999,5 +999,7 @@
   "approximate_weight": "Poids approximatif (Kg)",
   "price_negotiation": "Négociation de prix",
   "negotiation_unavailable_message": "La négociation du prix n’est possible qu’après l’étape 2 (détails du colis).\n\n",
-  "understood": "J'ai compris"
+  "understood": "J'ai compris",
+  "ship_a_package": "Expédier un colis"
+
 }

@@ -1,3 +1,4 @@
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -75,10 +76,10 @@ class _OutOfAppPresState extends ConsumerState<OutOfAppPres> {
                   Row(
                     children: [
                       IconButton(onPressed: (){
-                        showBottomContactSheet(context: context);
+                        showBottomContactSheet(context: context, number: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}');
                       }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
                       IconButton(onPressed: (){
-                        contactWhatsApp(phoneNumber: "+22871499014", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                        contactWhatsApp(phoneNumber: "${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
                       }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                     ],
                   )

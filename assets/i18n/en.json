@@ -987,5 +987,7 @@
   "approximate_weight": "Approximate weight (Kg)",
   "price_negotiation": "Price negotiation",
   "negotiation_unavailable_message": "Price negotiation is only possible after step 2 (package details).\n\n",
-  "understood": "Got it"
+  "understood": "Got it",
+  "ship_a_package": "Ship a package"
+  
 }

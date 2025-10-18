@@ -146,7 +146,7 @@ Widget PurchaseAddress(BuildContext context,
                   ),
                   SizedBox(height: 6),
                   Text(
-                    "Envoyer position GPS",
+                    "Sélectionner une adresse GPS",
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w600,

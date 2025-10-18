@@ -497,7 +497,7 @@ void _showAddBottomSheet() {
                 color: const Color(0xFFFFE9EE),
                 borderRadius: BorderRadius.circular(8),
               ),
-              height: 300,
+
               child: Column(
                 children: [
                   const SizedBox(height: 5),
@@ -528,7 +528,8 @@ void _showAddBottomSheet() {
 
                   const SizedBox(height: 5),
 
-                  // --- Copier le lien ---
+                /*
+                *   // --- Copier le lien ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
@@ -571,6 +572,9 @@ void _showAddBottomSheet() {
                       label: const Text("Partager"),
                     ),
                   ),
+                * */
+
+
 
                   const SizedBox(height: 5),
 
@@ -579,7 +583,7 @@ void _showAddBottomSheet() {
                     width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: KColors.primaryColor,
                         foregroundColor: KColors.primaryColor,
                         side: const BorderSide(color: KColors.primaryColor),
                         shape: RoundedRectangleBorder(
@@ -592,7 +596,7 @@ void _showAddBottomSheet() {
                       },
                       label: Text(
                         "Code : ${data["codeAbonnement"].toString()}",
-                        style: const TextStyle(color: Colors.black),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ),

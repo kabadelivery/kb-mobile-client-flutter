@@ -9,7 +9,7 @@ import '../../../../localizations/AppLocalizations.dart';
 import '../../../../utils/_static_data/AppConfig.dart';
 import '../../../../utils/_static_data/ImageAssets.dart';
 
-showBottomContactSheet({required BuildContext context}) {
+showBottomContactSheet({required BuildContext context, required String number}) {
   showMaterialModalBottomSheet(
     backgroundColor: Colors.transparent,
     expand: false,
@@ -34,7 +34,7 @@ showBottomContactSheet({required BuildContext context}) {
                 ),
                 child: Text("${AppLocalizations.of(context)!.translate('contact_our_customer_service')}",style: TextStyle(color: Colors.white,fontSize: 14))),
             InkWell(
-              onTap: () => {_callCustomerCare()},
+              onTap: () => {_callCustomerCare(number)},
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: Row(
@@ -56,7 +56,7 @@ showBottomContactSheet({required BuildContext context}) {
                 color: KColors.new_gray,
                 height: 1),
             InkWell(
-              onTap: () => {_jumpToWhatsapp(context)},
+              onTap: () => {_jumpToWhatsapp(context,number)},
               child: Container(
                 margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                 child: Row(
@@ -82,17 +82,17 @@ showBottomContactSheet({required BuildContext context}) {
   );
 }
 
-Future<void> _callCustomerCare() async {
+Future<void> _callCustomerCare(String number) async {
 //    Toast.show("call customer care", context);
-  const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+  var url = "tel:$number";
   if (await canLaunch(url)) {
     await launch(url);
   } else {
   }
 }
-_jumpToWhatsapp(context) async {
+_jumpToWhatsapp(context,String number) async {
   final link = WhatsAppUnilink(
-    phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+    phoneNumber: '$number',
     text: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}",
   );
   await launch('$link');

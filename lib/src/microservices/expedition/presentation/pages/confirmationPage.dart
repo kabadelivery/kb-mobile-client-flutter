@@ -1,6 +1,7 @@
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/presentation/pages/homepage.dart';
 import 'package:KABA/src/microservices/kaba_chine/functions/contact.dart';
+import 'package:KABA/src/ui/screens/chat/ChatPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -332,7 +333,10 @@ class _ConfirmationpageState extends State<Confirmationpage> {
                               borderRadius: BorderRadius.circular(10)
                           ),
                           onPressed: (){
-                            contactWhatsApp(phoneNumber: "+22871499014", message: "");
+                          Navigator.pushReplacement(context,    MaterialPageRoute(
+                            builder: (context) => ChatPage(token: '', receiverId: 92109474),
+                          ),
+                          );
                           },
                           child: Row(
                             children: [

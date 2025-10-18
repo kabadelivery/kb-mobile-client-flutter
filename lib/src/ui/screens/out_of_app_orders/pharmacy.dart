@@ -9,8 +9,10 @@ import '../../../localizations/AppLocalizations.dart';
 import '../../../microservices/expedition/presentation/pages/tracking_package.dart';
 import '../../../microservices/expedition/presentation/widget/contact.dart';
 import '../../../microservices/kaba_chine/functions/contact.dart';
+import '../../../utils/_static_data/AppConfig.dart';
 import '../../../utils/functions/OutOfAppOrder/resetProviders.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
+import '../chat/ChatPage.dart';
 
 class PharmacyPage extends ConsumerStatefulWidget {
   const PharmacyPage({super.key});
@@ -73,10 +75,12 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                   Row(
                     children: [
                       IconButton(onPressed: (){
-                        showBottomContactSheet(context: context);
+                        showBottomContactSheet(context: context, number: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}');
                       }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
                       IconButton(onPressed: (){
-                        contactWhatsApp(phoneNumber: "+22871499014", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                        Navigator.pushReplacement(context,    MaterialPageRoute(
+                            builder: (context) => ChatPage(token: '', receiverId: 92109474),
+                        ));
                       }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                     ],
                   )

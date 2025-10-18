@@ -3285,14 +3285,21 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                             color:topup_button_pressed==false? KColors.primaryColor.withAlpha(30):KColors.primaryColor,
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(5))),
-                                        child:  Text(
-                                            "${AppLocalizations.of(context)!.translate('top_up')}"
-                                                ,
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color:topup_button_pressed==false?KColors.primaryColor: Colors.white,
-                                                fontWeight:
-                                                FontWeight.w500)),
+                                        child:  Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(Icons.wallet_outlined,color: topup_button_pressed? Colors.white:KColors.primaryColor,),
+                                            SizedBox(width:5),
+                                            Text(
+                                                "${AppLocalizations.of(context)!.translate('top_up')}"
+                                                    ,
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    color:topup_button_pressed==false?KColors.primaryColor: Colors.white,
+                                                    fontWeight:
+                                                    FontWeight.w500)),
+                                          ],
+                                        ),
                                       )),
                                 ],
                               ),

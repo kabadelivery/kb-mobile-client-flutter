@@ -720,7 +720,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                              "${AppLocalizations.of(context)!.translate('top_up')}"
+                      (widget.transactionType== TransactionType.expedition)?"${AppLocalizations.of(context)!.translate('pay')}".toUpperCase():
+                      "${AppLocalizations.of(context)!.translate('top_up')}"
                                   .toUpperCase(),
                               style:
                               TextStyle(fontSize: 14, color: Colors.white)),

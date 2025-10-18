@@ -96,7 +96,6 @@ class OrderApiProvider {
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_COMPUTE_BILLING).toString(),
           data: _data);
-
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         return OrderBillConfiguration.fromJson(
@@ -196,7 +195,7 @@ class OrderApiProvider {
       );
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
-        requestData['user_abonnement'] = abonnementResponse.data;
+       // requestData['user_abonnement'] = abonnementResponse.data;
       } else {
         xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
         requestData['user_abonnement'] = {};
