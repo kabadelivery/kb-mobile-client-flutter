@@ -240,6 +240,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                      borderRadius: BorderRadius.circular(30),
                    ),
                  ),
+                 keyboardType: TextInputType.number,
                ),
                const SizedBox(height: 20),
 

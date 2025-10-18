@@ -14,6 +14,7 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../StateContainer.dart';
@@ -43,6 +44,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
+  TextEditingController Pass2FieldController = new TextEditingController();
 
   bool isCodeSent = false;
   bool isLoginError = false;
@@ -132,21 +134,78 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(height: 30),
-                    Icon(Icons.account_circle, size: 80, color: KColors.primaryYellowColor),
+
                     SizedBox(height: 10),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                   // Container(margin: EdgeInsets.only(left:10, right: 10),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.new_black)),
-                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),
+                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
+                        SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                        SizedBox(width: 5),
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Center(
+                      child:
+                      Text(" Réinitialisez votre mot de passe KABA ${} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(left:20  ,  right:20 ),
+                      child: TextField(
+                        controller: _loginFieldController,
+                        // obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          hintText: "Mot de passe",
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          /*  suffixIcon: IconButton(
+                      // icon: Icon(
+                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                       onPressed: () {
+                         setState(() {
+                         //  _obscurePassword = !_obscurePassword;
+                         });
+                       },
+                                         ), */
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left:20  ,  right:20 , top: 20 ),
+                      child: TextField(
+                        controller: Pass2FieldController,
+                        // obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          hintText: " Confirmez votre Mot de passe",
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          /*  suffixIcon: IconButton(
+                      // icon: Icon(
+                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                       onPressed: () {
+                         setState(() {
+                         //  _obscurePassword = !_obscurePassword;
+                         });
+                       },
+                                         ), */
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
 
                     SizedBox(height: 30),
                     SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                  //  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -160,7 +219,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlinedButton(
+                          /*OutlinedButton(
                               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
                               child: Row(
                                 children: <Widget>[
@@ -173,7 +232,20 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                                     ],
                                   ) : Container(),
                                 ],
-                              ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
+                              ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),*/
+
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: KColors.primaryColor,
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                             onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};} ,
+                            child:  Text("Valider",
+                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          ),
                         ]),
                     SizedBox(height: 30),
                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
@@ -206,7 +278,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     String login = _loginFieldController.text;
     /* check the fields */
 
-    if (Utils.isPhoneNumber_TGO(login)) {
+    if (login != "") {
       this.widget.presenter!.sendVerificationCode(login);
       mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
     } else if (Utils.isEmailValid(login)) {

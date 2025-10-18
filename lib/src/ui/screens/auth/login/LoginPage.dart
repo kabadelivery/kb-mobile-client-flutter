@@ -64,6 +64,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   bool _loading = false;
 
+  String selectedCountryCode = '';
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -157,7 +159,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                       child: GestureDetector(
                         onTap: () => setState(() => isPhoneSelected = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 3),
+                          padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 15),
                           decoration: BoxDecoration(
                             color: isPhoneSelected ? KColors.primaryColor : Colors.white,
                            // border: Border.all(color: KColors.primaryColor, width: 1.5),
@@ -234,51 +236,60 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
               SizedBox(height: 20),
                
                    if (isPhoneSelected) ...[
-                TextFormField(
-                  controller: _loginFieldController,
-                  onChanged: (_){
-                    setState(() {
-                      _loading=false;
-                    });
-                  },
-                  enabled:!isConnecting, maxLength: TextField.noMaxLength,
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.only(top:1),
-                      child: CountryCodePicker(
+          TextFormField(
+          controller: _loginFieldController,
+          onChanged: (_) {
+            setState(() {
+              _loading = false;
+            });
+          },
+          enabled: !isConnecting,
+          maxLength: TextField.noMaxLength,
+          decoration: InputDecoration(
+             // 👈 reduce field height
+            prefixIcon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0), // 👈 smaller padding
+              child: CountryCodePicker(
                 onChanged: (code) {
+                  setState(() {
+                    selectedCountryCode = code.dialCode ?? '';
+                  });
                   debugPrint("New country selected: ${code.dialCode}");
-
                 },
                 initialSelection: 'TG', // default to Togo
                 favorite: const ['+228', 'TG'], // keep Togo as favorite
                 showFlag: true,
-                        showDropDownButton: true,
-                textStyle: const TextStyle(color: Colors.black, fontSize: 16),
+                showDropDownButton: true,
+                textStyle: const TextStyle(color: Colors.black, fontSize: 12), // 👈 smaller text
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
                 alignLeft: false,
-              ) ,
-                    ),
-                    prefixIconConstraints:
-                        const BoxConstraints(minWidth: 0, minHeight: 0),
-                    hintText: "Entrez votre numéro",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(width:1,color: KColors.primaryColor),
-                      borderRadius: BorderRadius.circular(50),
-                    ),
-                  ),
-                  keyboardType: TextInputType.text,
-                ),
-                 /* SizedBox(width: 250,
+              ),
+            ),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 0,
+              minHeight: 0,
+            ),
+            hintText: "Entrez votre numéro",
+            hintStyle: const TextStyle(fontSize: 14),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(20), // 👈 smaller radius
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          keyboardType: TextInputType.phone,
+          style: const TextStyle(fontSize: 14), // 👈 smaller input text
+        ),
+
+      /* SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child:
@@ -312,7 +323,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                     backgroundColor: KColors.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: () {
@@ -391,7 +402,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (results != null && results.containsKey('phone_number') && results.containsKey('password')
         && results.containsKey('autologin')) {
       setState(() {
-        _loginFieldController.text = results['phone_number'];
+        _loginFieldController.text = selectedCountryCode+results['phone_number'];
       });
       showLoading(true);
       // launch request for retrieving the delivery prices and so on.
@@ -427,7 +438,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
      setState(() {
        _loading = true;
      });
-    String login = _loginFieldController.text;
+    String login = selectedCountryCode+_loginFieldController.text;
 
     // control login stuff
   /*  if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
@@ -472,7 +483,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   Future _launchConnexion() async {
 
-    String login = _loginFieldController.text;
+    String login = selectedCountryCode+_loginFieldController.text;
 
     // control login stuff
    /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
