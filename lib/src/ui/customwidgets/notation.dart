@@ -9,23 +9,27 @@ Widget Notation({required String text,int? count, ShopProductModel? food}) {
 
   double note = double.parse(text)<1?0.0:double.parse(text);
 
-  return food==null?Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-       for (var i = 0; i < 5; i++)
-        Icon(
-          i < note ? Icons.star : Icons.star_border,
-          color: KColors.primaryYellowColor,
-          size: 16,
-        ),
-     ],
+  return food==null?Container(
+    padding: EdgeInsets.all(5),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        color: Colors.yellow.withOpacity(.1)),
+
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Icon(Icons.star, color: KColors.primaryYellowColor, size: 14) ,
+        Text('${note.toStringAsFixed(1)}',style: TextStyle(color: Colors.grey,fontSize: 14,),),
+      ],
+    ),
   ):Row(
     mainAxisAlignment: MainAxisAlignment.start,
     crossAxisAlignment: CrossAxisAlignment.center,
     children: [
-      Text('${text.substring(2,3)=="0"?text.substring(0,1):note.toStringAsFixed(1)}/5',style: TextStyle(color: KColors.primaryColor,fontSize: 12,fontWeight: FontWeight.bold),),
-      SizedBox(width: 4,),
-      Icon(Icons.star, color: KColors.primaryColor, size: 18) ,
+      Text('${note.toStringAsFixed(1)}',style: TextStyle(color: KColors.primaryColor,fontSize: 14,fontWeight: FontWeight.bold),),
+
+      Icon(Icons.star, color: KColors.primaryYellowColor, size: 18) ,
     ],
   );
 }
@@ -50,3 +54,5 @@ Future<Map?> showReviewDialog(BuildContext context,Widget dialog) async {
     },
   );
 }
+
+

@@ -14,9 +14,11 @@ import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import '../../../../StateContainer.dart';
+import '../login/LoginOTPnewPage.dart';
 
 
 class RecoverPasswordPage extends StatefulWidget {
@@ -40,12 +42,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   List<String> recoverModeHints = [""];
 
   String _loginFieldHint = "";
-    final TextEditingController passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  String errorMessage = "";
 
   TextEditingController _loginFieldController = new TextEditingController();
   TextEditingController _codeFieldController = new TextEditingController();
+  TextEditingController Pass2FieldController = new TextEditingController();
 
   bool isCodeSent = false;
   bool isLoginError = false;
@@ -59,22 +59,6 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   int timeDiff = 0;
 
   String? _requestId;
-  void _submitCode() {
-    String enteredPassword = passwordController.text.trim();
-
-    if (enteredPassword.isEmpty) {
-      setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
-      return;
-    }
-
-    if (enteredPassword.length < 4) {
-      setState(() => errorMessage = "Le mot de passe doit contenir au moins 4 caractères.");
-      return;
-    }
-
-    // ✅ Simulate navigation with collected password (old behavior)
-   // Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
-  }
 
   @override
   void initState() {
@@ -128,7 +112,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
               onPressed: () {
                 Navigator.pop(context);
               }),
-      centerTitle: true,
+          centerTitle: true,
           title: Row(mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -144,84 +128,85 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
         ),
         backgroundColor: Colors.white,
         body: Container(
-          padding:EdgeInsets.all(20),
           height: MediaQuery.of(context).size.height,
           child: SingleChildScrollView(
             child:Center(
               child: Column(
-                
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const SizedBox(height: 40),
-                    Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size: 25),
-                    SizedBox(width: 20),
-                    Text("Connexion",
-                        style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-                 const SizedBox(height: 40),
-                const Text("Votre numero de Telephone",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
+                    SizedBox(height: 30),
 
-                // ✅ Password Field
-                TextField(
-                  controller: _loginFieldController,
-                  
-                  decoration: InputDecoration(
-                    hintText: "90 00 00 01",
-                    prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
-                    /* suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          color: KColors.primaryColor),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                    ), */
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
+                    SizedBox(height: 10),
+                    SizedBox(height: 10),
+                   // Container(margin: EdgeInsets.only(left:10, right: 10),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
+                    Row(mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
+                        SizedBox(width: 10),
+                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
+                        SizedBox(width: 5),
+                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
+                      ],
                     ),
-                  ),
-                ),
-
-                if (errorMessage.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
-                ],
-
-                const SizedBox(height: 30),
-
-                // ✅ Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
+                    SizedBox(height: 20),
+                    Center(
+                      child:
+                      Text(" Réinitialisez votre mot de passe KABA  ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                    ),
+                    SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.only(left:20  ,  right:20 ),
+                      child: TextField(
+                        controller: _loginFieldController,
+                        // obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          hintText: "Mot de passe",
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          /*  suffixIcon: IconButton(
+                      // icon: Icon(
+                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                       onPressed: () {
+                         setState(() {
+                         //  _obscurePassword = !_obscurePassword;
+                         });
+                       },
+                                         ), */
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
                       ),
                     ),
-                    onPressed: _submitCode,
-                    child: const Text("Se connecter",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ),
-                ),
-
-                    /* Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                    SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.new_black)),
-                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),*/
+                    Padding(
+                      padding: const EdgeInsets.only(left:20  ,  right:20 , top: 20 ),
+                      child: TextField(
+                        controller: Pass2FieldController,
+                        // obscureText: _obscurePassword,
+                        decoration: InputDecoration(
+                          hintText: " Confirmez votre Mot de passe",
+                          prefixIcon: const Icon(Icons.lock_outline),
+                          /*  suffixIcon: IconButton(
+                      // icon: Icon(
+                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
+                       onPressed: () {
+                         setState(() {
+                         //  _obscurePassword = !_obscurePassword;
+                         });
+                       },
+                                         ), */
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        keyboardType: TextInputType.number,
+                      ),
+                    ),
 
                     SizedBox(height: 30),
-                    SizedBox(height: 10), 
-                    Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
+                    SizedBox(height: 10),
+                  //  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 10),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -235,29 +220,76 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
                           ) : Container(),
                           isCodeSent ? SizedBox(width:20) : Container(),
-                          OutlinedButton(
+                          /*OutlinedButton(
                               style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
                               child: Row(
-                            children: <Widget>[
-                              Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                              /* stream builder, that shows that the code is been sent */
-                              isCodeSent == false &&  isCodeSending ? Row(
                                 children: <Widget>[
-                                  SizedBox(width: 10),
-                                  SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                  Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
+                                  /* stream builder, that shows that the code is been sent */
+                                  isCodeSent == false &&  isCodeSending ? Row(
+                                    children: <Widget>[
+                                      SizedBox(width: 10),
+                                      SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
+                                    ],
+                                  ) : Container(),
                                 ],
-                              ) : Container(),
-                            ],
-                          ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),
+                              ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),*/
+
+                          Container(
+                            width: 350,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: KColors.primaryColor,
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                               onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};} ,
+                              child:  Text("Valider",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            ),
+                          ),
                         ]),
                     SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                    isCodeSent ?
+                    Container(
+
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                          onPressed: () {
+                        //  isCodeSent ?
+
+                          //_checkCodeAndCreateAccount()
+
+                             // : {};
+
+                          },
+                          child:  Text( "Valider",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                      ),
+                      ),
+
+                      )
+
+
+                   /* MaterialButton( color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text("${AppLocalizations.of(context)!.translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) */
+
+
+                        : Container(),
                   ]
               ),
             ),
@@ -275,19 +307,28 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 //    });
 //  }
 
-  void _sendCodeAction() {
+  Future<void> _sendCodeAction() async {
 
     /* logins */
     String login = _loginFieldController.text;
     /* check the fields */
 
-    if (Utils.isPhoneNumber_TGO(login)) {
+    var codetyped =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+
+    if (login.length > 7) {
       this.widget.presenter!.sendVerificationCode(login);
+      _checkCodeAndCreateAccount(codetyped['code']);
+
       mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
     } else if (Utils.isEmailValid(login)) {
+      _checkCodeAndCreateAccount(codetyped['code']);
       this.widget.presenter!.sendVerificationCode(login);
       mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}", is_code_confirmation: true);
     } else {
+      mDialog("❌ Un des champ est Vide !");
       /* login error */
       setState(() {
         isLoginError = true;
@@ -404,12 +445,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
     if (isOk) {
       /* clear shared preferences */
       _clearSharedPreferences();
-      var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+     /* var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return new RetrievePasswordPage(type: 1);
         },
-      ));
-      if (results != null && results.containsKey('code') && results.containsKey('type')) {
+      ));*/
+      /*if (results != null && results.containsKey('code') && results.containsKey('type')) {
         _mCode1 = results['code'];
         int type = results['type'];
         /* launch confirmation */
@@ -424,10 +465,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
             _mCode2 = results['code'];
           }
         } while (_mCode1 != _mCode2);
-      }
+      }*/
 
       /* launch create account request, and if success*/
-      widget.presenter!.updatePassword(_loginFieldController.text, _mCode1!, _requestId!);
+      widget.presenter!.updatePassword(_loginFieldController.text, '1234', _requestId!);
       /*this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
           phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
           email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
@@ -480,10 +521,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   }
 
 
-  _checkCodeAndCreateAccount() {
+  _checkCodeAndCreateAccount(_code) {
 
     /* check request id and the code */
-    String _code = _codeFieldController.text;
+   // String _code = _codeFieldController.text;
     if (Utils.isCode(_code)) {
       setState(() {
         isCodeSending = false;
@@ -538,9 +579,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   void mDialog(String message, {bool is_code_confirmation = false}) {
 
     _showDialog(
-      icon: Icon(Icons.info_outline, color: Colors.red),
-      message: "${message}",
-      isYesOrNo: false,
+        icon: Icon(Icons.info_outline, color: Colors.red),
+        message: "${message}",
+        isYesOrNo: false,
         is_code_confirmation : is_code_confirmation
     );
   }

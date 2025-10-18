@@ -27,7 +27,6 @@ abstract class ExpeditionRemoteDataSource {
     required Map<String, dynamic> queryParameters,
     required String customer_token,
   });
-
   Future<List<ExpeditionModel>> createAnExpedition({
     required CreateExpedition expedition,
     required CustomerModel customer,
@@ -145,11 +144,15 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
    final dio = _dioWithToken(customer.token!);
    expedition.colis = expedition.colis?.map((colis) {
      colis.quantite=1;
+     colis.telephoneDestination = colis.recipientPhoneNumber;
+     colis.contactDestination =colis.recipientPhoneNumber;
      return colis;
    }).toList();
+   debugPrint("XXX colis expedition ${expedition.toJson()}");
+
    var data = {
      "ligneId": expedition.colis![0].ligneId,
-     "adresseOrigine": expedition.adresseOrigine,
+     "adresseOrigine": expedition.adresseOrigine==null?"PICKUP AT KABA DELIVERY":expedition.adresseOrigine,
      "adresseDestination": expedition.adresseDestination,
      "contactOrigine": expedition.telephoneOrigine,
      "telephoneOrigine": expedition.telephoneOrigine,
@@ -157,9 +160,9 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
      "telephoneDestination": expedition.colis![0].recipientPhoneNumber,
      "methodeLivraison": "International",
      "methodeCollecte": expedition.methodeCollecte,
-     "colis": expedition.colis?.map((colis) => colis.toJson()).toList(),
-     "dateCollecte": expedition.dateCollecte?.toIso8601String(),
-     "heureCollecte": expedition.heureCollecte,
+     "colis": expedition.colis?.map((colis) => colis.toJsonApi()).toList(),
+     "dateCollecte": expedition.dateCollecte!=null?expedition.dateCollecte!.toIso8601String():DateTime.now().toIso8601String(),
+     "heureCollecte": expedition.heureCollecte==null?"10:OO-12:00":expedition.heureCollecte,
      "createdBy": {
        "id": customer.phone_number,
        "email": customer.email,
@@ -206,7 +209,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
          colis: (el['colis'] as List)
              .map((colis) => PackageModel.fromJson(colis as Map<String, dynamic>))
              .toList(),
-         createdBy: CreatedByModel.fromJson(el['createdBy']),
          createdAt: DateTime.parse(el['createdAt']),
          updatedAt: DateTime.parse(el['updatedAt']),
        );

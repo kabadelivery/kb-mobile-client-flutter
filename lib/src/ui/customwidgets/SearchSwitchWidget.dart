@@ -35,10 +35,10 @@ class SearchSwitchWidget extends StatefulWidget {
 }
 
 class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
-  Color filter_unactive_button_color = Color(0xFFF7F7F7),
-      filter_active_button_color = KColors.primaryColor,
-      filter_unactive_text_color = KColors.new_black,
-      filter_active_text_color = Colors.white;
+  Color filter_unactive_button_color = Color(0xF7F7F7),
+      filter_active_button_color = KColors.white,
+      filter_unactive_text_color = KColors.white,
+      filter_active_text_color =KColors.primaryColor;
 
   var _filterDropdownValue;
 
@@ -123,17 +123,17 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
     return widget?.type == "ticket"
         ? Container()
         : Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+           width: MediaQuery.of(context).size.width*.8,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   flex: 5,
                   child: AnimatedContainer(
                     decoration: BoxDecoration(
-                      color: filter_unactive_button_color,
+                      color: filter_unactive_button_color.withOpacity(.2),
                       borderRadius:
-                          BorderRadius.all(const Radius.circular(5.0)),
+                          BorderRadius.all(const Radius.circular(50)),
                     ),
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -144,16 +144,18 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                             child: InkWell(
                                 onTap: () => widget.onSwitch(1),
                                 child: Container(
+                                    margin: EdgeInsets.all(3),
                                     height: 36,
+                                    width:120,
                                     padding:
-                                        EdgeInsets.symmetric(horizontal: 10),
+                                        EdgeInsets.symmetric(horizontal: 20),
                                     child: Center(
                                       child: Text(Utils.capitalize(
                                               // "${AppLocalizations.of(context)!.translate('search_restaurant')}"),
                                               _searchChoices[0]),
                                           style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.bold,
                                               color: widget
                                                           .selectedPosition ==
                                                       1
@@ -167,7 +169,8 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                             ? this.filter_active_button_color
                                             : this.filter_unactive_button_color,
                                         borderRadius:
-                                            new BorderRadius.circular(5.0)))),
+                                            new BorderRadius.circular(50))
+                                )),
                           ),
                           SizedBox(width: 5),
                           Expanded(
@@ -176,12 +179,13 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                 onTap: () => widget.onSwitch(2),
                                 child: Container(
                                     padding: EdgeInsets.all(10),
+                                    margin: EdgeInsets.all(3),
                                     child: Center(
                                       child: Text(
                                           Utils.capitalize(_searchChoices[1]),
                                           style: TextStyle(
                                               fontSize: 14,
-                                              fontWeight: FontWeight.w400,
+                                              fontWeight: FontWeight.bold,
                                               color: widget.selectedPosition ==
                                                       1
                                                   ? this
@@ -194,110 +198,12 @@ class _SearchSwitchWidgetState extends State<SearchSwitchWidget> {
                                             ? this.filter_unactive_button_color
                                             : this.filter_active_button_color,
                                         borderRadius:
-                                            new BorderRadius.circular(5.0)))),
+                                            new BorderRadius.circular(50)))),
                           ),
                         ]),
                     duration: Duration(milliseconds: 3000),
                   ),
                 ),
-                SizedBox(width: 5),
-                widget.selectedPosition == 1
-                    ? GestureDetector(
-                        onTap: (){
-                          widget
-                              .listContentFilter();
-                        }, //widget.scrollToTopFunction,
-                        child: Container(
-                          padding: EdgeInsets.all(8),
-                          width: 70,
-                          child: widget.filterConfiguration != null &&
-                                  widget.filterConfiguration["opened_filter"] ==
-                                      true
-                              ? Container(
-                                  height: 40,
-                                  width: 30,
-                                  child: Image.asset(
-                                    ImageAssets.opened,
-                                    height: 40.0,
-                                    width: 40.0,
-                                    fit: BoxFit.fitHeight,
-                                    alignment: Alignment.center,
-                                  ))
-                              :
-                          // ShakeItem(autoPlay: _autoPlay, shakeList: [ShakeDefaultConstant1(),ShakeDefaultConstant2()]),
-                          ShakeWidget(
-                            duration: Duration(milliseconds: 1000),
-                            shakeConstant: ShakeLittleConstant1(),
-                            autoPlay: true,
-                            enableWebMouseHover: true,
-
-                          child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    child: Image.asset(
-                                      ImageAssets.filter_red,
-                                      height: 20.0,
-                                      width: 20.0,
-                                      alignment: Alignment.center,
-                                    )),
-                              ),
-                          decoration: BoxDecoration(
-                              /* color: KColors.primaryColor.withAlpha(30),*/
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Container(
-                            // padding: EdgeInsets.only(left:6, top:6, bottom: 6),
-                            decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5))),
-                            child: Center(
-                              child: DropdownButton<String>(
-                                value: _filterDropdownValue,
-                                /*hint: Text(
-                        "${AppLocalizations.of(context)!.translate('filter')}"
-                            .toUpperCase(),
-                        style: TextStyle(
-                            fontSize: 14, color: KColors.primaryColor)),
-                    */
-
-                                /*Container(decoration: BoxDecoration(shape: BoxShape.rectangle, borderRadius: BorderRadius.all(Radius.circular(5))), padding: EdgeInsets.all(5),
-                                  child: Text("${AppLocalizations.of(context)!.translate('filter')}".toUpperCase(), style: TextStyle(fontSize: 14,color:KColors.primaryColor))),
-                              */
-                                icon: Icon(
-                                  FontAwesomeIcons.filter,
-                                  color: KColors.primaryColor,
-                                  size: 16,
-                                ),
-                                iconSize: 16,
-                                elevation: 16,
-                                style: TextStyle(color: KColors.primaryColor),
-                                underline: Container(
-//                      height: 2,
-//                      color: Colors.deepPurpleAccent,
-                                    ),
-                                onChanged: (String? newValue) {
-                                  widget.filterFunction(newValue);
-                                },
-                                items: <String>[
-                                  '${AppLocalizations.of(context)!.translate('cheap_to_exp')}',
-                                  '${AppLocalizations.of(context)!.translate('exp_to_cheap')}',
-                                  '${AppLocalizations.of(context)!.translate('nearest')}',
-                                  '${AppLocalizations.of(context)!.translate('farest')}'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
               ],
             ),
           );

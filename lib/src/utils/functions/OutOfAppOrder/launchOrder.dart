@@ -232,104 +232,189 @@ void payAtDelivery(
   }
 }
 
-void _showDialog(
-    {String? iccon,
-    Icon? icon,
-    var message,
-    bool okBackToHome = false,
-    bool isYesOrNo = false,
-    Function? actionIfYes,
-    String? asset_png,
-    BuildContext? context,
-    WidgetRef? ref}) {
-  showDialog(
-      context: context!,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-              SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: asset_png != null
-                      ? Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                              // shape: BoxShape.circle,
-                              image: new DecorationImage(
-                            fit: BoxFit.cover,
-                            image: new AssetImage(asset_png),
-                          )))
-                      : (icon == null
-                          ? SvgPicture.asset(
-                              iccon!,
-                            )
-                          : icon)),
-              SizedBox(height: 10),
-              Text(message,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: KColors.new_black, fontSize: 13))
-            ]),
-            actions: isYesOrNo
-                ? <Widget>[
-                    OutlinedButton(
+void _showDialog({
+  String? iccon,
+  Icon? icon,
+  required String message,
+  String? message2,
+  bool okBackToHome = false,
+  bool isYesOrNo = false,
+  Function? actionIfYes,
+  String? asset_png,
+  required BuildContext context,
+  WidgetRef? ref,
+}) {
+  showDialog<void>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext dialogContext) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        insetPadding: EdgeInsets.symmetric(horizontal: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icône carrée avec gradient (ou image / svg / icon)
+              Container(
+                height: 80,
+                width: 80,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      KColors.primaryColor,
+                      KColors.primaryColor.withOpacity(.7),
+                    ],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child:  ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Icon(Icons.delivery_dining,color: Colors.white,size:50,)
+                  )
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Message (titre / description)
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
+              ),
+              message2!=null?
+              Text(
+                message2,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                  color: Colors.black87,
+                  height: 1.3,
+                ),
+              ):Container(),
+              const SizedBox(height: 18),
+
+              // Actions
+              isYesOrNo
+                  ? Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
                       style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
+                        side: MaterialStateProperty.all(
+                          BorderSide(color: Colors.grey, width: 1),
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        padding: MaterialStateProperty.all(
+                          EdgeInsets.symmetric(vertical: 12),
+                        ),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(dialogContext)!
+                            .translate('refuse'),
+                        style: TextStyle(color: Colors.grey),
+                      ),
                       onPressed: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(dialogContext).pop();
                       },
                     ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: KColors.primaryColor,
+                        elevation: 0,
+                        padding: EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30)),
+                      ),
+                      child: Text(
+                        AppLocalizations.of(dialogContext)!
+                            .translate('accept'),
+                        style:
+                        TextStyle(color: Colors.white, fontSize: 15),
+                      ),
                       onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
-                : <Widget>[
-                    //
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        if (!okBackToHome) {
-                          try {
-                            resetProviders(ref!);
-                            xrint("Resetting providers successfully");
-                          } catch (e) {
-                            xrint("Error resetting providers: $e");
-                          }
-                          Navigator.of(context).pop();
-                        } else {
-                          StateContainer.of(context)
-                              .updateTabPosition(tabPosition: 2);
-                          Navigator.pushAndRemoveUntil(
-                              context,
-                              new MaterialPageRoute(
-                                  settings:
-                                      RouteSettings(name: HomePage.routeName),
-                                  builder: (BuildContext context) => HomePage(
-                                        is_out_of_app_order: true,
-                                      )),
-                              (r) => false);
+                        Navigator.of(dialogContext).pop();
+                        try {
+                          actionIfYes?.call();
+                        } catch (e) {
+                          // gérer l'erreur si besoin
                         }
                       },
                     ),
-                  ]);
-      },
-      barrierDismissible: false);
+                  ),
+                ],
+              )
+                  : SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    elevation: 0,
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  child: Text(
+                    AppLocalizations.of(dialogContext)!.translate('ok'),
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  onPressed: () {
+                    Navigator.of(dialogContext).pop();
+                    if (!okBackToHome) {
+                      try {
+                        if (ref != null) resetProviders(ref);
+                        xrint("Resetting providers successfully");
+                      } catch (e) {
+                        xrint("Error resetting providers: $e");
+                      }
+                    } else {
+                      // rediriger vers la home comme avant
+                      StateContainer.of(dialogContext)
+                          .updateTabPosition(tabPosition: 2);
+                      Navigator.pushAndRemoveUntil(
+                        dialogContext,
+                        MaterialPageRoute(
+                          settings:
+                          RouteSettings(name: HomePage.routeName),
+                          builder: (BuildContext _) => HomePage(
+                            is_out_of_app_order: true,
+                          ),
+                        ),
+                            (r) => false,
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
+
 
 void launchOrderResponse(int errorCode, BuildContext context, WidgetRef ref) {
   ref
@@ -398,7 +483,9 @@ void _showOrderSuccessDialog(BuildContext context, WidgetRef ref) {
       okBackToHome: true,
       iccon: VectorsData.delivery_nam,
       message:
-          "${AppLocalizations.of(context)!.translate('order_congratz_praise')}",
+          "${AppLocalizations.of(context)!.translate('order_congratz_praise_out_of_app_1')}",
+      message2:
+          "${AppLocalizations.of(context)!.translate('order_congratz_praise_out_of_app_2')}",
       isYesOrNo: false,
       context: context,
       ref: ref);

@@ -178,6 +178,7 @@ class _OutOfAppProductFormContentState
                                   SizedBox(height: 5),
                                   Text(
                                     "${AppLocalizations.of(context)!.translate('choose_an_image')}",
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontSize: 12,
                                       fontWeight: FontWeight.bold,
@@ -266,7 +267,7 @@ class _OutOfAppProductFormContentState
                               controller: _priceController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-
+                                hintText: "Mettez 0, si vous ne connaissez pas le prix de l’article",
                                 filled: true,
                                 fillColor: Color(0x9EECECEC),
                                 contentPadding: const EdgeInsets.symmetric(

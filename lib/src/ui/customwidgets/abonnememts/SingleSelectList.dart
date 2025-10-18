@@ -2,11 +2,12 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/StateContainer.dart';
+
 class SingleSelectList extends StatefulWidget {
   final List<ListItem> items;
   final int? initialIndex;
   final ValueChanged<int>? onChanged;
-  final ValueChanged<String>? onItemSelected; // 👈 add callback for logos
+  final ValueChanged<String>? onItemSelected;
 
   const SingleSelectList({
     Key? key,
@@ -22,8 +23,7 @@ class SingleSelectList extends StatefulWidget {
 
 class _SingleSelectListState extends State<SingleSelectList> {
   late int? _selectedIndex = widget.initialIndex;
-  String? _selectedLogo; // 👈 track selected logo
-
+  String? _selectedLogo;
   void _showBottomSheet(ListItem item) {
     showModalBottomSheet(
       context: context,
@@ -32,8 +32,6 @@ class _SingleSelectListState extends State<SingleSelectList> {
       ),
       builder: (context) {
         Widget content;
-
-        // 👇 Decide what to show depending on the clicked item
         if (item.title == "Mobile Money") {
           content = Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -54,28 +52,8 @@ class _SingleSelectListState extends State<SingleSelectList> {
               _buildLogo("assets/images/png/solimi_logo.png", "Solimi"),
             ],
           );
-        } else if (item.title == "PorteFeuille KABA") {
-          content = Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children:  [
-                Text(
-                  "Votre Solde",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 8),
-                Text(
-                  "${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                  style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.green,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          );
         } else {
-          content = const Text("Votre Solde est de  0");
+          content = const Text("Votre Solde est de 0");
         }
 
         return Padding(
@@ -116,7 +94,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
       onTap: () {
         setState(() => _selectedLogo = label); // 👈 update state
         widget.onItemSelected?.call(label); // 👈 send selection to parent
-        Navigator.pop(context); // close bottomsheet
+        Navigator.of(context).pop(true);
       },
       child: Column(
         children: [
@@ -164,14 +142,20 @@ class _SingleSelectListState extends State<SingleSelectList> {
           onTap: () {
             setState(() => _selectedIndex = index);
             widget.onChanged?.call(index);
-            _showBottomSheet(item); // 👈 open bottomsheet
+
+            // 👇 Special case: if item == "PorteFeuille KABA"
+            if (item.title == "PorteFeuille KABA") {
+              widget.onItemSelected?.call("PorteFeuille");
+            } else {
+              _showBottomSheet(item); // open bottomsheet for others
+            }
           },
           borderRadius: BorderRadius.circular(10),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 180),
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: isSelected ?Color(0xFFFFE8ED) : Colors.white,
+              color: isSelected ? const Color(0xFFFFE8ED) : Colors.white,
               borderRadius: BorderRadius.circular(10),
               border: Border.all(
                 color: isSelected ? KColors.primaryColor : Colors.grey.shade300,
@@ -203,14 +187,25 @@ class _SingleSelectListState extends State<SingleSelectList> {
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        item.subtitle,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: isSelected
-                              ? Colors.black
-                              : Colors.grey.shade600,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            item.subtitle,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color:
+                              isSelected ? Colors.black : Colors.grey.shade600,
+                            ),
+
+                          ),
+                          SizedBox(width: 5,),
+                          item.title.contains("Porte")?  Text(
+                              " : " +"${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                              style: TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600)):Container(),
+                        ],
                       ),
                     ],
                   ),

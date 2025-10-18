@@ -62,7 +62,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   TextEditingController _loginFieldController = new TextEditingController();
 
+  bool _loading = false;
 
+  String selectedCountryCode = '';
 
   @override
   void didChangeDependencies() {
@@ -90,7 +92,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
-      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) && widget?.password?.length == 4)
+      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) )
+
+        debugPrint("Mot de Passe is : "+widget!.password.toString());
         widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
     } else {
       // we dont do any another login here
@@ -99,15 +103,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   Widget build(BuildContext context) {
-     
+
     return Scaffold(
         backgroundColor: Colors.white,
         body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
             child:Column(
-      
-              
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children:[ Padding(
                 padding: EdgeInsets.all(20) ,
                 child:Column(
@@ -129,40 +132,67 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                      
                       Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
                       SizedBox(height: 10),
-                    Container(margin: EdgeInsets.only(left:40, right: 40),
+                    Container(
+                        margin: EdgeInsets.only(left:35, right: 35),
                     child:   
                     Text(hint, textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     SizedBox(height: 30),
                       Container(
+                        padding: EdgeInsets.symmetric(horizontal: 8 , vertical:8),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300, width: 2),
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 10)
+                    )
+                  ],
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: KColors.primaryColor, width: 1.2),
                 ),
-                child: Row(
+                child:  Row(
                   children: [
+                    // PHONE BUTTON
                     Expanded(
                       child: GestureDetector(
                         onTap: () => setState(() => isPhoneSelected = true),
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 15),
                           decoration: BoxDecoration(
-                            color: isPhoneSelected ? KColors.primaryColor: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "N° Téléphone",
-                              style: TextStyle(
-                                color: isPhoneSelected
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            color: isPhoneSelected ? KColors.primaryColor : Colors.white,
+                           // border: Border.all(color: KColors.primaryColor, width: 1.5),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10) ,
+                              bottomLeft: Radius.circular(10),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.phone_iphone,
+                                color: isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "N° Téléphone",
+                                style: TextStyle(
+                                  color: isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
+
+                    // EMAIL BUTTON
                     Expanded(
                       child: GestureDetector(
                         onTap: () => setState(() => isPhoneSelected = false),
@@ -170,57 +200,96 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           decoration: BoxDecoration(
                             color: !isPhoneSelected ? KColors.primaryColor : Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Center(
-                            child: Text(
-                              "Email",
-                              style: TextStyle(
-                                color: !isPhoneSelected
-                                    ? Colors.white
-                                    : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            //border: Border.all(color: KColors.primaryColor, width: 1.5),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(10) ,
+                              bottomLeft: Radius.circular(10) ,
+                              topRight: Radius.circular(10),
+                              bottomRight: Radius.circular(10),
                             ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.email_outlined,
+                                color: !isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                "Email",
+                                style: TextStyle(
+                                  color: !isPhoneSelected ? Colors.white : KColors.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
                   ],
-                ),
-              ),
+                )
+
+                      ),
               SizedBox(height: 20),
                
                    if (isPhoneSelected) ...[
-                TextFormField(
-                  controller: _loginFieldController,
-                  enabled:!isConnecting, maxLength: TextField.noMaxLength,
-                  decoration: InputDecoration(
-                    prefixIcon: Padding(
-                      padding: const EdgeInsets.only(left: 8, right: 4),
-                      child: CountryCodePicker(
+          TextFormField(
+          controller: _loginFieldController,
+          onChanged: (_) {
+            setState(() {
+              _loading = false;
+            });
+          },
+          enabled: !isConnecting,
+          maxLength: TextField.noMaxLength,
+          decoration: InputDecoration(
+             // 👈 reduce field height
+            prefixIcon: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0), // 👈 smaller padding
+              child: CountryCodePicker(
                 onChanged: (code) {
+                  setState(() {
+                    selectedCountryCode = code.dialCode ?? '';
+                  });
                   debugPrint("New country selected: ${code.dialCode}");
                 },
                 initialSelection: 'TG', // default to Togo
                 favorite: const ['+228', 'TG'], // keep Togo as favorite
                 showFlag: true,
-                textStyle: const TextStyle(color: Colors.white, fontSize: 16),
+                showDropDownButton: true,
+                textStyle: const TextStyle(color: Colors.black, fontSize: 12), // 👈 smaller text
                 showCountryOnly: false,
                 showOnlyCountryWhenClosed: false,
                 alignLeft: false,
-              ) ,
-                    ),
-                    prefixIconConstraints:
-                        const BoxConstraints(minWidth: 0, minHeight: 0),
-                    hintText: "Entrez votre numéro",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  keyboardType: TextInputType.phone,
-                ),
-                 /* SizedBox(width: 250,
+              ),
+            ),
+            prefixIconConstraints: const BoxConstraints(
+              minWidth: 0,
+              minHeight: 0,
+            ),
+            hintText: "Entrez votre numéro",
+            hintStyle: const TextStyle(fontSize: 14),
+            border: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(20), // 👈 smaller radius
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(30),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(width: 1, color: KColors.primaryColor),
+              borderRadius: BorderRadius.circular(30),
+            ),
+          ),
+          keyboardType: TextInputType.phone,
+          style: const TextStyle(fontSize: 14), // 👈 smaller input text
+        ),
+
+      /* SizedBox(width: 250,
                         child: Container(
                             padding: EdgeInsets.all(14),
                             child:
@@ -246,17 +315,19 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                 ),
               ],
               SizedBox(height: 20),
-               SizedBox(
+                    _loading?CircularProgressIndicator():
+                    SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: KColors.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   onPressed: () {
+
                      _checklogin();
                   },
                   child: const Text(
@@ -293,7 +364,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                   ]
               ),
               ),
-              SizedBox(height: 40),
+              SizedBox(height: 90),
               Image.asset(
   "assets/images/background/Patternlogin.png",
   width: double.infinity,
@@ -331,7 +402,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     if (results != null && results.containsKey('phone_number') && results.containsKey('password')
         && results.containsKey('autologin')) {
       setState(() {
-        _loginFieldController.text = results['phone_number'];
+        _loginFieldController.text = selectedCountryCode+results['phone_number'];
       });
       showLoading(true);
       // launch request for retrieving the delivery prices and so on.
@@ -364,15 +435,17 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
 
    Future _checklogin() async {
-
-    String login = _loginFieldController.text;
+     setState(() {
+       _loading = true;
+     });
+    String login = selectedCountryCode+_loginFieldController.text;
 
     // control login stuff
-    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+  /*  if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
       mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
-    }
+    }*/
     
     /* // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
@@ -385,7 +458,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       String _mCode = '0000';
 //      int type = results['type'];
       showLoading(true);
-      if (Utils.isCode(_mCode)) {
+
+
         /* check if it's important to send another sms according to the time lapsed after the last sending
       * 1. check last time sent message, if before 5 minutes, then dont send,
       * 2. otherwise send
@@ -393,8 +467,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
 
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
-              widget.autoLogin = true;
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 ) {
+             // widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
               this.widget.presenter!.login(true, login, _mCode, widget.version!);
@@ -403,20 +477,20 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             this.widget.presenter!.login(false, login, _mCode, widget.version!);
           }
         });
-      }
+
     
   }
 
   Future _launchConnexion() async {
 
-    String login = _loginFieldController.text;
+    String login = selectedCountryCode+_loginFieldController.text;
 
     // control login stuff
-    if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+   /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
       /* login error */
       mToast("${AppLocalizations.of(context)!.translate('login_error')}");
       return;
-    }
+    }*/
     
     // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(

@@ -45,12 +45,13 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                   margin: EdgeInsets.only(top: 20),
                   child: Container(
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
                         color: Color.fromRGBO(247, 247, 247, 1.0),
                       ),
                       child: Column(children: <Widget>[
                         Container(
                           padding:
-                              EdgeInsets.only(top: 10, bottom: 10, left: 10),
+                              EdgeInsets.only(top: 10, bottom: 10, left: 0),
                           child: Row(
                             children: [
                               // ListTile(
@@ -62,7 +63,7 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                   Container(
                                     height: 80,
                                     width: 60,
-                                    padding: EdgeInsets.all(0),
+                                    padding: EdgeInsets.all(5),
                                     margin: EdgeInsets.all(0),
                                     child: Center(
                                       child: Container(
@@ -157,7 +158,8 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                                          .substring(
                                                          0, 3)
                                                          : "${widget?.shopModel?.stars}")
-                                                     ]),
+                                                      ]
+                                                     ),
                                             )
                                             : SizedBox(width: 60),
                                       ],
@@ -166,7 +168,6 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                     Container(
                                       width: MediaQuery.of(context).size.width *
                                           0.7,
-
                                       child: Text("${widget?.shopModel?.address}",
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,

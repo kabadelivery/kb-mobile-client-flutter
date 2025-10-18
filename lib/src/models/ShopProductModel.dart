@@ -22,22 +22,23 @@ class ShopProductModel {
   /* restaurant entity */
   ShopModel? restaurant_entity;
 
+
   ShopProductModel(
       {this.id,
-      this.name,
-      this.price,
-      this.pic,
-      this.promotion_price,
-      this.menu_id,
-      this.restaurant_id,
-      this.description,
-      this.food_details_pictures,
-      this.is_favorite,
-      this.stars,
-      this.promotion,
-      this.restaurant_entity,
-      this.rating,
-      this.food_review_array,
+        this.name,
+        this.price,
+        this.pic,
+        this.promotion_price,
+        this.menu_id,
+        this.restaurant_id,
+        this.description,
+        this.food_details_pictures,
+        this.is_favorite,
+        this.stars,
+        this.promotion,
+        this.restaurant_entity,
+        this.rating,
+        this.food_review_array,
         this.review_count
       });
 
@@ -48,13 +49,16 @@ class ShopProductModel {
 
     // supposed to be an hint, issue to solve
     promotion_price =
-        "${json['promotion_price'] == null ? "" : json['promotion_price']}";
+    "${json['promotion_price'] == null ? "" : json['promotion_price']}";
 
     price = json['price'];
     menu_id = json['menu_id'];
-    restaurant_id = json['restaurant_id'];
+    restaurant_id = int.tryParse(
+      (json['restaurant_id'] ?? json['id'])?.toString() ?? '',
+    ) ??
+        0;
     description = json['description'];
-    review_count = json['review_count'];
+    review_count = int.parse(json['review_count'].toString());
     l = json["food_details_pictures"];
     food_details_pictures = l?.map((pic_link) => "${pic_link}")?.toList();
     // food_details_pictures = []..add(pic);
@@ -77,23 +81,23 @@ class ShopProductModel {
   }
 
   Map toJson() => {
-        "id": (id as int),
-        "name": name,
-        "pic": pic,
-        "promotion_price": promotion_price,
-        "price": price,
-        "menu_id": menu_id,
-        "restaurant_id": restaurant_id,
-        "description": description,
-        "food_details_pictures": food_details_pictures,
-        "is_favorite": is_favorite,
-        "stars": stars,
-        "promotion": promotion,
-        "restaurant_entity": restaurant_entity,
-        "rating": rating,
-        "food_review_array": food_review_array,
-        "review_count":review_count
-      };
+    "id": (id as int),
+    "name": name,
+    "pic": pic,
+    "promotion_price": promotion_price,
+    "price": price,
+    "menu_id": menu_id,
+    "restaurant_id": restaurant_id,
+    "description": description,
+    "food_details_pictures": food_details_pictures,
+    "is_favorite": is_favorite,
+    "stars": stars,
+    "promotion": promotion,
+    "restaurant_entity": restaurant_entity,
+    "rating": rating,
+    "food_review_array": food_review_array,
+    "review_count":review_count
+  };
 
   @override
   String toString() {

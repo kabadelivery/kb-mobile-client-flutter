@@ -11,7 +11,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "x86"
 		},
 		{
 			"name" : "ANDROID_NDK",
@@ -63,7 +63,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "arm64-v8a"
+			"value" : "x86"
 		},
 		{
 			"name" : "CMAKE_ANDROID_NDK",
@@ -151,7 +151,7 @@
 				}
 			],
 			"type" : "INTERNAL",
-			"value" : "c:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/android/app/.cxx/Debug/5n126gzf/arm64-v8a"
+			"value" : "c:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/kb-mobile-client-flutter/android/app/.cxx/Debug/302mw273/x86"
 		},
 		{
 			"name" : "CMAKE_CACHE_MAJOR_VERSION",
@@ -224,6 +224,22 @@
 			],
 			"type" : "INTERNAL",
 			"value" : "C:/Users/pasca/AppData/Local/Android/Sdk/cmake/3.22.1/bin/ctest.exe"
+		},
+		{
+			"name" : "CMAKE_CXX_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_CXX_COMPILER_AR",
@@ -352,6 +368,22 @@
 			],
 			"type" : "STRING",
 			"value" : "-latomic -lm"
+		},
+		{
+			"name" : "CMAKE_C_COMPILER",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "(This variable does not exist and should not be used)"
+				}
+			],
+			"type" : "UNINITIALIZED",
+			"value" : ""
 		},
 		{
 			"name" : "CMAKE_C_COMPILER_AR",
@@ -719,7 +751,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "C:\\Users\\pasca\\OneDrive\\Documents\\GitHub\\kb-mobile-client-flutter\\build\\app\\intermediates\\cxx\\Debug\\5n126gzf\\obj\\arm64-v8a"
+			"value" : "C:\\Users\\pasca\\OneDrive\\Documents\\GitHub\\kb-mobile-client-flutter\\kb-mobile-client-flutter\\build\\app\\intermediates\\cxx\\Debug\\302mw273\\obj\\x86"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -991,7 +1023,7 @@
 				}
 			],
 			"type" : "UNINITIALIZED",
-			"value" : "C:\\Users\\pasca\\OneDrive\\Documents\\GitHub\\kb-mobile-client-flutter\\build\\app\\intermediates\\cxx\\Debug\\5n126gzf\\obj\\arm64-v8a"
+			"value" : "C:\\Users\\pasca\\OneDrive\\Documents\\GitHub\\kb-mobile-client-flutter\\kb-mobile-client-flutter\\build\\app\\intermediates\\cxx\\Debug\\302mw273\\obj\\x86"
 		},
 		{
 			"name" : "CMAKE_SHARED_LINKER_FLAGS",
@@ -1255,11 +1287,11 @@
 			[
 				{
 					"name" : "HELPSTRING",
-					"value" : "No help, variable specified on the command line."
+					"value" : "The CMake toolchain file"
 				}
 			],
-			"type" : "UNINITIALIZED",
-			"value" : "C:\\Users\\pasca\\AppData\\Local\\Android\\Sdk\\ndk\\25.1.8937393\\build\\cmake\\android.toolchain.cmake"
+			"type" : "FILEPATH",
+			"value" : "C:/Users/pasca/AppData/Local/Android/Sdk/ndk/25.1.8937393/build/cmake/android.toolchain.cmake"
 		},
 		{
 			"name" : "CMAKE_VERBOSE_MAKEFILE",
@@ -1299,7 +1331,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "C:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/android/app/.cxx/Debug/5n126gzf/arm64-v8a"
+			"value" : "C:/Users/pasca/OneDrive/Documents/GitHub/kb-mobile-client-flutter/kb-mobile-client-flutter/android/app/.cxx/Debug/302mw273/x86"
 		},
 		{
 			"name" : "Project_IS_TOP_LEVEL",

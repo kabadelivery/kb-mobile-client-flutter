@@ -8,6 +8,7 @@ import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
 import 'package:KABA/src/ui/customwidgets/FoodItems/FoodItem.dart';
+import 'package:KABA/src/ui/customwidgets/FoodItems/TagCarousel.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ProductWithShopDetailsWidget.dart';
 import 'package:KABA/src/ui/customwidgets/SearchSwitchWidget.dart';
@@ -33,27 +34,16 @@ import 'package:flutter_switch/flutter_switch.dart';
 
 class ShopListPageRefined extends StatefulWidget {
   Position? location;
-
   RestaurantFoodProposalPresenter? foodProposalPresenter;
-
   RestaurantListPresenter? restaurantListPresenter;
-
   bool hasGps = false;
-
   PageStorageKey? key;
-
   BuildContext? context;
-
   CustomerModel? customer;
-
   List<ShopModel>? restaurantList = null;
-
   int? samePositionCount = 0;
-
   String? type;
-
   static var routeName = "/ShopListPageRefined";
-
   List<ShopModel>? finalRestaurantList;
 
   ShopListPageRefined(
@@ -230,183 +220,233 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          titleSpacing: 0,
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: KColors.primaryColor,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-              onPressed: () {
-                if (_searchMode) {
-                  setState(() {
-                    _searchAutoFocus = false;
-                    _searchMode = false;
-                    _filterEditController.text = "";
-                  });
-_searchAction();
-                } else
-                  Navigator.pop(context);
-              }),
-          centerTitle: true,
-          actions: [
-            _searchMode || isLoading
-                ? Container(
-                    width: 60,
-                  )
-                : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        _searchAutoFocus = true;
-                        _searchMode = true;
-                      });
-                    },
-                    icon: Icon(
-                      Icons.search,
-                      size: 20,
-                      color: Colors.white,
-                    ))
-          ],
-          title: AnimatedSwitcher(
-            duration: Duration(milliseconds: 300),
-            layoutBuilder: (currentChild, _) => currentChild!,
-            transitionBuilder: (child, animation) {
-              return SlideTransition(
-                position:
-                    Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
-                        .animate(animation),
-                child: child,
-              );
-            },
-            child: _searchMode
-                ? Container(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            height: 35,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                            margin: EdgeInsets.symmetric(vertical: 10),
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.white.withAlpha(100)),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.max,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Focus(
-                                    onFocusChange: (hasFocus) {
-                                      if (hasFocus) {
-                                        // do staff
-                                        _searchMode = true;
-                                      } else {
-                                        // out search mode
-                                        _searchMode = false;
-                                      }
-                                    },
-                                    child: TextField(
-                                        autofocus: _searchAutoFocus,
-                                        controller: _filterEditController,
-                                        onSubmitted: (val) {
-                                          _searchAction(pressButton: true);
-                                          xrint("on submitted");
-                                        },
-                                        onChanged: (val) {
-                                          if (_searchAutoFocus)
-                                            setState(() {
-                                              _searchAutoFocus = false;
-                                            });
-                                          xrint("on onChanged");
-                                          xrint("${val.toString()}");
-                                          EasyDebounce.debounce(
-                                              'search-input-debouncer',
-                                              Duration(milliseconds: 700),
-                                              () => {_searchAction()});
-                                        },
-                                        style: TextStyle(
-                                            color: KColors.new_black,
-                                            fontSize: 14),
-                                        textInputAction: TextInputAction.search,
-                                        decoration: InputDecoration.collapsed(
-                                            hintText:
-                                                "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
-                                            hintStyle: TextStyle(
-                                                fontSize: 14,
-                                                color: KColors.new_black
-                                                    .withAlpha(150))),
-                                        enabled: true),
-                                  ),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    _clearFocus();
-                                  },
-                                  child: Container(
-                                    padding: EdgeInsets.only(
-                                        left: 5, right: 5, bottom: 3, top: 3),
-                                    child: Center(
-                                      child: Icon(Icons.close,
-                                          size: 20, color: Colors.white),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        ),
-                        /*  AnimatedSwitcher(
-                          duration: Duration(milliseconds: 400),
-                          child: searchTypePosition == 2
-                              ? InkWell(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.only(
-                                            topRight: Radius.circular(5),
-                                            bottomRight: Radius.circular(5)),
-                                        color: KColors.primaryColor),
-                                    // margin: EdgeInsets.only(top: 2),
-                                    padding: EdgeInsets.only(
-                                        top: 9, bottom: 9, right: 10, left: 10),
-                                    child: Icon(Icons.search,
-                                        color: Colors.white, size: 30),
-                                  ),
-                                  onTap: () {
-                                    onSearchButtonTap();
-                                  })
-                              : Container(),
-                        )*/
-                      ],
-                    ),
-                  )
-                : Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                          Utils.capitalize(getCategoryTitle(context)[0]
-                              //    "${AppLocalizations.of(context)!.translate('search')}"
-                              ),
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                    ],
-                  ),
+        appBar: PreferredSize(
+          preferredSize: Size.fromHeight(1), // invisible AppBar
+          child: AppBar(
+            elevation: 0,
+            backgroundColor: KColors.primaryColor, // no color
           ),
         ),
-        body: AnnotatedRegion<SystemUiOverlayStyle>(
+
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
-          child: Container(
-              child: isLoading
-                  ? Center(child: MyLoadingProgressWidget())
-                  : (hasNetworkError
-                      ? _buildNetworkErrorPage()
-                      : hasSystemError
-                          ? _buildSysErrorPage()
-                          : _buildRestaurantList(widget.restaurantList??[]))),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(25),
+                      bottomRight: Radius.circular(25),
+                    ),
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          SizedBox(width: 20,),
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
+                            onPressed: () {
+                              if (_searchMode) {
+                                setState(() {
+                                  _searchAutoFocus = false;
+                                  _searchMode = false;
+                                  _filterEditController.text = "";
+                                });
+                                _searchAction();
+                              } else {
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                          SizedBox(width: 70,),
+                          AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: _searchMode
+                                ? Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: TextField(
+                                autofocus: _searchAutoFocus,
+                                controller: _filterEditController,
+                                onSubmitted: (val) => _searchAction(pressButton: true),
+                                onChanged: (val) {
+                                  EasyDebounce.debounce(
+                                    'search-input-debouncer',
+                                    const Duration(milliseconds: 700),
+                                        () => _searchAction(),
+                                  );
+                                },
+                                style: TextStyle(color: KColors.new_black, fontSize: 16),
+                                textInputAction: TextInputAction.search,
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!
+                                      .translate('find_menu_or_restaurant'),
+                                  hintStyle: TextStyle(
+                                    fontSize: 14,
+                                    color: KColors.new_black.withAlpha(150),
+                                  ),
+                                  border: InputBorder.none,
+                                ),
+                              ),
+                            )
+                                : Text("Restos & Repas",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          Container()
+                        ],
+                      ),
+
+                      /// 🔍 Title / Search
+
+                      const SizedBox(height: 8),
+                      SearchSwitchWidget(
+                        searchTypePosition,
+                        _choice,
+                        _filterFunction,
+                        _listContentFilter,
+                        _scrollToTopFunction,
+                        widget.type!,
+                        filterConfiguration ?? {},
+                      ),
+                    ],
+                  ),
+                ),
+                searchTypePosition==1?    SizedBox(height: 20):Container(),
+                searchTypePosition==1?     Container(
+                  width: MediaQuery.of(context).size.width*.9,
+                  height: 50,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                        )
+                      ]
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          height: 35,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.white.withAlpha(100)),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Expanded(
+                                child: Focus(
+                                  onFocusChange: (hasFocus) {
+                                    if (hasFocus) {
+                                      // do staff
+                                      _searchMode = true;
+                                    } else {
+                                      // out search mode
+                                      _searchMode = false;
+                                    }
+                                  },
+                                  child: TextField(
+
+                                      autofocus: _searchAutoFocus,
+                                      controller: _filterEditController,
+                                      onSubmitted: (val) {
+                                        _searchAction(pressButton: true);
+                                        xrint("on submitted");
+                                      },
+                                      onChanged: (val) {
+                                        if (_searchAutoFocus)
+                                          setState(() {
+                                            _searchAutoFocus = false;
+                                          });
+                                        xrint("on onChanged");
+                                        xrint("${val.toString()}");
+                                        EasyDebounce.debounce(
+                                            'search-input-debouncer',
+                                            Duration(milliseconds: 700),
+                                                () => {_searchAction()});
+                                      },
+                                      style: TextStyle(
+                                          color: KColors.new_black,
+                                          fontSize: 14),
+                                      textInputAction: TextInputAction.search,
+
+                                      decoration: InputDecoration.collapsed(
+
+                                          hintText:
+                                          "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
+                                          hintStyle: TextStyle(
+                                              fontSize: 14,
+                                              color: KColors.new_black
+                                                  .withAlpha(150))),
+                                      enabled: true),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  _clearFocus();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.only(
+                                      left: 5, right: 5, bottom: 3, top: 3),
+                                  child: Center(
+                                    child: Icon(Icons.close,
+                                        size: 20, color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ):Container(),
+                searchTypePosition==1?  TagCarousel(
+                  allFilters: _allFilters,
+                  selectedFilter: _selectedFilter,
+                  primaryColor: KColors.primaryColor,
+                  onSelect: (value) {
+                    setState(() {
+                      _selectedFilter = value;
+                      searchTypePosition=2;
+                    });
+                  },
+                ):Container(),
+                 SizedBox(height: 10,),
+                Container(
+
+                    child: isLoading
+                        ? Center(child: MyLoadingProgressWidget())
+                        : (hasNetworkError
+                            ? _buildNetworkErrorPage()
+                            : hasSystemError
+                                ? _buildSysErrorPage()
+                                : _buildRestaurantList(widget.restaurantList??[]))),
+              ],
+            ),
+          ),
         ));
 
     /* return Scaffold(
@@ -447,32 +487,27 @@ _searchAction();
     d.forEach((restaurant) {
       pageRestaurants[restaurant.id] = restaurant;
     });
-
     // category / 1001 / shop
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+    return Container(
+      color: Colors.white,
       child: Container(
-        color: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height - 400,
         child: Column(
           children: <Widget>[
-            SizedBox(height: 10),
-            SearchSwitchWidget(searchTypePosition, _choice, _filterFunction,
-                _listContentFilter, _scrollToTopFunction, widget.type!, filterConfiguration??{}),
-            SizedBox(height: 10),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
-                    children: <Widget>[
-//                  SizedBox(height: 40)
+                    children:[
                 ]..add(
-                        /* according to the search position, show a different page. */
-                        searchTypePosition == 1
+                         searchTypePosition == 1
                             ? (!_searchMode
                                 ? Container(
                                     color: Colors.white,
                                     height: MediaQuery.of(context).size.height -
                                         150,
-//                              padding: EdgeInsets.only(bottom:230),
+            //                              padding: EdgeInsets.only(bottom:230),
                                     child: widget.restaurantList?.length ==
                                                 null ||
                                             widget.restaurantList?.length == 0
@@ -574,6 +609,7 @@ _searchAction();
                                             : _buildSearchedFoodList())))),
               ),
             ),
+
           ],
         ),
       ),
@@ -1004,56 +1040,59 @@ _searchAction();
     if (foodProposals == null)
       return Container(
           child: Center(
-              child: Column(children: <Widget>[
-       /*  SizedBox(height: 20),
-        Icon(Icons.search, color: Colors.grey),
-        SizedBox(height: 10),
-        Text("${AppLocalizations.of(context)!.translate('please_search_item')}") */
-         Padding(
+              child: Column(
+                  children: <Widget>[
+          Padding(
           padding: const EdgeInsets.only(left: 15 , right: 15),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: "Rechercher un plat...",
-              prefixIcon: const Icon(Icons.search),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20),
+          child: Container(
+            decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.2),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                  )
+                ]
+            ),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: "Rechercher un plat...",
+                prefixIcon: const Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: .0,color: Colors.transparent)
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                borderSide: BorderSide(width: .0,color: Colors.transparent)
+            ),
+                enabledBorder:OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide(width: .0,color: Colors.transparent)
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
               ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+              onChanged: (value) {
+                setState(() {
+                  _selectedFilter = value.trim();
+                });
+              },
             ),
           ),
-        ), 
+        ),
 
-        Padding(
-  padding: const EdgeInsets.symmetric(horizontal: 16),
-  child:  Wrap(
-            spacing: 1,
-            runSpacing: 1,
-            children: _allFilters.map((filter) {
-              final isSelected = _selectedFilter == filter;
-              return ChoiceChip(
-
-                padding: EdgeInsets.symmetric(horizontal: 1),
-                label: Text("#$filter"),
-                selected: isSelected,
-                showCheckmark: false,
-                selectedColor: KColors.primaryColor,
-                backgroundColor: Colors.grey.shade200,
-                labelStyle: TextStyle(
-                  fontSize: 11 , 
-                  color: isSelected ? Colors.white : Colors.black,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                TagCarousel(
+                  allFilters: _allFilters,
+                  selectedFilter: _selectedFilter,
+                  primaryColor: KColors.primaryColor,
+                  onSelect: (value) {
+                    setState(() {
+                      _selectedFilter = value;
+                    });
+                  },
                 ),
-                onSelected: (_) {
-                  setState(() {
-                    _selectedFilter = filter;
-                  });
-                },
-              );
-            }).toList(),
-            
-      ),
-
-),
 
 SizedBox(height: 10,),
 

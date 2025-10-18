@@ -28,7 +28,6 @@ import '../../../../../utils/Enums/type_of_transaction.dart';
 import '../../../../../utils/functions/topups.dart';
 import '../../../webview/paymentWebView.dart';
 
-
 class TopNewUpPage extends StatefulWidget {
   static var routeName = "/TopNewUpPage";
 
@@ -158,7 +157,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       backgroundColor: Colors.white,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-        backgroundColor: Colors.green,
+        backgroundColor: KColors.primaryColor,
         leading: IconButton(
             icon: Icon(Icons.arrow_back, size: 20),
             onPressed: () {
@@ -697,24 +696,24 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                   style: TextStyle(color: KColors.mBlue, fontSize: 14),
                 )) : Container(),
                 SizedBox(height: 10),
-                Container(width: MediaQuery.of(context).size.width * 0.9,
-                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                  decoration: BoxDecoration(
-                      color: KColors.primaryColor,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: GestureDetector(
-                    onTap: () async{
-                      if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
-                        if(widget.selectedPosition==1)
-                          launchNewMomoTopUp();
-                        else
-                          launchNewCardTopUp();
-                      }
-                      else if(widget.transactionType == TransactionType.kaba_chine)
-                        kabaChinePay();
-                      else if(widget.transactionType == TransactionType.expedition)
-                        ExpeditionPay();
-                    },
+                GestureDetector(
+                  onTap: () async{
+                    if(widget.transactionType==null || widget.transactionType == TransactionType.topup) {
+                      if(widget.selectedPosition==1)
+                        launchNewMomoTopUp();
+                      else
+                        launchNewCardTopUp();
+                    }
+                    else if(widget.transactionType == TransactionType.kaba_chine)
+                      kabaChinePay();
+                    else if(widget.transactionType == TransactionType.expedition)
+                      ExpeditionPay();
+                  },
+                  child: Container(width: MediaQuery.of(context).size.width * 0.9,
+                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                    decoration: BoxDecoration(
+                        color: KColors.primaryColor,
+                        borderRadius: BorderRadius.circular(10)),
                     child: Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -835,7 +834,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
               "${_phoneNumberFieldController!.text}",
               "${_amountFieldController!.text}",
               _getFees(),
-              1 
+              1
               );
         } else if (widget.selectedPosition == 2) {
           String amount = "${_amountFieldController!.text}";
@@ -1257,8 +1256,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       launch_other_payment=true;
       }
     }
-    /*
-    * if(launch_other_payment){
+
+    if(launch_other_payment){
       KkiapayProvider kkiapayProvider = new KkiapayProvider();
       String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
       kkiapayProvider.launchKkiapayPayment(
@@ -1272,7 +1271,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       setState(() {
         showLoading(true);
       });
-    }*/
+    }
     }
   _onSwitch(int i) {
     setState(() {

@@ -11,6 +11,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
+import '../functions/google_map_name.dart';
+
 /// The result returned after completing location selection.
 class LocationResult {
   /// The human readable name of the location. This is primarily the
@@ -185,9 +187,13 @@ class PlacePickerState extends State<PlacePicker> {
               children: <Widget>[
                 SelectPlaceAction(getLocationName(), () {
                   if (markers.first.position != null) {
+                    debugPrint("XXX position 1 ${markers.first.position}");
                     Navigator.of(context).pop(markers.first.position);
-                  } else
+
+                  } else {
+                    debugPrint("XXX position 1 ${markers.first.position}");
                     Navigator.of(context).pop(this.target);
+                  }
                 }),
               ],
             ),
@@ -394,6 +400,7 @@ class PlacePickerState extends State<PlacePicker> {
   /// result, instead of road name). If no name is found from the nearby list,
   /// then the road name returned is used instead.
   String getLocationName() {
+
     if (this.locationResult == null) {
       return "${AppLocalizations.of(context)!.translate('this_location')}";
     }
@@ -402,6 +409,7 @@ class PlacePickerState extends State<PlacePicker> {
       if (np.latLng == this.locationResult!.latLng &&
           np.name != this.locationResult!.locality) {
         this.locationResult!.name = np.name;
+        updateNearbyPlaceCache(np.latLng!, np.name!);
         return "${np.name}, ${this.locationResult!.locality}";
       }
     }

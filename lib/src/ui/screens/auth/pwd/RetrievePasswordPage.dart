@@ -62,11 +62,12 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   }
 
   void _jumpToOTPPage() {
+
     Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>ForgotenPasswordOTP()
+        builder: (context) =>RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView()),)
       ),
     );
   }
@@ -81,47 +82,50 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       builder: (context) {
         return Padding(
           padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 50,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 50,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              const Text(
-                "Confirmation",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                "Vous allez recevoir un code de vérification pour réinitialiser le mot de passe",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.black54),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: KColors.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                const SizedBox(height: 20),
+                const Text(
+                  "Confirmation",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  "Vous allez recevoir un code de vérification pour réinitialiser le mot de passe",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: _jumpToOTPPage,
+                    child: const Text(
+                      "Recevoir le Code",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
-                  onPressed: _jumpToOTPPage,
-                  child: const Text(
-                    "Recevoir le Code",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -148,88 +152,93 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size: 25),
-                    SizedBox(width: 10),
-                    Text("Connexion",
-                        style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
-                  ],
-                ),
-                const SizedBox(height: 40),
-                const Text("Entrez votre mot de passe",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
-
-                // ✅ Password Field
-                TextField(
-                  controller: passwordController,
-                  obscureText: _obscurePassword,
-                  decoration: InputDecoration(
-                    hintText: "Mot de passe",
-                    prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
-                    suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          color: KColors.primaryColor),
-                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                    ),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children:  [
+                      Icon(widget.type!=3?FontAwesomeIcons.rightFromBracket:Icons.shopping_bag, color: KColors.primaryColor, size: 25),
+                      SizedBox(width: 10),
+                      Text(widget.type!=3?  "Connexion" : "Valider la commande",
+                          style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
+                    ],
                   ),
-                ),
+                  const SizedBox(height: 40),
+                  const Text("Entrez votre mot de passe",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
 
-                if (errorMessage.isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
-                ],
-
-                const SizedBox(height: 30),
-
-                // ✅ Submit Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
+                  // ✅ Password Field
+                  TextField(
+                    controller: passwordController,
+                    obscureText: _obscurePassword,
+                    decoration: InputDecoration(
+                      hintText: "Mot de passe",
+                      prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
+                      suffixIcon: IconButton(
+                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: KColors.primaryColor),
+                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      ),
+                      border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    onPressed: _submitCode,
-                    child: const Text("Se connecter",
-                        style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      keyboardType: TextInputType.number
                   ),
-                ),
 
-                // ✅ Forgot Password
-                TextButton(
-                  onPressed: () => showReceiveCodeBottomSheet(context),
-                  child: const Text(
-                    "Mot de passe oublié ?",
-                    style: TextStyle(color: KColors.primaryColor),
+                  if (errorMessage.isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                  ],
+
+                  const SizedBox(height: 30),
+
+                  // ✅ Submit Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: KColors.primaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      onPressed: _submitCode,
+                      child:  Text(widget.type!=3? "Se connecter":"Valider",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
                   ),
-                )
-              ],
+
+                  // ✅ Forgot Password
+                  TextButton(
+                    onPressed: () => showReceiveCodeBottomSheet(context),
+                    child: const Text(
+                      "Mot de passe oublié ?",
+                      style: TextStyle(color: KColors.primaryColor),
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 131),
-                  Image.asset(
-  "assets/images/background/Patternlogin.png",
-  width: double.infinity,
-  height: 275,
-  fit: BoxFit.cover, // scales and crops to cover the width
-),
-        ],
+
+                    Image.asset(
+          "assets/images/background/Patternlogin.png",
+          width: double.infinity,
+          fit: BoxFit.cover, // scales and crops to cover the width
+        ),
+          ],
+        ),
       ),
     );
   }

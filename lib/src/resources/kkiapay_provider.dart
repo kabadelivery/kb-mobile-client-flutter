@@ -4,10 +4,12 @@ import 'dart:math';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:kkiapay_flutter_sdk/kkiapay_flutter_sdk.dart';
 
+import '../utils/functions/topups.dart';
 class KkiapayProvider {
   String temp_transaction_id="";
   bool init_launch=true;
@@ -23,13 +25,16 @@ class KkiapayProvider {
         break;
       case 'PAYMENT_INIT':
         debugPrint('PAYMENT_INIT');
-        if(init_launch)
-        _sendPendingTransactionData(context,response, paymentData);
+        if(init_launch) {
+          _sendPendingTransactionData(context, response, paymentData);
+        }
         break;
       case 'PENDING_PAYMENT':
         debugPrint('PENDING_PAYMENT');
+
         break;
       case 'PAYMENT_SUCCESS':
+        Navigator.pop(context);
         Navigator.pop(context);
         debugPrint('PAYMENT_SUCCESS');
         if(success_launch)
@@ -59,6 +64,7 @@ class KkiapayProvider {
         'fees': feesAmount,
         'details': 'payment Kkiapay for user $userId',
         'is_momo': isMomo,
+
       };
       String apiUrl = ServerRoutes.KKIAPAY_STORE_TRANSACTION;
       debugPrint('KKIAPAY_STORE_TRANSACTION');
@@ -146,8 +152,8 @@ class KkiapayProvider {
     }
     final kkiapay = KKiaPay(
       amount: amount,
-      apikey: '8e0dfba3c74c9693a19f3e77cbd8998fe567428a',
-      sandbox: false,
+      apikey: !kDebugMode?'8e0dfba3c74c9693a19f3e77cbd8998fe567428a':"d991dc8063b911f08da44b2b59e422d0",
+      sandbox: kDebugMode,
       callback: (response, ctx) => kkiapayCallback(context,response,paymentData ),
       reason: typeOfTransaction=="momo"?"Recharge Mobile Money":'Recharge carte bancaire',
       phone: phone_number,

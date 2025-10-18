@@ -76,7 +76,7 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                         showBottomContactSheet(context: context);
                       }, icon: Icon(Icons.phone_outlined,color: Colors.white,)),
                       IconButton(onPressed: (){
-                        contactWhatsApp(phoneNumber: "+22892109474", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
+                        contactWhatsApp(phoneNumber: "+22871499014", message: "${AppLocalizations.of(context)!.translate('i_have_an_inquiry')}");
                       }, icon: Icon(Icons.messenger_outline,color: Colors.white,)),
                     ],
                   )
@@ -145,20 +145,19 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                               end: Alignment.bottomRight,
                             ),
                           ),
-                          child: const Icon(FontAwesomeIcons.pills,
-                              color: Colors.white),
+                          child:Image.asset("assets/images/png/pill.png",width: 30,height: 30),
                         ),
                         const SizedBox(width: 12),
-                        const Column(
+                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Service Pharmaceutique",
+                              "${AppLocalizations.of(context)!.translate('pharmacy_service')}",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             Text(
-                              "Commandez en toute simplicité",
+                                "${AppLocalizations.of(context)!.translate('order_simplicity')}",
                               style: TextStyle(
                                   color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 13),
                             ),
@@ -168,9 +167,8 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                     ),
 
                     const SizedBox(height: 16),
-                    const Text(
-                      "Commandez vos médicaments depuis n’importe quelle pharmacie. "
-                          "Livraison rapide et sécurisée à domicile.",
+                     Text(
+                         "${AppLocalizations.of(context)!.translate('order_description')}",
                       style: TextStyle(fontSize: 16, color: Colors.black87),
                     ),
 
@@ -181,12 +179,12 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                       children: [
                         _FeatureButton(
                           icon: Icons.shield_outlined,
-                          text: "Service sécurisé et professionnel",
+                          text: "${AppLocalizations.of(context)!.translate('secure_service')}",
                         ),
                         const SizedBox(height: 10),
                         _FeatureButton(
                           icon: Icons.local_shipping_outlined,
-                          text: "Livraison rapide à domicile",
+                          text: "${AppLocalizations.of(context)!.translate('fast_delivery')}"
                         ),
                       ],
                     ),
@@ -234,7 +232,7 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                             Icon(Icons.shopping_bag_outlined,color: Colors.white,),
                             SizedBox(width: 10,),
                             Text(
-                              "Acheter un produit pharmaceutique",
+                                "${AppLocalizations.of(context)!.translate('buy_pharma_product')}",
                               style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
                             ),
                           ],
@@ -256,13 +254,13 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: const Color(0xFFFFB1C3)),
               ),
-              child: const Row(
+              child:  Row(
                 children: [
                   Icon(Icons.info_outline, color: KColors.primaryColor),
                   SizedBox(width: 8),
                   Expanded(
                     child: Text(
-                      "Commandez depuis des pharmacies non référencées sur notre plateforme",
+                      "${AppLocalizations.of(context)!.translate('non_listed_pharmacies')}",
                       style: TextStyle(fontSize: 13, color: Colors.black87),
                     ),
                   ),

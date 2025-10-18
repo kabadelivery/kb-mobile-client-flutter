@@ -1,3 +1,4 @@
+import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/microservices/expedition/core/utils.dart';
 import 'package:KABA/src/microservices/expedition/presentation/widget/status.dart';
 import 'package:KABA/src/microservices/expedition/presentation/widget/tracked_package_widget.dart';
@@ -10,22 +11,24 @@ import '../../data/expedition/expedition_model.dart';
 
 Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel expedition}) {
   List status = [
-  "EN_ATTENTE",
-  "ACCEPTEE",
-  "NEGOCIATION",
-  "PAIEMENT",
-  "RECUPERATION_EFFECTUEE",
-  "DEPART_CONFIRME",
-  "EN_COURS_EXPEDITION",
-  "ARRIVE_EN_VILLE",
-  "LIVRAISON_AU_DESTINATAIRE"
+    "EN_ATTENTE",
+    "ACCEPTEE",
+    "NEGOCIATION",
+    "PAIEMENT",
+    "RECUPERATION_EFFECTUEE",
+    "DEPART_CONFIRME",
+    "EN_COURS_EXPEDITION",
+    "ARRIVE_EN_VILLE",
+    "LIVRAISON_AU_DESTINATAIRE"
   ];
   int indexOfStatus = status.indexOf(expedition.status)+1;
   if(expedition.status == "REJETEE"){
-     status = [
+    status = [
       "REJETEE",
     ];
   }
+  final daysLeft = expedition.estimatedDelivery!.difference(DateTime.now()).inDays;
+  debugPrint("estimatedDelivery ${expedition.estimatedDelivery} today ${DateTime.now()}");
   return Container(
     margin: const EdgeInsets.all(12),
     padding: const EdgeInsets.all(12),
@@ -48,7 +51,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-             Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -72,12 +75,12 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
                         ),
                         SizedBox(height: 4),
                         Text(expedition.colisDetail!.description!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 14
-                        )
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 14
+                            )
                         ),
                       ],
                     ),
@@ -89,42 +92,53 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
             ),
             GestureDetector(
               onTap: (){
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
 
-          backgroundColor: Colors.white,
-          content: SizedBox(
-            height: 660,
-            width: double.maxFinite,
-            child: ExpeditionStepper(currentStatus: ExpeditionStatus.values.where((element) => element.name == expedition.status).first),
-          ),
-        );
-              });
+                        backgroundColor: Colors.white,
+                        content: SizedBox(
+                          height: 660,
+                          width: double.maxFinite,
+                          child: ExpeditionStepper(currentStatus: ExpeditionStatus.values.where((element) => element.name == expedition.status).first),
+                        ),
+                      );
+                    });
               },
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                 decoration: BoxDecoration(
                   color: KabaExpeditionColor.primary,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
                 child:  Text(
-                  "${expedition.status==ExpeditionStatus.EN_COURS_EXPEDITION.value?"En cours d'expedition":
-                      expedition.status==ExpeditionStatus.ARRIVE_EN_VILLE.value?"Arrivé à ville":
-                          expedition.status==ExpeditionStatus.LIVRAISON_AU_DESTINATAIRE.value?"Livraison au destinataire":
-                              expedition.status==ExpeditionStatus.DEPART_CONFIRME.value?"Départ confirmé":
-                                  expedition.status==ExpeditionStatus.PAIEMENT.value?"Paiement":
-                                      expedition.status==ExpeditionStatus.NEGOCIATION.value?"Negotiation":
-                                          expedition.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?"Récupération effectuée":
-                                              expedition.status==ExpeditionStatus.EN_ATTENTE.value?"Demande faite":
-                                              expedition.status==ExpeditionStatus.ACCEPTEE.value?"Acceptée"
-                                                  :
-                                              expedition.status==ExpeditionStatus.REJETEE.value?"Rejetée"
-                                                  :"Status inconnu"
-                  }",
+                  AppLocalizations.of(context)!.translate(
+                      expedition.status == ExpeditionStatus.EN_COURS_EXPEDITION.value
+                          ? "EN_COURS_EXPEDITION"
+                          : expedition.status == ExpeditionStatus.ARRIVE_EN_VILLE.value
+                          ? "ARRIVE_EN_VILLE"
+                          : expedition.status == ExpeditionStatus.LIVRAISON_AU_DESTINATAIRE.value
+                          ? "LIVRAISON_AU_DESTINATAIRE"
+                          : expedition.status == ExpeditionStatus.DEPART_CONFIRME.value
+                          ? "DEPART_CONFIRME"
+                          : expedition.status == ExpeditionStatus.PAIEMENT.value
+                          ? "PAIEMENT"
+                          : expedition.status == ExpeditionStatus.NEGOCIATION.value
+                          ? "NEGOCIATION"
+                          : expedition.status == ExpeditionStatus.RECUPERATION_EFFECTUEE.value
+                          ? "RECUPERATION_EFFECTUEE"
+                          : expedition.status == ExpeditionStatus.EN_ATTENTE.value
+                          ? "EN_ATTENTE"
+                          : expedition.status == ExpeditionStatus.ACCEPTEE.value
+                          ? "ACCEPTEE"
+                          : expedition.status == ExpeditionStatus.REJETEE.value
+                          ? "REJETEE"
+                          : "STATUS_INCONNU"
+                  ),
                   style: TextStyle(color: Colors.white, fontSize: 12),
-                ),
+                )
+
               ),
             ),
           ],
@@ -133,7 +147,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
         const SizedBox(height: 12),
 
         // Route info
-         Row(
+        Row(
           children: [
             Icon(Icons.location_on, color: KabaExpeditionColor.primary, size: 20),
             SizedBox(width: 6),
@@ -144,11 +158,11 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
         const SizedBox(height: 12),
 
         // Progress
-         Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("Progression"),
-            Text("$indexOfStatus /${status.length} étapes"),
+            Text("${AppLocalizations.of(context)!.translate('progress')}"),
+            Text("$indexOfStatus /${status.length} ${AppLocalizations.of(context)!.translate('status')}"),
           ],
         ),
         const SizedBox(height: 4),
@@ -165,27 +179,30 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
         const SizedBox(height: 12),
 
         // Estimated delivery
-        Row(
+         daysLeft > 0?     Row(
           children: [
             Icon(Icons.access_time, color: KabaExpeditionColor.primary, size: 20),
             SizedBox(width: 6),
             Text(
-              "Livraison estimée dans ${expedition.estimatedDelivery!.difference(DateTime.now()).inDays} jours",
-              style: TextStyle(color: KabaExpeditionColor.primary, fontWeight: FontWeight.w500),
+              "Livraison estimée dans ${daysLeft > 0 ? daysLeft : 0} jours",
+              style: TextStyle(
+                color: KabaExpeditionColor.primary,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ],
-        ),
+        ):Container(),
 
         const SizedBox(height: 12),
 
         // Last update & amount
-         Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Dernière mise à jour"),
+                Text("${AppLocalizations.of(context)!.translate("last_update")}"),
                 Text("${expedition.updatedAt!.day<10?"0"+expedition.updatedAt!.day.toString() : expedition.updatedAt!.day}/${expedition.updatedAt!.month<10?"0"+expedition.updatedAt!.month.toString(): expedition.updatedAt!.month}/${expedition.updatedAt!.year}",
                     style: TextStyle(fontWeight: FontWeight.w500)),
               ],
@@ -193,7 +210,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text("Montant"),
+                Text("${AppLocalizations.of(context)!.translate("amount")}"),
                 if(expedition.colisDetail!.reductionAppliquee!=0 && expedition.colisDetail!.reductionAppliquee!=null)
                   Text("${expedition.colisDetail!.prixBase} FCFA",
                       style: TextStyle(
@@ -218,7 +235,7 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
               elevation: 0,
               backgroundColor: KabaExpeditionColor.primary,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6),
+                borderRadius: BorderRadius.circular(10),
               ),
             ),
             onPressed: () {
@@ -238,7 +255,14 @@ Widget ExpeditionWidget({required BuildContext context,required ExpeditionModel 
               ));
 
             },
-            child: const Text("Voir le suivi détaillé"),
+            child:  Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.remove_red_eye_outlined,color: Colors.white,),
+                SizedBox(width: 10,),
+                Text("${AppLocalizations.of(context)!.translate('see_detailed_tracking')}"),
+              ],
+            ),
           ),
         )
       ],

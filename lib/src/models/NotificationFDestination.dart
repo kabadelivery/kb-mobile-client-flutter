@@ -25,6 +25,8 @@ class NotificationFDestination {
   /* get article details */
  static const int ARTICLE_DETAILS = 128;
 
+ static const int SUBSCRIPTION_PAGE = 700;
+
 
 // TYPE_ARTICLE_WEB
   /* get food / menu details */

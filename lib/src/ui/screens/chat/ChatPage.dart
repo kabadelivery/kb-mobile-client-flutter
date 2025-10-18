@@ -1,7 +1,17 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:flutter/material.dart';
+
+import '../../../models/CustomerModel.dart';
+import '../../../models/MessageModel/messageModel.dart';
+import '../../../resources/socket/sockets.dart';
+import '../../../utils/_static_data/ServerRoutes.dart';
+import '../../../utils/functions/CustomerUtils.dart';
+import '../../customwidgets/Chat/OwnMessage.dart';
+import '../../customwidgets/Chat/ReplyMessageCard.dart';
 
 class ChatPage extends StatefulWidget {
   final String token;
@@ -10,216 +20,256 @@ class ChatPage extends StatefulWidget {
   const ChatPage({super.key, required this.token, required this.receiverId});
 
   @override
-  _ChatPageState createState() => _ChatPageState();
+  State<ChatPage> createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-  final TextEditingController _messageController = TextEditingController();
+  final Dio _dio = Dio();
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController _controller = TextEditingController();
   final ScrollController _scrollController = ScrollController();
-  File? _pickedImage;
+  final GlobalKey<AnimatedListState> _listKey = GlobalKey();
 
-  final String messagesQuery = """
-    query MessagesByUser(\$receiverId: Int!) {
-      messagesByUser(receiverId: \$receiverId) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
+  List<MessageModel> messages = [];
+  int? customerId;
+  String customerName = '';
+  bool sendButton = false;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initData();
+
+    // 🔹 Reset unread count when opening chat
+    SocketService().resetUnread();
+
+    // 🔹 Listen to new incoming messages
+    SocketService().messagesStream.listen((msg) {
+      final senderId = msg["senderId"];
+      final text = msg["text"];
+      if (senderId.toString() != customerId.toString()) {
+        _addMessage(MessageModel(
+          message: text,
+          type: "destination",
+          messageType: text.startsWith("http") ? "image" : "text",
+          senderName: msg["senderName"] ?? "Service Client",
+          time: DateTime.parse(msg["createdAt"]),
+        ));
       }
-    }
-  """;
+    });
+  }
 
-  final String sendMessageMutation = """
-    mutation CreateMessage(\$receiverId: Int!, \$text: String, \$imageUrl: String) {
-      createMessage(receiverId: \$receiverId, text: \$text, imageUrl: \$imageUrl) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
-      }
-    }
-  """;
+  Future<void> _initData() async {
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    customerId = int.parse(customer.phone_number!.replaceAll(RegExp(r'\D'), ''));
+    customerName = customer.nickname ?? "";
 
-  final String messageSentSubscription = """
-    subscription MessageSent(\$receiverId: Int!) {
-      messageSent(receiverId: \$receiverId) {
-        id
-        text
-        imageUrl
-        senderId
-        receiverId
-        createdAt
-      }
-    }
-  """;
+    // Initialize socket
+    SocketService().init(customerId.toString());
 
-  // Pick image using image_picker
-  Future<void> _pickImage() async {
-    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
+    // 🔹 Fetch chat history from backend
+    SocketService().fetchChatHistory(widget.receiverId.toString());
+
+    // 🔹 Listen for chat history once it arrives
+    SocketService().historyStream.listen((history) {
       setState(() {
-        _pickedImage = File(pickedFile.path);
+        messages = history.map((m) {
+          final isMine = m['senderId'].toString() == customerId.toString();
+          return MessageModel(
+            message: m['text'] ?? '',
+            type: isMine ? 'source' : 'destination',
+            messageType: (m['text'] ?? '').startsWith('http') ? 'image' : 'text',
+            senderName: m['senderName'] ?? (isMine ? 'You' : 'Service Client'),
+            time: DateTime.parse(m['createdAt']),
+          );
+        }).toList();
+        _isLoading = false;
       });
+      _scrollToBottom();
+    });
+  }
+
+
+  void _addMessage(MessageModel msg) {
+    messages.add(msg);
+    _listKey.currentState?.insertItem(messages.length - 1, duration: const Duration(milliseconds: 300));
+    _scrollToBottom();
+  }
+
+  void sendMessage(String text) {
+    if (customerId == null || text.trim().isEmpty) return;
+
+    final messageData = {
+      "senderId": customerId,
+      "receiverId": widget.receiverId,
+      "text": text.trim(),
+      "senderName": customerName,
+    };
+
+    SocketService().socket?.emit("/message", messageData);
+
+    _addMessage(MessageModel(
+      message: text.trim(),
+      type: "source",
+      messageType: text.startsWith("http") ? "image" : "text",
+      senderName: "You",
+      time: DateTime.now(),
+    ));
+
+    _controller.clear();
+    setState(() => sendButton = false);
+  }
+
+  Future<void> pickAndSendImage() async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image == null || customerId == null) return;
+
+    try {
+      final file = File(image.path);
+      final uploadUrl = ServerRoutes.KABA_CHAT + "/upload-image";
+      final fileName = path.basename(file.path);
+
+      final formData = FormData.fromMap({
+        "file": await MultipartFile.fromFile(file.path, filename: fileName),
+      });
+
+      final response = await _dio.post(uploadUrl, data: formData);
+      final imageUrl = response.data["url"];
+
+      _addMessage(MessageModel(
+        message: imageUrl,
+        type: "source",
+        messageType: "image",
+        senderName: "You",
+        time: DateTime.now(),
+      ));
+
+      SocketService().socket?.emit("/message", {
+        "senderId": customerId,
+        "receiverId": widget.receiverId,
+        "text": imageUrl,
+        "senderName": customerName,
+      });
+    } catch (e) {
+      print("❌ Image upload failed: $e");
     }
+  }
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final HttpLink httpLink = HttpLink('https://793ae8bdb95e.ngrok-free.app/graphql',
-        defaultHeaders: {"Authorization": widget.token});
-
-    final WebSocketLink wsLink = WebSocketLink(
-      'ws://793ae8bdb95e.ngrok-free.app/graphql',
-      config: SocketClientConfig(
-        initialPayload: () => {"authorization": widget.token},
-        autoReconnect: true,
-      ),
-    );
-
-    final Link link = Link.split((request) => request.isSubscription, wsLink, httpLink);
-
-    final GraphQLClient client = GraphQLClient(
-      cache: GraphQLCache(),
-      link: link,
-    );
-
-    return GraphQLProvider(
-      client: ValueNotifier(client),
-      child: Scaffold(
-        appBar: AppBar(title: const Text("Chat Support")),
-        body: Column(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: KColors.primaryColor,
+        elevation: 2,
+        titleSpacing: 0,
+        title: Row(
           children: [
-            Expanded(
-              child: Query(
-                options: QueryOptions(
-                  document: gql(messagesQuery),
-                  variables: {"receiverId": widget.receiverId},
-                  fetchPolicy: FetchPolicy.networkOnly,
-                ),
-                builder: (result, {fetchMore, refetch}) {
-                  if (result.hasException) {
-                    return Center(child: Text(result.exception.toString()));
-                  }
-
-                  if (result.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  final messages = result.data!['messagesByUser'] as List<dynamic>;
-
-                  return Subscription(
-                    options: SubscriptionOptions(
-                      document: gql(messageSentSubscription),
-                      variables: {"receiverId": widget.receiverId},
-                    ),
-                    builder: (subResult) {
-                      List<dynamic> updatedMessages = List.from(messages);
-                      if (subResult.data != null) {
-                        updatedMessages.add(subResult.data!['messageSent']);
-                      }
-
-                      // Scroll to bottom
-                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                        if (_scrollController.hasClients) {
-                          _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-                        }
-                      });
-
-                      return ListView.builder(
-                        controller: _scrollController,
-                        itemCount: updatedMessages.length,
-                        itemBuilder: (context, index) {
-                          final msg = updatedMessages[index];
-                          bool isMe = msg['senderId'].toString() == widget.token; // or use actual userId
-
-                          return Align(
-                            alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: isMe ? Colors.blue : Colors.grey.shade300,
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (msg['text'] != null)
-                                    Text(
-                                      msg['text'],
-                                      style: TextStyle(color: isMe ? Colors.red : Colors.black),
-                                    ),
-                                  if (msg['imageUrl'] != null)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 5),
-                                      child: Image.network(msg['imageUrl']),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
+            IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 20),
+              onPressed: () => Navigator.pop(context),
             ),
-            if (_pickedImage != null)
-              Container(
-                margin: const EdgeInsets.all(8),
-                height: 100,
-                child: Image.file(_pickedImage!),
-              ),
-            Row(
+            const CircleAvatar(
+              radius: 18,
+              backgroundImage: AssetImage("assets/images/logo-chat.jpeg"),
+              backgroundColor: Colors.white,
+            ),
+            const SizedBox(width: 10),
+            const Text(
+              "Service Client Kaba",
+              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ],
+        ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : AnimatedList(
+              key: _listKey,
+              controller: _scrollController,
+              initialItemCount: messages.length,
+              itemBuilder: (context, index, animation) {
+                final msg = messages[index];
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: msg.type == "source"
+                      ? OwnMessageCard(
+                    message: msg.message,
+                    messageType: msg.messageType,
+                    time: msg.time,
+                    senderName: msg.senderName,
+                  )
+                      : ReplyMessageCard(
+                    message: msg.message,
+                    messageType: msg.messageType,
+                    time: msg.time,
+                    senderName: msg.senderName,
+                  ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(Icons.image),
-                  onPressed: _pickImage,
+                  icon: const Icon(Icons.photo, color: Colors.grey),
+                  onPressed: pickAndSendImage,
                 ),
                 Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: const InputDecoration(hintText: "Type a message"),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: TextFormField(
+                      controller: _controller,
+                      onChanged: (value) => setState(() => sendButton = value.isNotEmpty),
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "Type a message",
+                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      ),
+                    ),
                   ),
                 ),
-                Mutation(
-                  options: MutationOptions(
-                    document: gql(sendMessageMutation),
-                  ),
-                  builder: (runMutation, mutationResult) => IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () async {
-                      String? imageUrl;
-                      if (_pickedImage != null) {
-                        // Upload image to your server or S3 and get URL
-                        // For demo, we use a placeholder
-                        imageUrl = "https://via.placeholder.com/150";
-                      }
-
-                      if (_messageController.text.isEmpty && imageUrl == null) return;
-
-                      runMutation({
-                        "receiverId": widget.receiverId,
-                        "text": _messageController.text,
-                        "imageUrl": imageUrl,
-                      });
-
-                      setState(() {
-                        _messageController.clear();
-                        _pickedImage = null;
-                      });
+                CircleAvatar(
+                  backgroundColor: KColors.primaryColor,
+                  child: IconButton(
+                    icon: const Icon(Icons.send, color: Colors.white),
+                    onPressed: () {
+                      if (_controller.text.trim().isNotEmpty) sendMessage(_controller.text.trim());
                     },
                   ),
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
