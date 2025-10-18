@@ -18,6 +18,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../StateContainer.dart';
+import '../login/LoginOTPnewPage.dart';
 
 
 class RecoverPasswordPage extends StatefulWidget {
@@ -151,7 +152,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                     SizedBox(height: 20),
                     Center(
                       child:
-                      Text(" Réinitialisez votre mot de passe KABA ${} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
+                      Text(" Réinitialisez votre mot de passe KABA  ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
                     ),
                     SizedBox(height: 20),
                     Padding(
@@ -234,27 +235,61 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
                                 ],
                               ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),*/
 
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: KColors.primaryColor,
-                              padding: const EdgeInsets.symmetric(vertical: 15),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                          Container(
+                            width: 350,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: KColors.primaryColor,
+                                padding: const EdgeInsets.symmetric(vertical: 15),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
                               ),
+                               onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};} ,
+                              child:  Text("Valider",
+                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                             ),
-                             onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};} ,
-                            child:  Text("Valider",
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           ),
                         ]),
                     SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
+                    isCodeSent ?
+                    Container(
+
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: KColors.primaryColor,
+                          padding: const EdgeInsets.symmetric(vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                          onPressed: () {
+                        //  isCodeSent ?
+
+                          //_checkCodeAndCreateAccount()
+
+                             // : {};
+
+                          },
+                          child:  Text( "Valider",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                      ),
+                      ),
+
+                      )
+
+
+                   /* MaterialButton( color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         Text("${AppLocalizations.of(context)!.translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
                         SizedBox(width: 10),
                         isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
                       ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
+                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) */
+
+
+                        : Container(),
                   ]
               ),
             ),
@@ -272,19 +307,28 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
 //    });
 //  }
 
-  void _sendCodeAction() {
+  Future<void> _sendCodeAction() async {
 
     /* logins */
     String login = _loginFieldController.text;
     /* check the fields */
 
-    if (login != "") {
+    var codetyped =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
+        builder: (BuildContext context) {
+          return VerificationPage(type: 0);
+        }));
+
+    if (login.length > 7) {
       this.widget.presenter!.sendVerificationCode(login);
+      _checkCodeAndCreateAccount(codetyped['code']);
+
       mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
     } else if (Utils.isEmailValid(login)) {
+      _checkCodeAndCreateAccount(codetyped['code']);
       this.widget.presenter!.sendVerificationCode(login);
       mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}", is_code_confirmation: true);
     } else {
+      mDialog("❌ Un des champ est Vide !");
       /* login error */
       setState(() {
         isLoginError = true;
@@ -477,10 +521,10 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements Re
   }
 
 
-  _checkCodeAndCreateAccount() {
+  _checkCodeAndCreateAccount(_code) {
 
     /* check request id and the code */
-    String _code = _codeFieldController.text;
+   // String _code = _codeFieldController.text;
     if (Utils.isCode(_code)) {
       setState(() {
         isCodeSending = false;
