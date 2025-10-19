@@ -13,8 +13,9 @@ class RetrievePasswordPage extends StatefulWidget {
   static var routeName = "/RetrievePasswordPage";
 
   final int type;
+  final String? login  ;
 
-  const RetrievePasswordPage({Key? key, this.type = 0}) : super(key: key);
+  const RetrievePasswordPage({Key? key, this.type = 0,  this.login}) : super(key: key);
 
   @override
   _RetrievePasswordPageState createState() => _RetrievePasswordPageState();
@@ -45,7 +46,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   }
 
   void _submitCode() {
-    String enteredPassword = passwordController.text.trim();
+    String enteredPassword = passwordController.text;
 
     if (enteredPassword.isEmpty) {
       setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
@@ -67,7 +68,10 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView()),)
+        builder: (context) =>RecoverPasswordPage(
+          presenter: RecoverPasswordPresenter(RecoverPasswordView()),
+          login:widget.login
+          ,)
       ),
     );
   }
@@ -172,7 +176,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     ],
                   ),
                   const SizedBox(height: 40),
-                  const Text("Entrez votre mot de passe",
+                   Text("Entrez votre mot de passe ",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 20),

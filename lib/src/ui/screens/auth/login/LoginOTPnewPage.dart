@@ -221,7 +221,8 @@ class _VerificationPageState extends State<VerificationPage> {
           ),
         ),
       ),
-      body: Column(
+      body:
+      Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(
@@ -285,7 +286,7 @@ class _VerificationPageState extends State<VerificationPage> {
                       ),
                     ),
                     onPressed: _submitCode,
-                    child: const Text("Creer Un Compte",
+                    child: const Text("Valider",
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                   ),

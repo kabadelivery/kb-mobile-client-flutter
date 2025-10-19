@@ -573,7 +573,7 @@ class _NewPasswordPageState extends State<NewPasswordPage> implements RegisterVi
         do {
           var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
             builder: (BuildContext context) {
-              return new RetrievePasswordPage(type: 2);
+              return new RetrievePasswordPage(type: 2,login:'');
             },
           ));
           if (results != null && results.containsKey('code') && results.containsKey('type')) {

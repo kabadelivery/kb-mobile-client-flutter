@@ -1,644 +1,402 @@
-import 'dart:async';
-
-import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
-import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
-import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../StateContainer.dart';
+import '../../../../contracts/login_contract.dart';
 import '../login/LoginOTPnewPage.dart';
-
-
+import '../login/LoginPage.dart';
 class RecoverPasswordPage extends StatefulWidget {
-
   static var routeName = "/RecoverPasswordPage";
 
   CustomerModel? customer;
-
   RecoverPasswordPresenter? presenter;
-
   bool? is_a_process;
+  String? login;
 
-  RecoverPasswordPage({Key? key, this.presenter, this.is_a_process = false}) : super(key: key);
+  RecoverPasswordPage({
+    Key? key,
+    this.presenter,
+    this.is_a_process = false,
+    this.login,
+  }) : super(key: key);
 
   @override
   _RecoverPasswordPageState createState() => _RecoverPasswordPageState();
 }
 
-class _RecoverPasswordPageState extends State<RecoverPasswordPage> implements RecoverPasswordView {
-
-  List<String> recoverModeHints = [""];
-
-  String _loginFieldHint = "";
-
-  TextEditingController _loginFieldController = new TextEditingController();
-  TextEditingController _codeFieldController = new TextEditingController();
-  TextEditingController Pass2FieldController = new TextEditingController();
-
-  bool isCodeSent = false;
-  bool isLoginError = false;
-  bool isCodeError = false;
-
-  /* circle loading progressing */
-  bool isCodeSending = false;
-
-  int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
-
-  int timeDiff = 0;
-
+class _RecoverPasswordPageState extends State<RecoverPasswordPage>
+    implements RecoverPasswordView {
+  String? _login;
   String? _requestId;
+  String? _pendingPassword; // store password until OTP is verified
+
+  bool _isLoadingLogin = true;
+  bool _obscurePassword = true;
+  bool _obscureConfirm = true;
+
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+  TextEditingController();
 
   @override
   void initState() {
     super.initState();
+    widget.presenter!.recoverPasswordView = this;
 
-    this.widget.presenter!.recoverPasswordView = this;
+    // Load login asynchronously
     CustomerUtils.getCustomer().then((customer) {
-      if (customer != null) {
-        xrint("recoverpasswordPage : "+customer.toJson().toString());
-        setState(() {
-          if (customer.phone_number == null) {
-            if (customer.email == null) {
-              // check if logged in, if yes, log out...
-              xrint("cstomer email is no null");
-              CustomerUtils.clearCustomerInformations().whenComplete((){
-                StateContainer.of(context).updateLoggingState(state: 0);
-                StateContainer.of(context).updateBalance(balance: 0);
-                // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-                // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-                StateContainer.of(context).hasUnreadMessage = false;
-                StateContainer.of(context).updateTabPosition(tabPosition: 0);
-                Navigator.pushNamedAndRemoveUntil(context, SplashPage.routeName, (r) => false);
-              });
-            } else {
-              _loginFieldController.text = customer.email!;
-            }
-          } else
-            _loginFieldController.text = customer.phone_number!;
-        });
-      }
+      setState(() {
+        _login = customer?.phone_number ?? customer?.email ?? widget.login;
+        _isLoadingLogin = false;
+      });
     });
-    /* retrieve state of the app */
-    _retrieveRequestParams();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _loginFieldHint = "${AppLocalizations.of(context)!.translate('phone_number_hint')}";
-    recoverModeHints = ["${AppLocalizations.of(context)!.translate('recover_password_hint')}",/*"Insert your E-mail address"*/];
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    if (_isLoadingLogin) {
+      return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
           backgroundColor: KColors.primaryColor,
           leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+            onPressed: () => Navigator.pop(context),
+          ),
           centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
+          title: Text(
+            Utils.capitalize(
+                "${AppLocalizations.of(context)!.translate('recover_password')}"),
+            style: TextStyle(
+                fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+        ),
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        backgroundColor: KColors.primaryColor,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+        centerTitle: true,
+        title: Text(
+          Utils.capitalize(
+              "${AppLocalizations.of(context)!.translate('recover_password')}"),
+          style: TextStyle(
+              fontSize: 15, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              SizedBox(height: 30),
               Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('recover_password')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
+                "Réinitialisez votre mot de passe KABA avec $_login",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 19,
+                    fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 20),
+
+              // Password
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: _passwordController,
+                  obscureText: _obscurePassword,
+                  decoration: InputDecoration(
+                    hintText: "Mot de passe",
+                    prefixIcon: Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscurePassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscurePassword = !_obscurePassword;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+
+              // Confirm Password
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: _obscureConfirm,
+                  decoration: InputDecoration(
+                    hintText: "Confirmez votre mot de passe",
+                    prefixIcon: Icon(Icons.lock_outline),
+                    suffixIcon: IconButton(
+                      icon: Icon(_obscureConfirm
+                          ? Icons.visibility_off
+                          : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _obscureConfirm = !_obscureConfirm;
+                        });
+                      },
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
+
+              // Validate Button
+              Container(
+                width: 350,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: _handleValidatePassword,
+                  child: Text(
+                    "Valider",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              SizedBox(height: 30),
             ],
           ),
         ),
-        backgroundColor: Colors.white,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child:Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(height: 30),
-
-                    SizedBox(height: 10),
-                    SizedBox(height: 10),
-                   // Container(margin: EdgeInsets.only(left:10, right: 10),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                    Row(mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
-                        SizedBox(width: 10),
-                        Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
-                        SizedBox(width: 5),
-                        //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Center(
-                      child:
-                      Text(" Réinitialisez votre mot de passe KABA  ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
-                    ),
-                    SizedBox(height: 20),
-                    Padding(
-                      padding: const EdgeInsets.only(left:20  ,  right:20 ),
-                      child: TextField(
-                        controller: _loginFieldController,
-                        // obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          hintText: "Mot de passe",
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          /*  suffixIcon: IconButton(
-                      // icon: Icon(
-                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
-                       onPressed: () {
-                         setState(() {
-                         //  _obscurePassword = !_obscurePassword;
-                         });
-                       },
-                                         ), */
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left:20  ,  right:20 , top: 20 ),
-                      child: TextField(
-                        controller: Pass2FieldController,
-                        // obscureText: _obscurePassword,
-                        decoration: InputDecoration(
-                          hintText: " Confirmez votre Mot de passe",
-                          prefixIcon: const Icon(Icons.lock_outline),
-                          /*  suffixIcon: IconButton(
-                      // icon: Icon(
-                      //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
-                       onPressed: () {
-                         setState(() {
-                         //  _obscurePassword = !_obscurePassword;
-                         });
-                       },
-                                         ), */
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
-                    ),
-
-                    SizedBox(height: 30),
-                    SizedBox(height: 10),
-                  //  Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:<Widget>[
-                          isCodeSent ?
-                          SizedBox(width: 80,
-                              child: Container(
-                                  padding: EdgeInsets.all(14),
-                                  child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "${AppLocalizations.of(context)!.translate('code')}"), style: TextStyle(color:KColors.primaryColor), keyboardType: TextInputType.number),
-//                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                                  decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                          ) : Container(),
-                          isCodeSent ? SizedBox(width:20) : Container(),
-                          /*OutlinedButton(
-                              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.white),padding: MaterialStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(isCodeSent && timeDiff != 0 ? "${timeDiff} ${AppLocalizations.of(context)!.translate('seconds')}" : "${AppLocalizations.of(context)!.translate('code')}" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                                  /* stream builder, that shows that the code is been sent */
-                                  isCodeSent == false &&  isCodeSending ? Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 10),
-                                      SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
-                                    ],
-                                  ) : Container(),
-                                ],
-                              ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}),*/
-
-                          Container(
-                            width: 350,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: KColors.primaryColor,
-                                padding: const EdgeInsets.symmetric(vertical: 15),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30),
-                                ),
-                              ),
-                               onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};} ,
-                              child:  Text("Valider",
-                                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                            ),
-                          ),
-                        ]),
-                    SizedBox(height: 30),
-                    isCodeSent ?
-                    Container(
-
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: KColors.primaryColor,
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                          onPressed: () {
-                        //  isCodeSent ?
-
-                          //_checkCodeAndCreateAccount()
-
-                             // : {};
-
-                          },
-                          child:  Text( "Valider",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
-                      ),
-                      ),
-
-                      )
-
-
-                   /* MaterialButton( color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text("${AppLocalizations.of(context)!.translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                        SizedBox(width: 10),
-                        isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
-                      ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) */
-
-
-                        : Container(),
-                  ]
-              ),
-            ),
-          ),
-        ));
-  }
-
-//  void _handleRadioValueChange (int value) {
-//    setState(() {
-//      /* clean the content */
-//      if (isCodeSent)
-//        return;
-//      this._loginFieldController.text = "";
-//      this._codeFieldController.text = "";
-//    });
-//  }
-
-  Future<void> _sendCodeAction() async {
-
-    /* logins */
-    String login = _loginFieldController.text;
-    /* check the fields */
-
-    var codetyped =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) {
-          return VerificationPage(type: 0);
-        }));
-
-    if (login.length > 7) {
-      this.widget.presenter!.sendVerificationCode(login);
-      _checkCodeAndCreateAccount(codetyped['code']);
-
-      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
-    } else if (Utils.isEmailValid(login)) {
-      _checkCodeAndCreateAccount(codetyped['code']);
-      this.widget.presenter!.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}", is_code_confirmation: true);
-    } else {
-      mDialog("❌ Un des champ est Vide !");
-      /* login error */
-      setState(() {
-        isLoginError = true;
-      });
-    }
-
-  }
-
-  _clearSharedPreferences () async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("vlcst");
-    prefs.remove("vl");
-    prefs.remove("vri");
-    // prefs.clear();
-  }
-
-  _saveRequestParams (String login, String requestId) async {
-    /* check the content */
-    /* save type of request */
-    /* save login */
-    /* save start-time */
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('vlcst', "${DateTime.now().millisecondsSinceEpoch~/1000}"); /*DateTime.now().*/
-    await prefs.setString('vl', login);
-    await prefs.setString('vri', requestId);
-
-    this._requestId = requestId;
-    _loginFieldController.text = login;
-  }
-
-  _retrieveRequestParams () async {
-
-    /* get type of request saved */
-    /* get login */
-    /* get start-time */
-
-    String login;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = prefs.getString("vlcst")!;
-    login = await prefs.getString("vl")??"";
-
-    DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
-
-    try {
-      lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(int.parse(tmp)*1000);
-    } catch (_) {
-      xrint("ERROR");
-      return;
-    }
-
-    _loginFieldController.text = login;
-
-    if (DateTime.now().isBefore(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
-
-      /* if code sent, do something else,  */
-      isCodeSent = true;
-      this._requestId = prefs.getString("vri");
-      _loginFieldController.text = prefs.getString("vl")??"";
-
-      mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-        if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
-          setState(() {
-            isCodeSent = false;
-          });
-          _clearSharedPreferences();
-          timer.cancel();
-        } else {
-          /* update text;;; if codeIsSent */
-          setState(() {
-            /* convert into minutes, and show it */
-            Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
-            timeDiff = duration.inSeconds;
-          });
-        }
-      });
-    }
-  }
-
-  Timer? mainTimer;
-
-  @override
-  void dispose() {
-    try {
-      mainTimer!.cancel();
-    } catch(_) {
-      xrint(_);
-    }
-    super.dispose();
-  }
-
-
-  void _onLoginFieldTextChanged(String value) {
-    setState(() {
-      isLoginError = false;
-    });
-  }
-
-
-
-  void mToast(String message) {
-//    Toast.show(message, context, duration: Toast.LENGTH_LONG);
-    mDialog(message);
-  }
-
-  @override
-  Future codeIsOk(bool isOk) async {
-
-    /* jump to setup code activity */
-    setState(() {
-      isCodeSending = false;
-    });
-    String? _mCode1, _mCode2;
-    if (isOk) {
-      /* clear shared preferences */
-      _clearSharedPreferences();
-     /* var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) {
-          return new RetrievePasswordPage(type: 1);
-        },
-      ));*/
-      /*if (results != null && results.containsKey('code') && results.containsKey('type')) {
-        _mCode1 = results['code'];
-        int type = results['type'];
-        /* launch confirmation */
-        _mCode2 = "";
-        do {
-          var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-            builder: (BuildContext context) {
-              return new RetrievePasswordPage(type: 2);
-            },
-          ));
-          if (results != null && results.containsKey('code') && results.containsKey('type')) {
-            _mCode2 = results['code'];
-          }
-        } while (_mCode1 != _mCode2);
-      }*/
-
-      /* launch create account request, and if success*/
-      widget.presenter!.updatePassword(_loginFieldController.text, '1234', _requestId!);
-      /*this.widget.presenter.createAccount(nickname: _nicknameFieldController.text, password: _mCode1,
-          phone_number: Utils.isPhoneNumber_TGO(_loginFieldController.text) ? _loginFieldController.text : "",
-          email: Utils.isEmailValid(_loginFieldController.text) ? _loginFieldController.text : "",
-          request_id: this._requestId
-      );*/
-    }
-  }
-
-  @override
-  void disableCodeButton(bool isDisabled) {
-  }
-
-  @override
-  void keepRequestId(String login, String requestId) {
-    /* save the id somewhere in my .... */
-    xrint("request Id ${requestId}");
-
-    this._requestId = requestId;
-    /* start minute-count of the seconds into the message thing */
-    _saveRequestParams(login, requestId);
-    _retrieveRequestParams();
-    setState(() {
-      isCodeSent = true;
-    });
-  }
-
-  @override
-  void onNetworkError() {
-    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
-  }
-
-  @override
-  void onSysError({String message = ""}) {
-    mToast(message);
-  }
-
-  @override
-  void showLoading(bool isLoading) {
-
-  }
-
-  @override
-  void toast(String message) {
-    mToast(message);
-  }
-
-  @override
-  void userExistsAlready() {
-//    mToast("user Exists Already");
-  }
-
-
-  _checkCodeAndCreateAccount(_code) {
-
-    /* check request id and the code */
-   // String _code = _codeFieldController.text;
-    if (Utils.isCode(_code)) {
-      setState(() {
-        isCodeSending = false;
-      });
-      this.widget.presenter!.checkVerificationCode(
-          _codeFieldController.text, this._requestId!);
-    } else {
-      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-    }
-  }
-
-  @override
-  void sendVerificationCodeLoading(bool isLoading) {
-    setState(() {
-      isCodeSending = isLoading;
-    });
-  }
-
-  @override
-  void recoverFails() {
-    mToast("${AppLocalizations.of(context)!.translate('password_recover_fails')}");
-  }
-
-  @override
-  void recoverSuccess(String phoneNumber, String newCode) {
-    /* send to login page and */
-    mToast("${AppLocalizations.of(context)!.translate(
-        'password_updated_success')}");
-
-    if (!widget.is_a_process!) {
-      // logout.
-      StateContainer
-          .of(context)
-          .balance = 0;
-      CustomerUtils.clearCustomerInformations().whenComplete(() {
-        StateContainer.of(context).updateBalance(balance: 0);
-        // StateContainer.of(context).updateKabaPoints(kabaPoints: "");
-        // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
-        StateContainer.of(context).hasUnreadMessage = false;
-        StateContainer.of(context).updateTabPosition(tabPosition: 0);
-
-        Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
-            builder: (BuildContext context) =>
-                LoginPage(presenter: LoginPresenter(LoginView()),
-                    phone_number: phoneNumber,
-                    password: newCode,
-                    autoLogin: true)), (r) => false);
-      });
-    }
-  }
-
-  void mDialog(String message, {bool is_code_confirmation = false}) {
-
-    _showDialog(
-        icon: Icon(Icons.info_outline, color: Colors.red),
-        message: "${message}",
-        isYesOrNo: false,
-        is_code_confirmation : is_code_confirmation
+      ),
     );
   }
 
-  void _showDialog(
-      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool? is_code_confirmation}) {
+  // -----------------------------
+  // Validate password and send OTP
+  // -----------------------------
+  Future<void> _handleValidatePassword() async {
+    final password = _passwordController.text.trim();
+    final confirm = _confirmPasswordController.text.trim();
+    final login = _login ?? "";
+
+    if (password.isEmpty || confirm.isEmpty) {
+      mDialog("❌ Veuillez remplir tous les champs.");
+      return;
+    }
+
+    if (password != confirm) {
+      mDialog("❌ Les mots de passe ne correspondent pas.");
+      return;
+    }
+
+    if (login.isEmpty) {
+      mDialog("❌ Login invalide.");
+      return;
+    }
+
+    // Store password temporarily until OTP is verified
+    _pendingPassword = password;
+
+    // Send OTP
+    widget.presenter!.sendVerificationCode(login);
+
+    // Navigate to OTP page
+    var result = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => VerificationPage(type: 0),
+      ),
+    );
+
+    if (result != null && result['code'] != null) {
+      _checkOtp(result['code']);
+    } else {
+      mDialog("❌ Aucun code OTP reçu.");
+    }
+  }
+
+  // -----------------------------
+  // Check OTP only
+  // -----------------------------
+  void _checkOtp(String otp) {
+    if (Utils.isCode(otp)) {
+      widget.presenter!.checkVerificationCode(otp, _requestId ?? '');
+    } else {
+      mDialog("❌ Code OTP invalide");
+    }
+  }
+
+  // -----------------------------
+  // RecoverPasswordView callbacks
+  // -----------------------------
+  @override
+  @override
+  void codeIsOk(bool isOk) async {
+    if (isOk) {
+      final password = _pendingPassword;
+      if (password == null || password.isEmpty) {
+        mDialog("❌ Mot de passe vide");
+        return;
+      }
+
+      try {
+        // Update password via presenter
+        await widget.presenter!.updatePassword(_login!, password, _requestId ?? '');
+
+        // Clear pending password
+        _pendingPassword = null;
+
+        // Directly handle success: show toast and redirect
+        mToast("✅ Mot de passe mis à jour avec succès !");
+
+        if (!widget.is_a_process!) {
+          // Clear local customer info
+          await CustomerUtils.clearCustomerInformations();
+
+          // Redirect to login page with autoLogin
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(
+              builder: (context) => LoginPage(
+                presenter: LoginPresenter(LoginView()),
+                phone_number: _login!,
+                password: password,
+                autoLogin: true,
+              ),
+            ),
+                (r) => false,
+          );
+        }
+
+      } catch (e) {
+        // Handle update error
+        mDialog("❌ Échec de la mise à jour du mot de passe");
+      }
+
+    } else {
+      // OTP invalid
+      mDialog("❌ Code OTP incorrect");
+    }
+  }
+
+
+  @override
+  void recoverSuccess(String phoneNumber, String newCode) {
+    mToast("Mot de passe mis à jour avec succès !");
+
+    if (!widget.is_a_process!) {
+      CustomerUtils.clearCustomerInformations().whenComplete(() {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LoginPage(
+              presenter: LoginPresenter(LoginView()),
+              phone_number: phoneNumber,
+              password: newCode,
+              autoLogin: true,
+            ),
+          ),
+              (r) => false,
+        );
+      });
+    }
+  }
+
+  @override
+  void recoverFails() =>
+      mDialog("Échec de la réinitialisation du mot de passe");
+
+  @override
+  void toast(String message) => mDialog(message);
+
+  @override
+  void onNetworkError() => mDialog("Erreur réseau");
+
+  @override
+  void onSysError({String message = ""}) => mDialog(message);
+
+  @override
+  void disableCodeButton(bool isDisabled) {}
+
+  @override
+  void keepRequestId(String login, String requestId) {
+    _requestId = requestId;
+  }
+
+  @override
+  void sendVerificationCodeLoading(bool isLoading) {}
+
+  @override
+  void userExistsAlready() {}
+
+  void mDialog(String message) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
-                        svgIcons!,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
+          content: Column(mainAxisSize: MainAxisSize.min, children: [
+            Icon(Icons.info_outline, color: Colors.red, size: 50),
+            SizedBox(height: 10),
+            Text(message, textAlign: TextAlign.center),
+          ]),
+          actions: [
+            OutlinedButton(
+              style: ButtonStyle(
+                  side: MaterialStateProperty.all(
+                      BorderSide(color: KColors.primaryColor, width: 1))),
+              child: Text("OK", style: TextStyle(color: KColors.primaryColor)),
+              onPressed: () => Navigator.of(context).pop(),
             ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ] : <Widget>[
-              //
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (widget.is_a_process! && is_code_confirmation == false)
-                    Navigator.of(context).pop();
-                },
-              ),
-            ]
+          ],
         );
       },
     );
   }
 
+  void mToast(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void showLoading(bool isLoading) {
+    // TODO: implement showLoading
+  }
+
 
 }
+

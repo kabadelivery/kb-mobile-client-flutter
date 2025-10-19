@@ -495,7 +495,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
-          return RetrievePasswordPage(type: 0);
+          return RetrievePasswordPage(
+              type: 0,
+              login:login );
         }
     ));
 
@@ -511,7 +513,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
 
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true) {
               widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
@@ -578,7 +580,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = Map();
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true)
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true)
       widget.autoLogin = true;
 
     if (!widget.autoLogin!) {
