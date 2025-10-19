@@ -92,7 +92,7 @@ Future<void> main() async {
               BlocProvider<EstimationBloc>(
                 create: (context) => EstimationBloc(),
               ),
-            ], child: SafeArea(child: MyApp(appLanguage: appLanguage)))))
+            ], child: MyApp(appLanguage: appLanguage))))
     );
   });
 }
