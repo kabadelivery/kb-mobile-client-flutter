@@ -61,8 +61,7 @@ class RestaurantListPresenter implements RestaurantListContract {
     // load from cache the last request while looking for the newest set of data
 
     try {
-      Map<String, dynamic> data =
-          await provider.fetchShopList(customer, type, position!);
+      Map<String, dynamic> data = await provider.fetchShopList(customer, type, position!);
       // save data if it contains restaurants, then the filtering will be done on it
       List<ShopModel> restaurants = [];
 

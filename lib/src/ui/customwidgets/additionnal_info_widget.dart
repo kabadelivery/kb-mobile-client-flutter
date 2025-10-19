@@ -36,7 +36,7 @@ Widget AdditionnalInfo(
                     ref.watch(additionnalInfoProvider).additionnal_address_info;
               },
               decoration: InputDecoration(
-                hintText: "Ex : Pharmacie Vigueur, en face de...",
+                hintText: AppLocalizations.of(context)!.translate('example_pharmacy_address'),
                 filled: true,
                 fillColor: const Color(0xFFF2F3F4),
                 contentPadding:

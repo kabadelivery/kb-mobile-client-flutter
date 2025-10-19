@@ -21,6 +21,7 @@ import 'package:KABA/src/resources/kkiapay_provider.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 
 import '../../../../contracts/transaction_contract.dart';
+import '../../../../localizations/AppLocalizations.dart';
 import '../../../screens/home/me/abonnement/kaba_abonnements.dart';
 
 class SubscriptionBottomSheet extends StatefulWidget {
@@ -100,20 +101,8 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 
   double? fees_bankcard = 5.0;
   double? fees_momo = 4.0;
-  final items = [
-    ListItem(
-        title: "Mobile Money",
-        subtitle: "Mix, MTN, Wave…",
-        icon: Icons.phone_android),
-    ListItem(
-        title: "Carte Bancaire",
-        subtitle: "Visa, MasterCard",
-        icon: Icons.credit_card),
-    ListItem(
-        title: "PorteFeuille KABA",
-        subtitle: "Votre solde KABA",
-        icon: Icons.account_balance_wallet),
-  ];
+
+
   void getFees()async{
     CustomerModel customer = await CustomerUtils.getCustomer();
     ClientPersonalApiProvider provider =ClientPersonalApiProvider();
@@ -225,6 +214,23 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final items = [
+      ListItem(
+        title: AppLocalizations.of(context)!.translate('mobile_money'),
+        subtitle: AppLocalizations.of(context)!.translate('mobile_money_subtitle'),
+        icon: Icons.phone_android,
+      ),
+      ListItem(
+        title: AppLocalizations.of(context)!.translate('bank_card'),
+        subtitle: AppLocalizations.of(context)!.translate('bank_card_subtitle'),
+        icon: Icons.credit_card,
+      ),
+      ListItem(
+        title: AppLocalizations.of(context)!.translate('kaba_wallet'),
+        subtitle: AppLocalizations.of(context)!.translate('kaba_wallet_subtitle'),
+        icon: Icons.account_balance_wallet,
+      ),
+    ];
     double number = double.tryParse(widget.price) ?? 0.0;
     String formatted = NumberFormat("#,###").format(number);
     return DraggableScrollableSheet(
@@ -238,18 +244,18 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                "Facture d'abonnement",
-                style: TextStyle(
+              Text(
+                "${AppLocalizations.of(context)!.translate('subscription_invoice')}",
+                style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                "Vérifiez les détails de votre abonnement et procédez au paiement sécurisé",
-                style: TextStyle(fontSize: 14, color: Colors.black54),
+              Text(
+                "${AppLocalizations.of(context)!.translate('check_subscription_details')}",
+                style: const TextStyle(fontSize: 14, color: Colors.black54),
               ),
               const SizedBox(height: 20),
               // subscription card
@@ -269,7 +275,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         Text(widget.title,
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold)),
-                        Text(formatted + "" + "${widget.currency}",
+                        Text(formatted + " " + "${widget.currency}",
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -281,22 +287,22 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                     Row(children: [
                       const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 6),
-                      Text("${widget.livraisons} Livraisons"),
+                      Text("${widget.livraisons} ${AppLocalizations.of(context)!.translate('deliveries')}"),
                     ]),
                     Row(children: [
                       const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 6),
-                      Text("Valide ${widget.validite} jours"),
+                      Text("${AppLocalizations.of(context)!.translate('valid_for')} ${widget.validite} ${AppLocalizations.of(context)!.translate('days')}"),
                     ]),
                     Row(children: [
                       const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 6),
-                      Text("Rayon de ${widget.rayon} Kms"),
+                      Text("${AppLocalizations.of(context)!.translate('radius')} ${widget.rayon} Kms"),
                     ]),
                     Row(children: [
                       const Icon(Icons.check_circle, color: Colors.green),
                       const SizedBox(width: 6),
-                      Text("Min. ${widget.min} F"),
+                      Text("${AppLocalizations.of(context)!.translate('min_price')} ${widget.min} ${AppLocalizations.of(context)!.translate('currency')}"),
                     ]),
                   ],
                 ),
@@ -313,14 +319,14 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Détails de la facturation",
-                        style: TextStyle(
+                    Text("${AppLocalizations.of(context)!.translate('billing_details')}",
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 25),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Prix de base"),
+                        Text("${AppLocalizations.of(context)!.translate('base_price')}"),
                         Text("${formatted}"),
                       ],
                     ),
@@ -330,7 +336,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Total a Payer"),
+                        Text("${AppLocalizations.of(context)!.translate('total_to_pay')}"),
                         Text("${formatted}",
                             style: TextStyle(color: KColors.primaryColor)),
                       ],
@@ -350,18 +356,17 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Choisissez la méthode de paiement",
-                        style: TextStyle(
+                    Text("${AppLocalizations.of(context)!.translate('choose_payment_method')}",
+                        style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.bold)),
                     const SizedBox(height: 12),
                     SingleSelectList(
                       items: items,
                       onChanged: (i) {
-                        setState(()  {
+                        setState(() {
                           selectedIndex = i;
-                          isProcessing=false;
+                          isProcessing = false;
                         });
-
                       },
                       onItemSelected: (label) {
                         setState(() => selectedMethodLabel = label);
@@ -385,8 +390,10 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         ),
                       )
                     else
-                      const Text("Veuillez sélectionner une méthode 👆",
-                          style: TextStyle(fontSize: 16, color: Colors.grey)),
+                      Text(
+                        "${AppLocalizations.of(context)!.translate('please_select_payment_method')}",
+                        style: const TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
                   ],
                 ),
               ),
@@ -405,46 +412,42 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         : () async {
                       if (selectedMethodLabel == null) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content:
-                            Text("Veuillez sélectionner un mode de paiement."),
+                          SnackBar(
+                            content: Text("${AppLocalizations.of(context)!.translate('select_payment_warning')}"),
                             backgroundColor: Colors.orange,
                           ),
                         );
                         return;
                       }
 
-                      // Handle submission depending on selected method
                       setState(() => isProcessing = true);
 
                       String? methodToSend;
 
-                      if (selectedMethodLabel == "Mobile Money") {
+                      if (selectedMethodLabel == AppLocalizations.of(context)!.translate('mobile_money')) {
                         final op = await _selectMomoOperatorDialog();
                         if (op == null) {
                           setState(() => isProcessing = false);
                           return;
                         }
-                        methodToSend = op; // 'mix','flooz','moov','mtn','wave'
-                      } else if (selectedMethodLabel == "Carte Bancaire") {
+                        methodToSend = op;
+                      } else if (selectedMethodLabel == AppLocalizations.of(context)!.translate('bank_card')) {
                         methodToSend = 'card';
-                      } else if (selectedMethodLabel == "PorteFeuille KABA") {
+                      } else if (selectedMethodLabel == AppLocalizations.of(context)!.translate('kaba_wallet')) {
                         methodToSend = 'portefeuille';
                       } else {
                         methodToSend = selectedMethodLabel!.toLowerCase();
                       }
 
-                      debugPrint(
-                          "Pay with $methodToSend , abo_id:${widget.idPack} , price:${widget.price} , customer id ${customerId }");
-
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("Traitement en cours..."),
+                        SnackBar(
+                          content: Text("${AppLocalizations.of(context)!.translate('processing')}"),
                           backgroundColor: Colors.green,
-                          duration: Duration(seconds: 10),
+                          duration: const Duration(seconds: 10),
                         ),
                       );
-                     await checkPaymentStatus(context);
+
+                      await checkPaymentStatus(context);
                       await sendSubscriptiondata(
                         context,
                         '$customerId',
@@ -453,22 +456,23 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                         "${widget.price}",
                       );
                     },
-                    child: const Text("Payer ",
-                        style: TextStyle(color: Colors.white)),
+                    child: Text("${AppLocalizations.of(context)!.translate('pay')}",
+                        style: const TextStyle(color: Colors.white)),
                   ),
                   const SizedBox(height: 8),
                   ElevatedButton(
-                    style:
-                    ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Annuler",
-                        style: TextStyle(color: Colors.black)),
+                    child: Text("${AppLocalizations.of(context)!.translate('cancel')}",
+                        style: const TextStyle(color: Colors.black)),
                   ),
+                  const SizedBox(height: 50),
                 ],
               ),
             ],
           ),
         );
+
       },
     );
   }
@@ -601,14 +605,14 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                   children: [
                     const Icon(Icons.check_circle, color: Colors.green, size: 80),
                     const SizedBox(height: 16),
-                    const Text(
-                      "Paiement Réussi 🎉",
-                      style:
-                      TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    Text(
+                      "${AppLocalizations.of(context)!.translate('payment_success')}",
+                      style: const TextStyle(
+                          fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      "Votre abonnement a été payé avec succès via le portefeuille.",
+                      "${AppLocalizations.of(context)!.translate('subscription_paid_success')}",
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.grey[700]),
                     ),
@@ -634,8 +638,10 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
                           ),
                         );
                       },
-                      child:
-                      const Text("Fermer", style: TextStyle(color: Colors.white)),
+                      child: Text(
+                        "${AppLocalizations.of(context)!.translate('close')}",
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),
@@ -644,15 +650,24 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           );
           return {"status": "success", "message": "Paiement portefeuille OK"};
         } else {
-          _showError(context, "Erreur lors du paiement. Veuillez réessayer.");
+          _showError(
+            context,
+            AppLocalizations.of(context)!.translate('payment_error_retry'),
+          );
           return {"status": "error", "message": "Erreur paiement portefeuille"};
         }
       } else {
-        _showError(context, "Erreur serveur (${response.statusCode})");
+        _showError(
+          context,
+          "${AppLocalizations.of(context)!.translate('server_error')} (${response.statusCode})",
+        );
         return {"status": "error", "message": "Erreur serveur"};
       }
     } catch (e) {
-      _showError(context, "Une erreur s'est produite: $e");
+      _showError(
+        context,
+        "${AppLocalizations.of(context)!.translate('unexpected_error')}: $e",
+      );
       return {"status": "error", "message": "Exception: $e"};
     }
   }
@@ -669,26 +684,34 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline, color:KColors.primaryColor, size: 80),
+              const Icon(Icons.error_outline, color: KColors.primaryColor, size: 80),
               const SizedBox(height: 16),
-              const Text(
-                "Échec du paiement",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              Text(
+                "${AppLocalizations.of(context)!.translate('payment_failed')}",
+                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 10),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: KColors.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 ),
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: const Text("Fermer", style: TextStyle(color: Colors.white)),
+                child: Text(
+                  "${AppLocalizations.of(context)!.translate('close')}",
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
@@ -696,6 +719,7 @@ class _SubscriptionBottomSheetState extends State<SubscriptionBottomSheet> {
       },
     );
   }
+
 }
 
 /// Payment processor helpers (keeps your existing provider usage)

@@ -130,7 +130,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                         SizedBox(height: 40),
 
 
-                        Text("Bienvenue sur KABA", textAlign: TextAlign.center, style: TextStyle(color:KColors.primaryColor, fontSize:19 , fontWeight: FontWeight.bold )),
+                        Text(
+                          AppLocalizations.of(context)!.translate('welcome_kaba'),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: KColors.primaryColor,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         SizedBox(height: 10),
                         Container(
                             margin: EdgeInsets.only(left:35, right: 35),
@@ -180,7 +188,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
-                                            "N° Téléphone",
+                                            AppLocalizations.of(context)!.translate('phone_number'),
                                             style: TextStyle(
                                               color: isPhoneSelected ? Colors.white : KColors.primaryColor,
                                               fontWeight: FontWeight.bold,
@@ -270,7 +278,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                 minWidth: 0,
                                 minHeight: 0,
                               ),
-                              hintText: "Entrez votre numéro",
+                              hintText: AppLocalizations.of(context)!.translate('enter_phone_number'),
+
                               hintStyle: const TextStyle(fontSize: 14),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(width: 1, color: KColors.primaryColor),
@@ -306,7 +315,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
                               prefixIconConstraints:
                               const BoxConstraints(minWidth: 0, minHeight: 0),
-                              hintText: "Entrez votre email",
+                              hintText: AppLocalizations.of(context)!.translate('enter_email'),
+
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -330,10 +340,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
                               _checklogin();
                             },
-                            child: const Text(
-                              "Continuer →",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            child: Text(
+                              AppLocalizations.of(context)!.translate('continue_arrow'),
+                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
+
                           ),
                         ),
 

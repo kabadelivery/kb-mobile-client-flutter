@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../contracts/topup_contract.dart';
+import '../../../../localizations/AppLocalizations.dart';
 import '../../../../ui/screens/home/me/money/TopNewUpPage.dart';
 import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../core/utils.dart';
@@ -183,26 +184,34 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                                     child: Center(child: Icon(widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value|| widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?CupertinoIcons.check_mark_circled:Icons.access_time_rounded,color: Colors.white,size: 40,))
                                 ),
                               ),
-                              Text(widget.expeditionModel.status==ExpeditionStatus.EN_ATTENTE.value?"Demande en cours":
-                                  widget.expeditionModel.status==ExpeditionStatus.EN_COURS_EXPEDITION.value?"En cours d’expedition":
-                                      widget.expeditionModel.status==ExpeditionStatus.ARRIVE_EN_VILLE.value?"Arrivé à destination":
-                                          widget.expeditionModel.status==ExpeditionStatus.DEPART_CONFIRME.value?"Départ confirmé":
-                                              widget.expeditionModel.status==ExpeditionStatus.PAIEMENT.value?"Validation de paiement":
-                                                  widget.expeditionModel.status==ExpeditionStatus.NEGOCIATION.value?"En cours de negociation":
-                                                      widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value?"Colis récupéré":
-                                                      widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?"Demande acceptée":
-                                                      "🥳 Colis livré avec succès"
-                                ,style: TextStyle(color:widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF3D6F2E):
+                              Text(
+
+                                  widget.expeditionModel.status == ExpeditionStatus.EN_ATTENTE.value
+                                  ? AppLocalizations.of(context)!.translate('status_pending')
+                                : widget.expeditionModel.status == ExpeditionStatus.EN_COURS_EXPEDITION.value
+                            ? AppLocalizations.of(context)!.translate('status_in_progress')
+                          : widget.expeditionModel.status == ExpeditionStatus.ARRIVE_EN_VILLE.value
+                      ? AppLocalizations.of(context)!.translate('status_arrived')
+                        : widget.expeditionModel.status == ExpeditionStatus.DEPART_CONFIRME.value
+                    ? AppLocalizations.of(context)!.translate('status_departure_confirmed')
+                : widget.expeditionModel.status == ExpeditionStatus.PAIEMENT.value
+            ? AppLocalizations.of(context)!.translate('status_payment_validation')
+            : widget.expeditionModel.status == ExpeditionStatus.NEGOCIATION.value
+        ? AppLocalizations.of(context)!.translate('status_negotiation')
+        : widget.expeditionModel.status == ExpeditionStatus.RECUPERATION_EFFECTUEE.value
+    ? AppLocalizations.of(context)!.translate('status_collected')
+        : widget.expeditionModel.status == ExpeditionStatus.ACCEPTEE.value
+    ? AppLocalizations.of(context)!.translate('status_accepted')
+        : AppLocalizations.of(context)!.translate('status_delivered'),
+                                style: TextStyle(color:widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF3D6F2E):
                                       Color(0xFF894B00),
                                     fontWeight: FontWeight.bold,fontSize: 18),),
                               SizedBox(height: 15,),
                               Container(
                                   width: 330,
                                   padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: Text("Merci d’avoir choisi KABA Expédition",textAlign: TextAlign.center,
-
+                                  child: Text("${AppLocalizations.of(context)!.translate('thank_you_message')}",textAlign: TextAlign.center,
                                     style: TextStyle(fontSize: 14,color: widget.expeditionModel.status==ExpeditionStatus.RECUPERATION_EFFECTUEE.value || widget.expeditionModel.status==ExpeditionStatus.ACCEPTEE.value?Color(0xFF01792E)
-
                                     :  widget.expeditionModel.status==ExpeditionStatus.REJETEE.value?KabaExpeditionColor.primary.withOpacity(1):Color(0xFF894B00)),
                                   )),
                               SizedBox(height: 20,),
@@ -239,57 +248,109 @@ class _TrackingPackageState extends State<TrackingPackage>  with SingleTickerPro
                       children: [
                         Container(
                           width: 330,
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
                             color: Color(0xFFFEF2F2),
-                            borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15)),
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(15),
+                              topRight: Radius.circular(15),
+                            ),
                           ),
-                          child: Text("Récapitulatif de livraison"),
+                          child: Text(
+                            AppLocalizations.of(context)!.translate('delivery_summary'),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(15.0),
                           child: Column(
                             children: [
-                              SizedBox(height:expedition.status=="DELIVERED"? 20:0,),
+                              SizedBox(height: expedition.status == "DELIVERED" ? 20 : 0),
                               Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:[
-                                    Text("Numéro",style: TextStyle(fontSize: 14,color: Colors.black87),),
-                                    Text(expedition.trackingNumber.toString().substring(0,10)+"...",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),),
-                                    Row(
-                                      children: [
-                                        Text("Route : ",style: TextStyle(fontSize: 14,color: Colors.black87),),
-                                        Row(
-                                          children: [
-                                            Text("${expedition.ligne!.depart!.nom.toString()}",style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold)),
-                                            Icon(Icons.arrow_forward,color: Colors.black,size: 14,),
-                                            Text("${expedition.ligne!.arrivee!.nom.toString()}",style: TextStyle(fontSize: 14,color: Colors.black,fontWeight: FontWeight.bold))
-                                          ],
-                                        )
-                                      ],
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    AppLocalizations.of(context)!.translate('number_label'),
+                                    style: const TextStyle(fontSize: 14, color: Colors.black87),
+                                  ),
+                                  Text(
+                                    "${expedition.trackingNumber.toString().substring(0, 10)}...",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ]
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${AppLocalizations.of(context)!.translate('route_label')} : ",
+                                        style: const TextStyle(fontSize: 14, color: Colors.black87),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            expedition.ligne!.depart!.nom.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const Icon(Icons.arrow_forward, color: Colors.black, size: 14),
+                                          Text(
+                                            expedition.ligne!.arrivee!.nom.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ],
                               ),
-                              SizedBox(height:expedition.status=="DELIVERED"? 20:0,),
-                          expedition.status=="DELIVERED"?   Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children:[
-                                    Text("Livré le :",style: TextStyle(fontSize: 12,color: Colors.black87),),
-                                    Text("${expedition.actualDelivery!.day}/${expedition.actualDelivery!.month}/${expedition.actualDelivery!.year}",style: TextStyle(fontSize: 12,color: Colors.black,fontWeight: FontWeight.bold),),
-                                    Row(
-                                      children: [
-                                        Text("Durée : ",style: TextStyle(fontSize: 12,color: Colors.black87),),
-                                        Text("${expedition.createdAt!.difference(expedition.actualDelivery!).inDays}",style: TextStyle(fontSize: 12,color: Color(0xFF01792E),fontWeight: FontWeight.bold)),
-                                      ],
+                              SizedBox(height: expedition.status == "DELIVERED" ? 20 : 0),
+                              expedition.status == "DELIVERED"
+                                  ? Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "${AppLocalizations.of(context)!.translate('delivered_on_label')} :",
+                                    style: const TextStyle(fontSize: 12, color: Colors.black87),
+                                  ),
+                                  Text(
+                                    "${expedition.actualDelivery!.day}/${expedition.actualDelivery!.month}/${expedition.actualDelivery!.year}",
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ]
-                              ):Container(),
-                              SizedBox(height: 10,),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "${AppLocalizations.of(context)!.translate('duration_label')} : ",
+                                        style: const TextStyle(fontSize: 12, color: Colors.black87),
+                                      ),
+                                      Text(
+                                        "${expedition.createdAt!.difference(expedition.actualDelivery!).inDays}",
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF01792E),
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
+                                  : Container(),
+                              const SizedBox(height: 10),
                             ],
                           ),
                         ),
-
                       ],
                     ),
 

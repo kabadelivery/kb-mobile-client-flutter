@@ -152,7 +152,7 @@ class _Personal3PageState extends State<Personal3Page>
                                   ? FileImage(_image!)
                                   : CachedNetworkImageProvider(
                                           Utils.inflateLink(widget
-                                              .customer!.profile_picture!))
+                                              .customer!.profile_picture??""))
                                       as ImageProvider<Object>)))),
                   Positioned(
                       child: InkWell(

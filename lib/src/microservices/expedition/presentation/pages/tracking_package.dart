@@ -107,7 +107,7 @@ class _TrackingPackagesState extends State<TrackingPackages> {
                   ):
                   Container(
                     width:size.width,
-
+                    height:size.height-240,
                     alignment: Alignment.center,
                     child:expeditions.isEmpty?
                     Container(

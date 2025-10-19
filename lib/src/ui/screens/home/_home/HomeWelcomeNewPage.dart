@@ -490,7 +490,7 @@ class _HomeWelcomeNewPageState extends State<HomeWelcomeNewPage>
                   children: <Widget>[
                     Container(
                       padding: EdgeInsets.only(bottom: 10),
-                      margin: EdgeInsets.only(bottom: 10, top: 60),
+                      margin: EdgeInsets.only(bottom: 10, top: 100),
                       child: ClipPath(
                           // clipper: KabaRoundTopClipper(),
                           child: sliderLength> 1

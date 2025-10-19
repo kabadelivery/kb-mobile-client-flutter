@@ -92,7 +92,7 @@ class TagCarousel extends StatelessWidget {
           side: BorderSide(
             color: isSelected
                 ? Colors.transparent
-                : Colors.red.shade700,
+                : Color(0xFFFC90A8),
             width: 1.4,
           ),
           shape: RoundedRectangleBorder(

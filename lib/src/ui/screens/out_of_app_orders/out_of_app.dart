@@ -149,75 +149,76 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
               children: [
                 SizedBox(height: 20,),
                 Container(
-                  padding:EdgeInsets.all(15),
-                    width: 350,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 10,
-                            offset: Offset(0, 5)),
-                      ]
-                    ),
-                    child:
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-            
-                    Row(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: KColors.primaryColor,
-                            borderRadius: BorderRadius.circular(10)
+                  padding: const EdgeInsets.all(15),
+                  width: 350,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.3),
+                        spreadRadius: 1,
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: KColors.primaryColor,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: const Icon(FontAwesomeIcons.box, color: Colors.white, size: 20),
                           ),
-                          child: Icon(FontAwesomeIcons.box,color: Colors.white,size: 20,),
-                        ),
-                        SizedBox(width: 10,),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                                "Ma commande",
-                                style: TextStyle(
+                          const SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.translate('my_order'),
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 17,)),
-                            Text('${products.length} ${products.length>1?"produits sélectionnés":"produit sélectionné"}')
-                          ],
-                        )
-                      ],
-                    ),
-
-                    SizedBox(height: 10,),
-                    products.isNotEmpty
-                        ? Column(
-                      children: products.map((product) {
-                        int index = products.indexOf(product);
-                        return Container(
-                          margin: const EdgeInsets.only(bottom: 15),
-                          child: OutOfAppProductItem(
-                            context,
-                            ref,
-                            index,
-                            product['image'] ?? File(''),
-                            product['name'],
-                            product['price'],
-                            product['quantity'],
-                          ),
-                        );
-                      }).toList(),
-                    )
-                        : const Center(
-                      child: Text('Aucun produit'),
-                    ),
-            
-                  ],
-                )
+                                  fontSize: 17,
+                                ),
+                              ),
+                              Text(
+                                '${products.length} ${products.length > 1 ? AppLocalizations.of(context)!.translate('product_plural') : AppLocalizations.of(context)!.translate('product_singular_selected')}',
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      products.isNotEmpty
+                          ? Column(
+                        children: products.map((product) {
+                          int index = products.indexOf(product);
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 15),
+                            child: OutOfAppProductItem(
+                              context,
+                              ref,
+                              index,
+                              product['image'] ?? File(''),
+                              product['name'],
+                              product['price'],
+                              product['quantity'],
+                            ),
+                          );
+                        }).toList(),
+                      )
+                          : Center(
+                        child: Text(AppLocalizations.of(context)!.translate('no_product')),
+                      ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 20,),
                 Container(
@@ -275,7 +276,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
             
                         ),
                         width: 350,
-                        child: Column(
+                        child:Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
@@ -286,7 +287,6 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                                   decoration: BoxDecoration(
                                     color: KColors.primaryColor,
                                     borderRadius: BorderRadius.circular(10),
-            
                                   ),
                                   child: const Icon(
                                     Icons.receipt_outlined,
@@ -294,21 +294,30 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                                     size: 24,
                                   ),
                                 ),
-                                SizedBox(width: 10,),
-                                Text("Infos supplémentaires",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),)
+                                const SizedBox(width: 10),
+                                Text(
+                                  AppLocalizations.of(context)!.translate('additional_info_title'),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
                               ],
                             ),
-                            SizedBox(height: 10,),
-                            Text("Instructions particulières",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color:Colors.black54),),
-                            SizedBox(height: 10,),
-                            AdditionnalInfo(context,ref,simple_additionnal_info_type,additionnalInfoState.additionnal_info),
-                            SizedBox(height: 10,),
-                            Text("Image du magasin/ordonnance (optionnel)",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15,color:Colors.black54),),
-                            SizedBox(height: 10,),
-                            AdditionnalInfoImage(context,ref),
-                            SizedBox(height: 10,),
-                            PhoneNumberForm(context,outOfAppScreenState.phone_number,ref),
-                            SizedBox(height: 10,),
+                            const SizedBox(height: 10),
+                            Text(
+                              AppLocalizations.of(context)!.translate('special_instructions'),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black54),
+                            ),
+                            const SizedBox(height: 10),
+                            AdditionnalInfo(context, ref, simple_additionnal_info_type, additionnalInfoState.additionnal_info),
+                            const SizedBox(height: 10),
+                            Text(
+                              AppLocalizations.of(context)!.translate('store_or_prescription_image'),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black54),
+                            ),
+                            const SizedBox(height: 10),
+                            AdditionnalInfoImage(context, ref),
+                            const SizedBox(height: 10),
+                            PhoneNumberForm(context, outOfAppScreenState.phone_number, ref),
+                            const SizedBox(height: 10),
                           ],
                         ),
                       ),
@@ -356,7 +365,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                                 ref.watch(subscriptionStateProvider.notifier).setCode(value);
                               },
                               decoration: InputDecoration(
-                                hintText: "Code de l'abonnement",
+                                  hintText: AppLocalizations.of(context)!.translate('subscription_code_hint'),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   borderSide: BorderSide(
@@ -419,8 +428,13 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                             }
                            }
                          },
-                         child: subscription.isLoading?Text("En cours...",style: TextStyle(color: Colors.white,fontSize: 12)):
-                         Text(subscription.isError?"Réessayez": "Ajouter",style: TextStyle(color: Colors.white,fontSize: 16))
+                         child: subscription.isLoading?Text(AppLocalizations.of(context)!.translate('loading'),style: TextStyle(color: Colors.white,fontSize: 12)):
+                         Text(
+                           subscription.isError
+                               ? AppLocalizations.of(context)!.translate('retry')
+                               : AppLocalizations.of(context)!.translate('add'),
+                           style: const TextStyle(color: Colors.white, fontSize: 16),
+                         )
                      ),
                       SizedBox(width: 10,),
                       MaterialButton(

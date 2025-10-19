@@ -332,9 +332,9 @@ class Utils {
   }
 
   static double locationDistance(Position? position, ShopModel restaurant) {
-    try {
       double lat1 = position!.latitude;
       double long1 = position!.longitude;
+      debugPrint('restaurant.location! ${restaurant.location}');
       double lat2 = double.parse(restaurant.location!.split(":")[0]);
       double long2 = double.parse(restaurant.location!.split(":")[1]);
       double distance =
@@ -342,10 +342,7 @@ class Utils {
       distance = 1.15 /* error factor */ * distance / 1000; // distance meter
       return double.parse(distance.toStringAsPrecision(1));
       // crop to 1 number after comma
-    } catch (e) {
-      xrint(e);
-      return 100;
-    }
+
   }
 
   static String capitalize(String s) {

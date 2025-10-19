@@ -470,7 +470,7 @@ class _ExpeditionState extends State<Expedition> {
                                   ),
                                 ),
                               ),
-                              SizedBox(height: 20,),
+                              SizedBox(height: 100,),
                             ],
                           ),
                         )),

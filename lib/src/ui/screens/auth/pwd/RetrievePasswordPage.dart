@@ -83,7 +83,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         return Padding(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
+            physics: const NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -96,15 +96,15 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  "Confirmation",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.translate('confirmation'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-                const Text(
-                  "Vous allez recevoir un code de vérification pour réinitialiser le mot de passe",
+                Text(
+                  AppLocalizations.of(context)!.translate('receive_code_message'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black54),
+                  style: const TextStyle(color: Colors.black54),
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
@@ -118,9 +118,12 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       ),
                     ),
                     onPressed: _jumpToOTPPage,
-                    child: const Text(
-                      "Recevoir le Code",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('receive_code'),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -131,7 +134,6 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       },
     );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,16 +167,26 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children:  [
-                      Icon(widget.type!=3?FontAwesomeIcons.rightFromBracket:Icons.shopping_bag, color: KColors.primaryColor, size: 25),
-                      SizedBox(width: 10),
-                      Text(widget.type!=3?  "Connexion" : "Valider la commande",
-                          style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600)),
+                      Icon(
+                        widget.type != 3 ? FontAwesomeIcons.rightFromBracket : Icons.shopping_bag,
+                        color: KColors.primaryColor,
+                        size: 25,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        widget.type != 3
+                            ? AppLocalizations.of(context)!.translate('login')
+                            : AppLocalizations.of(context)!.translate('validate_order'),
+                        style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
                     ],
                   ),
                   const SizedBox(height: 40),
-                  const Text("Entrez votre mot de passe",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold)),
+                  Text(
+                    AppLocalizations.of(context)!.translate('enter_your_password'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
+                  ),
                   const SizedBox(height: 20),
 
                   // ✅ Password Field
@@ -182,18 +194,20 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     controller: passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      hintText: "Mot de passe",
+                      hintText: AppLocalizations.of(context)!.translate('password'),
                       prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
                       suffixIcon: IconButton(
-                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility,
-                            color: KColors.primaryColor),
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          color: KColors.primaryColor,
+                        ),
                         onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                      keyboardType: TextInputType.number
+                    keyboardType: TextInputType.number,
                   ),
 
                   if (errorMessage.isNotEmpty) ...[
@@ -215,28 +229,32 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                         ),
                       ),
                       onPressed: _submitCode,
-                      child:  Text(widget.type!=3? "Se connecter":"Valider",
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                      child: Text(
+                        widget.type != 3
+                            ? AppLocalizations.of(context)!.translate('login')
+                            : AppLocalizations.of(context)!.translate('validate'),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
 
                   // ✅ Forgot Password
                   TextButton(
                     onPressed: () => showReceiveCodeBottomSheet(context),
-                    child: const Text(
-                      "Mot de passe oublié ?",
-                      style: TextStyle(color: KColors.primaryColor),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('forgot_password'),
+                      style: const TextStyle(color: KColors.primaryColor),
                     ),
                   )
                 ],
               ),
             ),
 
-                    Image.asset(
-          "assets/images/background/Patternlogin.png",
-          width: double.infinity,
-          fit: BoxFit.cover, // scales and crops to cover the width
-        ),
+            Image.asset(
+              "assets/images/background/Patternlogin.png",
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
           ],
         ),
       ),

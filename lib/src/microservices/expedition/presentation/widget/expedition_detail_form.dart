@@ -70,6 +70,12 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
   void initState() {
     expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_){
+      CherryToast.info(
+        toastDuration: Duration(seconds: 5),
+        title:     Text("${AppLocalizations.of(context)!.translate('requirements')}",style: TextStyle(fontSize: 14,color: Colors.black54),),
+      ).show(context);
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -158,7 +164,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
         }
         return Container(
             width: 350,
-            height: expanded?null:60,
+            height: expanded?null:80,
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
                 color: Colors.white,
@@ -176,7 +182,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                 children: [
                   SizedBox(height: 10,),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0,vertical: 8.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -201,13 +207,16 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                               child:Text("${widget.index+1}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),textAlign: TextAlign.center,),
                             ),
                             SizedBox(width: 10,),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("${AppLocalizations.of(context)!.translate('parcel')} ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 14),),
-                                Text("${AppLocalizations.of(context)!.translate('requirements')}",style: TextStyle(fontSize: 14,color: Colors.black54),)
-                              ],
+                            Container(
+                              width: 150,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("${AppLocalizations.of(context)!.translate('parcel')} ${widget.index+1}",style: TextStyle(color: Colors.black87,fontWeight: FontWeight.bold,fontSize: 14),),
+                                  Text("${AppLocalizations.of(context)!.translate('requirements')}",style: TextStyle(fontSize: 14,color: Colors.black54),)
+                                ],
+                              ),
                             )
                           ],
                         ),
@@ -229,6 +238,7 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                       ],
                     ),
                   ),
+                  SizedBox(height: 10,),
                   expanded?  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -886,7 +896,8 @@ class _ExpeditionDetailFormState extends State<ExpeditionDetailForm> {
                     ],
                   ):Container()
                   //continuer
-
+                  ,
+                  SizedBox(height: 10,),
                 ],
               ),
             )

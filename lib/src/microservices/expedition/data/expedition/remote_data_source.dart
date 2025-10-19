@@ -238,7 +238,6 @@ class ExpeditionRemoteDataSourceImpl extends ExpeditionRemoteDataSource {
       final data = response.data['expeditions'];
 
       final List<ExpeditionModel> result = [];
-      debugPrint("XXX ${data[0]}");
       if (data is List) {
         for (var e in data) {
           debugPrint(

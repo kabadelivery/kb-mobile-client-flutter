@@ -109,7 +109,7 @@ class _FoodGridState extends State<FoodGrid> {
       for(var product in products){
         if(product.restaurant_entity!=null){
           final double dist = Utils.locationDistance(StateContainer.of(context).location,product.restaurant_entity!);
-          debugPrint('distance ${product.restaurant_entity}');
+          debugPrint('distance ${dist}');
           product.restaurant_entity!.distanceBetweenMeandRestaurant = double.parse(dist > 100 ? "100" : dist.toStringAsFixed(2));
           product.restaurant_entity!.delivery_pricing =_getShippingPrice((dist).toString(),billingMap);
         }
@@ -335,7 +335,7 @@ class _FoodGridState extends State<FoodGrid> {
                             ),
                           );
                         },
-                        child: Text("${AppLocalizations.of(context)!.translate("pay")}"),
+                        child: Text("${AppLocalizations.of(context)!.translate("buy")}"),
                       ),
                     ),
                   ),
@@ -350,7 +350,6 @@ class _FoodGridState extends State<FoodGrid> {
   String? _getShippingPrice(String distance, Map<String, String> myBillingArray) {
     try {
       int distanceInt = double.parse(distance).round();
-      debugPrint("distanceInt ${myBillingArray["$distanceInt"]}");
       return myBillingArray["$distanceInt"] ?? "~";
     } catch (e) {
       debugPrint("Error: $e");

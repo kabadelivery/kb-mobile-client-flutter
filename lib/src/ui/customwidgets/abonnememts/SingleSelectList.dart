@@ -24,6 +24,7 @@ class SingleSelectList extends StatefulWidget {
 class _SingleSelectListState extends State<SingleSelectList> {
   late int? _selectedIndex = widget.initialIndex;
   String? _selectedLogo;
+
   void _showBottomSheet(ListItem item) {
     showModalBottomSheet(
       context: context,
@@ -32,7 +33,8 @@ class _SingleSelectListState extends State<SingleSelectList> {
       ),
       builder: (context) {
         Widget content;
-        if (item.title == "Mobile Money") {
+
+        if (item.title == "${AppLocalizations.of(context)!.translate('mobile_money')}") {
           content = Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -42,7 +44,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
               _buildLogo("assets/images/png/wave_logo.png", "Wave"),
             ],
           );
-        } else if (item.title == "Carte Bancaire") {
+        } else if (item.title == "${AppLocalizations.of(context)!.translate('credit_card')}") {
           content = Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -53,7 +55,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
             ],
           );
         } else {
-          content = const Text("Votre Solde est de 0");
+          content = Text("${AppLocalizations.of(context)!.translate('balance_zero_message')}");
         }
 
         return Padding(
@@ -78,7 +80,7 @@ class _SingleSelectListState extends State<SingleSelectList> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Fermer"),
+                child: Text("${AppLocalizations.of(context)!.translate('close')}"),
               ),
             ],
           ),
@@ -92,8 +94,8 @@ class _SingleSelectListState extends State<SingleSelectList> {
 
     return GestureDetector(
       onTap: () {
-        setState(() => _selectedLogo = label); // 👈 update state
-        widget.onItemSelected?.call(label); // 👈 send selection to parent
+        setState(() => _selectedLogo = label);
+        widget.onItemSelected?.call(label);
         Navigator.of(context).pop(true);
       },
       child: Column(
@@ -143,11 +145,10 @@ class _SingleSelectListState extends State<SingleSelectList> {
             setState(() => _selectedIndex = index);
             widget.onChanged?.call(index);
 
-            // 👇 Special case: if item == "PorteFeuille KABA"
-            if (item.title == "PorteFeuille KABA") {
-              widget.onItemSelected?.call("PorteFeuille");
+            if (item.title == "${AppLocalizations.of(context)!.translate('kaba_wallet')}") {
+              widget.onItemSelected?.call("${AppLocalizations.of(context)!.translate('kaba_wallet')}");
             } else {
-              _showBottomSheet(item); // open bottomsheet for others
+              _showBottomSheet(item);
             }
           },
           borderRadius: BorderRadius.circular(10),
@@ -193,18 +194,22 @@ class _SingleSelectListState extends State<SingleSelectList> {
                             item.subtitle,
                             style: TextStyle(
                               fontSize: 14,
-                              color:
-                              isSelected ? Colors.black : Colors.grey.shade600,
+                              color: isSelected
+                                  ? Colors.black
+                                  : Colors.grey.shade600,
                             ),
-
                           ),
-                          SizedBox(width: 5,),
-                          item.title.contains("Porte")?  Text(
-                              " : " +"${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
-                              style: TextStyle(
-                                  color: KColors.primaryColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600)):Container(),
+                          const SizedBox(width: 5),
+                          item.title == AppLocalizations.of(context)!.translate('kaba_wallet')
+                              ? Text(
+                            " : ${StateContainer.of(context).balance == null ? "---" : StateContainer.of(context).balance} ${AppLocalizations.of(context)!.translate('currency')}",
+                            style: TextStyle(
+                              color: KColors.primaryColor,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )
+                              : Container(),
                         ],
                       ),
                     ],

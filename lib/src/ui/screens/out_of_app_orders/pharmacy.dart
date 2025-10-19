@@ -67,7 +67,13 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("KABA Pharmacie",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+                          Text(
+                            AppLocalizations.of(context)!.translate('kaba_pharmacie'),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
                         ],
                       )
                     ],

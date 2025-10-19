@@ -1072,11 +1072,13 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                     child:Image.asset("assets/images/png/medical-cross.png",width: 20,height: 20,)),
                                 SizedBox(width: 9),
                                 Text(
-                                    "Pharmacy",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: KColors.new_black)),
+                                  AppLocalizations.of(context)!.translate('pharmacies'),
+                                  style:  TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: KColors.new_black,
+                                  ),
+                                ),
                               ],
                             ),
                           ),
@@ -1089,6 +1091,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         showPlacePicker: showPlacePicker))
                         .toList()),
                   ),
+                 /*
                   SizedBox(height: 30),
                   widget.coming_soon_services!.length! > 0
                       ? Opacity(
@@ -1124,7 +1127,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     ),
                   )
                       : Container(),
-                  SizedBox(height: 160)
+                */
+
+                  SizedBox(height: 50)
                 ],
               ),
             ),

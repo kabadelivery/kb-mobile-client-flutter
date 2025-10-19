@@ -121,12 +121,12 @@ class _HeaderState extends State<Header> {
                   child: IntrinsicWidth(
                     child: IntrinsicHeight(
                       child: PerformanceCard(
-                        currentRating: performance!['final'],
+                        currentRating: double.parse(performance!['final'].toString())==0?3.0:double.parse(performance!['final'].toString()),
                         reviewCount: performance!['count'],
-                        speed: performance!['speed'],
-                        geolocationRespect: performance!['geolocation'],
-                        attitude: performance!['attitude'],
-                        appearance: performance!['appearance'],
+                        speed: double.parse(performance!['speed'].toString()),
+                        geolocationRespect: double.parse(performance!['geolocation'].toString()),
+                        attitude: double.parse(performance!['attitude'].toString()),
+                        appearance:double.parse( performance!['appearance'].toString()),
                       ),
                     ),
                   ),
@@ -153,7 +153,7 @@ class _HeaderState extends State<Header> {
                   const Icon(FontAwesomeIcons.boltLightning,
                       color: Colors.orangeAccent, size: 14),
                   Text(
-                    "${performance!['final']}",
+                    "${performance!['final']==0?3:performance!['final']}",
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 16,

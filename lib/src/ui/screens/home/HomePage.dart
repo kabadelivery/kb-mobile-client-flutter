@@ -906,15 +906,15 @@ class _HomePageState extends State<HomePage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Accès sécurisé ",
+                          AppLocalizations.of(context)!.translate('secure_access'),
                           textAlign: TextAlign.center,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                             color: Colors.black87,
                           ),
                         ),
-                        Text("KABA",
+                        Text(" KABA",
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 18,
@@ -928,7 +928,7 @@ class _HomePageState extends State<HomePage> {
 
                     // Description
                     Text(
-                      "Vous devez vous connecter pour avoir accès à votre compte KABA",
+                      "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_description_account")}",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 14,
@@ -956,7 +956,7 @@ class _HomePageState extends State<HomePage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Se connecter",
+                              "${AppLocalizations.of(context)!.translate('login')}",
                               style: TextStyle(color: Colors.white, fontSize: 16),
                             ),
                             Icon(Icons.arrow_forward, color: Colors.white),
@@ -988,7 +988,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         child: Text(
-                          "Pas maintenant",
+                          "${AppLocalizations.of(context)!.translate('not_now')}",
                           style: TextStyle(color: Colors.black87, fontSize: 16),
                         ),
                         onPressed: () {

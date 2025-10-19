@@ -267,7 +267,7 @@ class _OutOfAppProductFormContentState
                               controller: _priceController,
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
-                                hintText: "Mettez 0, si vous ne connaissez pas le prix de l’article",
+                                hintText: AppLocalizations.of(context)!.translate('unknown_price_hint'),
                                 filled: true,
                                 fillColor: Color(0x9EECECEC),
                                 contentPadding: const EdgeInsets.symmetric(
@@ -453,14 +453,16 @@ class _OutOfAppProductFormContentState
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("Ma commande :",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                                        Container(
+                                        Text(
+                                          AppLocalizations.of(context)!.translate('my_order'),
+                                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                                        ),     Container(
                                           decoration: BoxDecoration(
                                             color: KColors.primaryColor,
                                             borderRadius: BorderRadius.circular(50)
                                           ),
                                           padding: EdgeInsets.symmetric(horizontal: 25,vertical: 5),
-                                          child: Text("${products.length} ${products.length>1?"produits":"produit"}",style: TextStyle(color:Colors.white,fontSize: 15,fontWeight: FontWeight.bold),),
+                                          child: Text(  "${products.length} ${products.length > 1 ? AppLocalizations.of(context)!.translate('product_plural') : AppLocalizations.of(context)!.translate('product_singular')}",style: TextStyle(color:Colors.white,fontSize: 15,fontWeight: FontWeight.bold),),
 
                                         )
                                       ],
@@ -490,7 +492,7 @@ class _OutOfAppProductFormContentState
                                                         product['quantity']));
                                               }
                                               else{
-                                                return Text('Aucun produit');
+                                                return Text(AppLocalizations.of(context)!.translate('no_product'));
                                               }
                                             }
                                         )
@@ -509,7 +511,7 @@ class _OutOfAppProductFormContentState
                                       child: Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text("Total",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                                            Text("${AppLocalizations.of(context)!.translate('total')}",style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
                                             Text("${products.map((el)=>el['price']*el['quantity']).reduce((a,b)=>a+b)} FCFA"
                                             ,
                                               style: TextStyle(fontSize: 20,color:KColors.primaryColor,fontWeight: FontWeight.bold),)

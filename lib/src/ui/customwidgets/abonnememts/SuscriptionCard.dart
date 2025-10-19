@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
+import '../../../localizations/AppLocalizations.dart';
+
 class SubscriptionCard extends StatelessWidget {
 
   final int id_pack ;
@@ -50,13 +52,14 @@ class SubscriptionCard extends StatelessWidget {
    String formatted = NumberFormat("#,###").format(number);
     debugPrint("XXX Price ${price}");
     return Container(
-      margin:  title=="VIC" ? const EdgeInsets.only(left: 35) :  const EdgeInsets.all(8) ,
+      margin: title == "VIC"
+          ? const EdgeInsets.only(left: 35)
+          : const EdgeInsets.all(8),
       padding: const EdgeInsets.all(16),
-      width: title=="VIC" ? 300 : 170,
+      width: title == "VIC" ? 300 : 170,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        // border: Border.all(color: borderColor, width: 2),
         border: Border(
           top: BorderSide(color: borderColor, width: 4),
         ),
@@ -72,24 +75,33 @@ class SubscriptionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           /// Title
-         Row(children: [
-           Container(
-           // borderRadius: BorderRadius.circular(4),
-            color: accentColor.withOpacity(0.1),
-            child:Icon(  title == "BASIC"  ? Icons.shield_outlined : title == "BASIC+" ? Icons.bolt_outlined : title == "VIC" ? Icons.verified_outlined : Icons.shield_outlined
-             ,color: accentColor, size: 18),
-           ),
-           SizedBox(width: 6),
-           Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: borderColor,
+          Row(children: [
+            Container(
+              color: accentColor.withOpacity(0.1),
+              child: Icon(
+                title == "BASIC"
+                    ? Icons.shield_outlined
+                    : title == "BASIC+"
+                    ? Icons.bolt_outlined
+                    : title == "VIC"
+                    ? Icons.verified_outlined
+                    : Icons.shield_outlined,
+                color: accentColor,
+                size: 18,
+              ),
             ),
-          ),
-         ]),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: borderColor,
+              ),
+            ),
+          ]),
           const SizedBox(height: 8),
+
           /// Price
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -115,112 +127,137 @@ class SubscriptionCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 12),
-              Row(
-                children: [
-                  Icon(Icons.check, color: accentColor, size: 18),
-                  const SizedBox(width: 6),
-                   Text(
-                      "$livraisons  ",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87,fontWeight: FontWeight.bold),
-                    ),
-                  Text(
-                      "Livraisons",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87),
-                    ),
-                ],
+
+          /// Livraisons
+          Row(
+            children: [
+              Icon(Icons.check, color: accentColor, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                "$livraisons ",
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold),
               ),
-               Row(
-                children: [
-                  Icon(Icons.check, color: accentColor, size: 18),
-                  const SizedBox(width: 6),
-                   Text(
-                      "Rayon de ",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87,),
-                    ),
-                  Text(
-                      "$rayon Kms",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87 , fontWeight: FontWeight.bold),
-                    ),
-                ],
+              Text(
+                AppLocalizations.of(context)!.translate('deliveries'),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
               ),
-              Row(
-                children: [
-                  Icon(Icons.check, color: accentColor, size: 18),
-                  const SizedBox(width: 6),
-                   Text(
-                      "Min . ",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87,),
-                    ),
-                  Text(
-                      "$min F",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87 , fontWeight: FontWeight.bold),
-                    ),
-                ],
+            ],
+          ),
+
+          /// Rayon
+          Row(
+            children: [
+              Icon(Icons.check, color: accentColor, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                AppLocalizations.of(context)!.translate('radius_label'),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
               ),
-                Row(
-                children: [
-                  Icon(Icons.check, color: accentColor, size: 18),
-                  const SizedBox(width: 6),
-                   Text(
-                      "Valide  ",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87,),
-                    ),
-                  Text(
-                      "$validite jours",
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87 , fontWeight: FontWeight.bold),
-                    ),
-                ],
+              Text(
+                "$rayon Kms",
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold),
               ),
-              title == "VIC" ? Row(children: [
-                   Container(
-  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-  decoration: BoxDecoration(
-    color: Color(0xFFFFE8ED), // background color
-    border: Border.all(color: Colors.red, width: 1), // red border
-    borderRadius: BorderRadius.circular(6), // optional rounded corners
-  ),
-  child: Text(
-    title == "VIC"
-        ? " -5% de reduction sur montant commandes"
-        : "Partageable",
-    style: const TextStyle(
-      fontSize: 13,
-      color: KColors.primaryColor,
-      fontWeight: FontWeight.bold,
-    ),
-  ),
-)
-                    ],) : Row(children: [],),
-              title == "VIC" ? Row(children: [
-                      Icon(Icons.star_border_outlined, color: Color(0xFFD99507), size: 18),
-                       Text(
-                       title == "VIC" ? "  Bonus 7 Jours de Livraison gratuite" : "Partageable" ,
-                      style:
-                          const TextStyle(fontSize: 13, color: KColors.primaryColor,fontWeight: FontWeight.bold)
-                    )
-                    ],) : Row(children: [],)  ,
-               Row(
-                children: [
-                   Icon(Icons.groups_2_outlined, color: accentColor, size: 18),
-                  const SizedBox(width: 6),
-                    
-                   Text(
-                       title == "VIC" ? "Partagable (jusqu'a 03 Personnes)" : "Partageable" ,
-                      style:
-                          const TextStyle(fontSize: 13, color: Colors.black87,),
-                    ),
-                 
-                ],
+            ],
+          ),
+
+          /// Min
+          Row(
+            children: [
+              Icon(Icons.check, color: accentColor, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                AppLocalizations.of(context)!.translate('min_label'),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
               ),
-             
+              Text(
+                "$min F",
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
+          /// Validité
+          Row(
+            children: [
+              Icon(Icons.check, color: accentColor, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                AppLocalizations.of(context)!.translate('valid_label'),
+                style: const TextStyle(fontSize: 13, color: Colors.black87),
+              ),
+              Text(
+                "$validite jours",
+                style: const TextStyle(
+                    fontSize: 13,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
+          /// VIC-specific: réduction
+          title == "VIC"
+              ? Row(children: [
+            Container(
+              padding:
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFE8ED),
+                border: Border.all(color: Colors.red, width: 1),
+                borderRadius: BorderRadius.circular(6),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!
+                    .translate('vic_discount'),
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: KColors.primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          ])
+              : const SizedBox.shrink(),
+
+          /// VIC-specific: bonus
+          title == "VIC"
+              ? Row(children: [
+            const Icon(Icons.star_border_outlined,
+                color: Color(0xFFD99507), size: 18),
+            Text(
+              AppLocalizations.of(context)!.translate('vic_bonus'),
+              style: const TextStyle(
+                  fontSize: 13,
+                  color: KColors.primaryColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          ])
+              : const SizedBox.shrink(),
+
+          /// Shareable
+          Row(
+            children: [
+              Icon(Icons.groups_2_outlined, color: accentColor, size: 18),
+              const SizedBox(width: 6),
+              Text(
+                title == "VIC"
+                    ? AppLocalizations.of(context)!.translate('shareable_vic')
+                    : AppLocalizations.of(context)!.translate('shareable'),
+                style:
+                const TextStyle(fontSize: 13, color: Colors.black87),
+              ),
+            ],
+          ),
+
           const SizedBox(height: 16),
 
           /// Subscribe button
@@ -234,28 +271,29 @@ class SubscriptionCard extends StatelessWidget {
                 ),
               ),
               onPressed: () {
-    SubscriptionBottomSheet.show(
-      context,
-      idPack:id_pack ,
-      title: title,
-      price: number.toString(),
-      livraison:livraisons , 
-      validite:validite , 
-      rayon:rayon ,
-      min:min ,
-      currency: "CFA",
-      accentColor: accentColor,
-    );
-  },
-              child: const Text(
-                "S'abonner",
-                style: TextStyle(color: Colors.white),
+                SubscriptionBottomSheet.show(
+                  context,
+                  idPack: id_pack,
+                  title: title,
+                  price: number.toString(),
+                  livraison: livraisons,
+                  validite: validite,
+                  rayon: rayon,
+                  min: min,
+                  currency: "CFA",
+                  accentColor: accentColor,
+                );
+              },
+              child: Text(
+                AppLocalizations.of(context)!.translate('subscribe'),
+                style: const TextStyle(color: Colors.white),
               ),
             ),
           ),
         ],
       ),
     );
+
   }
 
  

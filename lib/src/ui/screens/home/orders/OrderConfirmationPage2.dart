@@ -687,7 +687,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       null
                   ?   Container(
                 decoration: BoxDecoration(
-                    color: Color(0x54B6B6B6),
+                    color: Color(0x1DCB1F44),
+                    border: Border.all(color: Color(0xFFCB1F44)),
                     borderRadius: BorderRadius.circular(5)),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -721,8 +722,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ])
                   : Container(),
               SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
-                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
+              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null &&
+                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] >
                       0
                   ?  Container(
                 decoration: BoxDecoration(

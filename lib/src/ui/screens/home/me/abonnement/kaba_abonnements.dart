@@ -270,81 +270,84 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
 
 
 
-void _showAddBottomSheet() {
-  showModalBottomSheet(
-    context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    builder: (context) {
-      return Padding(
-        padding: EdgeInsets.only(
-          left: 20,
-          right: 20,
-          top: 20,
-          bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-
-                Expanded(
-                  child: TextField(
-                    controller: _codeController,
-                    keyboardType: TextInputType.text,
-                    maxLength: 7,
-                    decoration: InputDecoration(
-                      counterText: "",
-                      hintText: "Entrer le code",
-                      border: OutlineInputBorder(
+  void _showAddBottomSheet() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _codeController,
+                      keyboardType: TextInputType.text,
+                      maxLength: 7,
+                      decoration: InputDecoration(
+                        counterText: "",
+                        hintText: "${AppLocalizations.of(context)!.translate('enter_code_hint')}",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 14,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                      shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 14,
+                    ),
+                    onPressed: _loading ? null : _validateAndSendCode,
+                    child: _loading
+                        ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
                       ),
+                    )
+                        : Text(
+                      "${AppLocalizations.of(context)!.translate('validate_button')}",
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
-                ),
-                SizedBox(width: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: KColors.primaryColor,
-                    padding: EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: _loading ? null : _validateAndSendCode,
-                  child: _loading
-                      ? SizedBox(
-                    width: 18,
-                    height: 18,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
-                  )
-                      : Text("Valider", style: TextStyle(color: Colors.white)),
-                ),
-              ],
-            ),
-            SizedBox(height: 8),
-            Text(
-              "Entrez ici le code d'abonnement qui vous éte partagé !(Code a Six Chiffres) .",
-              style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "${AppLocalizations.of(context)!.translate('enter_subscription_code_description')}",
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+              ),
+              SizedBox(height: 40,)
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   // ------------------- Check & Update Subscription -------------------
   Future<Map<String, dynamic>> checkAndUpdateSubscription(int? userId) async {
@@ -425,7 +428,7 @@ void _showAddBottomSheet() {
 
 
   // ------------------- Active Subscription Card -------------------
-  Widget _buildActiveCard(Map<String, dynamic> data) {
+  Widget _buildActiveCard(BuildContext context, Map<String, dynamic> data) {
     return Card(
       color: Colors.white,
       margin: EdgeInsets.all(16),
@@ -444,9 +447,10 @@ void _showAddBottomSheet() {
                 RichText(
                   text: TextSpan(
                     children: [
-                      const TextSpan(
-                        text: "Mon abonnement\n",
-                        style: TextStyle(
+                      TextSpan(
+                        text:
+                        "${AppLocalizations.of(context)!.translate('my_subscription')}\n",
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
@@ -466,43 +470,57 @@ void _showAddBottomSheet() {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(8)),
-                  child: const Text("Actif", style: TextStyle(color: Colors.white)),
+                    color: Colors.green,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    "${AppLocalizations.of(context)!.translate('subscription_active')}",
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),
           ),
+
+          // --- Livraisons ---
           _buildCardRow(
             icon: "Package.png",
-            title: "Livraisons",
+            title:
+            "${AppLocalizations.of(context)!.translate('deliveries')}",
             subtitle:
             "${data["deliveriesUsed"] ?? '0'}/${data["deliveriesTotal"] ?? '0'}",
             isSvg: false,
             iconBgColor: const Color(0xFFFFC8D4),
           ),
+
+          // --- Expiration ---
           _buildCardRow(
             icon: "Clock.svg",
-            title: "Expire Le ",
+            title:
+            "${AppLocalizations.of(context)!.translate('expires_on')}",
             subtitle: data["end_date"]?.toString() ?? "********",
             isSvg: true,
             iconColor: const Color(0xFFCD1F45),
             iconBgColor: const Color(0xFFFFC8D4),
           ),
+
+          // --- Partage de l’abonnement ---
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               decoration: BoxDecoration(
                 color: const Color(0xFFFFE9EE),
                 borderRadius: BorderRadius.circular(8),
               ),
-
               child: Column(
                 children: [
                   const SizedBox(height: 5),
-                  Text('Partager votre Abonnement',
-                      style: TextStyle(color: KColors.primaryColor)),
+                  Text(
+                    "${AppLocalizations.of(context)!.translate('share_your_subscription')}",
+                    style: TextStyle(color: KColors.primaryColor),
+                  ),
                   const SizedBox(height: 25),
 
                   // --- Copier le code ---
@@ -519,22 +537,76 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"].toString());
+                        _copyToClipboard(
+                            context, data["codeAbonnement"].toString());
                       },
                       icon: const Icon(Icons.code),
-                      label: const Text("Copier le code "),
+                      label: Text(
+                        "${AppLocalizations.of(context)!.translate('copy_code')}",
+                      ),
                     ),
                   ),
 
                   const SizedBox(height: 5),
 
-                /*
-                *   // --- Copier le lien ---
+                  /*
+                // --- Copier le lien ---
+                SizedBox(
+                  width: 300,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      foregroundColor: KColors.primaryColor,
+                      side: const BorderSide(color: KColors.primaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () {
+                      _copyToClipboard(context, data["codeAbonnement"].toString());
+                    },
+                    icon: const Icon(Icons.link),
+                    label: Text(
+                      "${AppLocalizations.of(context)!.translate('copy_link')}",
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 5),
+
+                // --- Partager ---
+                SizedBox(
+                  width: 300,
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      foregroundColor: Colors.white,
+                      side: const BorderSide(color: KColors.primaryColor),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                    ),
+                    onPressed: () {
+                      _shareText(data["codeAbonnement"].toString());
+                    },
+                    icon: const Icon(Icons.share),
+                    label: Text(
+                      "${AppLocalizations.of(context)!.translate('share')}",
+                    ),
+                  ),
+                ),
+                */
+
+                  const SizedBox(height: 5),
+
+                  // --- Code affiché ---
                   SizedBox(
                     width: 300,
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
+                        backgroundColor: KColors.primaryColor,
                         foregroundColor: KColors.primaryColor,
                         side: const BorderSide(color: KColors.primaryColor),
                         shape: RoundedRectangleBorder(
@@ -543,59 +615,11 @@ void _showAddBottomSheet() {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                       ),
                       onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"].toString());
-                      },
-                      icon: const Icon(Icons.link),
-                      label: const Text("Copier le Lien"),
-                    ),
-                  ),
-
-                  const SizedBox(height: 5),
-
-                  // --- Partager ---
-                  SizedBox(
-                    width: 300,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: KColors.primaryColor,
-                        foregroundColor: Colors.white,
-                        side: const BorderSide(color: KColors.primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {
-                        _shareText(data["codeAbonnement"].toString());
-                      },
-                      icon: const Icon(Icons.share),
-                      label: const Text("Partager"),
-                    ),
-                  ),
-                * */
-
-
-
-                  const SizedBox(height: 5),
-
-                  // --- Code Display ---
-                  SizedBox(
-                    width: 300,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: KColors.primaryColor,
-                        foregroundColor: KColors.primaryColor,
-                        side: const BorderSide(color: KColors.primaryColor),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      onPressed: () {
-                        _copyToClipboard(context, data["codeAbonnement"].toString());
+                        _copyToClipboard(
+                            context, data["codeAbonnement"].toString());
                       },
                       label: Text(
-                        "Code : ${data["codeAbonnement"].toString()}",
+                        "${AppLocalizations.of(context)!.translate('subscription_code_label').replaceAll('{code}', data["codeAbonnement"].toString())}",
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -611,15 +635,14 @@ void _showAddBottomSheet() {
 
 
   // ------------------- Inactive Subscription Card -------------------
-  Widget _buildInactiveCard() {
+  Widget _buildInactiveCard(BuildContext context) {
     return Card(
       color: Colors.white,
       margin: EdgeInsets.all(16),
       child: Column(
         children: [
           Padding(
-            padding:
-            const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 30, bottom: 10),
             child: Row(
               children: [
                 Image.asset(
@@ -629,44 +652,51 @@ void _showAddBottomSheet() {
                 ),
                 SizedBox(width: 12),
                 Text(
-                  "Mon abonnement",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                  "${AppLocalizations.of(context)!.translate('my_subscription')}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
-                Spacer(),
+                const Spacer(),
                 Container(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                      color: Colors.grey[700],
-                      borderRadius: BorderRadius.circular(8)),
-                  child: Text("Inactif", style: TextStyle(color: Colors.white)),
-                )
+                    color: Colors.grey[700],
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    "${AppLocalizations.of(context)!.translate('subscription_inactive')}",
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
               ],
             ),
           ),
+
           _buildCardRow(
             icon: "Package.png",
-            title: "Livraisons",
+            title: "${AppLocalizations.of(context)!.translate('deliveries')}",
             subtitle: "0/0",
             isSvg: false,
-            iconBgColor: Color(0xFFFFC8D4),
+            iconBgColor: const Color(0xFFFFC8D4),
           ),
+
           _buildCardRow(
             icon: "Package.png",
-            title: "Expire Dans",
+            title: "${AppLocalizations.of(context)!.translate('expires_in')}",
             subtitle: "*********",
             isSvg: false,
-            iconBgColor: Color(0xFFFFC8D4),
+            iconBgColor: const Color(0xFFFFC8D4),
           ),
+
           _buildCardRow(
             icon: "Package.png",
-            title: "Code",
+            title: "${AppLocalizations.of(context)!.translate('subscription_code')}",
             subtitle: "**************",
             isSvg: false,
-            iconBgColor: Color(0xFFFFC8D4),
+            iconBgColor: const Color(0xFFFFC8D4),
           ),
         ],
       ),
@@ -736,7 +766,10 @@ void _showAddBottomSheet() {
     if (subscriptionPlans.isEmpty)
       return Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Text("Aucune formule disponible pour le moment."),
+        child: Text(
+          "${AppLocalizations.of(context)!.translate('no_plan_available_message')}",
+        ),
+
       );
 
     return Wrap(
@@ -784,8 +817,10 @@ void _showAddBottomSheet() {
                     "${AppLocalizations.of(context)?.translate('subscription')}"),
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-              Text("Choisissez la formule qui vous convient",
-                  style: TextStyle(fontSize: 12, color: Colors.white70)),
+              Text(
+                "${AppLocalizations.of(context)!.translate('choose_plan_message')}",
+                style: const TextStyle(fontSize: 12, color: Colors.white70),
+              ),
             ],
           ),
           actions: [
@@ -852,13 +887,14 @@ void _showAddBottomSheet() {
                   child: CircularProgressIndicator(),
                 )
               else if (subscriptionFetchFailed || subscriptionData == null)
-                _buildInactiveCard()
+                _buildInactiveCard(context)
               else if (subscriptionData!["status_abonnement"].toString() == "1")
-                  _buildActiveCard(subscriptionData!)
+                  _buildActiveCard(context,subscriptionData!)
                 else
-                  _buildInactiveCard(),
+                  _buildInactiveCard(context),
               SizedBox(height: 20),
               _buildSubscriptionPlans(),
+              SizedBox(height: 100),
             ],
           ),
         ),
@@ -870,13 +906,22 @@ void _showAddBottomSheet() {
 /// Fonction réutilisable pour copier du texte
 void _copyToClipboard(BuildContext context, String text) async {
   await Clipboard.setData(ClipboardData(text: text));
+
   ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Copié : $text")),
+    SnackBar(
+      content: Text(
+        "${AppLocalizations.of(context)!.translate('copied_message').replaceAll('{text}', text)}",
+      ),
+    ),
   );
 }
 
-void _shareText(String text) {
-  Share.share("Voici mon code Abonnement:" + text, subject: "Voici mon code");
+/// Fonction réutilisable pour partager du texte
+void _shareText(BuildContext context, String text) {
+  Share.share(
+    "${AppLocalizations.of(context)!.translate('share_message').replaceAll('{code}', text)}",
+    subject: "${AppLocalizations.of(context)!.translate('share_subject')}",
+  );
 }
 
 

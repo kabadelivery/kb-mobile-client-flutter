@@ -493,7 +493,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10),
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height - 400,
+        height: MediaQuery.of(context).size.height - 200,
         child: Column(
           children: <Widget>[
             Expanded(
