@@ -352,7 +352,7 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
   // ------------------- Check & Update Subscription -------------------
   Future<Map<String, dynamic>> checkAndUpdateSubscription(int? userId) async {
      String user_id = userId.toString();
-    final checkUrl = Uri.parse("https://dev.pay.kaba-delivery.com/api/check/subscription"); // Server A
+    final checkUrl = Uri.parse(ServerRoutes.ABO_CHECK_PAYMENT); // Server A
     final updateUrl = Uri.parse(ServerRoutes.KABA_UPDATE_PAYMENT_STATUS_ABO);    // Server B
 
     try {
@@ -831,71 +831,73 @@ class _Kaba_abonnementState extends State<Kaba_abonnement> {
           ],
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/images/background/Patternfond.png"),
-            fit: BoxFit.cover,
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/background/Patternfond.png"),
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 55, top: 35, right: 25),
-                    child: Center(
-                      child: RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: "${AppLocalizations.of(context)!.translate('enjoy_text')}",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Center(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 55, top: 35, right: 25),
+                      child: Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "${AppLocalizations.of(context)!.translate('enjoy_text')}",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: "${AppLocalizations.of(context)!.translate('Delivery_text')} \n",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: KColors.primaryColor,
+                              TextSpan(
+                                text: "${AppLocalizations.of(context)!.translate('Delivery_text')} \n",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: KColors.primaryColor,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: "${AppLocalizations.of(context)!.translate('free_del_text')}",
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontWeight: FontWeight.bold,
-                                color: KColors.primaryColor,
+                              TextSpan(
+                                text: "${AppLocalizations.of(context)!.translate('free_del_text')}",
+                                style: TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: KColors.primaryColor,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  )),
-              SizedBox(height: 15),
-              if (isLoadingSubscription)
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: CircularProgressIndicator(),
-                )
-              else if (subscriptionFetchFailed || subscriptionData == null)
-                _buildInactiveCard(context)
-              else if (subscriptionData!["status_abonnement"].toString() == "1")
-                  _buildActiveCard(context,subscriptionData!)
-                else
-                  _buildInactiveCard(context),
-              SizedBox(height: 20),
-              _buildSubscriptionPlans(),
-              SizedBox(height: 100),
-            ],
+                    )),
+                SizedBox(height: 15),
+                if (isLoadingSubscription)
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  )
+                else if (subscriptionFetchFailed || subscriptionData == null)
+                  _buildInactiveCard(context)
+                else if (subscriptionData!["status_abonnement"].toString() == "1")
+                    _buildActiveCard(context,subscriptionData!)
+                  else
+                    _buildInactiveCard(context),
+                SizedBox(height: 20),
+                _buildSubscriptionPlans(),
+                SizedBox(height: 100),
+              ],
+            ),
           ),
         ),
       ),

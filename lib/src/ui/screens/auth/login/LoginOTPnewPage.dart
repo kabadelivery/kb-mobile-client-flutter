@@ -62,23 +62,26 @@ class _VerificationPageState extends State<VerificationPage> {
 
   void _submitCode() {
     String enteredPassword = _controllers.map((c) => c.text).join();
+
     if (enteredPassword.isEmpty) {
-      setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
+      setState(() => errorMessage =
+          AppLocalizations.of(context)!.translate('enter_password_error'));
       return;
     }
 
     if (enteredPassword.length < 4) {
       setState(() => errorMessage =
-      "Le mot de passe doit contenir au moins 4 caractères.");
+          AppLocalizations.of(context)!.translate('password_min_error'));
       return;
     }
 
     _timer?.cancel(); // Stop timer on valid submission
 
-    // ✅ Simulate navigation with collected password (old behavior)
+    // ✅ Navigate back with collected password
     Navigator.of(context)
         .pop({'code': enteredPassword, 'type': widget.type});
   }
+
 
   void _jumpToOTPPage() {
     Navigator.of(context).pop();
@@ -112,24 +115,22 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "Recevoir le code via",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  Text(
+                    AppLocalizations.of(context)!.translate('receive_code_via'),
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 15),
                   RadioListTile<String>(
-                    title: const Text("WhatsApp"),
+                    title: Text(AppLocalizations.of(context)!.translate('whatsapp')),
                     value: "whatsapp",
                     groupValue: _selectedOption,
-                    onChanged: (value) =>
-                        setModalState(() => _selectedOption = value),
+                    onChanged: (value) => setModalState(() => _selectedOption = value),
                   ),
                   RadioListTile<String>(
-                    title: const Text("Email"),
+                    title: Text(AppLocalizations.of(context)!.translate('email')),
                     value: "email",
                     groupValue: _selectedOption,
-                    onChanged: (value) =>
-                        setModalState(() => _selectedOption = value),
+                    onChanged: (value) => setModalState(() => _selectedOption = value),
                   ),
                   const SizedBox(height: 15),
                   SizedBox(
@@ -146,10 +147,9 @@ class _VerificationPageState extends State<VerificationPage> {
                         Navigator.pop(context);
                         _jumpToOTPPage();
                       },
-                      child: const Text(
-                        "Recevoir le Code",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                      child: Text(
+                        AppLocalizations.of(context)!.translate('receive_code_button'),
+                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
@@ -221,54 +221,48 @@ class _VerificationPageState extends State<VerificationPage> {
           ),
         ),
       ),
-      body: Column(
+      body:
+      Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-                top: 50.0, left: 20, right: 20, bottom: 20),
+            padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(FontAwesomeIcons.rightFromBracket,
-                        color: KColors.primaryColor, size: 25),
-                    SizedBox(width: 10),
-                    Text("Connexion",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w600)),
+                  children: [
+                    const Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size: 25),
+                    const SizedBox(width: 10),
+                    Text(
+                      AppLocalizations.of(context)!.translate('login'),
+                      style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 40),
-                const Text(
-                  "Entrez le code de vérification",
-                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                Text(
+                  AppLocalizations.of(context)!.translate('enter_verification_code'),
+                  style: const TextStyle(fontSize: 16, color: Colors.black87),
                 ),
                 const SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children:
-                  List.generate(4, (index) => _buildOtpField(index)),
+                  children: List.generate(4, (index) => _buildOtpField(index)),
                 ),
                 const SizedBox(height: 20),
 
                 // 🔹 Timer display
                 if (!_showReceiveOption)
                   Text(
-                    "Expiration du code dans $_remainingSeconds s",
-                    style: const TextStyle(
-                        color: Colors.black54, fontWeight: FontWeight.w500),
+                    "${AppLocalizations.of(context)!.translate('otp_expires_in')} $_remainingSeconds s",
+                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
                   ),
 
                 const SizedBox(height: 30),
 
                 if (errorMessage.isNotEmpty)
                   Text(errorMessage,
-                      style:
-                      const TextStyle(color: Colors.red, fontSize: 12)),
+                      style: const TextStyle(color: Colors.red, fontSize: 12)),
 
                 const SizedBox(height: 30),
 
@@ -278,45 +272,48 @@ class _VerificationPageState extends State<VerificationPage> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: KColors.primaryColor,
-                      padding:
-                      const EdgeInsets.symmetric(vertical: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 15),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                     onPressed: _submitCode,
-                    child: const Text("Creer Un Compte",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('validate_button'),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
                 ),
 
-                // ✅ Show conditional "Recevoir le code via" button
+                // ✅ Show conditional "Receive code via" button
                 if (_showReceiveOption)
                   TextButton(
-                    onPressed: () =>
-                        showReceiveCodeBottomSheet(context),
-                    child: const Text(
-                      "Recevoir le code via...",
-                      style: TextStyle(color: KColors.primaryColor),
+                    onPressed: () => showReceiveCodeBottomSheet(context),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('receive_code_via'),
+                      style: const TextStyle(color: KColors.primaryColor),
                     ),
                   )
                 else
                   TextButton(
                     onPressed: () {}, // Disabled until timer ends
-                    child: const Text(
-                      "Mot de passe oublié ?",
-                      style: TextStyle(color: Colors.black38),
+                    child: Text(
+                      AppLocalizations.of(context)!.translate('forgot_password'),
+                      style: const TextStyle(color: Colors.black38),
                     ),
                   ),
               ],
             ),
           ),
           const SizedBox(height: 50),
-          Image.asset("assets/images/background/Patternlogin.png",
-              fit: BoxFit.cover, height: 290),
+          Image.asset(
+            "assets/images/background/Patternlogin.png",
+            fit: BoxFit.cover,
+            height: 290,
+          ),
         ],
-      ),
+      )
+
     );
   }
 }

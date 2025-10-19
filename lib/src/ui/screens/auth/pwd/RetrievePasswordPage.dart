@@ -13,8 +13,9 @@ class RetrievePasswordPage extends StatefulWidget {
   static var routeName = "/RetrievePasswordPage";
 
   final int type;
+  final String? login;
 
-  const RetrievePasswordPage({Key? key, this.type = 0}) : super(key: key);
+  const RetrievePasswordPage({Key? key, this.type = 0, this.login}) : super(key: key);
 
   @override
   _RetrievePasswordPageState createState() => _RetrievePasswordPageState();
@@ -45,29 +46,30 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   }
 
   void _submitCode() {
-    String enteredPassword = passwordController.text.trim();
+    String enteredPassword = passwordController.text;
 
     if (enteredPassword.isEmpty) {
-      setState(() => errorMessage = "Veuillez entrer votre mot de passe.");
+      setState(() => errorMessage = "${AppLocalizations.of(context)!.translate('enter_password_error')}");
       return;
     }
 
     if (enteredPassword.length < 4) {
-      setState(() => errorMessage = "Le mot de passe doit contenir au moins 4 caractères.");
+      setState(() => errorMessage = "${AppLocalizations.of(context)!.translate('password_min_error')}");
       return;
     }
 
-    // ✅ Simulate navigation with collected password (old behavior)
     Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
   }
 
   void _jumpToOTPPage() {
-
     Navigator.of(context).pop();
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) =>ForgotenPasswordOTP()
+        builder: (context) => RecoverPasswordPage(
+          presenter: RecoverPasswordPresenter(RecoverPasswordView()),
+          login: widget.login,
+        ),
       ),
     );
   }
@@ -83,7 +85,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         return Padding(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -97,12 +99,12 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  AppLocalizations.of(context)!.translate('confirmation'),
+                  "${AppLocalizations.of(context)!.translate('confirmation_title')}",
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  AppLocalizations.of(context)!.translate('receive_code_message'),
+                  "${AppLocalizations.of(context)!.translate('otp_info')}",
                   textAlign: TextAlign.center,
                   style: const TextStyle(color: Colors.black54),
                 ),
@@ -119,11 +121,8 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     ),
                     onPressed: _jumpToOTPPage,
                     child: Text(
-                      AppLocalizations.of(context)!.translate('receive_code'),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      "${AppLocalizations.of(context)!.translate('proceed')}",
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -134,6 +133,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -147,11 +147,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         ),
         title: Text(
           Utils.capitalize("${AppLocalizations.of(context)!.translate('input_password')}"),
-          style: const TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
       body: Container(
@@ -166,7 +162,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:  [
+                    children: [
                       Icon(
                         widget.type != 3 ? FontAwesomeIcons.rightFromBracket : Icons.shopping_bag,
                         color: KColors.primaryColor,
@@ -175,26 +171,25 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       const SizedBox(width: 10),
                       Text(
                         widget.type != 3
-                            ? AppLocalizations.of(context)!.translate('login')
-                            : AppLocalizations.of(context)!.translate('validate_order'),
+                            ? "${AppLocalizations.of(context)!.translate('login')}"
+                            : "${AppLocalizations.of(context)!.translate('validate_order')}",
                         style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    AppLocalizations.of(context)!.translate('enter_your_password'),
+                    "${AppLocalizations.of(context)!.translate('enter_password')}",
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
-
-                  // ✅ Password Field
+                  // Password Field
                   TextField(
                     controller: passwordController,
                     obscureText: _obscurePassword,
                     decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.translate('password'),
+                      hintText: "${AppLocalizations.of(context)!.translate('password')}",
                       prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -209,15 +204,12 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                     ),
                     keyboardType: TextInputType.number,
                   ),
-
                   if (errorMessage.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
                   ],
-
                   const SizedBox(height: 30),
-
-                  // ✅ Submit Button
+                  // Submit Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -231,25 +223,23 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       onPressed: _submitCode,
                       child: Text(
                         widget.type != 3
-                            ? AppLocalizations.of(context)!.translate('login')
-                            : AppLocalizations.of(context)!.translate('validate'),
+                            ? "${AppLocalizations.of(context)!.translate('login_button')}"
+                            : "${AppLocalizations.of(context)!.translate('validate_button')}",
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-
-                  // ✅ Forgot Password
+                  // Forgot Password
                   TextButton(
                     onPressed: () => showReceiveCodeBottomSheet(context),
                     child: Text(
-                      AppLocalizations.of(context)!.translate('forgot_password'),
+                      "${AppLocalizations.of(context)!.translate('forgot_password')}",
                       style: const TextStyle(color: KColors.primaryColor),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
-
             Image.asset(
               "assets/images/background/Patternlogin.png",
               width: double.infinity,

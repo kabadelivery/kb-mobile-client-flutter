@@ -127,215 +127,162 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
-        appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: Colors.white,
-          leading: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
-              onPressed: () {
-                Navigator.pop(context);
-              }),
-          centerTitle: true,
-          title: Row(mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                  Utils.capitalize(
-                      "${AppLocalizations.of(context)!.translate('register')}"),
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white)),
-            ],
-          ),
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        backgroundColor: KColors.primaryColor, // changed to primary color for visibility
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+          onPressed: () => Navigator.pop(context),
         ),
-        backgroundColor: Colors.white,
-        body: Column(
-         // height: MediaQuery.of(context).size.height,
-            mainAxisAlignment:MainAxisAlignment.spaceBetween,
+        centerTitle: true,
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-             Padding(
-                       padding: const EdgeInsets.all(20),
-                       child: Column(
-             crossAxisAlignment: CrossAxisAlignment.start,
+            Text(
+              Utils.capitalize(
+                AppLocalizations.of(context)!.translate('register'),
+              ),
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(FontAwesomeIcons.rightFromBracket,
+                        color: KColors.primaryColor, size: 25),
+                    const SizedBox(width: 10),
+                    Text(
+                      AppLocalizations.of(context)!.translate('connexion'),
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    "${AppLocalizations.of(context)!.translate('create_account_with')} ${widget.login}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 19,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+                const SizedBox(height: 20),
 
-             children: [
-               SizedBox(height: 15),
-                      Row(mainAxisAlignment: MainAxisAlignment.center,
-                       children: <Widget>[
-                        Icon(FontAwesomeIcons.rightFromBracket, color: KColors.primaryColor, size:25),
-                        SizedBox(width: 10),
-                         Text("${AppLocalizations.of(context)!.translate('connexion')}", style:TextStyle(color:Colors.black, fontSize: 20 , fontWeight: FontWeight.w600 )),
-                         SizedBox(width: 5),
-                         //Text("${AppLocalizations.of(context)!.translate('name_app')}", style:TextStyle(color:KColors.primaryColor, fontSize: 23 , fontWeight: FontWeight.bold )),
-                       ],
-                     ),
-                      SizedBox(height: 20),
-                       Center(
-                         child:
-                        Text("Créer votre Compte avec ${widget.login} ", textAlign: TextAlign.center, style: TextStyle(color:Colors.black, fontSize:19 , fontWeight: FontWeight.bold )),
-                       ),
+                // Username
+                TextField(
+                  controller: _nicknameFieldController,
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.translate('username'),
+                    prefixIcon: const Icon(Icons.person_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+                const SizedBox(height: 15),
 
-                    /*  Container(margin: EdgeInsets.only(left:40, right: 40),
-                     child:
-                     Text("${AppLocalizations.of(context)!.translate('login_phonenumber_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)), */
-               const SizedBox(height: 20),
+                // Password
+                TextField(
+                  controller: passwordFieldController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.translate('password'),
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  keyboardType: TextInputType.text,
+                ),
+                const SizedBox(height: 15),
 
-               // Username
-               TextField(
-                 controller: _nicknameFieldController,
-                 decoration: InputDecoration(
-                   hintText: "Nom d'utilisateur",
-                   prefixIcon: const Icon(Icons.person_outline),
-                   border: OutlineInputBorder(
-                     borderRadius: BorderRadius.circular(30),
-                   ),
-                 ),
-                 keyboardType: TextInputType.number,
-               ),
-               const SizedBox(height: 15),
+                // Confirm Password
+                TextField(
+                  controller: secondpassController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText:
+                    AppLocalizations.of(context)!.translate('confirm_password'),
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
 
-               // Password
-               TextField(
-                 controller: passwordFieldController,
-                // obscureText: _obscurePassword,
-                 decoration: InputDecoration(
-                   hintText: "Mot de passe",
-                   prefixIcon: const Icon(Icons.lock_outline),
-                  /*  suffixIcon: IconButton(
-                    // icon: Icon(
-                    //     _obscurePassword ? Icons.visibility_off : Icons.visibility),
-                     onPressed: () {
-                       setState(() {
-                       //  _obscurePassword = !_obscurePassword;
-                       });
-                     },
-                   ), */
-                   border: OutlineInputBorder(
-                     borderRadius: BorderRadius.circular(30),
-                   ),
-                 ),
-                 keyboardType: TextInputType.number,
-               ),
-               const SizedBox(height: 15),
+                // Create account button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onPressed: _sendCodeAction,
+                    child: Text(
+                      AppLocalizations.of(context)!
+                          .translate('create_account_button'),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
 
-               // Confirm Password
-               TextField(
-                 controller: secondpassController,
-                 //obscureText: _obscureConfirmPassword,
-                 decoration: InputDecoration(
-                   hintText: "Confirmer le mot de passe",
-                   prefixIcon: const Icon(Icons.lock_outline),
-                  /*  suffixIcon: IconButton(
-                     icon: Icon(_obscureConfirmPassword
-                         ? Icons.visibility_off
-                         : Icons.visibility),
-                     onPressed: () {
-                       setState(() {
-                         _obscureConfirmPassword = !_obscureConfirmPassword;
-                       });
-                     },
-                   ) */
-                   border: OutlineInputBorder(
-                     borderRadius: BorderRadius.circular(30),
-                   ),
-                 ),
-               ),
-               const SizedBox(height: 20),
+                const SizedBox(height: 15),
 
-               // Create account button
-               SizedBox(
-                 width: double.infinity,
-                 child: ElevatedButton(
-                   style: ElevatedButton.styleFrom(
-                     backgroundColor: KColors.primaryColor,
-                     padding: const EdgeInsets.symmetric(vertical: 15),
-                     shape: RoundedRectangleBorder(
-                       borderRadius: BorderRadius.circular(30),
-                     ),
-                   ),
-                  onPressed: () {
-                      _sendCodeAction();
+                // Back button
+                Center(
+                  child: TextButton.icon(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back),
+                    label:
+                    Text(AppLocalizations.of(context)!.translate('back_button')),
+                  ),
+                ),
 
-                  },
-                    // Handle create account action,
-                   child: const Text(
-                     "Créer le compte",
-                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                   ),
-                 ),
-               ),
+                const SizedBox(height: 30),
+              ],
+            ),
+          ),
 
+          // Bottom Image
+          Image.asset(
+            "assets/images/background/Patternlogin.png",
+            width: double.infinity,
+            height: 275,
+            fit: BoxFit.cover,
+          ),
+        ],
+      ),
+    );
 
-               // Back button
-               Center(
-                 child: TextButton.icon(
-                   onPressed: () {
-                     Navigator.pop(context);
-                   },
-                   icon: const Icon(Icons.arrow_back),
-                   label: const Text("Retour"),
-                 ),
-               ),
-                SizedBox(height: 15),
-                     /* (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ?
-                     SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(KColors.primaryColor)),
-                         height: 15, width: 15) : Container(),
-
-                     SizedBox(height: 10),
-                     Container(margin: EdgeInsets.only(left:40, right: 40),child: Text(
-                         "TTT",
-                         textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                     SizedBox(height: 10),
-                     Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                         children:<Widget>[
-                           isCodeSent ?
-                           SizedBox(width: 80,
-                               child: Container(
-                                   padding: EdgeInsets.all(14),
-                                   child: TextField(controller: _codeFieldController, maxLength: 4,decoration: InputDecoration.collapsed(hintText: "CODE"), style: TextStyle(color:KColors.new_black), keyboardType: TextInputType.number),
-             //                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                                   decoration: isCodeError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200))
-                           ) : Container(),
-                           isCodeSent ? SizedBox(width:20) : Container(),
-                           /* OutlinedButton(
-                               style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Colors.white),padding: WidgetStateProperty.all(EdgeInsets.only(top:15, bottom:15, left:10, right:10)),side: WidgetStateProperty.all(BorderSide(color: KColors.primaryColor, width: 0.8))),
-                               child: Row(
-                             children: <Widget>[
-                               Text(isCodeSent && timeDiff != 0 ? "${timeDiff} TEST" : "CODE" /* if is code count, we should we can launch a discount */, style: TextStyle(fontSize: 14, color: KColors.primaryColor)),
-                               /* stream builder, that shows that the code is been sent */
-                               isCodeSent == false &&  isCodeSending ? Row(
-                                 children: <Widget>[
-                                   SizedBox(width: 10),
-                                   SizedBox(width: 20,height:20,child: CircularProgressIndicator()),
-                                 ],
-                               ) : Container(),
-                             ],
-                           ), onPressed: () {isCodeSent==false && isCodeSending==false ? _sendCodeAction() : {};}), */
-                         ]),
-                     SizedBox(height: 30),
-                     isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
-                       children: <Widget>[
-                         Text("FRD", style: TextStyle(fontSize: 14, color: Colors.white)),
-                         SizedBox(width: 10),
-                         (isCodeSending==true && isCodeSent==true) || (isAccountRegistering) ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
-                       ],
-                     ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(), */
-                     SizedBox(height: 30),
-             ],
-                       ),
-                     ),
-        Image.asset(
-  "assets/images/background/Patternlogin.png",
-  width: double.infinity,
-  height: 275,
-  fit: BoxFit.cover, // scales and crops to cover the width
-),
-          ]
-          
-        )
-        );
   }
 
   void _handleRadioValueChange (int? value) {
@@ -352,88 +299,49 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   Future<void> _sendCodeAction() async {
-
-    /* logins */
     String? login = widget.login;
-    /* check the fields */
 
-      /* /* phone number */
-      String phoneNumber = login;
-      if (!Utils.isPhoneNumber_TGO(phoneNumber)) {
-        setState(() {
-          isLoginError = true;
-        });
-        return;
-      }
-     else {
-      /* email */
-      String email = login;
-      if (!Utils.isEmailValid(email)) {
-        setState(() {
-          isLoginError = true;
-        });
-        return;
-      }
-    } */
+    // Nickname and password fields
+    String nickname = _nicknameFieldController.text.trim();
+    String password = passwordFieldController.text.trim();
+    String secondPassword = secondpassController.text.trim();
 
-    /* nicknames */
-    String _nickname = _nicknameFieldController.text;
-    String password = passwordFieldController.text;
-    String secondpassword = secondpassController.text ;
-
-
-    /* check the fields */
-    if (_nickname.trim().length==0 || password.trim().length==0 || secondpassword.trim().length==0) {
-      setState(() {
-        isNicknameError = true;
-      });
-       mDialog("❌ Un des champ est Vide !");
+    // Check if any field is empty
+    if (nickname.isEmpty || password.isEmpty || secondPassword.isEmpty) {
+      setState(() => isNicknameError = true);
+      mDialog(AppLocalizations.of(context)!.translate('empty_field'));
       return;
     }
 
-     if (_nickname.trim().length < 3  ) {
-      setState(() {
-        isNicknameError = true;
-      });
-       mDialog("❌ Le Nom doit contenir au moins 4 characteres");
+    // Check nickname length
+    if (nickname.length < 3) {
+      setState(() => isNicknameError = true);
+      mDialog(AppLocalizations.of(context)!.translate('nickname_too_short'));
       return;
     }
 
+    // Check password match
+    if (password != secondPassword) {
+      mDialog(AppLocalizations.of(context)!.translate('passwords_not_match'));
+      return;
+    }
 
+    // Check password length
+    if (password.length < 4) {
+      mDialog(AppLocalizations.of(context)!.translate('password_too_short'));
+      return;
+    }
 
+    // Everything is ok, start sending code
+    setState(() => isCodeSending = true);
 
-    if (password != secondpassword) {
-  // Les mots de passe ne correspondent pas
-   mDialog("❌ Les deux mots de passe ne sont pas identiques");
+    // TODO: send request to server here
+    // Example: userDataBloc.sendRegisterCode(login: login);
 
-} else if (password.length < 4) {
-  // Mot de passe trop court
-   mDialog("❌ Le mot de passe doit contenir au moins 4 caractères");
-
-} else {
-    setState(() {
-      isCodeSending = true;
-    });
-    /* send request, to the server, and if ok, save request params and update fields. */
-    ////////////////////////////// userDataBloc.sendRegisterCode(login: login);
-   
+    // Show OTP bottom sheet
     showReceiveCodeBottomSheet(context);
-}
-
-   
-
-      
-   /*
-    if (_registerModeRadioValue == 0) {
-      // phone number
-      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}");
-    } else if (_registerModeRadioValue == 1) {
-      // email...
-      *//* if email, tell customer that the message could hide into the spams. *//*
-      // mailbox
-      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}");
-    }*/
   }
+
 
   /* Future<void> _verifyotp() async {
 
@@ -801,76 +709,72 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
      countryDialCode = value;
      _initialSelection = value.code!;
   }
-  
-  void showReceiveCodeBottomSheet (BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    backgroundColor: Colors.white,
-    builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 50,
-              height: 5,
-              decoration: BoxDecoration(
-                color: Colors.grey[300],
-                borderRadius: BorderRadius.circular(10),
+
+  void showReceiveCodeBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 50,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              "Confirmation",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            const Text( "Vous allez recevoir un code de vérification pour finaliser  ",
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.black54),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: KColors.primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+              const SizedBox(height: 20),
+              Text(
+                AppLocalizations.of(context)!.translate('confirmation'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                AppLocalizations.of(context)!.translate('otp_description'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Colors.black54),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: KColors.primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    setState(() {
+                      isCodeSending = true;
+                    });
+
+                    widget.presenter!.sendVerificationCode(widget.login.toString());
+                    print("OTP sent: ${widget.login}");
+                    _checkCodeAndCreateAccount();
+                  },
+                  child: Text(
+                    AppLocalizations.of(context)!.translate('receive_code_button'),
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),
-                onPressed: () async {
-                  
-          // 
-
-           Navigator.of(context).pop();
-           setState(() {
-      isCodeSending = true;
-    });
-            
-        this.widget.presenter!.sendVerificationCode(widget.login.toString());
-        print("OTP sENT "+widget.login.toString());
-            _checkCodeAndCreateAccount();
-           
-               
-            },
-                child: const Text(
-                  "Recevoir le Code",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
               ),
-            ),
-          ],
-        ),
-      );
-    },
-  );
-}
+            ],
+          ),
+        );
+      },
+    );
+  }
 
 
 }

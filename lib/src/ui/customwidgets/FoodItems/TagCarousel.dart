@@ -61,7 +61,13 @@ class TagCarousel extends StatelessWidget {
         else if (filter.toLowerCase().contains('poul')) emoji = '🍗';
         else if (filter.toLowerCase().contains('riz')) emoji = '🍚';
         else if (filter.toLowerCase().contains('glac')) emoji = '🍦';
-
+        else if (filter.toLowerCase().contains('glac')) emoji = '🍦';
+        else if (filter.toLowerCase().contains('jus')) emoji = '🧃';
+        else if (filter.toLowerCase().contains('smooth')) emoji = '🥤';
+        else if (filter.toLowerCase().contains('milk')) emoji = '🥛';
+        else if (filter.toLowerCase().contains('thé')) emoji = '🍵';
+        else if (filter.toLowerCase().contains('crep') || filter.toLowerCase().contains('crêp')) emoji = '🥞';
+        else if (filter.toLowerCase().contains('bouill')) emoji = '🥣';
         return ChoiceChip(
           labelPadding: const EdgeInsets.symmetric(horizontal: 6),
           label: Row(

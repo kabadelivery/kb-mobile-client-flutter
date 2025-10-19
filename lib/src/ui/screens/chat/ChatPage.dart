@@ -203,74 +203,76 @@ class _ChatPageState extends State<ChatPage> {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _isLoading
-                ? const Center(child: CircularProgressIndicator())
-                : AnimatedList(
-              key: _listKey,
-              controller: _scrollController,
-              initialItemCount: messages.length,
-              itemBuilder: (context, index, animation) {
-                final msg = messages[index];
-                return SizeTransition(
-                  sizeFactor: animation,
-                  child: msg.type == "source"
-                      ? OwnMessageCard(
-                    message: msg.message,
-                    messageType: msg.messageType,
-                    time: msg.time,
-                    senderName: msg.senderName,
-                  )
-                      : ReplyMessageCard(
-                    message: msg.message,
-                    messageType: msg.messageType,
-                    time: msg.time,
-                    senderName: msg.senderName,
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.photo, color: Colors.grey),
-                  onPressed: pickAndSendImage,
-                ),
-                Expanded(
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : AnimatedList(
+                key: _listKey,
+                controller: _scrollController,
+                initialItemCount: messages.length,
+                itemBuilder: (context, index, animation) {
+                  final msg = messages[index];
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: msg.type == "source"
+                        ? OwnMessageCard(
+                      message: msg.message,
+                      messageType: msg.messageType,
+                      time: msg.time,
+                      senderName: msg.senderName,
+                    )
+                        : ReplyMessageCard(
+                      message: msg.message,
+                      messageType: msg.messageType,
+                      time: msg.time,
+                      senderName: msg.senderName,
                     ),
-                    child: TextFormField(
-                      controller: _controller,
-                      onChanged: (value) => setState(() => sendButton = value.isNotEmpty),
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: "Type a message",
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  );
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.photo, color: Colors.grey),
+                    onPressed: pickAndSendImage,
+                  ),
+                  Expanded(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: TextFormField(
+                        controller: _controller,
+                        onChanged: (value) => setState(() => sendButton = value.isNotEmpty),
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                          hintText: "Type a message",
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                CircleAvatar(
-                  backgroundColor: KColors.primaryColor,
-                  child: IconButton(
-                    icon: const Icon(Icons.send, color: Colors.white),
-                    onPressed: () {
-                      if (_controller.text.trim().isNotEmpty) sendMessage(_controller.text.trim());
-                    },
+                  CircleAvatar(
+                    backgroundColor: KColors.primaryColor,
+                    child: IconButton(
+                      icon: const Icon(Icons.send, color: Colors.white),
+                      onPressed: () {
+                        if (_controller.text.trim().isNotEmpty) sendMessage(_controller.text.trim());
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          SizedBox(height: 50 ,)
-        ],
+        
+          ],
+        ),
       ),
     );
   }

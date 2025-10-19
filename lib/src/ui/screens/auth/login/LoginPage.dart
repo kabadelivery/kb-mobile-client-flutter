@@ -131,15 +131,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
 
                         Text(
-                          AppLocalizations.of(context)!.translate('welcome_kaba'),
+                          "${AppLocalizations.of(context)!.translate('welcome_message')}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: KColors.primaryColor,
                             fontSize: 19,
                             fontWeight: FontWeight.bold,
                           ),
-                        ),
-                        SizedBox(height: 10),
+                        ),  SizedBox(height: 10),
                         Container(
                             margin: EdgeInsets.only(left:35, right: 35),
                             child:
@@ -167,7 +166,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                   child: GestureDetector(
                                     onTap: () => setState(() => isPhoneSelected = true),
                                     child: Container(
-                                      padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 15),
+                                      padding: const EdgeInsets.symmetric(vertical: 12 ,horizontal: 10),
                                       decoration: BoxDecoration(
                                         color: isPhoneSelected ? KColors.primaryColor : Colors.white,
                                         // border: Border.all(color: KColors.primaryColor, width: 1.5),
@@ -188,7 +187,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
-                                            AppLocalizations.of(context)!.translate('phone_number'),
+                                            "${AppLocalizations.of(context)!.translate('phone_number')}",
                                             style: TextStyle(
                                               color: isPhoneSelected ? Colors.white : KColors.primaryColor,
                                               fontWeight: FontWeight.bold,
@@ -226,7 +225,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                           ),
                                           const SizedBox(width: 6),
                                           Text(
-                                            "Email",
+                                            "${AppLocalizations.of(context)!.translate('email')}",
                                             style: TextStyle(
                                               color: !isPhoneSelected ? Colors.white : KColors.primaryColor,
                                               fontWeight: FontWeight.bold,
@@ -268,7 +267,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                   favorite: const ['+228', 'TG'], // keep Togo as favorite
                                   showFlag: true,
                                   showDropDownButton: true,
-                                  textStyle: const TextStyle(color: Colors.black, fontSize: 12), // 👈 smaller text
+                                  textStyle: const TextStyle(color: Colors.black, fontSize: 14), // 👈 smaller text
                                   showCountryOnly: false,
                                   showOnlyCountryWhenClosed: false,
                                   alignLeft: false,
@@ -278,8 +277,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                                 minWidth: 0,
                                 minHeight: 0,
                               ),
-                              hintText: AppLocalizations.of(context)!.translate('enter_phone_number'),
-
+                              hintText: "${AppLocalizations.of(context)!.translate('enter_phone')}",
                               hintStyle: const TextStyle(fontSize: 14),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(width: 1, color: KColors.primaryColor),
@@ -315,8 +313,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
                               prefixIconConstraints:
                               const BoxConstraints(minWidth: 0, minHeight: 0),
-                              hintText: AppLocalizations.of(context)!.translate('enter_email'),
-
+                              hintText: "${AppLocalizations.of(context)!.translate('enter_email')}",
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(20),
                               ),
@@ -333,18 +330,17 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                               backgroundColor: KColors.primaryColor,
                               padding: const EdgeInsets.symmetric(vertical: 20),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100),
+                                borderRadius: BorderRadius.circular(20),
                               ),
                             ),
                             onPressed: () {
 
                               _checklogin();
                             },
-                            child: Text(
-                              AppLocalizations.of(context)!.translate('continue_arrow'),
-                              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            child:  Text(
+                              "${AppLocalizations.of(context)!.translate('continue_arrow')}",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-
                           ),
                         ),
 
@@ -506,7 +502,9 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
-          return RetrievePasswordPage(type: 0);
+          return RetrievePasswordPage(
+              type: 0,
+              login:login );
         }
     ));
 
@@ -522,7 +520,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
 
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true) {
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true) {
               widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
@@ -589,7 +587,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = Map();
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode==true)
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true)
       widget.autoLogin = true;
 
     if (!widget.autoLogin!) {
