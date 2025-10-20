@@ -9,8 +9,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../StateContainer.dart';
 import '../../contracts/transaction_contract.dart';
 import '../../localizations/AppLocalizations.dart';
+import '../../microservices/expedition/presentation/widget/contact.dart';
 import '../../models/CustomerModel.dart';
 import '../../resources/socket/sockets.dart';
+import '../../utils/_static_data/AppConfig.dart';
 import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/NotLoggedInPopUp.dart';
@@ -251,7 +253,7 @@ class _HeaderState extends State<Header> {
 
                 // Call button
                 GestureDetector(
-                  onTap: () => _showBottomContactSheet(context),
+                  onTap: () => showBottomContactSheet(context: context, number: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}'),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [

@@ -257,7 +257,7 @@ class _PharmacyPageState extends ConsumerState<PharmacyPage> {
             // --- Info Box ---
             Container(
               width: 350,
-              margin: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(5),
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: const Color(0xFFFBE9ED),

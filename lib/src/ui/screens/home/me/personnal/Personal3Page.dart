@@ -62,12 +62,12 @@ class _Personal3PageState extends State<Personal3Page>
   void initState() {
     super.initState();
     this.widget.presenter!.personnalPageView = this;
-    _phoneNumberFieldController.text = widget.customer!.phone_number!;
+    _phoneNumberFieldController.text = widget.customer!.phone_number??"";
     _emailFieldController.text = widget.customer!.email??"";
-    _nickNameFieldController.text = widget.customer!.nickname!;
-    _jobTitleFieldController.text = widget.customer!.job_title!;
-    _districtFieldController.text = widget.customer!.district!;
-    _whatsappNoFieldController.text = widget.customer!.whatsapp_number!;
+    _nickNameFieldController.text = widget.customer!.nickname??"";
+    _jobTitleFieldController.text = widget.customer!.job_title??"";
+    _districtFieldController.text = widget.customer!.district??"";
+    _whatsappNoFieldController.text = widget.customer!.whatsapp_number??"";
 //    _emailFieldController.text = widget.customer!.email;
 
     setState(() {

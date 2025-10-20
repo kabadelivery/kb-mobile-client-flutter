@@ -215,7 +215,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   ),
-                  keyboardType: TextInputType.text,
+                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 15),
 
@@ -223,6 +223,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                 TextField(
                   controller: secondpassController,
                   obscureText: true,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                     hintText:
                     AppLocalizations.of(context)!.translate('confirm_password'),
