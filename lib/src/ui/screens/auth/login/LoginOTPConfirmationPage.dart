@@ -129,7 +129,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                     height: MediaQuery.of(context).size.width/5
                 ),
                 Column(mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
                   children: [
                     Container(
                       child: Card(
@@ -217,6 +217,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                           )
                       ),
                     ),
+                    SizedBox(height: 20),
                     Container(child: Column(
                       children: [
                         SizedBox(width: 280,child:

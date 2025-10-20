@@ -505,6 +505,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           return RetrievePasswordPage(
               type: 0,
               login:login );
+
         }
     ));
 
@@ -519,8 +520,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       *  */
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
-
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true) {
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false) {
               widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
@@ -531,6 +531,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           }
         });
       }
+    }else{
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
 
@@ -587,7 +589,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = Map();
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true)
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false)
       widget.autoLogin = true;
 
     if (!widget.autoLogin!) {
@@ -680,8 +682,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     );
   }
 
-  void _showDialog(
-      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) {
+  Future<void> _showDialog(
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -910,13 +912,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  void loginPasswordError() {
-    /* _showDialog(
-      icon: Icon(Icons.error, color: Colors.red),
+  void loginPasswordError() async{
+    await _showDialog(
+      icon: Icon(Icons.error, color: KColors.primaryColor),
       message: "${AppLocalizations.of(context)!.translate('password_wrong')}",
       isYesOrNo: false,
-    ); */
-    _launchConnexion();
+    ).then((_){
+      _launchConnexion();
+    });
+
   }
 
   @override
