@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../StateContainer.dart';
@@ -36,6 +37,7 @@ import '../../customwidgets/choose_locations_widget.dart';
 import '../../customwidgets/explanation_widgets.dart';
 import '../../customwidgets/out_of_app_product_form_widget.dart';
 import '../../customwidgets/out_of_app_product_widget.dart';
+import '../../customwidgets/permission.dart';
 import '../../customwidgets/voucher_widgets.dart';
 
 class OutOfAppOrderPage extends ConsumerStatefulWidget {
@@ -70,7 +72,16 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
     );
   }
 
-
+   @override
+   void initState() {
+     super.initState();
+     WidgetsBinding.instance.addPostFrameCallback((_)async{
+       var status = await Permission.notification.status;
+       if(!status.isGranted){
+         await Permission.notification.request();
+       }
+     });
+   }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -490,6 +501,10 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
             
                   child: InkWell(
                     onTap: () async {
+                      var status = await Permission.notification.status;
+                      if(!status.isGranted){
+                        openNotificationModal(context);
+                      }
                       int type_of_order = 4; // Default
                       bool? result = false;
                       List<DeliveryAddressModel>? adrs = [];
