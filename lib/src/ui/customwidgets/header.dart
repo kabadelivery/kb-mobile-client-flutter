@@ -91,9 +91,9 @@ class _HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      getPerf();
-    });
+//    WidgetsBinding.instance.addPostFrameCallback((_){
+//       getPerf();
+//     });
     return Container(
       height: 80,
       padding: const EdgeInsets.symmetric(horizontal: 15),

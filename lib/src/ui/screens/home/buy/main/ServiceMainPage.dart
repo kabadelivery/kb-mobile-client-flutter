@@ -125,10 +125,20 @@ class ServiceMainPageState extends State<ServiceMainPage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       prefs= await SharedPreferences.getInstance();
       String? ok = prefs!.getString("_has_accepted_gps");
-      var loc_status = await Permission.notification.status;
-      if (loc_status.isGranted) {
-      }else if(ok!="ok" && loc_status.isDenied){
-        openLocationModal(context);
+      var status = await Permission.notification.status;
+      if (status.isGranted) {
+        var loc_status = await Permission.notification.status;
+        if (loc_status.isGranted) {
+
+        }else if(ok!="ok" && loc_status.isDenied){
+          openLocationModal(context);
+        }else if (status.isPermanentlyDenied) {
+          openAppSettings();
+        }
+      } else if (status.isDenied && ok=="ok") {
+        openNotificationModal(context);
+      } else if (status.isPermanentlyDenied) {
+        openAppSettings();
       }
     });
   }
@@ -308,15 +318,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     });
                   }
                   if (state is PreviousPageState) {
-                   WidgetsBinding.instance.addPostFrameCallback((_) {
-                     if(_pageController.hasClients){
-                       _pageController.previousPage(
-                         duration: const Duration(milliseconds: 300),
-                         curve: Curves.easeInOut,
-                       );
-                     }
-                   });
-                   delivery = state.deliveryRatingPending;
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if(_pageController.hasClients){
+                        _pageController.previousPage(
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    });
+                    delivery = state.deliveryRatingPending;
                   }
                   return  PageView(
                     controller: _pageController,
@@ -873,7 +883,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           ),
                         ),
                       ),
-                     /*
+                      /*
                       GestureDetector(
                         onTap: () async {
                           if (StateContainer.of(context).loggingState == 0){
@@ -1081,7 +1091,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                         showPlacePicker: showPlacePicker))
                         .toList()),
                   ),
-                 /*
+                  /*
                   SizedBox(height: 30),
                   widget.coming_soon_services!.length! > 0
                       ? Opacity(
@@ -1517,6 +1527,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
       if (status.isDenied && !notif_status.isDenied) {
         openLocationModal(context);
       } else {
+        await showDialog(
+          context: context,
+          builder: (_) => PermissionsModal(),
+        );
         _getLastKnowLocation(jumpToBuyPageDetails: true);
       }
       return;
@@ -1525,6 +1539,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
       if (status.isDenied && !notif_status.isDenied) {
         openLocationModal(context);
       } else {
+        await showDialog(
+          context: context,
+          builder: (_) => const PermissionsModal(),
+        );
         _getLastKnowLocation(jumpToBuyPageDetails: true);
       }
       return;
@@ -1536,11 +1554,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if (status.isDenied && !notifStatus.isDenied) {
           openLocationModal(context);
         } else {
+          await showDialog(
+            context: context,
+            builder: (_) => const PermissionsModal(),
+          );
           _getLastKnowLocation(jumpToBuyPageDetails: true);
         }
         return;
       }
-       if (jumpToBuyPageDetails) {
+      if (jumpToBuyPageDetails) {
         setState(() {
           StateContainer.of(context).updateTabPosition(tabPosition: 0);
         });
