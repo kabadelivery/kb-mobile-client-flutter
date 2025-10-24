@@ -125,7 +125,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       prefs= await SharedPreferences.getInstance();
       String? ok = prefs!.getString("_has_accepted_gps");
-      var loc_status = await Permission.notification.status;
+      var loc_status = await Permission.location.status;
       if (loc_status.isGranted) {
       }else if(ok!="ok" && loc_status.isDenied){
         openLocationModal(context);

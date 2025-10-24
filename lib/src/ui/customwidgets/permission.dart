@@ -458,7 +458,6 @@ void openLocationModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('location'),
