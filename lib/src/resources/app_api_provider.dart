@@ -211,7 +211,35 @@ class AppApiProvider {
         throw Exception(-1); // there is an error in your request
     } else {}
   }
+   updateUserFcmToken(String fcm_token)async{
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    if (await Utils.hasNetwork()) {
+    var dio = Dio();
+    dio.options
+    ..headers = Utils.getHeadersWithToken(customer.token!)
+    ..connectTimeout = 10000;
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (HttpClient client) {
+    client.badCertificateCallback =
+    (X509Certificate cert, String host, int port) {
+    return validateSSL(cert, host, port);
+    };
+    };
+    var response = await dio.post(
+    Uri.parse(ServerRoutes.LINK_PHONE_UPDATE_SERVER_PUSH_TOKEN).toString(),
+    data: json.encode({
+      "push_token":fcm_token
+    }),
+    );
 
+    xrint(response.data.toString());
+    if (response.statusCode == 200) {
+    } else
+    throw Exception(-1); // there is an error in your request
+    } else {
+    throw Exception(-2);
+    }
+  }
   checkUnreadMessages(customer) async {
 //
     if (await Utils.hasNetwork()) {
