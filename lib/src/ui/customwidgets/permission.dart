@@ -201,26 +201,26 @@ class _PermissionsModalState extends State<PermissionsModal> {
                         children: [
                           const Icon(Icons.check, size: 18, color: Colors.white),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.translate('allow_all'),
+                          Text(AppLocalizations.of(context)!.translate('next_all'),
                               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Text(AppLocalizations.of(context)!.translate('later'), style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
+                //  const SizedBox(height: 10),
+                  //                   SizedBox(
+                  //                     width: double.infinity,
+                  //                     child: OutlinedButton(
+                  //                       onPressed: () => Navigator.of(context).pop(),
+                  //                       style: OutlinedButton.styleFrom(
+                  //                         backgroundColor: Colors.white,
+                  //                         side: BorderSide(color: Colors.grey.shade300),
+                  //                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  //                         padding: const EdgeInsets.symmetric(vertical: 12),
+                  //                       ),
+                  //                       child: Text(AppLocalizations.of(context)!.translate('later'), style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
+                  //                     ),
+                  //                   ),
                 ],
               ),
             ),
@@ -342,7 +342,7 @@ void openNotificationModal(BuildContext context) {
                 SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
+                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('notifications'),
@@ -382,7 +382,7 @@ void openNotificationModal(BuildContext context) {
 
                   icon: const Icon(Icons.notifications_none, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
+                    AppLocalizations.of(context)!.translate('ok'),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -392,19 +392,19 @@ void openNotificationModal(BuildContext context) {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                //           const SizedBox(height: 12),
+                //                 OutlinedButton(
+                //                   onPressed: () => Navigator.of(context).pop(),
+                //                   style: OutlinedButton.styleFrom(
+                //                     minimumSize: const Size(double.infinity, 48),
+                //                     side: BorderSide(color: Colors.grey.shade300),
+                //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                //                   ),
+                //                   child: Text(
+                //                     AppLocalizations.of(context)!.translate('later'),
+                //                     style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                //                   ),
+                //                 ),
               ]),
             ),
 
@@ -458,7 +458,7 @@ void openLocationModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
+                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('location'),
@@ -506,13 +506,13 @@ void openLocationModal(BuildContext context) {
                       }
                       return;
                     }
-                    final allowed = (p == LocationPermission.always || p == LocationPermission.whileInUse);
+                    final nexted = (p == LocationPermission.always || p == LocationPermission.whileInUse);
                     Navigator.of(context).pop();
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            allowed
+                            nexted
                                 ? AppLocalizations.of(context)!.translate('location_granted')
                                 : AppLocalizations.of(context)!.translate('location_denied'),
                           ),
@@ -522,7 +522,7 @@ void openLocationModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.location_on, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
+                    AppLocalizations.of(context)!.translate('ok'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -530,19 +530,6 @@ void openLocationModal(BuildContext context) {
                     backgroundColor: const Color(0xFFD6334A),
                     minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
                   ),
                 ),
               ]),
@@ -597,7 +584,7 @@ void openPhotosModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
+                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('photos_media'),
@@ -633,7 +620,7 @@ void openPhotosModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.photo, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
+                    AppLocalizations.of(context)!.translate('ok'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -643,19 +630,19 @@ void openPhotosModal(BuildContext context) {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-                  ),
-                ),
+               // const SizedBox(height: 12),
+                //                 OutlinedButton(
+                //                   onPressed: () => Navigator.of(context).pop(),
+                //                   style: OutlinedButton.styleFrom(
+                //                     minimumSize: const Size(double.infinity, 48),
+                //                     side: BorderSide(color: Colors.grey.shade300),
+                //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                //                   ),
+                //                   child: Text(
+                //                     AppLocalizations.of(context)!.translate('later'),
+                //                     style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                //                   ),
+                //                 ),
               ]),
             ),
             // Top icon
