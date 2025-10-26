@@ -920,9 +920,15 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     _moveToRegisterPage(login) ;
   }
 
-  @override
+ @override
   void loginPasswordError(error) async{
+    await _showDialog(
+      icon: Icon(Icons.warning, color: KColors.primaryColor),
+      message: "${AppLocalizations.of(context)!.translate('password_wrong_')}",
+      isYesOrNo: false,
+    ).then((_){
 
+    });
 
   }
 
