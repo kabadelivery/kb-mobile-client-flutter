@@ -447,12 +447,14 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     });
     String login = selectedCountryCode+_loginFieldController.text;
 
+       int countlogin = login.length ;
     // control login stuff
-    /*  if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+     if (!(Utils.isEmailValid(login) || countlogin > 5 )) {
       /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
+      mToast("${AppLocalizations.of(context)!.translate('login_error')} "+countlogin.toString());
       return;
-    }*/
+    }
+ 
 
     /* // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
