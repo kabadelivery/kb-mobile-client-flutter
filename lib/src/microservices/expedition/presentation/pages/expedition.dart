@@ -46,6 +46,7 @@ class _ExpeditionState extends State<Expedition> {
   bool isLoading = false;
   @override
   void initState() {
+
     BlocProvider.of<ExpeditionBloc>(context).add(ExpeditionInitialEvent());
     expeditionBloc = BlocProvider.of<ExpeditionBloc>(context);
     expeditionBloc.add(getAvailableLines());

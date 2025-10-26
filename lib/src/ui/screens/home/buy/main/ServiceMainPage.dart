@@ -125,20 +125,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       prefs= await SharedPreferences.getInstance();
       String? ok = prefs!.getString("_has_accepted_gps");
-       var status = await Permission.notification.status;
-      if (status.isGranted) {
-        var loc_status = await Permission.notification.status;
-        if (loc_status.isGranted) {
-
-        }else if(ok!="ok" && loc_status.isDenied){
-          openLocationModal(context);
-        }else if (status.isPermanentlyDenied) {
-          openAppSettings();
-        }
-      } else if (status.isDenied && ok=="ok") {
-        openNotificationModal(context);
-      } else if (status.isPermanentlyDenied) {
-        openAppSettings();
+      var loc_status = await Permission.location.status;
+      if (loc_status.isGranted) {
+      }else if(ok!="ok" && loc_status.isDenied){
+        openLocationModal(context);
       }
     });
   }
@@ -1527,10 +1517,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       if (status.isDenied && !notif_status.isDenied) {
         openLocationModal(context);
       } else {
-        await showDialog(
-          context: context,
-          builder: (_) => PermissionsModal(),
-        );
         _getLastKnowLocation(jumpToBuyPageDetails: true);
       }
       return;
@@ -1539,10 +1525,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
       if (status.isDenied && !notif_status.isDenied) {
         openLocationModal(context);
       } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const PermissionsModal(),
-        );
         _getLastKnowLocation(jumpToBuyPageDetails: true);
       }
       return;
@@ -1554,10 +1536,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if (status.isDenied && !notifStatus.isDenied) {
           openLocationModal(context);
         } else {
-          await showDialog(
-            context: context,
-            builder: (_) => const PermissionsModal(),
-          );
           _getLastKnowLocation(jumpToBuyPageDetails: true);
         }
         return;

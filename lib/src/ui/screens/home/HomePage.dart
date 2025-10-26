@@ -67,6 +67,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../microservices/expedition/presentation/widget/expedition_widget.dart';
 import '../../../microservices/expedition/presentation/widget/tracked_package_widget.dart';
+import '../../../resources/app_api_provider.dart';
 import '../../../utils/functions/NotLoggedInPopUp.dart';
 import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/permissions.dart';
@@ -388,7 +389,11 @@ class _HomePageState extends State<HomePage> {
 
       }
     });
-
+    if(kDebugMode){
+      _firebaseMessaging
+          .subscribeToTopic(ServerConfig.DEV_TOPIC);
+      debugPrint("✅Subscribed to ${ServerConfig.DEV_TOPIC} topic");
+    }
     _firebaseMessaging
         .subscribeToTopic(ServerConfig.TOPIC)
         .whenComplete(() async {
@@ -790,6 +795,10 @@ class _HomePageState extends State<HomePage> {
   //  //get device token
   void get_token() async {
     String? token = await FirebaseMessaging.instance.getToken();
+    AppApiProvider apiProvider = AppApiProvider();
+    CustomerModel ? customer = await CustomerUtils.getCustomer();
+    customer.token = token;
+    await apiProvider.updateUserFcmToken(token??"");
     print('Device token $token');
   }
 

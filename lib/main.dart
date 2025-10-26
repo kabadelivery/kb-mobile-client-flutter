@@ -11,16 +11,20 @@ import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/history/hist
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/information/information_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/menu/menu_bloc.dart';
 import 'package:KABA/src/microservices/kaba_chine/presentation/bloc/order/order_bloc.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
+import 'package:KABA/src/resources/app_api_provider.dart';
 import 'package:KABA/src/ui/screens/rating/rating_article.dart';
 import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
 import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/routes.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -39,7 +43,35 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'src/StateContainer.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+const String SUBSCRIBE_TASK = "subscribeToTopicTask";
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    switch (task) {
+      case SUBSCRIBE_TASK:
+        try {
+          await FirebaseMessaging.instance.subscribeToTopic(ServerConfig.TOPIC);
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setBool('has_subscribed', true);
+          AppApiProvider apiProvider = AppApiProvider();
+          String token = await FirebaseMessaging.instance.getToken() ?? '';
+          CustomerModel ? customer = await CustomerUtils.getCustomer();
+          customer.token = token;
+          await apiProvider.updateUserFcmToken(token);
+          print("✅ Subscribed to topic successfully!");
+        } catch (e) {
+          print("❌ Subscription failed: $e");
+        }
+        break;
+    }
+    return Future.value(true);
+  });
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   AppLanguage appLanguage = AppLanguage();
@@ -60,8 +92,21 @@ Future<void> main() async {
       AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+ // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await _initializeLocalNotifications();
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true,
+  );
+  await Workmanager().registerPeriodicTask(
+    "subscribe_to_channel",
+    SUBSCRIBE_TASK,
+    frequency: const Duration(hours: 24),
+    initialDelay: const Duration(minutes: 5),
+    constraints: Constraints(
+      networkType: NetworkType.connected,
+    ),
+  );
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(StateContainer(child:
@@ -116,71 +161,101 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   try {
     final data = message.data;
+    final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-    // Check if there’s a notification field
-    if (data.containsKey('notification')) {
-      final decodedNotification = jsonDecode(data['notification']);
+    // 🔹 Récupération du contenu principal
+    final notificationJson = data['notification'];
+    if (notificationJson == null) {
+      print("⚠️ Aucun champ 'notification' trouvé dans le message");
+      return;
+    }
 
-      // Expedition notification
-      final expeditionId = decodedNotification['expedition_id'];
-      if (expeditionId != null && expeditionId.toString().isNotEmpty) {
-        await flutterLocalNotificationsPlugin.show(
-          DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          decodedNotification['title'] ?? 'Expédition',
-          decodedNotification['body'] ?? '',
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              AppConfig.CHANNEL_ID,
-              AppConfig.CHANNEL_NAME,
-              channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-              importance: Importance.max,
-              priority: Priority.high,
-            ),
-            iOS: DarwinNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-              sound: 'default',
-            ),
-          ),
-          payload: expeditionId.toString(),
-        );
-        xrint("✅ Background expedition notification: $expeditionId");
-        return; // Already handled
-      }
+    final decodedNotification = jsonDecode(notificationJson);
+    final title = decodedNotification['title'] ?? 'Notification';
+    final body = decodedNotification['body'] ?? '';
+    final imageUrl = decodedNotification['image_link'];
+    final expeditionId = decodedNotification['expedition_id'];
+    final destinationString = decodedNotification['destination'] ?? data['payload'] ?? '';
 
-      // Other types of notifications (legacy)
-      final destinationString = decodedNotification['destination'] ?? data['payload'] ?? '';
-      if (destinationString.isNotEmpty) {
-        await flutterLocalNotificationsPlugin.show(
-          DateTime.now().millisecondsSinceEpoch ~/ 1000,
-          decodedNotification['title'] ?? 'Notification',
-          decodedNotification['body'] ?? '',
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              AppConfig.CHANNEL_ID,
-              AppConfig.CHANNEL_NAME,
-              channelDescription: AppConfig.CHANNEL_DESCRIPTION,
-              importance: Importance.max,
-              priority: Priority.high,
-            ),
-            iOS: DarwinNotificationDetails(
-              presentAlert: true,
-              presentBadge: true,
-              presentSound: true,
-              sound: 'default',
-            ),
-          ),
-          payload: destinationString,
-        );
-        xrint("✅ Background generic notification: $destinationString");
-        return;
+    // 🔹 Téléchargement éventuel de l’image
+    String? filePath;
+    if (imageUrl != null && imageUrl.toString().isNotEmpty) {
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        filePath = '${directory.path}/notif_image_${now}.jpg';
+        final response = await http
+            .get(Uri.parse(imageUrl))
+            .timeout(const Duration(seconds: 5));
+
+        if (response.statusCode == 200) {
+          final file = File(filePath);
+          await file.writeAsBytes(response.bodyBytes);
+        } else {
+          filePath = null;
+        }
+      } catch (e) {
+        print("⚠️ Échec du téléchargement de l’image : $e");
+        filePath = null;
       }
     }
 
-    xrint("⚠️ No valid notification payload found in background message");
+    // 🔹 Style Android avec ou sans image
+    final BigPictureStyleInformation? styleInformation = (filePath != null)
+        ? BigPictureStyleInformation(
+      FilePathAndroidBitmap(filePath),
+      contentTitle: title,
+      summaryText: body,
+      htmlFormatContentTitle: true,
+      htmlFormatSummaryText: true,
+    )
+        : null;
+
+    final androidDetails = AndroidNotificationDetails(
+      AppConfig.CHANNEL_ID,
+      AppConfig.CHANNEL_NAME,
+      channelDescription: AppConfig.CHANNEL_DESCRIPTION,
+      importance: Importance.max,
+      priority: Priority.high,
+      styleInformation: styleInformation,
+      largeIcon: (filePath != null) ? FilePathAndroidBitmap(filePath) : null,
+    );
+
+    // 🔹 iOS style
+    final List<DarwinNotificationAttachment> iOSAttachments = [];
+    if (filePath != null) {
+      iOSAttachments.add(DarwinNotificationAttachment(filePath));
+    }
+
+    final iOSDetails = DarwinNotificationDetails(
+      attachments: iOSAttachments,
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+      sound: 'default',
+    );
+
+    final platformDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: iOSDetails,
+    );
+
+    // 🔹 Déterminer le payload
+    final payload = expeditionId?.toString().isNotEmpty == true
+        ? expeditionId.toString()
+        : destinationString;
+
+    // 🔹 Affichage de la notification
+    await flutterLocalNotificationsPlugin.show(
+      now,
+      title,
+      body,
+      platformDetails,
+      payload: payload,
+    );
+
+    print("✅ Background notification affichée avec image (si présente)");
   } catch (e) {
-    xrint("❌ Error in _firebaseMessagingBackgroundHandler: $e");
+    print("❌ Erreur dans _firebaseMessagingBackgroundHandler : $e");
   }
 }
 

@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../models/CustomerModel.dart';
 import '../../../../utils/functions/CustomerUtils.dart';
@@ -36,6 +37,12 @@ class _BillingPageState extends State<BillingPage> {
   void initState() {
     super.initState();
     expedition = widget.expedition;
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      var status = await Permission.notification.status;
+      if(!status.isGranted){
+        await Permission.notification.request();
+      }
+    });
   }
   @override
   Widget build(BuildContext context) {

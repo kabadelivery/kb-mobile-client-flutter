@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../../utils/functions/CustomerUtils.dart';
 import '../../Enums/menu.dart';
 import '../../core/utils.dart';
@@ -61,6 +62,12 @@ class _KabaChineOrderPageState extends State<KabaChineOrderPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      var status = await Permission.notification.status;
+      if(!status.isGranted){
+        await Permission.notification.request();
+      }
+    });
     BlocProvider.of<OrderBloc>(context).add(getInfosEvent());
   }
   @override

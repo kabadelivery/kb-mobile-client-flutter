@@ -46,6 +46,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vibration/vibration.dart';
@@ -128,6 +129,12 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       });
     });
 
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      var status = await Permission.notification.status;
+      if(!status.isGranted){
+        await Permission.notification.request();
+      }
+    });
     /* check if customer is logged in, if not, open login page for him shortly, and bring him back after... */
   }
 
