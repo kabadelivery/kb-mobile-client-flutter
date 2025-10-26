@@ -11,8 +11,10 @@ class LoginContract {
 class LoginView {
   void showLoading(bool isLoading) {}
   void loginSuccess (var obj) {}
-  void loginPasswordError () {}
+  void loginPasswordError (int error) {}
+  void loginSucess() {}
   void networkError () {}
+  void handlefirstsend() {}
   void accountNoExist(String login) {}
   void loginTimeOut() {}
   void systemError() {}
@@ -50,14 +52,25 @@ class LoginPresenter implements LoginContract {
         // xrint(jsonContent);
         // var obj = json.decode(data);
         int error = int.parse("${obj["error"]}");
-        if (error == 0/* && token != null && token.length > 0*/) {
+        if (error == 0  /* && token != null && token.length > 0*/) {
           /* login successful */
+          _loginView.loginSucess() ;
           _loginView.loginSuccess(obj);
-        } else if (error == 1) {
+
+          return  ;
+        } else if (error == 1 ) {
+          if(password == '0000'){
+            _loginView.handlefirstsend() ;
+          }else{
+            _loginView.loginPasswordError(error);
+          }
           /* login failure */
-          _loginView.loginPasswordError();
+
         } else if (error == -1) {
           _loginView.accountNoExist(login);
+        }
+        else{
+          return ;
         }
       } catch(_) {
         xrint(_);
@@ -76,8 +89,11 @@ class LoginPresenter implements LoginContract {
       else
         _loginView.networkError();
     }
-    isWorking = false;
-    _loginView.showLoading(false);
+    finally {
+
+      isWorking = false;
+      _loginView.showLoading(false);
+    }
   }
 
   set loginView(LoginView value) {

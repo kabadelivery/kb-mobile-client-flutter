@@ -1058,6 +1058,7 @@
   "password": "Mot de passe",
   "forgot_password": "Mot de passe oublié ?",
   "confirmation": "Confirmation",
+  "otp_description": "Vous allez recevoir un code OTP",
   "receive_code_message": "Vous allez recevoir un code de vérification pour réinitialiser le mot de passe",
   "receive_code": "Recevoir le Code",  
   "radius_label": "Rayon de ",

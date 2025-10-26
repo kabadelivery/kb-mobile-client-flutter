@@ -23,6 +23,7 @@
   "no": "NO",
   "see": "SEE",
   "sorry": "Sorry",
+  "otp_description": "You're going to receive an OTP code ",
   "account_no_exists": "Account no exist. Do you want to create a new account ",
   "password_wrong": "Sorry, Password wrong.",
   "network_error": "Sorry, Network error. Please check network and try again.",
