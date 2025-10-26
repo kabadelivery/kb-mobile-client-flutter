@@ -24,6 +24,7 @@
   "see": "CONSULTER",
   "sorry": "Désolé",
   "suscription": "Abonnements",
+  "otp_description": "You're going to receive an OTP code ",
   "T_suscription": "Nos Abonnements",
   "account_no_exists": "Ce compte n'existe pas. Voulez-vous créer un Compte ?",
   "password_wrong": "Désolé, Mot de Passe erroné.",
