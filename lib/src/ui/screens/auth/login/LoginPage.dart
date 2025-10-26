@@ -322,7 +322,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
                           ),
                         ],
                         SizedBox(height: 20),
-                        _loading?CircularProgressIndicator():
+                        //_loading?CircularProgressIndicator():
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
@@ -532,6 +532,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         });
       }
     }else{
+     // mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
       mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
@@ -544,6 +545,8 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   @override
   Future<void> loginSuccess(dynamic obj) async {
+
+
 
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
 
@@ -560,6 +563,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       if (otp != null) {
         CustomerUtils.saveOtpToSharedPreference(customer.username!,otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
+
       } else {
         CustomerUtils.getLastOtp(customer.username!).then((mOtp) async {
           // this is the otp
@@ -567,9 +571,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             // login_failure
             showLoading(false);
           } else {
+
             /* if you are coming from another process like already making an order, then just pop */
             /* token must be saved by now. */
             await nextStepWithOtpConfirmationPage(customer, mOtp!, obj);
+
           }
         });
       }
@@ -578,6 +584,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       await nextStepWithOtpConfirmationPage(customer, "", obj);
     }
     StateContainer.of(context).myBillingArray = null;
+    widget.autoLogin = true ;
   }
 
   Future<void> nextStepWithOtpConfirmationPage(CustomerModel customer, String mOtp, dynamic obj) async {
@@ -616,7 +623,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     }
 
     String res = results['otp_valid'];
-    if ("valid".compareTo(res) == 0) {
+    if (res != null && res == "valid") {
       // login ok
       // once we have the result we redirect
       String token = obj["data"]["payload"]["token"];
@@ -656,9 +663,11 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
             ));
       }
     } else {
-      // login not ok , you have to redo
-      // to re-log with your credentials once again
-      mDialog("Login not ok, you have to redo again");
+      debugPrint("⚠️ OTP result invalid or missing: $res");
+      // only show error if not autologin
+      if (!widget.autoLogin!) {
+        mDialog("Login not ok, please try again.");
+      }
     }
   }
 
@@ -912,15 +921,25 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   }
 
   @override
-  void loginPasswordError() async{
+  void loginPasswordError(error) async{
+
+
+  }
+
+  void loginSucess() async{
     await _showDialog(
-      icon: Icon(Icons.error, color: KColors.primaryColor),
-      message: "${AppLocalizations.of(context)!.translate('password_wrong')}",
+      icon: Icon(Icons.check_circle, color: KColors.primaryColor),
+      message: "Login Success",
       isYesOrNo: false,
     ).then((_){
-      _launchConnexion();
-    });
 
+    });
+  }
+
+  //handlefirstsend
+
+  void handlefirstsend() async{
+    _launchConnexion();
   }
 
   @override
@@ -937,6 +956,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
   void systemError() {
     mToast("${AppLocalizations.of(context)!.translate('system_error')}");
   }
+
 
 
 }

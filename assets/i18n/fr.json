@@ -1054,6 +1054,7 @@
   "continue_arrow": "Continuer →",
     "input_password": "Mot de passe",
   "validate_order": "Valider la commande",
+  "otp_description": "Vous allez recevoir un code OTP",
   "enter_your_password": "Entrez votre mot de passe",
   "password": "Mot de passe",
   "forgot_password": "Mot de passe oublié ?",

@@ -9,6 +9,7 @@
   "payment": "付款",
   "payment_desc": "可以用现金或在线支付",
   "address": "地址",
+  "otp_description": "You're going to receive an OTP code ",
   "address_desc": "选择送货地址",
   "enjoy": "享受",
   "enjoy_desc": "享受您所点的菜!",
