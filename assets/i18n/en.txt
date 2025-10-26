@@ -24,6 +24,7 @@
   "account_no_exists": "Account no exist. Do you want to create a new account ",
   "password_wrong": "Sorry, Password wrong.",
   "network_error": "Sorry, Network error. Please check network and try again.",
+  "otp_description": "You're going to receive an OTP code ",
   "refuse": "REFUSE",
   "accept": "ACCEPT",
   "new_account_phonenumber_hint": "Insert Your Phone number or E-mail.\n\n (Only TOGOLESE phone numbers are allowed)",
