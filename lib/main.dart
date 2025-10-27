@@ -96,7 +96,7 @@ Future<void> main() async {
   await _initializeLocalNotifications();
   await Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true,
+    isInDebugMode: false,
   );
   await Workmanager().registerPeriodicTask(
     "subscribe_to_channel",
