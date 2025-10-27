@@ -1,17 +1,17 @@
 class ServerConfig {
   //PROD//
 
-  //static const String ip_address = "app.kaba-delivery.com"; // prod server
-  //static const String pay_ip_address = "pay.kaba-delivery.com";
-  //static const String stat_ip_address = "stats.kaba-delivery.com"; //prod
+  static const String ip_address = "app.kaba-delivery.com"; // prod server
+  static const String pay_ip_address = "pay.kaba-delivery.com";
+  static const String stat_ip_address = "stats.kaba-delivery.com"; //prod
   //static const String kaba_chine ="https://148.230.85.247.nip.io";
   //static const String kaba_expedition ="https://api.kabatitude.com";
   //static const String kaba_abonnement = "http://148.230.85.247:4040";
   //DEV//
 
-   static const String ip_address = "dev.kaba-delivery.com"; // dev server
-   static const String pay_ip_address = "dev.pay.kaba-delivery.com";
-   static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
+  // static const String ip_address = "dev.kaba-delivery.com"; // dev server
+  // static const String pay_ip_address = "dev.pay.kaba-delivery.com";
+  // static const String stat_ip_address="dev.stats.kaba-delivery.com"; //dev
 
   //LOCAL
   //static const String ip_address = "nickel-specs-clinics-manufacturing.trycloudflare.com"; // dev server
