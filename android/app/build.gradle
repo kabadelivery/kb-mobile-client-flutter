@@ -18,7 +18,7 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-flutterVersionCode = '380'
+flutterVersionCode = '381'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 flutterVersionName = '3.7.9'
@@ -37,7 +37,11 @@ android {
         disable 'InvalidPackage'
         abortOnError false
     }
-
+    packagingOptions {
+        jniLibs {
+            useLegacyPackaging true
+        }
+    }
     kotlinOptions {
         jvmTarget = '11'
     }
