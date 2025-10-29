@@ -87,7 +87,7 @@ class _FoodGridState extends State<FoodGrid> {
     try {
       CustomerModel user = await CustomerUtils.getCustomer();
       final List<ShopProductModel> products =
-      await _service.fetchRestaurantFoodProposal2FromTag(widget.typeOfSearch, query);
+      await _service.fetchRestaurantFoodProposal2FromTag(widget.typeOfSearch, widget.typeOfSearch=="food"?query:"");     await _service.fetchRestaurantFoodProposal2FromTag(widget.typeOfSearch, query);
       Map<String,dynamic> food_and_products = {
         'products':[],
         'food':[]
