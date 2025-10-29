@@ -1163,5 +1163,6 @@
   "location_denied": "位置未允许",
   "photos_media_explanation": "当您想出售物品、修改个人资料或上传特定服务（例如 Kaba 快递）的图片时，Kaba 将访问部分媒体。",
   "photos_granted": "照片访问已允许",
-  "photos_denied": "照片访问未允许"
+  "photos_denied": "照片访问未允许",
+  "load_more": "加载更多"
 }

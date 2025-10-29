@@ -163,14 +163,21 @@ class ServiceMainPresenter implements ServiceMainContract {
     }
 
   }
-  Future<void> getRating()async{
-    try{
-      Map<String, dynamic> performance = await provider.getAppPerformance();
+  Future<void> getRating() async {
+    try {
+      var result = await provider.getAppPerformance(); // could be null
+      if (result == null) {
+        debugPrint("getAppPerformance returned null");
+        _serviceMainView.getRating(false);
+        return;
+      }
+      Map<String, dynamic> performance = Map<String, dynamic>.from(result);
       Utils.saveAppPerformance(performance);
       _serviceMainView.getRating(true);
-    }catch(e){
-      debugPrint("error fetching performance ${e}");
+    } catch (e) {
+      debugPrint("error fetching performance $e");
       _serviceMainView.getRating(false);
     }
   }
+
 }

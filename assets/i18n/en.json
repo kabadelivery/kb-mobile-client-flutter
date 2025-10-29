@@ -1158,6 +1158,7 @@
   "location_denied": "Location denied",
     "photos_media_explanation": "Kaba will access certain media when you want to sell something, update your profile, or upload images for a specific service (e.g., Kaba Shipping).",
   "photos_granted": "Photos access granted",
-  "photos_denied": "Photos access denied"
+  "photos_denied": "Photos access denied",
+  "load_more": "Load more"
 
 }

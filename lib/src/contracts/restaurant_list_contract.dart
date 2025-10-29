@@ -84,7 +84,6 @@ class RestaurantListPresenter implements RestaurantListContract {
             "filter_configuration": configuration
           });
         });
-        xrint("Distance calculated $restaurants");
        } catch (e) {
         debugPrint('Erreur lors de la récupération de la localisation : $e');
       }

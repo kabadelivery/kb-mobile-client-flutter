@@ -38,8 +38,6 @@ class _HeaderState extends State<Header> {
     super.initState();
     getPerf();
     _loadCustomer();
-
-    // 👇 Listen globally to unread count
     SocketService().unreadStream.listen((count) {
       if (mounted) {
         setState(() {

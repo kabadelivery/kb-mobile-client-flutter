@@ -38,6 +38,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
 import 'package:http/http.dart' as http;
+import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -108,6 +109,8 @@ Future<void> main() async {
       networkType: NetworkType.connected,
     ),
   );
+  MapboxOptions.setAccessToken(
+      "pk.eyJ1Ijoia2FiYWRlbGl2ZXJ5IiwiYSI6ImNtaDk4dXhveTBiMzQya3NoaTRnNTVqcjcifQ.qxZKDptlhWj_XxGQeMjgQw");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(StateContainer(child:

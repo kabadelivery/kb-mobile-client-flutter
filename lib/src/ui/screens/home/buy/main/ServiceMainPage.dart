@@ -56,6 +56,7 @@ import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
 import '../../../../../utils/functions/skipEndpoint.dart';
 import '../../../../customwidgets/header.dart';
+import '../../../../customwidgets/mapbox/map_screen.dart';
 import '../../../../customwidgets/permission.dart';
 import '../../../out_of_app_orders/fetching_package.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -112,7 +113,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-    this.widget.presenter!.getRating();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      this.widget.presenter!.getRating();
+    });
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];
@@ -387,7 +391,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
         if(!isUpdateSeen){
           showNewFeature(context, code);
         }else{
-          this.widget.presenter!.getRating();
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            this.widget.presenter!.getRating();
+          });
           List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
           if(ordersRating==null || ordersRating.isEmpty){
             setState(() {

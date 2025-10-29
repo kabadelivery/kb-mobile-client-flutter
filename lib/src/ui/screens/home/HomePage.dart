@@ -138,8 +138,9 @@ class _HomePageState extends State<HomePage> {
         prefs.getString("_login_expiration_date" + CustomerUtils.signature) ??
             "";
     int loginCheckResult = 0; // not logged in
-    try {
-      if (expDate != null) {
+
+      if (expDate != null && expDate.isNotEmpty) {
+        debugPrint("expDate $expDate");
         if (DateTime.now()
             .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
           _logout();
@@ -194,10 +195,7 @@ class _HomePageState extends State<HomePage> {
           loginCheckResult = 1; // is logged in
         }
       }
-    } catch (_) {
-      xrint("error checklogin() ");
-      loginCheckResult = 0; // not logged in
-    }
+
     return loginCheckResult;
   }
   //sharedPreferences to save messageId

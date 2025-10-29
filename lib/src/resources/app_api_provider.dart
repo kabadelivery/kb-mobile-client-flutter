@@ -212,11 +212,20 @@ class AppApiProvider {
     } else {}
   }
    updateUserFcmToken(String fcm_token)async{
+
     CustomerModel customer = await CustomerUtils.getCustomer();
+    if (fcm_token == null || fcm_token.isEmpty) {
+      print("⚠️ FCM token is null or empty, skipping update");
+      return;
+    }
+    if(customer.token==null || customer.token!.isEmpty){
+      print("⚠️ Customer token is null or empty, skipping update");
+      return;
+    }
     if (await Utils.hasNetwork()) {
     var dio = Dio();
     dio.options
-    ..headers = Utils.getHeadersWithToken(customer.token!)
+    ..headers = Utils.getHeadersWithToken(customer.token??"")
     ..connectTimeout = 10000;
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
     (HttpClient client) {
@@ -559,8 +568,14 @@ class AppApiProvider {
   }
 
   getAppPerformance()async{
+
     xrint("entered getAppPerformance");
+
     CustomerModel customer = await CustomerUtils.getCustomer();
+
+    if(customer.token==null || customer.token!.isEmpty){
+      return;
+    }
     var dio = Dio();
     dio.options
       ..connectTimeout = 10000;

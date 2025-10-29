@@ -425,7 +425,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     ],
                   ),
                 ):Container(),
-                searchTypePosition==1?  TagCarousel(
+                searchTypePosition==1 && widget?.type=="food"?
+                TagCarousel(
                   allFilters: _allFilters,
                   selectedFilter: _selectedFilter,
                   primaryColor: KColors.primaryColor,
@@ -1085,7 +1086,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           ),
         ),
 
-                TagCarousel(
+                    widget?.type=="food"? TagCarousel(
                   allFilters: _allFilters,
                   selectedFilter: _selectedFilter,
                   primaryColor: KColors.primaryColor,
@@ -1094,7 +1095,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                       _selectedFilter = value;
                     });
                   },
-                ),
+                ):Container(
+
+                    ),
 
 SizedBox(height: 10,),
 
@@ -1107,7 +1110,7 @@ Padding
                     "Sélectionnez un filtre",
                     style: TextStyle(fontSize: 16, color: Colors.grey),
                   )
-                : FoodGrid(foodType: _selectedFilter),
+                : FoodGrid(foodType: _selectedFilter, typeOfSearch: widget.type??"food",),
           )
 )
 
@@ -1807,7 +1810,6 @@ Padding
     }
     return tmp;
   }
-
   void _searchAction({bool pressButton = false}) {
     if (searchTypePosition == 2) {
       if (_filterEditController.text?.trim()?.length != null &&
