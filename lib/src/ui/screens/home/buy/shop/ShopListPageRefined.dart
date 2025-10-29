@@ -48,11 +48,11 @@ class ShopListPageRefined extends StatefulWidget {
 
   ShopListPageRefined(
       {this.key,
-      this.context,
-      this.location,
-      this.foodProposalPresenter,
-      this.restaurantListPresenter,
-      this.type})
+        this.context,
+        this.location,
+        this.foodProposalPresenter,
+        this.restaurantListPresenter,
+        this.type})
       : super(key: key);
 
   @override
@@ -116,7 +116,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   ];
   final Set<String> _selectedFilters = {}; // dynamic selection
 
- 
+
 
   @override
   void initState() {
@@ -180,7 +180,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             if (StateContainer?.of(context)?.location == null) {
               xrint("init -- 3");
               widget.restaurantListPresenter
-                  !.fetchShopList(widget.customer!, widget.type!, null);
+              !.fetchShopList(widget.customer!, widget.type!, null);
             } else {
               xrint("init -- 4");
               widget.restaurantListPresenter!.fetchShopList(widget.customer!,
@@ -218,7 +218,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   @override
   Widget build(BuildContext context) {
- 
+
 
     return Scaffold(
         backgroundColor: Colors.white,
@@ -230,7 +230,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           ),
         ),
 
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.dark,
           child: SingleChildScrollView(
             child: Column(
@@ -425,7 +425,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     ],
                   ),
                 ):Container(),
-                searchTypePosition==1?  TagCarousel(
+                searchTypePosition==1 && widget?.type=="food"?
+                TagCarousel(
                   allFilters: _allFilters,
                   selectedFilter: _selectedFilter,
                   primaryColor: KColors.primaryColor,
@@ -436,16 +437,16 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     });
                   },
                 ):Container(),
-                 SizedBox(height: 10,),
+                SizedBox(height: 10,),
                 Container(
 
                     child: isLoading
                         ? Center(child: MyLoadingProgressWidget())
                         : (hasNetworkError
-                            ? _buildNetworkErrorPage()
-                            : hasSystemError
-                                ? _buildSysErrorPage()
-                                : _buildRestaurantList(widget.restaurantList??[]))),
+                        ? _buildNetworkErrorPage()
+                        : hasSystemError
+                        ? _buildSysErrorPage()
+                        : _buildRestaurantList(widget.restaurantList??[]))),
               ],
             ),
           ),
@@ -502,113 +503,113 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
               child: SingleChildScrollView(
                 child: Column(
                     children:[
-                ]..add(
-                         searchTypePosition == 1
+                    ]..add(
+                        searchTypePosition == 1
                             ? (!_searchMode
-                                ? Container(
-                                    color: Colors.white,
-                                    height: MediaQuery.of(context).size.height -
-                                        150,
-            //                              padding: EdgeInsets.only(bottom:230),
-                                    child: widget.restaurantList?.length ==
-                                                null ||
-                                            widget.restaurantList?.length == 0
-                                        ? Container(
-                                            child: Center(
-                                                child:
-                                                    Column(children: <Widget>[
-                                            SizedBox(height: 20),
-                                            Icon(Icons.shopping_cart_sharp,
-                                                color: Colors.grey),
-                                            SizedBox(height: 10),
-                                            Text(
-                                                "${AppLocalizations.of(context)!.translate('no_content_to_show')}")
-                                          ])))
-                                        : RefreshIndicator(
-                                            onRefresh: () async {
-                                              if (StateContainer?.of(context)
-                                                      ?.location ==
-                                                  null) {
-                                                widget.restaurantListPresenter
-                                                    !.fetchShopList(
-                                                        widget.customer!,
-                                                        widget.type!,
-                                                        null);
-                                              } else
-                                                widget.restaurantListPresenter
-                                                    !.fetchShopList(
-                                                        widget.customer!,
-                                                        widget.type!,
-                                                        StateContainer.of(
-                                                                context)
-                                                            .location);
-                                            },
-                                            color: Colors.purple,
-                                            child: Scrollbar(
-                                              thumbVisibility: true,
-                                              controller:
-                                                  _restaurantListScrollController,
-                                              child: ListView.builder(
-                                                controller:
-                                                    _restaurantListScrollController,
-                                                itemCount:
-                                                    visibleItems?.length != null
-                                                        ? visibleItems!.length +
-                                                            1
-                                                        : 0,
-                                                itemBuilder:
-                                                    (context, position) {
-                                                  if (position ==
-                                                      visibleItems?.length) {
-                                                    if (hasMoreData()) {
-                                                      return Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 100,
-                                                          child: Center(
-                                                              child:
-                                                                  CircularProgressIndicator()));
-                                                    } else {
-                                                      return Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 100,
-                                                          child: Center(
-                                                              child: Text(
-                                                            "${AppLocalizations.of(context)!.translate("the_end")}",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 12,
-                                                                color: KColors
-                                                                    .new_black),
-                                                          )));
-                                                    }
-                                                  } else {
-                                                    return ShopListWidget(
-                                                        shopModel: visibleItems![
-                                                            position]);
-                                                  }
-                                                },
-                                              ),
-                                            ),
-                                          ),
-                                  )
-                                : _showSearchPage())
+                            ? Container(
+                          color: Colors.white,
+                          height: MediaQuery.of(context).size.height -
+                              150,
+                          //                              padding: EdgeInsets.only(bottom:230),
+                          child: widget.restaurantList?.length ==
+                              null ||
+                              widget.restaurantList?.length == 0
+                              ? Container(
+                              child: Center(
+                                  child:
+                                  Column(children: <Widget>[
+                                    SizedBox(height: 20),
+                                    Icon(Icons.shopping_cart_sharp,
+                                        color: Colors.grey),
+                                    SizedBox(height: 10),
+                                    Text(
+                                        "${AppLocalizations.of(context)!.translate('no_content_to_show')}")
+                                  ])))
+                              : RefreshIndicator(
+                            onRefresh: () async {
+                              if (StateContainer?.of(context)
+                                  ?.location ==
+                                  null) {
+                                widget.restaurantListPresenter
+                                !.fetchShopList(
+                                    widget.customer!,
+                                    widget.type!,
+                                    null);
+                              } else
+                                widget.restaurantListPresenter
+                                !.fetchShopList(
+                                    widget.customer!,
+                                    widget.type!,
+                                    StateContainer.of(
+                                        context)
+                                        .location);
+                            },
+                            color: Colors.purple,
+                            child: Scrollbar(
+                              thumbVisibility: true,
+                              controller:
+                              _restaurantListScrollController,
+                              child: ListView.builder(
+                                controller:
+                                _restaurantListScrollController,
+                                itemCount:
+                                visibleItems?.length != null
+                                    ? visibleItems!.length +
+                                    1
+                                    : 0,
+                                itemBuilder:
+                                    (context, position) {
+                                  if (position ==
+                                      visibleItems?.length) {
+                                    if (hasMoreData()) {
+                                      return Container(
+                                          width: MediaQuery.of(
+                                              context)
+                                              .size
+                                              .width,
+                                          height: 100,
+                                          child: Center(
+                                              child:
+                                              CircularProgressIndicator()));
+                                    } else {
+                                      return Container(
+                                          width: MediaQuery.of(
+                                              context)
+                                              .size
+                                              .width,
+                                          height: 100,
+                                          child: Center(
+                                              child: Text(
+                                                "${AppLocalizations.of(context)!.translate("the_end")}",
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                    FontWeight
+                                                        .bold,
+                                                    fontSize: 12,
+                                                    color: KColors
+                                                        .new_black),
+                                              )));
+                                    }
+                                  } else {
+                                    return ShopListWidget(
+                                        shopModel: visibleItems![
+                                        position]);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        )
+                            : _showSearchPage())
                             : Container(
-                                margin: EdgeInsets.only(top: 10),
-                                child: isSearchingMenus
-                                    ? Center(child: MyLoadingProgressWidget())
-                                    : (searchMenuHasNetworkError
-                                        ? _buildSearchMenuNetworkErrorPage()
-                                        : searchMenuHasSystemError
-                                            ? _buildSearchMenuSysErrorPage()
-                                            : _buildSearchedFoodList())))),
+                            margin: EdgeInsets.only(top: 10),
+                            child: isSearchingMenus
+                                ? Center(child: MyLoadingProgressWidget())
+                                : (searchMenuHasNetworkError
+                                ? _buildSearchMenuNetworkErrorPage()
+                                : searchMenuHasSystemError
+                                ? _buildSearchMenuSysErrorPage()
+                                : _buildSearchedFoodList())))),
               ),
             ),
 
@@ -646,11 +647,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   void _showDialog(
       {String? svgIcons,
-      Icon? icon,
-      var message,
-      bool okBackToHome = false,
-      bool isYesOrNo = false,
-      Function? actionIfYes}) {
+        Icon? icon,
+        var message,
+        bool okBackToHome = false,
+        bool isYesOrNo = false,
+        Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -661,8 +662,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons!,
-                        )
+                    svgIcons!,
+                  )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -671,40 +672,40 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ]
                 : <Widget>[
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ]);
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]);
       },
     );
   }
@@ -928,7 +929,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         } else {
           // location is enabled
           bool isLocationServiceEnabled =
-              await Geolocator.isLocationServiceEnabled();
+          await Geolocator.isLocationServiceEnabled();
           if (!isLocationServiceEnabled) {
             /*  ---- */
             // await Geolocator.openLocationSettings();
@@ -990,28 +991,28 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           } else {
             positionStream =
                 Geolocator.getPositionStream().listen((Position position) {
-              /* compare current and old position */
-              if (position?.latitude != null &&
-                  tmpLocation?.latitude != null &&
-                  (position.latitude * 100).round() ==
-                      (tmpLocation!.latitude * 100).round() &&
-                  (position.longitude * 100).round() ==
-                      (tmpLocation!.longitude * 100).round()) {
-                widget.samePositionCount = (widget.samePositionCount ?? 0) + 1;
-                // return;
-              } else {
-                widget.samePositionCount = 0;
-                tmpLocation = StateContainer.of(widget.context!).location;
-                if (position != null && mounted) {
-                  widget.hasGps = true;
-                  StateContainer.of(context).updateLocation(location: position);
-                  widget.restaurantListPresenter!.fetchShopList(widget.customer!,
-                      widget.type!, StateContainer.of(context).location);
-                }
-              }
-              if (widget.samePositionCount! >= 3 || widget.hasGps)
-                positionStream?.cancel();
-            });
+                  /* compare current and old position */
+                  if (position?.latitude != null &&
+                      tmpLocation?.latitude != null &&
+                      (position.latitude * 100).round() ==
+                          (tmpLocation!.latitude * 100).round() &&
+                      (position.longitude * 100).round() ==
+                          (tmpLocation!.longitude * 100).round()) {
+                    widget.samePositionCount = (widget.samePositionCount ?? 0) + 1;
+                    // return;
+                  } else {
+                    widget.samePositionCount = 0;
+                    tmpLocation = StateContainer.of(widget.context!).location;
+                    if (position != null && mounted) {
+                      widget.hasGps = true;
+                      StateContainer.of(context).updateLocation(location: position);
+                      widget.restaurantListPresenter!.fetchShopList(widget.customer!,
+                          widget.type!, StateContainer.of(context).location);
+                    }
+                  }
+                  if (widget.samePositionCount! >= 3 || widget.hasGps)
+                    positionStream?.cancel();
+                });
           }
         }
       }
@@ -1044,75 +1045,77 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
           child: Center(
               child: Column(
                   children: <Widget>[
-          Padding(
-          padding: const EdgeInsets.only(left: 15 , right: 15),
-          child: Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                  )
-                ]
-            ),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: "Rechercher un plat...",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(width: .0,color: Colors.transparent)
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(width: .0,color: Colors.transparent)
-            ),
-                enabledBorder:OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(width: .0,color: Colors.transparent)
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _selectedFilter = value.trim();
-                });
-              },
-            ),
-          ),
-        ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15 , right: 15),
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.2),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                              )
+                            ]
+                        ),
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "Rechercher un plat...",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide(width: .0,color: Colors.transparent)
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide(width: .0,color: Colors.transparent)
+                            ),
+                            enabledBorder:OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(20),
+                                borderSide: BorderSide(width: .0,color: Colors.transparent)
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 16),
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedFilter = value.trim();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
 
-                TagCarousel(
-                  allFilters: _allFilters,
-                  selectedFilter: _selectedFilter,
-                  primaryColor: KColors.primaryColor,
-                  onSelect: (value) {
-                    setState(() {
-                      _selectedFilter = value;
-                    });
-                  },
-                ),
+                    widget?.type=="food"? TagCarousel(
+                      allFilters: _allFilters,
+                      selectedFilter: _selectedFilter,
+                      primaryColor: KColors.primaryColor,
+                      onSelect: (value) {
+                        setState(() {
+                          _selectedFilter = value;
+                        });
+                      },
+                    ):Container(
 
-SizedBox(height: 10,),
+                    ),
 
-Padding
-( 
-  padding: EdgeInsets.all(5),
- child:Center(
-            child: _selectedFilter == null
-                ? const Text(
-                    "Sélectionnez un filtre",
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  )
-                : FoodGrid(foodType: _selectedFilter),
-          )
-)
+                    SizedBox(height: 10,),
+
+                    Padding
+                      (
+                        padding: EdgeInsets.all(5),
+                        child:Center(
+                          child: _selectedFilter == null
+                              ? const Text(
+                            "Sélectionnez un filtre",
+                            style: TextStyle(fontSize: 16, color: Colors.grey),
+                          )
+                              : FoodGrid(foodType: _selectedFilter, typeOfSearch: widget.type??"food",),
+                        )
+                    )
 
 
-      ]))
+                  ]))
       );
 
     if (foodProposals?.length == 0) {
@@ -1122,19 +1125,19 @@ Padding
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                SizedBox(height: 20),
-                Icon(Icons.search, color: Colors.grey),
-                SizedBox(height: 10),
-                Text(
-                    "${AppLocalizations.of(context)!.translate('sorry_cant_find_item')}",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 12))
-              ])));
+                    SizedBox(height: 20),
+                    Icon(Icons.search, color: Colors.grey),
+                    SizedBox(height: 10),
+                    Text(
+                        "${AppLocalizations.of(context)!.translate('sorry_cant_find_item')}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 12))
+                  ])));
     }
 
     var filteredResult =
-        _filteredFoodProposal(_filterDropdownValue??"cheap_to_exp",
-            foodProposals??[]);
+    _filteredFoodProposal(_filterDropdownValue??"cheap_to_exp",
+        foodProposals??[]);
 
     if (justInflatedFoodProposal) {
       // firstItemKey = new GlobalKey(debugLabel: Utils.getAlphaNumericString());
@@ -1154,11 +1157,11 @@ Padding
           addAutomaticKeepAlives: true,
           controller: _searchListScrollController,
           itemCount:
-              filteredResult?.length != null ? filteredResult.length + 1 : 0,
+          filteredResult?.length != null ? filteredResult.length + 1 : 0,
           itemBuilder: (context, index) {
             if (index == filteredResult?.length) return Container(height: 300);
             return ProductWithShopDetailsWidget(
-                // key: index == 0 ? firstItemKey : null,
+              // key: index == 0 ? firstItemKey : null,
                 food: filteredResult[index]);
           },
         ),
@@ -1179,7 +1182,7 @@ Padding
 
     for (var restaurant in data) {
       String sentence =
-          removeAccentFromString("${restaurant.name}".toLowerCase());
+      removeAccentFromString("${restaurant.name}".toLowerCase());
       String sentence1 = removeAccentFromString(content.trim()).toLowerCase();
 
 //      xrint("filtered string ${sentence} => ${sentence1}");
@@ -1226,7 +1229,7 @@ Padding
         .replaceAll(new RegExp(r'ú'), "u")
         .replaceAll(new RegExp(r'ū'), "u")
 
-        //
+    //
 
         .replaceAll(new RegExp(r'É'), "e")
         .replaceAll(new RegExp(r'È'), "e")
@@ -1286,11 +1289,11 @@ Padding
       return Container(
           child: Center(
               child: Column(children: <Widget>[
-        SizedBox(height: 20),
-        Icon(Icons.shopping_cart_sharp, color: Colors.grey),
-        SizedBox(height: 10),
-        Text("${AppLocalizations.of(context)!.translate('no_content_to_show')}")
-      ])));
+                SizedBox(height: 20),
+                Icon(Icons.shopping_cart_sharp, color: Colors.grey),
+                SizedBox(height: 10),
+                Text("${AppLocalizations.of(context)!.translate('no_content_to_show')}")
+              ])));
 
     return Container(
       color: Colors.white,
@@ -1315,12 +1318,12 @@ Padding
                     height: 100,
                     child: Center(
                         child: Text(
-                      "${AppLocalizations.of(context)!.translate("the_end")}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: KColors.new_black),
-                    )));
+                          "${AppLocalizations.of(context)!.translate("the_end")}",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 12,
+                              color: KColors.new_black),
+                        )));
               }
             } else {
               return ShopListWidget(shopModel: visibleItems![position]);
@@ -1347,7 +1350,7 @@ Padding
           pageRestaurants[foods[i]?.restaurant_entity?.id] != null) {
         // we get the restaurant and we switch it.
         foods[i].restaurant_entity =
-            pageRestaurants[foods[i]?.restaurant_entity?.id];
+        pageRestaurants[foods[i]?.restaurant_entity?.id];
       }
     }
     return foods;
@@ -1444,7 +1447,7 @@ Padding
             try {
               return int.parse(fd2.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                      int.parse(fd1.restaurant_entity!.delivery_pricing!));
+                  int.parse(fd1.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1468,7 +1471,7 @@ Padding
             try {
               return int.parse(fd1.restaurant_entity!.delivery_pricing!)
                   .compareTo(
-                      int.parse(fd2.restaurant_entity!.delivery_pricing!));
+                  int.parse(fd2.restaurant_entity!.delivery_pricing!));
             } catch (e) {
               print(fd1.toString() + fd2.toString());
               return 0;
@@ -1496,7 +1499,7 @@ Padding
       widget.restaurantList = restaurants;
       _setLastTimeRestaurantListRequestToNow();
       visibleItems = (widget?.restaurantList?.length != null &&
-              widget!.restaurantList!.length > PAGE_SIZE
+          widget!.restaurantList!.length > PAGE_SIZE
           ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
@@ -1563,7 +1566,7 @@ Padding
     mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (ModalRoute.of(context)?.settings?.name == null ||
           !("/HomePage".compareTo(ModalRoute.of(context)!.settings!.name!) ==
-                  0 &&
+              0 &&
               ModalRoute.of(context)!.isCurrent)) {
         // check if time is ok
         return;
@@ -1571,8 +1574,8 @@ Padding
 
       int POTENTIAL_EXECUTION_TIME = 3;
       int? diff = (DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout!) ~/
+          StateContainer.of(context)
+              .last_time_get_restaurant_list_timeout!) ~/
           1000;
 
       // convert different in minute seconds
@@ -1625,7 +1628,7 @@ Padding
                                 horizontal: 8, vertical: 5),
                             decoration: BoxDecoration(
                                 borderRadius:
-                                    BorderRadius.all(Radius.circular(10)),
+                                BorderRadius.all(Radius.circular(10)),
                                 color: Colors.grey.withAlpha(30)),
                             child: Text(
                                 "${AppLocalizations.of(context)!.translate('t_opened')}"
@@ -1707,8 +1710,8 @@ Padding
     } else {
       // time different since last time update
       int diff = (DateTime.now().millisecondsSinceEpoch -
-              StateContainer.of(context)
-                  .last_time_get_restaurant_list_timeout!) ~/
+          StateContainer.of(context)
+              .last_time_get_restaurant_list_timeout!) ~/
           1000;
       // convert different in minute seconds
       int min = diff ~/ 60;
@@ -1737,9 +1740,9 @@ Padding
       case "food": // food
         tmp = [
           AppLocalizations.of(context)
-              !.translate('service_restaurant_type_name'),
+          !.translate('service_restaurant_type_name'),
           AppLocalizations.of(context)
-              !.translate('service_restaurant_type_product')
+          !.translate('service_restaurant_type_product')
         ];
         break;
       case "drink": // drinks
@@ -1760,12 +1763,12 @@ Padding
           AppLocalizations.of(context)!.translate('service_flower_type_product')
         ];*/
         break;
-      //   case 1005: // movies
-      //     category_name_code = "service_category_movies";
-      //     break;
-      //   case 1006: // package delivery
-      //     category_name_code = "service_category_package_delivery";
-      //     break;
+    //   case 1005: // movies
+    //     category_name_code = "service_category_movies";
+    //     break;
+    //   case 1006: // package delivery
+    //     category_name_code = "service_category_package_delivery";
+    //     break;
       case "shop": // shopping
         tmp = [
           AppLocalizations.of(context)!.translate('service_shop_type_name'),
@@ -1776,7 +1779,7 @@ Padding
         tmp = [
           AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-              !.translate('service_drugstore_type_product')
+          !.translate('service_drugstore_type_product')
         ];
         break;
       case "book": // shopping
@@ -1801,13 +1804,12 @@ Padding
         tmp = [
           AppLocalizations.of(context)!.translate('service_drugstore_type_name'),
           AppLocalizations.of(context)
-              !.translate('service_drugstore_product_name')
+          !.translate('service_drugstore_product_name')
         ];
         break;
     }
     return tmp;
   }
-
   void _searchAction({bool pressButton = false}) {
     if (searchTypePosition == 2) {
       if (_filterEditController.text?.trim()?.length != null &&
@@ -1824,7 +1826,7 @@ Padding
       if (previousSearchKey == _filterEditController.text) return;
       searchKey = _filterEditController.text!.trim();
       widget.restaurantListPresenter
-          !.filterShopList(widget.finalRestaurantList!, searchKey);
+      !.filterShopList(widget.finalRestaurantList!, searchKey);
     }
   }
 
@@ -1848,7 +1850,7 @@ Padding
     setState(() {
       widget.restaurantList = shops;
       visibleItems = (widget?.restaurantList?.length != null &&
-              widget.restaurantList!.length > PAGE_SIZE
+          widget.restaurantList!.length > PAGE_SIZE
           ? widget.restaurantList!.sublist(0, PAGE_SIZE)
           : widget.restaurantList);
     });
@@ -1856,7 +1858,7 @@ Padding
 
   _onScroll() {
     if (_restaurantListScrollController.offset >=
-            _restaurantListScrollController.position.maxScrollExtent &&
+        _restaurantListScrollController.position.maxScrollExtent &&
         !_restaurantListScrollController.position.outOfRange) {
       if (hasMoreData()) {
         setState(() {
@@ -1901,16 +1903,16 @@ Padding
   }
 }
 
-  // 🔹 Chip widget
-  Widget _buildChip(String label, bool selected) {
-    return Container(
-      margin: const EdgeInsets.only(right: 8),
-      child: FilterChip(
-        label: Text(label),
-        selected: selected,
-        selectedColor: Colors.red.shade100,
-        checkmarkColor: Colors.red,
-        onSelected: (_) {},
-      ),
-    );
-  }
+// 🔹 Chip widget
+Widget _buildChip(String label, bool selected) {
+  return Container(
+    margin: const EdgeInsets.only(right: 8),
+    child: FilterChip(
+      label: Text(label),
+      selected: selected,
+      selectedColor: Colors.red.shade100,
+      checkmarkColor: Colors.red,
+      onSelected: (_) {},
+    ),
+  );
+}

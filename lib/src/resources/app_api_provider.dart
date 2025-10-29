@@ -73,7 +73,7 @@ class AppApiProvider {
         data: position == null
             ? ""
             : json.encode(
-                {"coordinates": "${position.latitude}:${position.longitude}"}),
+            {"coordinates": "${position.latitude}:${position.longitude}"}),
       );
 
       xrint(response.data.toString());
@@ -81,9 +81,9 @@ class AppApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           String description_details =
-              mJsonDecode(response.data)["data"]["display_name"];
+          mJsonDecode(response.data)["data"]["display_name"];
           String? quartier = DeliveryAddressModel.fromJson(
-                  mJsonDecode(response.data)["data"]["address"])
+              mJsonDecode(response.data)["data"]["address"])
               .suburb;
           /* return only the content we need */
           DeliveryAddressModel deliveryAddressModel = DeliveryAddressModel(
@@ -125,7 +125,7 @@ class AppApiProvider {
         if (errorCode == 0) {
           Iterable lo = mJsonDecode(response.data)["data"];
           List<EvenementModel>? restaurantSubModel =
-              lo?.map((comment) => EvenementModel.fromJson(comment))?.toList();
+          lo?.map((comment) => EvenementModel.fromJson(comment))?.toList();
           return restaurantSubModel!;
         } else
           throw Exception(-1); // there is an error in your request
@@ -156,7 +156,7 @@ class AppApiProvider {
 
     String? token = await firebaseMessaging.getToken(
         vapidKey:
-            "BIGpDv3l5-XEgAyf9Y96gJ1vDTkQc0gH6v354UbR1flxhjl4UgRhKmqPaizF7ho4_rT5p2Pb8YBmUbAbwB0StY8");
+        "BIGpDv3l5-XEgAyf9Y96gJ1vDTkQc0gH6v354UbR1flxhjl4UgRhKmqPaizF7ho4_rT5p2Pb8YBmUbAbwB0StY8");
 
     var _data;
 
@@ -211,33 +211,42 @@ class AppApiProvider {
         throw Exception(-1); // there is an error in your request
     } else {}
   }
-   updateUserFcmToken(String fcm_token)async{
-    CustomerModel customer = await CustomerUtils.getCustomer();
-    if (await Utils.hasNetwork()) {
-    var dio = Dio();
-    dio.options
-    ..headers = Utils.getHeadersWithToken(customer.token!)
-    ..connectTimeout = 10000;
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-    (HttpClient client) {
-    client.badCertificateCallback =
-    (X509Certificate cert, String host, int port) {
-    return validateSSL(cert, host, port);
-    };
-    };
-    var response = await dio.post(
-    Uri.parse(ServerRoutes.LINK_PHONE_UPDATE_SERVER_PUSH_TOKEN).toString(),
-    data: json.encode({
-      "push_token":fcm_token
-    }),
-    );
+  updateUserFcmToken(String fcm_token)async{
 
-    xrint(response.data.toString());
-    if (response.statusCode == 200) {
-    } else
-    throw Exception(-1); // there is an error in your request
+    CustomerModel customer = await CustomerUtils.getCustomer();
+    if (fcm_token == null || fcm_token.isEmpty) {
+      print("⚠️ FCM token is null or empty, skipping update");
+      return;
+    }
+    if(customer.token==null || customer.token!.isEmpty){
+      print("⚠️ Customer token is null or empty, skipping update");
+      return;
+    }
+    if (await Utils.hasNetwork()) {
+      var dio = Dio();
+      dio.options
+        ..headers = Utils.getHeadersWithToken(customer.token??"")
+        ..connectTimeout = 10000;
+      (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+          (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+      };
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_PHONE_UPDATE_SERVER_PUSH_TOKEN).toString(),
+        data: json.encode({
+          "push_token":fcm_token
+        }),
+      );
+
+      xrint(response.data.toString());
+      if (response.statusCode == 200) {
+      } else
+        throw Exception(-1); // there is an error in your request
     } else {
-    throw Exception(-2);
+      throw Exception(-2);
     }
   }
   checkUnreadMessages(customer) async {
@@ -340,7 +349,7 @@ class AppApiProvider {
       if (response.statusCode == 200) {
         String version = mJsonDecode(response.data)["version"];
         int is_required =
-            int.parse("${mJsonDecode(response.data)["isRequired"]}");
+        int.parse("${mJsonDecode(response.data)["isRequired"]}");
         Map res = Map();
         res["version"] = version;
         res["is_required"] = is_required;
@@ -438,7 +447,7 @@ class AppApiProvider {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
           int kabaPoints =
-              mJsonDecode(response.data)["total_kaba_point"] /*["balance"]*/;
+          mJsonDecode(response.data)["total_kaba_point"] /*["balance"]*/;
 
           return "${kabaPoints}";
         } else
@@ -456,7 +465,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        // ..headers = Utils.getHeadersWithToken(customer.token)
+      // ..headers = Utils.getHeadersWithToken(customer.token)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -487,7 +496,7 @@ class AppApiProvider {
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options
-        // ..headers = Utils.getHeadersWithToken(customer.token)
+      // ..headers = Utils.getHeadersWithToken(customer.token)
         ..connectTimeout = 10000;
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
@@ -543,34 +552,40 @@ class AppApiProvider {
     var response = await dio.post(url, data: _data);
     xrint("001 _ " + response.data.toString());
     if (response.statusCode == 200) {
-        Map<String,dynamic>? data =json.decode(response.data)["data"];
-        if(json.decode(response.data)['error']==0) {
-          DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending
-              .fromJson(data!);
-          return deliveryRatingPending;
-        }else{
-          DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
-          deliveryRatingPending.command_id=0;
-          return deliveryRatingPending;
-        }
+      Map<String,dynamic>? data =json.decode(response.data)["data"];
+      if(json.decode(response.data)['error']==0) {
+        DeliveryRatingPending deliveryRatingPending = DeliveryRatingPending
+            .fromJson(data!);
+        return deliveryRatingPending;
+      }else{
+        DeliveryRatingPending deliveryRatingPending =DeliveryRatingPending().fake();
+        deliveryRatingPending.command_id=0;
+        return deliveryRatingPending;
+      }
     } else {
       throw Exception(-1);
     }
   }
 
   getAppPerformance()async{
+
     xrint("entered getAppPerformance");
+
     CustomerModel customer = await CustomerUtils.getCustomer();
+
+    if(customer.token==null || customer.token!.isEmpty){
+      return;
+    }
     var dio = Dio();
     dio.options
       ..connectTimeout = 10000;
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-          client.badCertificateCallback =
-              (X509Certificate cert, String host, int port) {
-            return validateSSL(cert, host, port);
-          };
-        };
+      client.badCertificateCallback =
+          (X509Certificate cert, String host, int port) {
+        return validateSSL(cert, host, port);
+      };
+    };
     var response = await dio.get(
       options: Options(
         headers: Utils.getHeadersWithToken(customer.token!),
@@ -583,5 +598,5 @@ class AppApiProvider {
     } else {
       throw Exception(-1); // there is an error in your request
     }
-}
+  }
 }

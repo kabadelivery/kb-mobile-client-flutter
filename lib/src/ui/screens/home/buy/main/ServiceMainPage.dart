@@ -112,7 +112,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
-    this.widget.presenter!.getRating();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      this.widget.presenter!.getRating();
+    });
     widget.presenter!.serviceMainView = this;
 
     if (widget.available_services == null) widget.available_services = [];

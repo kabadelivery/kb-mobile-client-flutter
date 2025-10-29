@@ -84,8 +84,7 @@ class RestaurantListPresenter implements RestaurantListContract {
             "filter_configuration": configuration
           });
         });
-        xrint("Distance calculated $restaurants");
-       } catch (e) {
+      } catch (e) {
         debugPrint('Erreur lors de la récupération de la localisation : $e');
       }
 
@@ -190,7 +189,7 @@ _filteredData(List<ShopModel> data, String filter_key) {
 
   for (var restaurant in data) {
     String sentence =
-        removeAccentFromString("${restaurant.name}".toLowerCase());
+    removeAccentFromString("${restaurant.name}".toLowerCase());
     String sentence1 = removeAccentFromString(filter_key.trim()).toLowerCase();
 
     if (sentence.contains(sentence1)) {
@@ -236,7 +235,7 @@ String removeAccentFromString(String sentence) {
       .replaceAll(new RegExp(r'ú'), "u")
       .replaceAll(new RegExp(r'ū'), "u")
 
-      //
+  //
 
       .replaceAll(new RegExp(r'É'), "e")
       .replaceAll(new RegExp(r'È'), "e")
@@ -281,7 +280,7 @@ String removeAccentFromString(String sentence) {
 String? _getShippingPrice(String distance, Map<String, String> myBillingArray) {
   try {
     int distanceInt =
-        int.parse(!distance.contains(".") ? distance : distance.split(".")[0]);
+    int.parse(!distance.contains(".") ? distance : distance.split(".")[0]);
     if (myBillingArray["$distanceInt"] == null) {
       return "~";
     } else {

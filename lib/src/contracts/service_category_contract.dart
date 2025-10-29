@@ -75,7 +75,7 @@ class ServiceMainPresenter implements ServiceMainContract {
 
       try {
         String resJson =
-            await provider.fetchServiceCategoryFromLocation(location!);
+        await provider.fetchServiceCategoryFromLocation(location!);
         Iterable lo = mJsonDecode(resJson)["data"];
         List<ServiceMainEntity>? res = lo
             .map((categorie) => ServiceMainEntity.fromJson(categorie))
@@ -133,7 +133,7 @@ class ServiceMainPresenter implements ServiceMainContract {
   }
   Future<void> showOrderRating() async {
 
-  try {
+    try {
       List<DeliveryRatingPending>? ordersRating = await getRatePendingFromCache();
       List<DeliveryRatingPending>? deliveriesRatingPending=[];
       if(ordersRating==null || ordersRating.isEmpty){
@@ -142,15 +142,15 @@ class ServiceMainPresenter implements ServiceMainContract {
       CustomerModel customer = await CustomerUtils.getCustomer();
       for(DeliveryRatingPending orderRating in ordersRating??[]){
         try{
-            DeliveryRatingPending deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
-            deliveryRatingPending.foods=orderRating.foods;
-            deliveryRatingPending.restaurant=orderRating.restaurant;
-            deliveryRatingPending.address=orderRating.address;
-            if(deliveryRatingPending.command_id==0){
-              continue;
-            }else{
-              deliveriesRatingPending.add(deliveryRatingPending);
-            }
+          DeliveryRatingPending deliveryRatingPending   = await provider.getcommandDeliveryManRate(customer: customer, command_id: orderRating.command_id.toString());
+          deliveryRatingPending.foods=orderRating.foods;
+          deliveryRatingPending.restaurant=orderRating.restaurant;
+          deliveryRatingPending.address=orderRating.address;
+          if(deliveryRatingPending.command_id==0){
+            continue;
+          }else{
+            deliveriesRatingPending.add(deliveryRatingPending);
+          }
         }catch(_){
           xrint("error fetching rating for order ${orderRating.command_id} : ${_}");
         }
@@ -163,14 +163,21 @@ class ServiceMainPresenter implements ServiceMainContract {
     }
 
   }
-  Future<void> getRating()async{
-    try{
-      Map<String, dynamic> performance = await provider.getAppPerformance();
+  Future<void> getRating() async {
+    try {
+      var result = await provider.getAppPerformance(); // could be null
+      if (result == null) {
+        debugPrint("getAppPerformance returned null");
+        _serviceMainView.getRating(false);
+        return;
+      }
+      Map<String, dynamic> performance = Map<String, dynamic>.from(result);
       Utils.saveAppPerformance(performance);
       _serviceMainView.getRating(true);
-    }catch(e){
-      debugPrint("error fetching performance ${e}");
+    } catch (e) {
+      debugPrint("error fetching performance $e");
       _serviceMainView.getRating(false);
     }
   }
+
 }

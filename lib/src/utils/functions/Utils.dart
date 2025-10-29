@@ -334,7 +334,6 @@ class Utils {
   static double locationDistance(Position? position, ShopModel restaurant) {
       double lat1 = position!.latitude;
       double long1 = position!.longitude;
-      debugPrint('restaurant.location! ${restaurant.location}');
       double lat2 = double.parse(restaurant.location!.split(":")[0]);
       double long2 = double.parse(restaurant.location!.split(":")[1]);
       double distance =

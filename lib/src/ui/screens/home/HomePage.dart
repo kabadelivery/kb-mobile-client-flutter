@@ -99,9 +99,9 @@ class HomePage extends StatefulWidget {
 
   HomePage(
       {Key? key,
-      this.destination,
-      this.argument,
-      this.is_out_of_app_order = false})
+        this.destination,
+        this.argument,
+        this.is_out_of_app_order = false})
       : super(key: key);
 
   @override
@@ -132,72 +132,70 @@ class _HomePageState extends State<HomePage> {
 
   Future<int> checkLogin() async {
     StatefulWidget launchPage =
-        LoginPage(presenter: LoginPresenter(LoginView()));
+    LoginPage(presenter: LoginPresenter(LoginView()));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate =
         prefs.getString("_login_expiration_date" + CustomerUtils.signature) ??
             "";
     int loginCheckResult = 0; // not logged in
-    try {
-      if (expDate != null) {
-        if (DateTime.now()
-            .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
-          _logout();
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                  content:
-                      Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                    SizedBox(
-                        height: 80,
-                        width: 80,
-                        child: Icon(
-                          Icons.account_circle,
-                          color: KColors.primaryColor,
-                        )),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('login_expired_please_login')}",
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: KColors.new_black, fontSize: 13))
-                  ]),
-                  actions: <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _jumpToPage(context, launchPage);
-                      },
-                    ),
-                  ]);
-            },
-          );
-        } else {
-          loginCheckResult = 1; // is logged in
-        }
+
+    if (expDate != null && expDate.isNotEmpty) {
+      debugPrint("expDate $expDate");
+      if (DateTime.now()
+          .isAfter(DateTime.fromMillisecondsSinceEpoch(int.parse(expDate)))) {
+        _logout();
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+                content:
+                Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: Icon(
+                        Icons.account_circle,
+                        color: KColors.primaryColor,
+                      )),
+                  SizedBox(height: 10),
+                  Text(
+                      "${AppLocalizations.of(context)!.translate('login_expired_please_login')}",
+                      textAlign: TextAlign.center,
+                      style:
+                      TextStyle(color: KColors.new_black, fontSize: 13))
+                ]),
+                actions: <Widget>[
+                  OutlinedButton(
+                    style: ButtonStyle(
+                        side: MaterialStateProperty.all(
+                            BorderSide(color: Colors.grey, width: 1))),
+                    child: new Text(
+                        "${AppLocalizations.of(context)!.translate('refuse')}",
+                        style: TextStyle(color: Colors.grey)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  OutlinedButton(
+                    style: ButtonStyle(
+                        side: MaterialStateProperty.all(BorderSide(
+                            color: KColors.primaryColor, width: 1))),
+                    child: new Text(
+                        "${AppLocalizations.of(context)!.translate('accept')}",
+                        style: TextStyle(color: KColors.primaryColor)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      _jumpToPage(context, launchPage);
+                    },
+                  ),
+                ]);
+          },
+        );
+      } else {
+        loginCheckResult = 1; // is logged in
       }
-    } catch (_) {
-      xrint("error checklogin() ");
-      loginCheckResult = 0; // not logged in
     }
+
     return loginCheckResult;
   }
   //sharedPreferences to save messageId
@@ -218,7 +216,7 @@ class _HomePageState extends State<HomePage> {
 
   // 0 not logged in
   final GlobalKey<NavigatorState> navigatorKey =
-      new GlobalKey<NavigatorState>();
+  new GlobalKey<NavigatorState>();
 
   @override
   void initState() {
@@ -254,7 +252,7 @@ class _HomePageState extends State<HomePage> {
         prefs = value;
 
         String? _hasSeenEmailAccountNotification =
-            prefs.getString("_hasSeenEmailAccountNotification");
+        prefs.getString("_hasSeenEmailAccountNotification");
 
         if (_hasSeenEmailAccountNotification != "1" &&
             Utils.isEmailValid(customer.email ?? ""))
@@ -306,7 +304,7 @@ class _HomePageState extends State<HomePage> {
 
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-        AndroidInitializationSettings('app_icon');
+    AndroidInitializationSettings('app_icon');
 
     var initializationSettingsIOS = DarwinInitializationSettings(
       requestAlertPermission: true,
@@ -370,10 +368,10 @@ class _HomePageState extends State<HomePage> {
           final title = notif['title'] ?? '';
           final body = notif['body'] ?? '';
           if (message.messageId != messageId) {
-             iLaunchExpeditionNotification(
-            title: title,
-            body: body,
-            expeditionId: expeditionId,
+            iLaunchExpeditionNotification(
+              title: title,
+              body: body,
+              expeditionId: expeditionId,
             );
             messageId = message.messageId!;
           }
@@ -468,11 +466,11 @@ class _HomePageState extends State<HomePage> {
 
   void _showDialog(
       {String? svgIcons,
-      Icon? icon,
-      var message,
-      bool okBackToHome = false,
-      bool isYesOrNo = false,
-      Function? actionIfYes}) {
+        Icon? icon,
+        var message,
+        bool okBackToHome = false,
+        bool isYesOrNo = false,
+        Function? actionIfYes}) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -483,8 +481,8 @@ class _HomePageState extends State<HomePage> {
                   width: 80,
                   child: icon == null
                       ? SvgPicture.asset(
-                          svgIcons!,
-                        )
+                    svgIcons!,
+                  )
                       : icon),
               SizedBox(height: 10),
               Text(message,
@@ -493,40 +491,40 @@ class _HomePageState extends State<HomePage> {
             ]),
             actions: isYesOrNo
                 ? <Widget>[
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(
-                              BorderSide(color: Colors.grey, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('refuse')}",
-                          style: TextStyle(color: Colors.grey)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    OutlinedButton(
-                      style: ButtonStyle(
-                          side: MaterialStateProperty.all(BorderSide(
-                              color: KColors.primaryColor, width: 1))),
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('accept')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        actionIfYes!();
-                      },
-                    ),
-                  ]
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(
+                        BorderSide(color: Colors.grey, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('refuse')}",
+                    style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(
+                    side: MaterialStateProperty.all(BorderSide(
+                        color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ]
                 : <Widget>[
-                    OutlinedButton(
-                      child: new Text(
-                          "${AppLocalizations.of(context)!.translate('ok')}",
-                          style: TextStyle(color: KColors.primaryColor)),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ]);
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}",
+                    style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]);
       },
     );
 
@@ -580,7 +578,7 @@ class _HomePageState extends State<HomePage> {
           xrint('⚠️ Error decoding notification JSON: $e');
         }
       }
-   xrint('p_notify Message also contained a notification: $data');
+      xrint('p_notify Message also contained a notification: $data');
       NotificationItem? notificationItem = _notificationFromMessage(data);
 
       if (notificationItem?.destination != null) {
@@ -649,11 +647,11 @@ class _HomePageState extends State<HomePage> {
     }
     int type = int.parse(notificationFDestination!['type'].toString());
     int is_out_of_app =
-        int.parse(notificationFDestination!['is_out_of_app'].toString());
+    int.parse(notificationFDestination!['is_out_of_app'].toString());
     int productId =
-        int.parse(notificationFDestination!['product_id'].toString());
+    int.parse(notificationFDestination!['product_id'].toString());
     switch (type) {
-      /* go to the activity we are supposed to go to with only the id */
+    /* go to the activity we are supposed to go to with only the id */
       case NotificationFDestination.FOOD_DETAILS:
         _jumpToFoodDetailsWithId(productId);
         break;
@@ -688,7 +686,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
   void _handleExpeditionPayload(String payload) async {
-   String? expeditionId = payload;
+    String? expeditionId = payload;
     if (expeditionId != null) {
       showDialog(
         context: context,
@@ -741,7 +739,7 @@ class _HomePageState extends State<HomePage> {
     Navigator.pop(context);
     _jumpToPage(context, TrackingPackage(expeditionModel: expedition));
 
-   }
+  }
   void _jumpToFoodDetailsWithId(int productId) {
     _jumpToPage(
         context,
@@ -813,7 +811,7 @@ class _HomePageState extends State<HomePage> {
       loginStuffChecked = 1;
     }
     return Scaffold(
-       
+
       body: pages![StateContainer.of(context)!.tabPosition!],
       bottomNavigationBar: BottomNavigationBar(
         selectedFontSize: 12.5,
@@ -889,7 +887,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                     Container(
+                    Container(
                       height: 80,
                       width: 80,
                       decoration: BoxDecoration(
@@ -1059,7 +1057,7 @@ class _HomePageState extends State<HomePage> {
 
   void _handleLinksImmediately(String link) async {
     if (!(DateTime.now().millisecondsSinceEpoch -
-            StateContainer.of(context)!.lastTimeLinkMatchAction! >
+        StateContainer.of(context)!.lastTimeLinkMatchAction! >
         2000)) {
       return;
     }
@@ -1154,12 +1152,12 @@ class _HomePageState extends State<HomePage> {
             widget.argument = int.parse("${pathSegments[1]}");
             // check if restaurant is out of app or colis
 
-              _jumpToPage(
-                  context,
-                  ShopDetailsPage(
-                      restaurant: ShopModel(id: widget.argument),
-                      presenter:
-                          RestaurantDetailsPresenter(RestaurantDetailsView())));
+            _jumpToPage(
+                context,
+                ShopDetailsPage(
+                    restaurant: ShopModel(id: widget.argument),
+                    presenter:
+                    RestaurantDetailsPresenter(RestaurantDetailsView())));
 //          navigatorKey.currentState.pushNamed(RestaurantDetailsPage.routeName, arguments: pathSegments[1]);
           }
           break;
@@ -1222,7 +1220,7 @@ class _HomePageState extends State<HomePage> {
                 context,
                 CustomerCareChatPage(
                     presenter:
-                        CustomerCareChatPresenter(CustomerCareChatView())));
+                    CustomerCareChatPresenter(CustomerCareChatView())));
           });
           break;
         case "hors_appli":
@@ -1276,18 +1274,18 @@ class _HomePageState extends State<HomePage> {
         case "code_abonnement":
           if (pathSegments.length > 1) {
             showLoadingDialog(context);
-           String? code = pathSegments[1];
-           await subscribeByCode(code:code!).then((value){
-             Map<String,dynamic> data = value;
-             if(data['success']==true){
-               Navigator.pop(context);
-               _jumpToPage(context, Kaba_abonnement(presenter: TransactionPresenter(TransactionView())));
-             }else{
-               CherryToast.error(
-                 title: Text("${AppLocalizations.of(context)!.translate("subscription_failed")}"),
-               ).show(context);
-             }
-           });
+            String? code = pathSegments[1];
+            await subscribeByCode(code:code!).then((value){
+              Map<String,dynamic> data = value;
+              if(data['success']==true){
+                Navigator.pop(context);
+                _jumpToPage(context, Kaba_abonnement(presenter: TransactionPresenter(TransactionView())));
+              }else{
+                CherryToast.error(
+                  title: Text("${AppLocalizations.of(context)!.translate("subscription_failed")}"),
+                ).show(context);
+              }
+            });
           }
       }
       pathSegments[0] = null;
@@ -1392,9 +1390,9 @@ class _HomePageState extends State<HomePage> {
                       width: 100,
                       decoration: BoxDecoration(
                           image: new DecorationImage(
-                        fit: BoxFit.fitHeight,
-                        image: new AssetImage(ImageAssets.login_description),
-                      ))),
+                            fit: BoxFit.fitHeight,
+                            image: new AssetImage(ImageAssets.login_description),
+                          ))),
                   SizedBox(height: 10),
                   Text(
                       "${AppLocalizations.of(context)!.translate("please_login_before_going_forward_random")}",
@@ -1413,7 +1411,7 @@ class _HomePageState extends State<HomePage> {
               ),
               TextButton(
                 child:
-                    Text("${AppLocalizations.of(context)!.translate('login')}"),
+                Text("${AppLocalizations.of(context)!.translate('login')}"),
                 onPressed: () {
                   /* jump to login page... */
                   Navigator.of(context).pop();
@@ -1563,7 +1561,7 @@ NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
                 ? int.parse(destinationData["product_id"].toString())
                 : 0,
             is_out_of_app:
-                int.parse(destinationData['is_out_of_app'].toString())));
+            int.parse(destinationData['is_out_of_app'].toString())));
     return notificationItem;
   } catch (_) {
     xrint(_.toString());

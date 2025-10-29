@@ -1165,5 +1165,6 @@
   "location_denied": "Localisation non autorisée",
   "photos_media_explanation": "Kaba aura accès à certains médias lorsque vous souhaitez vendre quelque chose, modifier votre profil ou télécharger des images dans le cadre d'un service particulier (Ex: Kaba Expédition).",
   "photos_granted": "Accès aux photos autorisé",
-  "photos_denied": "Accès aux photos refusé"
+  "photos_denied": "Accès aux photos refusé",
+  "load_more": "Charger plus"
 }
