@@ -342,7 +342,7 @@ void openNotificationModal(BuildContext context) {
                 SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
+                    text: "${AppLocalizations.of(context)!.translate('next')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('notifications'),
@@ -382,7 +382,7 @@ void openNotificationModal(BuildContext context) {
 
                   icon: const Icon(Icons.notifications_none, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('ok'),
+                    AppLocalizations.of(context)!.translate('next'),
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -521,7 +521,7 @@ void openLocationModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.location_on, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('ok'),
+                    AppLocalizations.of(context)!.translate('next'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -583,7 +583,7 @@ void openPhotosModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('ok')} ",
+                    text: "${AppLocalizations.of(context)!.translate('next')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('photos_media'),
@@ -619,7 +619,7 @@ void openPhotosModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.photo, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('ok'),
+                    AppLocalizations.of(context)!.translate('next'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
