@@ -125,14 +125,18 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasNetworkError = false;
     isLoading = false;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      prefs= await SharedPreferences.getInstance();
+      prefs = await SharedPreferences.getInstance();
       String? ok = prefs!.getString("_has_accepted_gps");
-      var loc_status = await Permission.location.status;
-      if (loc_status.isGranted) {
-      }else if(ok!="ok" && loc_status.isDenied){
+
+      var locStatus = await Permission.locationWhenInUse.status;
+
+      if (locStatus.isGranted || locStatus.isLimited) {
+        // All good
+      } else if (ok != "ok" && (locStatus.isDenied || locStatus.isRestricted)) {
         openLocationModal(context);
       }
     });
+
   }
 
   @override
