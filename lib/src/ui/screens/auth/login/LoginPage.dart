@@ -607,7 +607,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: mOtp),
+                      username: customer.username, otp_code: mOtp, login: '',),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);
