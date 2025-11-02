@@ -1164,5 +1164,12 @@
   "photos_media_explanation": "当您想出售物品、修改个人资料或上传特定服务（例如 Kaba 快递）的图片时，Kaba 将访问部分媒体。",
   "photos_granted": "照片访问已允许",
   "photos_denied": "照片访问未允许",
-  "load_more": "加载更多"
+  "load_more": "加载更多",
+  "tr": "此验证码将在以下时间后过期：",
+  "verif_c_t": "输入验证码",
+  "getcodevia": "通过以下方式接收验证码",
+  "otp_message": "您的一次性验证码 (KABA)：",
+  "get_otp_code": "获取验证码",
+  "enter_otp_code": "输入一次性验证码"
+
 }
