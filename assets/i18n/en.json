@@ -1159,6 +1159,12 @@
     "photos_media_explanation": "Kaba will access certain media when you want to sell something, update your profile, or upload images for a specific service (e.g., Kaba Shipping).",
   "photos_granted": "Photos access granted",
   "photos_denied": "Photos access denied",
-  "load_more": "Load more"
+  "load_more": "Load more",
+  "verif_c_t" : "get the  verification Code",
+  "getcodevia" : "Get code via",
+  "tr" : "The code will expire in : ",
+  "otp_message" : "Your OTP Code (KABA):",
+  "get_otp_code" : "Get the Code ",
+  "enter_otp_code" : "Get the OTP code"
 
 }

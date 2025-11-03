@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
@@ -605,7 +606,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: mOtp),
+                      username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);
