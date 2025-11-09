@@ -254,19 +254,21 @@ class OutOfAppOrderApiProvider{
       xrint("Response data: ${response.data}");
       xrint("Status code: ${response.statusCode}");
       if (response.statusCode == 200) {
-        try{
-          var sentData ={
-            'user_id':customer.id.toString(),
-            'subscription_id':abonnementData['pack']['id'].toString(),
-            'codeAbo':abonnementData['codeAbonnement'].toString(),
-            'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
-          };
-          debugPrint("sentData $sentData");
-          var responseAbo = await dio.post(
-            Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
-            data:sentData,
-          );
-        }catch(_){}
+        if(abonnementData.isNotEmpty){
+          try{
+            var sentData ={
+              'user_id':customer.id.toString(),
+              'subscription_id':abonnementData['pack']['id'].toString(),
+              'codeAbo':abonnementData['codeAbonnement'].toString(),
+              'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
+            };
+            debugPrint("sentData $sentData");
+            var responseAbo = await dio.post(
+              Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
+              data:sentData,
+            );
+          }catch(_){}
+        }
         return mJsonDecode(response.data)["error"];
 
       } else {
