@@ -228,13 +228,6 @@ class OrderApiProvider {
 
       xrint("Response data: ${response.data}");
       xrint("Status code: ${response.statusCode}");
-      var sentData ={
-        'user_id':customer.id.toString(),
-        'subscription_id':abonnementData['pack']['id'].toString(),
-        'codeAbo':abonnementData['codeAbonnement'].toString(),
-        'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
-      };
-      debugPrint("sentData $sentData");
       if (response.statusCode == 200) {
         try{
           await dio.post(
