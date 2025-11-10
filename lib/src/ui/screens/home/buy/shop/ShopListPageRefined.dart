@@ -112,7 +112,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   final List<String> _allFilters = [
     "spagho", "poissonbraise",
     "foufou", "akoumé", "émakoume", "degue", "botokoin" , "tchintchinga" , "pizza" , "burger"  , "charwama" , "glaces" , "brochettes" , "poulet" , "riz",
-    "#jus", "#smoothie", "#milkshakes", "#théaulait", "#crêpes", "#bouillie"
+    "jus", "smoothie", "milkshakes", "théaulait", "crêpes", "bouillie"
   ];
   final Set<String> _selectedFilters = {}; // dynamic selection
 
