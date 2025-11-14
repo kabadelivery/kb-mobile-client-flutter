@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:flutter/cupertino.dart';
 
 
 /* Register contract */
@@ -97,11 +98,12 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
   Future<void> updatePassword(String login, String newCode,
       String requestId) async {
 // post it to the server.
-    if (isWorking)
+    if (!isWorking)
       return;
     isWorking = true;
     _recoverPasswordView.sendVerificationCodeLoading(true);
     try {
+      debugPrint("Updating password for $login with code $newCode and requestId $requestId");
       String jsonContent = await provider.passwordResetAction(
           login, newCode, requestId);
       _recoverPasswordView.sendVerificationCodeLoading(false);
