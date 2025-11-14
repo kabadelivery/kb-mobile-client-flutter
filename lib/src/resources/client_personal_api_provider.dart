@@ -30,7 +30,7 @@ class ClientPersonalApiProvider {
           .post(Uri.parse(ServerRoutes.LINK_GET_RESTAURANT_REVIEWS),
           body: json.encode({'restaurant_id': restaurantModel.id.toString()}),
           headers: Utils.getHeadersWithToken(userToken.token)).timeout(const Duration(seconds: 30));
-*/
+      */
 
       var dio = Dio();
       dio.options

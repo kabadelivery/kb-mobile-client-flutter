@@ -277,6 +277,7 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage>
 // -----------------------------
   @override
   void codeIsOk(bool isOk) async {
+    debugPrint("codeIsOk: $isOk");
     if (isOk) {
       final password = _pendingPassword;
       if (password == null || password.isEmpty) {
@@ -285,9 +286,9 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage>
       }
 
       try {
+        debugPrint("XXX update password");
         // Update password via presenter
         await widget.presenter!.updatePassword(_login!, password, _requestId ?? '');
-
         // Clear pending password
         _pendingPassword = null;
 

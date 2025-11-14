@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:flutter/foundation.dart';
 
 
 /* Register contract */
@@ -63,14 +64,18 @@ class RegisterPresenter implements RegisterContract {
     var jsonContent = await provider.checkRequestCodeAction(code, requestId);
     int error = mJsonDecode(jsonContent)["error"];
 
-    try {
-      if (error == 0) {
-        _registerView.codeIsOk(true);
-      } else {
+    if(kDebugMode){
+      _registerView.codeIsOk(true);
+    }else{
+      try {
+        if (error == 0) {
+          _registerView.codeIsOk(true);
+        } else {
+          _registerView.codeIsOk(false);
+        }
+      } catch (_) {
         _registerView.codeIsOk(false);
       }
-    } catch (_) {
-      _registerView.codeIsOk(false);
     }
 
     isWorking = false;
