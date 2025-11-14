@@ -93,8 +93,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
-      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) )
-
         debugPrint("Mot de Passe is : "+widget!.password.toString());
       widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
     } else {
@@ -446,12 +444,23 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     setState(() {
       _loading = true;
     });
-    String login = selectedCountryCode+_loginFieldController.text;
+    String login = _loginFieldController.text ;
+    if(selectedCountryCode == '+228'){
+      login =  _loginFieldController.text;
+    }
+   /* else if (Utils.isPhoneNumber_TGO(login)){
+
+      login = _loginFieldController.text ;
+    }*/
+    else {
+     login =  selectedCountryCode+_loginFieldController.text;
+    }
+
     int countlogin = login.length ;
     // control login stuff
      if (!(Utils.isEmailValid(login) || countlogin > 5 )) {
       /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')} "+countlogin.toString());
+      mToast("${AppLocalizations.of(context)!.translate('login_error')} ");
       return;
     }
 

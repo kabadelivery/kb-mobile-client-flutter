@@ -49,12 +49,14 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
     String enteredPassword = passwordController.text;
 
     if (enteredPassword.isEmpty) {
-      setState(() => errorMessage = "${AppLocalizations.of(context)!.translate('enter_password_error')}");
+      setState(() => errorMessage =
+          AppLocalizations.of(context)!.translate('enter_password_error'));
       return;
     }
 
-    if (enteredPassword.length < 4) {
-      setState(() => errorMessage = "${AppLocalizations.of(context)!.translate('password_min_error')}");
+    if (enteredPassword.length != 4) {
+      setState(() => errorMessage =
+          AppLocalizations.of(context)!.translate('password_min_error'));
       return;
     }
 

@@ -1117,7 +1117,7 @@
       "phone_number": "Phone Number",
   "enter_phone": "Enter your number",
   "enter_password_error": "Please enter your password.",
-  "password_min_error": "Password must be at least 4 characters.",
+  "password_min_error": "Password must be 4 characters.",
   "login_button": "Log in",
   "confirmation_title": "Confirmation",
   "otp_info": "You will receive a verification code to reset your password",

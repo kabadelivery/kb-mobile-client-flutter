@@ -231,6 +231,12 @@ class _RecoverPasswordPageState extends State<RecoverPasswordPage>
       return;
     }
 
+    if(password.length != 4 || confirm.length != 4){
+      //AppLocalizations.of(context)!.translate('password_min_error'));
+    mDialog("${AppLocalizations.of(context)!.translate('password_min_error')}");
+    return ;
+    }
+
     if (password != confirm) {
       mDialog("${AppLocalizations.of(context)!.translate('passwords_not_match')}");
       return;
