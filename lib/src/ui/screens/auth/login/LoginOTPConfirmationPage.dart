@@ -383,7 +383,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                         onPressed: () =>
                             showReceiveCodeBottomSheet(context),
                         child:  Text(
-                          "${AppLocalizations.of(context)!.translate('getcodevia')}",
+                          "trr",
                           style: TextStyle(color: KColors.primaryColor),
                         ),
                       )

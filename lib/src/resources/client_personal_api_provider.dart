@@ -780,7 +780,7 @@ class ClientPersonalApiProvider {
           Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS).toString(),
           data: Utils.isEmailValid(login)
               ? json.encode({"email": login, "type": 1})
-              : json.encode({"phone_number": TGO + login, "type": 0}));
+              : json.encode({"phone_number":  login, "type": 0}));
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {

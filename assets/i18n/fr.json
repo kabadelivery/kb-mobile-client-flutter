@@ -35,7 +35,7 @@
   "nickname": "Votre nom",
   "register": "CRÉER COMPTE",
   "seconds": "s",
-  "code": "CODE",
+  "code": "Confirmer Numero",
   "account_created_successfully": "Compte créé avec succès",
   "user_exists": "Ce compte existe déjà. Veuillez-vous connecter",
   "wrong_code": "Code erroné",

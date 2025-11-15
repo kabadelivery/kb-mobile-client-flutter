@@ -22,16 +22,19 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../resources/login_provider.dart';
+
 
 const String DEMO_ACCOUNT_USERNAME = "90000000";
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
 
   static var routeName = "/LoginPage";
 
@@ -50,10 +53,10 @@ class LoginPage extends StatefulWidget {
   final String? title;
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> implements LoginView {
+class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   String hint = "";
 
@@ -419,12 +422,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     }
   }
 
-  void _moveToRecoverPasswordPage() {
+  /*void _moveToRecoverPasswordPage() {
 
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
 //            RegisterPage (presenter: RegisterPresenter()),
-        RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView())),
+        RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView()), login: '',),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -436,7 +439,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
 
 
-  }
+  }*/
 
 
 
@@ -510,6 +513,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     }*/
 
     // 1. get password
+    ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return RetrievePasswordPage(

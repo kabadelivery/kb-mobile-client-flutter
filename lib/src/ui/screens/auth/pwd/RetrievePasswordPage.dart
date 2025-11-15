@@ -70,7 +70,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       MaterialPageRoute(
         builder: (context) => RecoverPasswordPage(
           presenter: RecoverPasswordPresenter(RecoverPasswordView()),
-          login: widget.login,
+
         ),
       ),
     );

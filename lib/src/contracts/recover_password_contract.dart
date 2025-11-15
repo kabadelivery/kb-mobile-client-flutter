@@ -62,17 +62,14 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
     } catch (_) {
       _recoverPasswordView.codeIsOk(false);
     }
-    finally {
-      isWorking = false;
-    }
-
+    isWorking = false;
     _recoverPasswordView.sendVerificationCodeLoading(false); /*  */
   }
 
 
   @override
   Future sendVerificationCode(String phone_number) async {
-    if (!isWorking)
+    if (isWorking)
       return;
     isWorking = true;
     _recoverPasswordView.sendVerificationCodeLoading(true);
@@ -100,7 +97,7 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
   Future<void> updatePassword(String login, String newCode,
       String requestId) async {
 // post it to the server.
-    if (!isWorking)
+    if (isWorking)
       return;
     isWorking = true;
     _recoverPasswordView.sendVerificationCodeLoading(true);
@@ -119,9 +116,6 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
       xrint(_.toString());
       _recoverPasswordView.recoverFails();
     }
-    finally {
-      isWorking = false;
-    }
-
+    isWorking = false;
   }
 }
