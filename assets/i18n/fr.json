@@ -1125,7 +1125,7 @@
   "phone_number": "N° Téléphone",
   "enter_phone": "Entrez votre numéro",
   "enter_password_error": "Veuillez entrer votre mot de passe.",
-  "password_min_error": "Le mot de passe doit contenir au moins 4 caractères.",
+  "password_min_error": "Le mot de passe doit etre de 4 caractères.",
   "login_button": "Se connecter",
   "confirmation_title": "Confirmation",
   "otp_info": "Vous allez recevoir un code de vérification pour réinitialiser le mot de passe",

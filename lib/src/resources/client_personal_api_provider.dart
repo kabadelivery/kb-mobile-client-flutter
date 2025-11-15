@@ -20,7 +20,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 class ClientPersonalApiProvider {
-  var TGO = "228";
+  var TGO = "";
 
   fetchRestaurantComment(
       ShopModel restaurantModel, UserTokenModel userToken) async {
@@ -848,7 +848,7 @@ class ClientPersonalApiProvider {
               : json.encode({
                   "password": newCode,
                   "request_id": requestId,
-                  "phone_number": "228${login}"
+                  "phone_number": "${login}"
                 }));
 
       xrint(response.data.toString());
@@ -952,7 +952,7 @@ class ClientPersonalApiProvider {
             "account_deleting_request_id": deletion_request_id,
             "refunder_firstname": first,
             "refunder_lastname": last,
-            "refunder_phonenumber": "228${phone_number}",
+            "refunder_phonenumber": "${phone_number}",
           }));
 
       xrint(response.data.toString());

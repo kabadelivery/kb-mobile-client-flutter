@@ -328,7 +328,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
     }
 
     // Check password length
-    if (password.length < 4) {
+    if (password.length != 4) {
       mDialog(AppLocalizations.of(context)!.translate('password_too_short'));
       return;
     }
@@ -538,7 +538,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       this.widget.presenter!.createAccount(
         nickname: nickname,
         password: password,
-        phone_number: Utils.isPhoneNumber_TGO(userlogin!) ? userlogin : "",
+        phone_number: userlogin! ,
         email: Utils.isEmailValid(userlogin) ? userlogin : "",
         request_id: this._requestId,
         whatsapp_number: whatsapp_number,
