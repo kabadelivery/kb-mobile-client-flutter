@@ -395,6 +395,19 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       ),
     );*/
 
+
+    if(selectedCountryCode == '+228'){
+      login =  _loginFieldController.text;
+    }
+
+    else if (Utils.isEmailValid(login!)){
+
+      login = _loginFieldController.text ;
+    }
+    else {
+      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
+    }
+
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
             RegisterPage (presenter: RegisterPresenter(RegisterView()), login: login),
@@ -448,15 +461,17 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       _loading = true;
     });
     String login = _loginFieldController.text ;
+
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
     }
-    else if (Utils.isEmailValid(login)){
+
+    else if (Utils.isEmailValid(login!)){
 
       login = _loginFieldController.text ;
     }
     else {
-     login =  selectedCountryCode+_loginFieldController.text;
+      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
     }
 
     int countlogin = login.length ;
@@ -513,7 +528,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       login = _loginFieldController.text ;
     }
     else {
-      login =  selectedCountryCode+_loginFieldController.text;
+      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
     }
 
 

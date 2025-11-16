@@ -508,10 +508,12 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
         StateContainer.of(context).hasUnreadMessage = false;
         StateContainer.of(context).updateTabPosition(tabPosition: 0);
 
+
+
         Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
             builder: (BuildContext context) =>
                 LoginPage(presenter: LoginPresenter(LoginView()),
-                    phone_number: phoneNumber,
+                    phone_number: Utils.isPhoneNumber_TGO(phoneNumber!) ? phoneNumber : "",
                     password: newCode,
                     autoLogin: true)), (r) => false);
       });
