@@ -395,19 +395,6 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       ),
     );*/
 
-
-    if(selectedCountryCode == '+228'){
-      login =  _loginFieldController.text;
-    }
-
-    else if (Utils.isEmailValid(login!)){
-
-      login = _loginFieldController.text ;
-    }
-    else {
-      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
-    }
-
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
             RegisterPage (presenter: RegisterPresenter(RegisterView()), login: login),
@@ -461,17 +448,15 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       _loading = true;
     });
     String login = _loginFieldController.text ;
-
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
     }
-
-    else if (Utils.isEmailValid(login!)){
+   /* else if (Utils.isPhoneNumber_TGO(login)){
 
       login = _loginFieldController.text ;
-    }
+    }*/
     else {
-      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
+     login =  selectedCountryCode+_loginFieldController.text;
     }
 
     int countlogin = login.length ;
@@ -518,19 +503,16 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   Future _launchConnexion() async {
 
-   // String login = selectedCountryCode+_loginFieldController.text;
-    String login = _loginFieldController.text ;
-    if(selectedCountryCode == '+228'){
-      login =  _loginFieldController.text;
-    }
-    else if (Utils.isEmailValid(login)){
+    String login = selectedCountryCode+_loginFieldController.text;
 
-      login = _loginFieldController.text ;
-    }
-    else {
-      login =  selectedCountryCode.substring(1)+_loginFieldController.text;
-    }
+    // control login stuff
+    /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
+      /* login error */
+      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
+      return;
+    }*/
 
+    // 1. get password
 
     ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
