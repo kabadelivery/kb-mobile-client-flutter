@@ -451,12 +451,17 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
     }
-   /* else if (Utils.isPhoneNumber_TGO(login)){
+    else if (Utils.isEmailValid(login)){
 
       login = _loginFieldController.text ;
-    }*/
+    }
     else {
-     login =  selectedCountryCode+_loginFieldController.text;
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
     }
 
     int countlogin = login.length ;
@@ -503,16 +508,24 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   Future _launchConnexion() async {
 
-    String login = selectedCountryCode+_loginFieldController.text;
 
-    // control login stuff
-    /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
-      /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
-      return;
-    }*/
 
-    // 1. get password
+    String login = _loginFieldController.text ;
+    if(selectedCountryCode == '+228'){
+      login =  _loginFieldController.text;
+    }
+    else if (Utils.isEmailValid(login)){
+
+      login = _loginFieldController.text ;
+    }
+    else {
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
+    }
 
     ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
