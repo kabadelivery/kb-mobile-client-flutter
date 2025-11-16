@@ -150,7 +150,7 @@ class ClientPersonalApiProvider {
               ? json.encode({"email": login, "type": 1})
               : json.encode({"phone_number": TGO + login, "type": 0}));
 
-      xrint(response.data.toString());
+      xrint( "RESPONSE FROM SERVER"+response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -187,7 +187,7 @@ class ClientPersonalApiProvider {
           data: json.encode({"code": code, "request_id": requestId}));
 
       xrint(json.encode({"code": code, "request_id": requestId}));
-      xrint(response.data.toString());
+      xrint('RESPONSE DE SERVER FROM checkRequestCodeAction '+ response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -231,7 +231,7 @@ class ClientPersonalApiProvider {
                 'type': Utils.isEmailValid(email) ? 1 : 0,
                 "device_token":device_token??""
               }));
-      xrint(response.data.toString());
+      xrint( ' response from registerCreateAccountAction'+response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {

@@ -760,6 +760,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                     setState(() {
                       isCodeSending = true;
                     });
+
                     widget.presenter!.sendVerificationCode(widget.login.toString());
                     print("OTP sent: ${widget.login}");
                     _checkCodeAndCreateAccount();

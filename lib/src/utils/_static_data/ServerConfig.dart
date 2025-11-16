@@ -4,6 +4,7 @@ class ServerConfig {
   //static const String ip_address = "app.kaba-delivery.com"; // prod server
   //static const String pay_ip_address = "pay.kaba-delivery.com";
   //static const String stat_ip_address = "stats.kaba-delivery.com"; //prod
+
   //static const String kaba_chine ="https://148.230.85.247.nip.io";
   //static const String kaba_expedition ="https://api.kabatitude.com";
   //static const String kaba_abonnement = "http://148.230.85.247:4040";

@@ -1129,7 +1129,7 @@
       "welcome_message": "Welcome to KABA",
         "empty_field": "❌ One of the fields is empty!",
   "nickname_too_short": "❌ Nickname must be at least 3 characters",
-  "password_too_short": "❌ Password must be at least 4 characters",
+  "password_too_short": "❌ Password must be  4 characters",
   "create_account_with": "Create your account with",
   "username": "Username",
   "create_account_button": "Create Account",

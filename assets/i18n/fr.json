@@ -1135,7 +1135,7 @@
   "receive_code_button": "Recevoir le Code",
     "empty_field": "❌ Un des champs est vide !",
   "nickname_too_short": "❌ Le nom doit contenir au moins 3 caractères",
-   "password_too_short": "❌ Le mot de passe doit contenir au moins 4 caractères",
+   "password_too_short": "❌ Le mot de passe doit contenir  4 caractères",
   "create_account_with": "Créer votre compte avec",
   "username": "Nom d'utilisateur",
   "create_account_button": "Créer le compte",
