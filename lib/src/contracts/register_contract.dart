@@ -61,6 +61,7 @@ class RegisterPresenter implements RegisterContract {
     isWorking = true;
 
     _registerView.showLoading(true);
+
     var jsonContent = await provider.checkRequestCodeAction(code, requestId);
     int error = mJsonDecode(jsonContent)["error"];
 

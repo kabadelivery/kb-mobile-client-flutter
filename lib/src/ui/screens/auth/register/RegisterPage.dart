@@ -65,7 +65,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   bool isCodeError = false;
   bool isNicknameError = false;
   bool isWhaNumberError = false;
-
+  bool isLoading = false;
 
 
 
@@ -236,7 +236,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                 const SizedBox(height: 20),
 
                 // Create account button
-                SizedBox(
+             isLoading?Center(child: CircularProgressIndicator()):   SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -259,7 +259,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
                 const SizedBox(height: 15),
 
                 // Back button
-                Center(
+                isLoading?Container():    Center(
                   child: TextButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.arrow_back),
@@ -506,8 +506,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 //    Toast.show(message, context, duration: Toast.LENGTH_LONG);
     mDialog(message);
   }
-
-  @override
   @override
   Future codeIsOk(bool isOk) async {
     // Stop loading spinner
@@ -594,6 +592,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   @override
   void showLoading(bool isLoading) {
     setState(() {
+      this.isLoading = isLoading;
       isCodeSending = isLoading;
     });
   }
