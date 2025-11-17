@@ -456,7 +456,12 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       login = _loginFieldController.text ;
     }
     else {
-     login =  selectedCountryCode+_loginFieldController.text;
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
     }
 
     int countlogin = login.length ;
@@ -503,7 +508,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   Future _launchConnexion() async {
 
-   // String login = selectedCountryCode+_loginFieldController.text;
+
+
     String login = _loginFieldController.text ;
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
@@ -513,9 +519,13 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       login = _loginFieldController.text ;
     }
     else {
-      login =  selectedCountryCode+_loginFieldController.text;
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
     }
-
 
     ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(

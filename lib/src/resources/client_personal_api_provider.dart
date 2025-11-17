@@ -187,7 +187,7 @@ class ClientPersonalApiProvider {
           data: json.encode({"code": code, "request_id": requestId}));
 
       xrint(json.encode({"code": code, "request_id": requestId}));
-      xrint('RESPONSE DE SERVER FROM checkRequestCodeAction '+ response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -226,12 +226,12 @@ class ClientPersonalApiProvider {
                 "password": password,
                 "whatsapp_number": whatsapp_number,
                 "phone_number": phone_number,
-                "email": email,
+                "email":  email ,
                 "request_id": request_id,
-                'type': Utils.isEmailValid(email) ? 1 : 0,
+                'type':  Utils.isEmailValid(email) ? 1 : 0,
                 "device_token":device_token??""
               }));
-      xrint( ' response from registerCreateAccountAction'+response.data.toString());
+      xrint(response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {

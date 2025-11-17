@@ -507,11 +507,11 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
         // StateContainer.of(context).updateUnreadMessage(hasUnreadMessage: false);
         StateContainer.of(context).hasUnreadMessage = false;
         StateContainer.of(context).updateTabPosition(tabPosition: 0);
-
+              String cleaned = phoneNumber.contains('@') ? phoneNumber : phoneNumber.substring(3) ;
         Navigator.pushAndRemoveUntil(context, new MaterialPageRoute(
             builder: (BuildContext context) =>
                 LoginPage(presenter: LoginPresenter(LoginView()),
-                    phone_number: phoneNumber,
+                    phone_number: cleaned ,
                     password: newCode,
                     autoLogin: true)), (r) => false);
       });
