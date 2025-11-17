@@ -534,7 +534,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
       // ✅ 4. Get login (email or phone)
       String? userlogin = widget.login;
 
-      // ✅ 5. Call the presenter to create the account directly
+
       this.widget.presenter!.createAccount(
         nickname: nickname,
         password: password,
@@ -543,6 +543,7 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
         request_id: this._requestId,
         whatsapp_number: whatsapp_number,
       );
+      print("THIS IS WHAT IS SENT TO CREATE ACCOUNT :"+ nickname + " login"+userlogin!+"rquest_id"+this._requestId!) ;
     }
   }
 
@@ -779,3 +780,5 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
 
 
 }
+
+

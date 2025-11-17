@@ -20,7 +20,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 
 class ClientPersonalApiProvider {
-  var TGO = "228";
+  var TGO = "";
 
   fetchRestaurantComment(
       ShopModel restaurantModel, UserTokenModel userToken) async {
@@ -150,7 +150,7 @@ class ClientPersonalApiProvider {
               ? json.encode({"email": login, "type": 1})
               : json.encode({"phone_number": TGO + login, "type": 0}));
 
-      xrint(response.data.toString());
+      xrint( "RESPONSE FROM SERVER"+response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -226,9 +226,9 @@ class ClientPersonalApiProvider {
                 "password": password,
                 "whatsapp_number": whatsapp_number,
                 "phone_number": phone_number,
-                "email": email,
+                "email":  email ,
                 "request_id": request_id,
-                'type': Utils.isEmailValid(email) ? 1 : 0,
+                'type':  Utils.isEmailValid(email) ? 1 : 0,
                 "device_token":device_token??""
               }));
       xrint(response.data.toString());
@@ -780,7 +780,7 @@ class ClientPersonalApiProvider {
           Uri.parse(ServerRoutes.LINK_SEND_RECOVER_VERIFCATION_SMS).toString(),
           data: Utils.isEmailValid(login)
               ? json.encode({"email": login, "type": 1})
-              : json.encode({"phone_number": TGO + login, "type": 0}));
+              : json.encode({"phone_number":  login, "type": 0}));
 
       xrint(response.data.toString());
       if (response.statusCode == 200) {
@@ -848,7 +848,7 @@ class ClientPersonalApiProvider {
               : json.encode({
                   "password": newCode,
                   "request_id": requestId,
-                  "phone_number": "228${login}"
+                  "phone_number": "${login}"
                 }));
 
       xrint(response.data.toString());
@@ -952,7 +952,7 @@ class ClientPersonalApiProvider {
             "account_deleting_request_id": deletion_request_id,
             "refunder_firstname": first,
             "refunder_lastname": last,
-            "refunder_phonenumber": "228${phone_number}",
+            "refunder_phonenumber": "${phone_number}",
           }));
 
       xrint(response.data.toString());

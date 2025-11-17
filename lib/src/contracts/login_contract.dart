@@ -12,7 +12,7 @@ class LoginView {
   void showLoading(bool isLoading) {}
   void loginSuccess (var obj) {}
   void loginPasswordError (int error) {}
-   void loginSucess() {}
+  void loginSucess() {}
   void networkError () {}
   void handlefirstsend() {}
   void accountNoExist(String login) {}

@@ -11,6 +11,7 @@ import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/ui/screens/auth/register/RegisterPage.dart';
 import 'package:KABA/src/ui/screens/home/HomePage.dart';
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
@@ -21,16 +22,19 @@ import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../resources/login_provider.dart';
+
 
 const String DEMO_ACCOUNT_USERNAME = "90000000";
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
 
   static var routeName = "/LoginPage";
 
@@ -49,10 +53,10 @@ class LoginPage extends StatefulWidget {
   final String? title;
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> implements LoginView {
+class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   String hint = "";
 
@@ -92,8 +96,6 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     if (widget?.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
-      if ((Utils.isPhoneNumber_TGO(widget.phone_number!) || Utils.isEmailValid(widget.phone_number!)) )
-
         debugPrint("Mot de Passe is : "+widget!.password.toString());
       widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
     } else {
@@ -420,12 +422,12 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     }
   }
 
-  void _moveToRecoverPasswordPage() {
+  /*void _moveToRecoverPasswordPage() {
 
     Navigator.of(context).pushReplacement(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
 //            RegisterPage (presenter: RegisterPresenter()),
-        RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView())),
+        RecoverPasswordPage(presenter: RecoverPasswordPresenter(RecoverPasswordView()), login: '',),
             transitionsBuilder: (context, animation, secondaryAnimation, child) {
               var begin = Offset(1.0, 0.0);
               var end = Offset.zero;
@@ -437,7 +439,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         ));
 
 
-  }
+  }*/
 
 
 
@@ -445,16 +447,30 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     setState(() {
       _loading = true;
     });
-    String login = selectedCountryCode+_loginFieldController.text;
+    String login = _loginFieldController.text ;
+    if(selectedCountryCode == '+228'){
+      login =  _loginFieldController.text;
+    }
+    else if (Utils.isEmailValid(login)){
 
-       int countlogin = login.length ;
+      login = _loginFieldController.text ;
+    }
+    else {
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
+    }
+
+    int countlogin = login.length ;
     // control login stuff
      if (!(Utils.isEmailValid(login) || countlogin > 5 )) {
       /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')} "+countlogin.toString());
+      mToast("${AppLocalizations.of(context)!.translate('login_error')} ");
       return;
     }
- 
 
     /* // 1. get password
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
@@ -492,16 +508,26 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
   Future _launchConnexion() async {
 
-    String login = selectedCountryCode+_loginFieldController.text;
 
-    // control login stuff
-    /* if (!(Utils.isEmailValid(login) || Utils.isPhoneNumber_TGO(login))) {
-      /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')}");
-      return;
-    }*/
 
-    // 1. get password
+    String login = _loginFieldController.text ;
+    if(selectedCountryCode == '+228'){
+      login =  _loginFieldController.text;
+    }
+    else if (Utils.isEmailValid(login)){
+
+      login = _loginFieldController.text ;
+    }
+    else {
+      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      } else {
+        // fallback → treat as local Togo number
+        login = _loginFieldController.text;
+      }
+    }
+
+    ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return RetrievePasswordPage(
@@ -522,7 +548,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
       *  */
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true) {
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false) {
               widget.autoLogin = true;
               this.widget.presenter!.login(false, login, _mCode, widget.version!);
             } else
@@ -534,7 +560,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
         });
       }
     }else{
-     // mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      // mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
       mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
@@ -598,7 +624,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
 
     Map results = Map();
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true)
+    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false)
       widget.autoLogin = true;
 
     if (!widget.autoLogin!) {
@@ -607,7 +633,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: mOtp, login: '',),
+                      username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);
@@ -922,7 +948,7 @@ class _LoginPageState extends State<LoginPage> implements LoginView {
     _moveToRegisterPage(login) ;
   }
 
- @override
+  @override
   void loginPasswordError(error) async{
     await _showDialog(
       icon: Icon(Icons.warning, color: KColors.primaryColor),

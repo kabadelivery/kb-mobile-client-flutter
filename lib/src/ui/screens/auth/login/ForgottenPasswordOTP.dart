@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/contracts/register_contract.dart';
-import 'package:KABA/src/ui/screens/auth/pwd/NewPasswordPage.dart';
+import 'package:KABA/src/ui/screens/auth/recover/NewPasswordPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 
 import '../../../../contracts/recover_password_contract.dart';
@@ -65,11 +65,11 @@ class _ForgotenPasswordOTPState extends State<ForgotenPasswordOTP> {
     _timer?.cancel();
 
     // TODO: Call API verification here
-    Navigator.of(context).push(MaterialPageRoute(
+   /* Navigator.of(context).push(MaterialPageRoute(
       builder: (context) => NewPasswordPage(
         presenter: RegisterPresenter(RegisterView()),
       ),
-    ));
+    ));*/
   }
 
   void _openResendOptions() {

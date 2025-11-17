@@ -8,7 +8,6 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
-import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/_static_data/ImageAssets.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/Vectors.dart';
@@ -225,7 +224,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
                           // Build WhatsApp URL
                           final url = Uri.parse(
-                              "https://wa.me/${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}?text=${Uri.encodeComponent(message)}");
+                              "https://wa.me/$phone?text=${Uri.encodeComponent(message)}");
 
                           // Launch WhatsApp
                           if (await canLaunchUrl(url)) {
@@ -384,7 +383,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                         onPressed: () =>
                             showReceiveCodeBottomSheet(context),
                         child:  Text(
-                          "${AppLocalizations.of(context)!.translate('getcodevia')}",
+                          "trr",
                           style: TextStyle(color: KColors.primaryColor),
                         ),
                       )

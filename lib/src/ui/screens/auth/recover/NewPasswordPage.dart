@@ -7,25 +7,30 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class RetrievePasswordPage extends StatefulWidget {
-  static var routeName = "/RetrievePasswordPage";
+class NewPasswordPage extends StatefulWidget {
+  static var routeName = "/NewPasswordPage";
 
   final int type;
-  final String? login;
 
-  const RetrievePasswordPage({Key? key, this.type = 0, this.login}) : super(key: key);
+
+  const NewPasswordPage({Key? key , required this.type }) : super(key: key);
 
   @override
-  _RetrievePasswordPageState createState() => _RetrievePasswordPageState();
+  _NewPasswordPageState createState() => _NewPasswordPageState();
 }
 
-class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
-  final TextEditingController passwordController = TextEditingController();
+class _NewPasswordPageState extends State<NewPasswordPage> {
+  bool _isLoadingLogin = true;
   bool _obscurePassword = true;
-  String errorMessage = "";
+  bool _obscureConfirm = true;
 
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+  TextEditingController();
+  String errorMessage = "";
   List<String>? retrievePasswordTitle;
 
   @override
@@ -46,35 +51,25 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   }
 
   void _submitCode() {
-    String enteredPassword = passwordController.text;
+    String password = _passwordController.text;
+    String secondPassword = _confirmPasswordController.text  ;
+    // Check if any field is empty
 
-    if (enteredPassword.isEmpty) {
-      setState(() => errorMessage =
-          AppLocalizations.of(context)!.translate('enter_password_error'));
+    // Check password match
+    if (password != secondPassword) {
+      mDialog(AppLocalizations.of(context)!.translate('passwords_not_match'));
       return;
     }
 
-    if (enteredPassword.length != 4) {
-      setState(() => errorMessage =
-          AppLocalizations.of(context)!.translate('password_min_error'));
+    // Check password length
+    if (password.length != 4) {
+      mDialog(AppLocalizations.of(context)!.translate('password_too_short'));
       return;
     }
 
-    Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
+    Navigator.of(context).pop({'code': password, 'type': widget.type});
   }
 
-  void _jumpToOTPPage() {
-    Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(
-          presenter: RecoverPasswordPresenter(RecoverPasswordView()),
-
-        ),
-      ),
-    );
-  }
 
   void showReceiveCodeBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -111,23 +106,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                   style: const TextStyle(color: Colors.black54),
                 ),
                 const SizedBox(height: 20),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: _jumpToOTPPage,
-                    child: Text(
-                      "${AppLocalizations.of(context)!.translate('proceed')}",
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),
@@ -172,40 +151,69 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       ),
                       const SizedBox(width: 10),
                       Text(
-                        widget.type != 3
-                            ? "${AppLocalizations.of(context)!.translate('login')}"
-                            : "${AppLocalizations.of(context)!.translate('validate_order')}",
+                        "Connexion",
                         style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    "${AppLocalizations.of(context)!.translate('enter_password')}",
+                    "Réinitialisez votre mot de passe KABA",
                     textAlign: TextAlign.center,
                     style: const TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 20),
                   // Password Field
-                  TextField(
-                    controller: passwordController,
-                    obscureText: _obscurePassword,
-                    decoration: InputDecoration(
-                      hintText: "${AppLocalizations.of(context)!.translate('password')}",
-                      prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                          color: KColors.primaryColor,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        hintText: "Mot de passe",
+                        prefixIcon: Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
                       ),
                     ),
-                    keyboardType: TextInputType.number,
                   ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: TextField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscureConfirm,
+                      decoration: InputDecoration(
+                        hintText: "Confirmez votre mot de passe",
+                        prefixIcon: Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureConfirm
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () {
+                            setState(() {
+                              _obscureConfirm = !_obscureConfirm;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
                   if (errorMessage.isNotEmpty) ...[
                     const SizedBox(height: 10),
                     Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
@@ -224,21 +232,13 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       ),
                       onPressed: _submitCode,
                       child: Text(
-                        widget.type != 3
-                            ? "${AppLocalizations.of(context)!.translate('login_button')}"
-                            : "${AppLocalizations.of(context)!.translate('validate_button')}",
+                        " Se Connecter ",
                         style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                   // Forgot Password
-                  TextButton(
-                    onPressed: () => showReceiveCodeBottomSheet(context),
-                    child: Text(
-                      "${AppLocalizations.of(context)!.translate('forgot_password')}",
-                      style: const TextStyle(color: KColors.primaryColor),
-                    ),
-                  ),
+
                 ],
               ),
             ),
@@ -250,6 +250,66 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void mDialog(String message) {
+
+    _showDialog(
+      icon: Icon(Icons.info_outline, color: Colors.red),
+      message: "${message}",
+      isYesOrNo: false,
+    );
+  }
+
+  Future<void> _showDialog(
+      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, Function? actionIfYes}) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+            content: Column(mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  SizedBox(
+                      height: 80,
+                      width: 80,
+                      child: icon == null ? SvgPicture.asset(
+                        svgIcons!,
+                      ) : icon),
+                  SizedBox(height: 10),
+                  Text(message, textAlign: TextAlign.center,
+                      style: TextStyle(color: KColors.new_black, fontSize: 13))
+                ]
+            ),
+            actions:
+            isYesOrNo ? <Widget>[
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
+                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              OutlinedButton(
+                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  actionIfYes!();
+                },
+              ),
+            ] : <Widget>[
+              OutlinedButton(
+                child: new Text(
+                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ]
+        );
+      },
     );
   }
 }

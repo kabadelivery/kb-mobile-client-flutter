@@ -1117,7 +1117,7 @@
       "phone_number": "Phone Number",
   "enter_phone": "Enter your number",
   "enter_password_error": "Please enter your password.",
-  "password_min_error": "Password must be at least 4 characters.",
+  "password_min_error": "Password must be 4 characters.",
   "login_button": "Log in",
   "confirmation_title": "Confirmation",
   "otp_info": "You will receive a verification code to reset your password",
@@ -1129,7 +1129,7 @@
       "welcome_message": "Welcome to KABA",
         "empty_field": "❌ One of the fields is empty!",
   "nickname_too_short": "❌ Nickname must be at least 3 characters",
-  "password_too_short": "❌ Password must be at least 4 characters",
+  "password_too_short": "❌ Password must be  4 characters",
   "create_account_with": "Create your account with",
   "username": "Username",
   "create_account_button": "Create Account",
@@ -1166,4 +1166,5 @@
   "otp_message" : "Your OTP Code (KABA):",
   "get_otp_code" : "Get the Code ",
   "enter_otp_code" : "Get the OTP code"
+
 }
