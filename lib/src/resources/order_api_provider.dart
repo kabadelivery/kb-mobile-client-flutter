@@ -119,7 +119,8 @@ class OrderApiProvider {
       String mCode,
       String infos,
       VoucherModel? voucher,
-      bool useKabaPoint) async {
+      bool useKabaPoint)
+  async {
     DeviceInfoPlugin? deviceInfo = DeviceInfoPlugin();
     var device;
 
@@ -195,7 +196,7 @@ class OrderApiProvider {
       );
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
-       // requestData['user_abonnement'] = abonnementResponse.data;
+       requestData['user_abonnement'] = abonnementResponse.data;
       } else {
         xrint("KABA_ABONNEMENT_GET_BY_USER failed: ${abonnementResponse.statusCode}");
         requestData['user_abonnement'] = {};
@@ -237,7 +238,8 @@ class OrderApiProvider {
                 'user_id':customer.id.toString(),
                 'subscription_id':abonnementData['pack']['id'].toString(),
                 'codeAbo':abonnementData['codeAbonnement'].toString(),
-                'command_id':mJsonDecode(response.data)['data']['command_id'].toString()
+                'command_id':mJsonDecode(response.data)['data']['command_id'].toString(),
+                'total_price':mJsonDecode(response.data)['data']['total_price'].toString(),
               },
             );
           }catch(_){}
@@ -349,107 +351,146 @@ class OrderApiProvider {
     }
   }
 
-  launchPreorderOrder(
+  Future<Map> launchPreorderOrder(
       CustomerModel customer,
       Map<ShopProductModel, int> foods,
       DeliveryAddressModel selectedAddress,
       String mCode,
       String infos,
       String start,
-      String end) async {
+      String end,
+      ) async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
     var device;
 
     String? token = "";
     try {
-      final FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
-      token = await firebaseMessaging.getToken();
+      token = await FirebaseMessaging.instance.getToken();
     } catch (e) {
       xrint(e);
     }
 
+    // ==== DEVICE INFO ====
     if (Platform.isAndroid) {
-      // Android-specific code
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      xrint('Running on ${androidInfo.model}'); // e.g. "Moto G (4)"
       device = {
         'os_version': '${androidInfo.version.baseOS}',
         'build_device': '${androidInfo.device}',
         'version_sdk': '${androidInfo.version.sdkInt}',
         'build_model': '${androidInfo.model}',
         'build_product': '${androidInfo.product}',
-        'push_token': '$token'
+        'push_token': '$token',
       };
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      xrint('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
       device = {
         'os_version': '${iosInfo.systemVersion}',
         'build_device': '${iosInfo.utsname.sysname}',
         'version_sdk': '${iosInfo.utsname.version}',
         'build_model': '${iosInfo.utsname.machine}',
         'build_product': '${iosInfo.model}',
-        'push_token': '$token'
+        'push_token': '$token',
       };
     }
 
-    xrint("entered payAtDelivery");
-    if (await Utils.hasNetwork()) {
-      List<Object> food_quantity =[];
+    if (!await Utils.hasNetwork()) throw Exception(-2);
 
-      foods.forEach((food_item, quantity) => {
-            food_quantity.add({'food_id': food_item.id, 'quantity': quantity})
-          });
+    // ==== FOODS LIST ====
+    List<Object> food_quantity = [];
+    foods.forEach((food_item, quantity) {
+      food_quantity.add({'food_id': food_item.id, 'quantity': quantity});
+    });
 
-      var _data = json.encode({
-        'food_command': food_quantity,
-        'pay_at_delivery': false,
-        'pre_order': 1,
-        'pre_order_hour': {"start": start, "end": end},
-        'shipping_address': selectedAddress.id,
-        'transaction_password': '$mCode',
-        'infos': '$infos',
-        'device': device, // device informations
-        'push_token': '$token', // push token
-      });
+    // ==== BASE REQUEST DATA ====
+    Map<String, dynamic> requestData = {
+      'food_command': food_quantity,
+      'pay_at_delivery': false,
+      'pre_order': 1,
+      'pre_order_hour': {"start": start, "end": end},
+      'shipping_address': selectedAddress.id,
+      'transaction_password': mCode,
+      'infos': infos,
+      'device': device,
+      'push_token': token,
+    };
 
-      xrint("000 _ " + _data.toString());
-
+    // ==== FETCH ABONNEMENT ====
+    Map abonnementData = {};
+    try {
       var dio = Dio();
+      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
 
+      var aboRes = await dio.post(
+        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+        data: {"userId": customer.id!},
+        options: Options(headers: {"Content-Type": "application/json"}),
+      );
+
+      if (aboRes.statusCode == 200 || aboRes.statusCode == 201) {
+        abonnementData = aboRes.data;
+        requestData["user_abonnement"] = aboRes.data;
+      } else {
+        requestData["user_abonnement"] = {};
+      }
+    } catch (e) {
+      xrint("ABONNEMENT fetch error: $e");
+      requestData["user_abonnement"] = {};
+    }
+
+    var _data = json.encode(requestData);
+    xrint("PREORDER DATA: $_data");
+
+    // ==== SEND CREATE PREORDER ====
+    try {
+      var dio = Dio();
       dio.options
-        ..headers = {
-          ...Utils.getHeadersWithToken(customer!.token!),
-          'Cache-Control': 'no-cache, no-store, must-revalidate',
-          'Pragma': 'no-cache',
-          'Expires': '0',
-          'Content-Type': 'application/json', // Adjust if needed
-        }
+        ..headers = Utils.getHeadersWithToken(customer.token!)
         ..connectTimeout = 90000;
-      final url = Uri.parse(ServerRoutes.LINK_CREATE_COMMAND)
-          .replace(queryParameters: {
-        '_': DateTime.now().millisecondsSinceEpoch.toString()
-      })
-          .toString();
+
       (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
           (HttpClient client) {
-        client.badCertificateCallback =
-            (X509Certificate cert, String host, int port) {
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) {
           return validateSSL(cert, host, port);
         };
+        return client;
       };
 
-      var response = await dio.post(url, data: _data);
-      xrint("001 _ " + response.data.toString());
+      var response = await dio.post(
+        Uri.parse(ServerRoutes.LINK_CREATE_COMMAND).toString(),
+        data: _data,
+      );
+
+      xrint("PREORDER RESPONSE: ${response.data}");
+
       if (response.statusCode == 200) {
-        // if ok, send true or false
-        return mJsonDecode(response.data);
-      } else
-        throw Exception(-1); // there is an error in your request
-    } else {
-      throw Exception(-2); // you have no right to do this
+        final decoded = mJsonDecode(response.data);
+
+        // ==== SAVE TO ABONNEMENT HISTORY ====
+        if (abonnementData.isNotEmpty) {
+          try {
+            await dio.post(
+              Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
+              data: {
+                'user_id': customer.id.toString(),
+                'subscription_id': abonnementData['pack']['id'].toString(),
+                'codeAbo': abonnementData['codeAbonnement'].toString(),
+                'command_id': decoded['data']['command_id'].toString(),
+                'total_price': decoded['data']['total_price'].toString(),
+              },
+            );
+          } catch (e) {
+            xrint("ABONNEMENT SAVE FAILED: $e");
+          }
+        }
+
+        return decoded;
+      } else {
+        throw Exception(-1);
+      }
+    } catch (e) {
+      xrint("launchPreorderOrder ERROR: $e");
+      throw Exception(-1);
     }
   }
 
- }
+}
