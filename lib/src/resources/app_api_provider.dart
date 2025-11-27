@@ -174,7 +174,7 @@ class AppApiProvider {
       });
     } else if (Platform.isIOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      xrint('Running on ${iosInfo.utsname.machine}'); // e.g. "iPod7,1"
+      xrint('Running on ${iosInfo.utsname.machine}');
       _data = json.encode({
         'os_version': '${iosInfo.systemVersion}',
         'build_device': '${iosInfo.utsname.sysname}',
@@ -267,7 +267,6 @@ class AppApiProvider {
         Uri.parse(ServerRoutes.LINK_CHECK_UNREAD_MESSAGES).toString(),
         data: json.encode({}),
       );
-
       xrint(response.data.toString());
       if (response.statusCode == 200) {
         bool data = mJsonDecode(response.data)["data"];

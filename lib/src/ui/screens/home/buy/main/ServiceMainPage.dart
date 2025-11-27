@@ -1523,105 +1523,39 @@ class ServiceMainPageState extends State<ServiceMainPage>
       isPickLocation = false;
     });
   }
-  Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
-    prefs = await SharedPreferences.getInstance();
-    String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
-    var status = await Permission.location.status;
-    var notif_status = await Permission.notification.status;
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.deniedForever) {
-      if (status.isDenied && !notif_status.isDenied) {
-        openLocationModal(context);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => PermissionsModal(),
-        );
-        _getLastKnowLocation(jumpToBuyPageDetails: true);
-      }
+  Future<void> _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
+    final loc = await Permission.locationWhenInUse.status;
+    final notif = await Permission.notification.status;
+
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    // Case 1: both denied → show big modal ONCE
+    if (!loc.isGranted && !notif.isGranted) {
+      await showDialog(
+        context: context,
+        builder: (_) => const PermissionsModal(),
+      );
       return;
     }
-    else if (permission == LocationPermission.denied) {
-      if (status.isDenied && !notif_status.isDenied) {
-        openLocationModal(context);
-      } else {
-        await showDialog(
-          context: context,
-          builder: (_) => const PermissionsModal(),
-        );
-        _getLastKnowLocation(jumpToBuyPageDetails: true);
-      }
+
+    // Case 2: location denied but notifications ok
+    if (!loc.isGranted) {
+      openLocationModal(context);
       return;
     }
-    else {
-      bool isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
-      var notifStatus = await Permission.notification.status;
-      if (!isLocationServiceEnabled) {
-        if (status.isDenied && !notifStatus.isDenied) {
-          openLocationModal(context);
-        } else {
-          await showDialog(
-            context: context,
-            builder: (_) => const PermissionsModal(),
-          );
-          _getLastKnowLocation(jumpToBuyPageDetails: true);
-        }
-        return;
-      }
-      if (jumpToBuyPageDetails) {
-        setState(() {
-          StateContainer.of(context).updateTabPosition(tabPosition: 0);
-        });
-      }
 
-      positionStream = Geolocator.getPositionStream().listen((Position position) {
-        if (position.latitude != null &&
-            tmpLocation?.latitude != null &&
-            (position.latitude * 100).round() ==
-                (tmpLocation!.latitude! * 100).round() &&
-            (position.longitude * 100).round() ==
-                (tmpLocation!.longitude * 100).round()) {
-          widget.samePositionCount++;
-        } else {
-          widget.samePositionCount = 0;
-          if(mounted){
-            tmpLocation = StateContainer.of(context).location;
-          }
+    // Case 3: location granted but GPS disabled
+    if (!serviceEnabled) {
+      openLocationModal(context);
+      return;
+    }
 
-          if (mounted) {
-            widget.hasGps = true;
-            setState(() {
-              StateContainer.of(context).updateLocation(location: position);
-            });
-          }
-        }
-
-        if (widget.samePositionCount >= 3 || widget.hasGps!) {
-          positionStream?.cancel();
-        }
+    // Case 4: all good → start stream once
+    if (positionStream == null) {
+      positionStream = Geolocator.getPositionStream().listen((position) {
+        // your position logic
       });
     }
-    var loc_status = await Permission.location.status;
-    var notif_status2 = await Permission.notification.status;
-    var storage_status = await Permission.storage.status;
-
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      int sdkVersion = androidInfo.version.sdkInt;
-      if (sdkVersion <= 32) {
-        storage_status = await Permission.storage.status;
-      }
-    }
-
-    if (loc_status.isGranted && notif_status2.isGranted) {
-      if (storage_status.isDenied) {
-        // Tu peux réactiver ce que tu veux ici :
-        // openPhotosModal(context);
-        // openLocationModal(context);
-        // openNotificationModal(context);
-      }
-    }
-
   }
 
   getCurrentTile() {

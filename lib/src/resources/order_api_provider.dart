@@ -34,7 +34,6 @@ class OrderApiProvider {
     if (!await Utils.hasNetwork()) {
       throw Exception(-2); // pas de réseau
     }
-
     // Préparer la liste des aliments
     List<Object> food_quantity = [];
     foods.forEach((food_item, quantity) {
@@ -359,7 +358,8 @@ class OrderApiProvider {
       String infos,
       String start,
       String end,
-      ) async {
+      )
+  async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     var device;
 
