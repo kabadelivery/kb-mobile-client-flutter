@@ -127,6 +127,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     hasNetworkError = false;
     isLoading = false;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+      debugPrint("init state");
       prefs= await SharedPreferences.getInstance();
       String? ok = prefs!.getString("_has_accepted_gps");
       var status = await Permission.notification.status;
