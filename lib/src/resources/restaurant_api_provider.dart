@@ -241,17 +241,13 @@ class RestaurantApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-
-      xrint("location is --> ");
       xrint({"location": "${position?.latitude}:${position?.longitude}"}
           .toString());
-
       Map<String, dynamic> params = Map();
       params.putIfAbsent("limit", () => 1000);
       params.putIfAbsent("search_type", () => "shop");
       if (type != null && type != "all")
         params.putIfAbsent("category", () => type);
-
       var response = await dio.get(
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: params);
@@ -259,7 +255,9 @@ class RestaurantApiProvider {
       xrint("data from fetchShopList ${response.data}");
       if (response.statusCode == 200) {
         dynamic data = mJsonDecode(response.data);
-
+        for(var shop in data["data"]){
+          xrint("shop found ${shop["name"]}");
+        }
         return data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this

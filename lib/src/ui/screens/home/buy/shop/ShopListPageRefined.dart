@@ -30,8 +30,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter_switch/flutter_switch.dart';
-// import 'package:android_intent/android_intent.dart';
-
 class ShopListPageRefined extends StatefulWidget {
   Position? location;
   RestaurantFoodProposalPresenter? foodProposalPresenter;
@@ -247,67 +245,30 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   child: Column(
                     children: [
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(width: 20,),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
-                            onPressed: () {
-                              if (_searchMode) {
-                                setState(() {
-                                  _searchAutoFocus = false;
-                                  _searchMode = false;
-                                  _filterEditController.text = "";
-                                });
-                                _searchAction();
-                              } else {
-                                Navigator.pop(context);
-                              }
-                            },
-                          ),
-                          SizedBox(width: 70,),
-                          AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 300),
-                            child: _searchMode
-                                ? Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: TextField(
-                                autofocus: _searchAutoFocus,
-                                controller: _filterEditController,
-                                onSubmitted: (val) => _searchAction(pressButton: true),
-                                onChanged: (val) {
-                                  EasyDebounce.debounce(
-                                    'search-input-debouncer',
-                                    const Duration(milliseconds: 700),
-                                        () => _searchAction(),
-                                  );
-                                },
-                                style: TextStyle(color: KColors.new_black, fontSize: 16),
-                                textInputAction: TextInputAction.search,
-                                decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)!
-                                      .translate('find_menu_or_restaurant'),
-                                  hintStyle: TextStyle(
-                                    fontSize: 14,
-                                    color: KColors.new_black.withAlpha(150),
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            )
-                                : Text("Restos & Repas",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
+                          Expanded(
+                            child: TextField(
+                              autofocus: _searchAutoFocus,
+                              controller: _filterEditController,
+                              textInputAction: TextInputAction.search,
+                              onSubmitted: (val) => _searchAction(pressButton: true),
+                              onChanged: (val) {
+                                EasyDebounce.debounce(
+                                  'search-input-debouncer',
+                                  const Duration(milliseconds: 700),
+                                      () => _searchAction(),
+                                );
+                              },
+                              decoration: const InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Find menu or restaurant",
                               ),
                             ),
                           ),
-                          Container()
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: _clearFocus,
+                          ),
                         ],
                       ),
 
@@ -1902,8 +1863,6 @@ Padding
     });
   }
 }
-
-  // 🔹 Chip widget
   Widget _buildChip(String label, bool selected) {
     return Container(
       margin: const EdgeInsets.only(right: 8),

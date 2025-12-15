@@ -181,7 +181,7 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async
   } catch (e, stacktrace) {
     print("Error in sortOutRestaurantList: $e");
     print(stacktrace);
-    return []; // fallback to empty list in case of failure
+    return [];
   }
 }
 _filteredData(List<ShopModel> data, String filter_key) {
