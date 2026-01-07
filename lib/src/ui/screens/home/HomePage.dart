@@ -813,50 +813,139 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
        
       body: pages![StateContainer.of(context)!.tabPosition!],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedFontSize: 12.5,
-        unselectedFontSize: 12,
-        items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Image.asset("assets/images/png/grey-service.png",width:20),
-            activeIcon: Image.asset("assets/images/png/service.png",width:20),
-            label: Utils.capitalize(
-                'Services'),
-            tooltip: Utils.capitalize(
-                'Services'),
+      bottomNavigationBar:
+
+      Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Shadow + rounded container
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(22),
+                topRight: Radius.circular(22),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.15),
+                  blurRadius: 12,
+                  offset: const Offset(0, -4),
+                ),
+              ],
+            ),
+            child: BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedFontSize: 12.5,
+              unselectedFontSize: 12,
+              currentIndex: StateContainer.of(context).tabPosition!,
+              selectedItemColor: KColors.primaryColor,
+              unselectedItemColor: Colors.grey,
+              showUnselectedLabels: true,
+              onTap: _onItemTapped,
+              items: <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/images/png/grey-service.png",
+                    width: 20,
+                  ),
+                  activeIcon: Image.asset(
+                    "assets/images/png/service.png",
+                    width: 20,
+                  ),
+                  label: Utils.capitalize('Services'),
+                  tooltip: Utils.capitalize('Services'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/images/png/services-icons/discover.png",
+                    width: 20,
+                  ),
+                  activeIcon: Image.asset(
+                    "assets/images/png/services-icons/discover.png",
+                    width: 20,
+                  ),
+                  label: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('discover'),
+                  ),
+                  tooltip: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('discover'),
+                  ),
+                ),
+                const BottomNavigationBarItem(
+                  icon: SizedBox(height: 18), // space for the plus button
+                  label: '',
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/images/png/services-icons/panier.png",
+                    width: 20,
+                  ),
+                  activeIcon: Image.asset(
+                    "assets/images/png/services-icons/panier.png",
+                    width: 20,
+                  ),
+                  label: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('orders'),
+                  ),
+                  tooltip: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('orders'),
+                  ),
+                ),
+                BottomNavigationBarItem(
+                  icon: Image.asset(
+                    "assets/images/png/services-icons/Compteneo.png",
+                    width: 17,
+                  ),
+                  activeIcon: Image.asset(
+                    "assets/images/png/services-icons/Compteneo.png",
+                    width: 17,
+                  ),
+                  label: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('account'),
+                  ),
+                  tooltip: Utils.capitalize(
+                    AppLocalizations.of(context)!.translate('account'),
+                  ),
+                ),
+              ],
+            ),
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.rocket_outlined), // Icon(Icons.home),
-            activeIcon: Icon(Icons.rocket,color: KabaChineColors.primary,),
-            label: Utils.capitalize(
-                "${AppLocalizations.of(context)!.translate('discover')}"),
-            tooltip: Utils.capitalize(
-                "${AppLocalizations.of(context)!.translate('discover')}"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(FontAwesomeIcons.basketShopping),
-            // Icon(Icons.view_list),
-            activeIcon: Icon(FontAwesomeIcons.basketShopping, color: KabaChineColors.primary),
-            label: Utils.capitalize(
-                '${AppLocalizations.of(context)!.translate('orders')}'),
-            tooltip: Utils.capitalize(
-                '${AppLocalizations.of(context)!.translate('orders')}'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_4_outlined), //  Icon(Icons.person),
-            activeIcon: Icon(Icons.person_4,color: KabaChineColors.primary),
-            label: Utils.capitalize(
-                '${AppLocalizations.of(context)!.translate('account')}'),
-            tooltip: Utils.capitalize(
-                '${AppLocalizations.of(context)!.translate('account')}'),
+
+          // Center floating plus button
+          Positioned(
+            top: -30,
+            left: 0,
+            right: 0,
+            child: Center(
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: KColors.primaryColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.25),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.add, color: Colors.white, size: 32),
+                  onPressed: () {
+                    _openKabaShoppingModal(context);
+                  },
+                ),
+              ),
+            ),
           ),
         ],
-        currentIndex: StateContainer.of(context).tabPosition!,
-        selectedItemColor: KColors.primaryColor,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        onTap: _onItemTapped,
-      ),
+      )
+
     );
   }
 
@@ -871,7 +960,10 @@ class _HomePageState extends State<HomePage> {
       "please_login_before_going_forward_description_orders",
       "please_login_before_going_forward_description_account"
     ];
-    if (value == 2 || value == 3) {
+
+
+
+    if (value == 3 || value == 4) {
       if (StateContainer.of(context).loggingState == 0) {
         showDialog<void>(
           context: context,
@@ -1015,15 +1107,21 @@ class _HomePageState extends State<HomePage> {
         setState(() {
           StateContainer.of(context).updateTabPosition(tabPosition: value);
         });
-        if (value == 3) {
+
+
+        if (value == 4) {
           // ask for permission gps
           xrint("we are starting to load balance fees");
           //
         }
       }
-    } else if (value == 1) {
+    }
+    else if (value == 1) {
       _getLastKnowLocation(jumpToBuyPageDetails: true);
-    } else {
+    }
+
+
+    else {
       // 0
       setState(() {
         StateContainer.of(context).updateTabPosition(tabPosition: value);
@@ -1543,6 +1641,181 @@ class _HomePageState extends State<HomePage> {
 
   }
 }
+
+void _openKabaShoppingModal(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    barrierColor: Colors.black.withOpacity(0.45),
+    builder: (context) {
+      return Center(
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(22),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // TOP RED CARD
+                Container(
+                  height: 150,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(22),
+                      topRight: Radius.circular(22),
+                      bottomLeft: Radius.circular(22),
+                      bottomRight: Radius.circular(22),
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 15),
+                          decoration: BoxDecoration(
+                            color: Colors.amber,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: const Text(
+                            "Bientôt disponible",
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              "assets/images/png/services-icons/shopping_logo.png",
+                              width: 200,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // CONTENT
+                Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:  [
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                              text: "Vendez et achetez tout ",
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.red,
+                              ),
+                            ),
+                            TextSpan(
+                              text: "sur Kaba bientôt !",
+                              style: TextStyle(
+                                fontSize: 14.5,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                        textAlign: TextAlign.left,
+                      ),
+                      SizedBox(height: 12),RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.black87,
+                            height: 1.5,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: "Notre service ",
+                            ),
+                            TextSpan(
+                              text: "Kaba Shopping",
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.w600, // optional, remove if not needed
+                              ),
+                            ),
+                            TextSpan(
+                              text: " vous permettra de publier "
+                                  "des articles de tout genre (Neuf, Occasion) en vente, "
+                                  "via votre boutique en ligne Kaba. Vous pouvez aussi "
+                                  "acheter tout ce que vous désirez.",
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(Icons.calendar_month_sharp, size: 14),
+                          SizedBox(width: 6),
+                          Text(
+                            "À très bientôt 😊",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+
+                // BUTTON
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 16),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 46,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: KColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        "J’ai hâte 🎉",
+                        style: TextStyle(
+                            fontSize: 14.5, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 
 NotificationItem? _notificationFromMessage(Map<String, dynamic> messageEntry) {
   xrint(" inside notificationFromMessage -- " + messageEntry.toString());

@@ -17,6 +17,7 @@ import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/NotLoggedInPopUp.dart';
 import '../../utils/functions/Utils.dart';
+import '../screens/Livreurs/MainPage.dart';
 import '../screens/chat/ChatPage.dart';
 import '../screens/home/me/abonnement/kaba_abonnements.dart';
 import 'performance_ui.dart';
@@ -177,6 +178,31 @@ class _HeaderState extends State<Header> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                        UserLocationMap(),
+                      ),
+                    );
+                  },
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset("assets/images/png/services-icons/livreur.png", width: 25, height: 25),
+                      const Text(
+                        "Besoin Livreur.",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
                 // Abonnement button
                 GestureDetector(
                   onTap: () {
