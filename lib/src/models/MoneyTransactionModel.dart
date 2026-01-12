@@ -99,12 +99,12 @@ class MoneyTransactionModel {
     return MoneyTransactionModel(
       id: map['id'] as int,
       details: map['details'] as String,
-      value: map['value'] as String,
+      value: map['value']['string'] as String,
       state: map['state'] as int,
       type: map['type'] as int,
       created_at: map['created_at'] as int,
       payAtDelivery: map['payAtDelivery'] as bool,
-      command_id: map['command_id'] as int,
+      command_id: map['command_id'] ,
     );
   }
 

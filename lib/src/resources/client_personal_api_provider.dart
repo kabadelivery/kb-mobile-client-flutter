@@ -411,9 +411,10 @@ class ClientPersonalApiProvider {
         data: json.encode({}),
       );
 
-      xrint(response.data.toString());
+      xrint('response data: '+response.data.toString());
       if (response.statusCode == 200) {
         PointObjModel data = PointObjModel.fromMap(mJsonDecode(response.data));
+        debugPrint(data.toString());
         return data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this
@@ -782,7 +783,7 @@ class ClientPersonalApiProvider {
               ? json.encode({"email": login, "type": 1})
               : json.encode({"phone_number":  login, "type": 0}));
 
-      xrint(response.data.toString());
+      xrint("data from sending code ${response.data.toString()}");
       if (response.statusCode == 200) {
         return response.data;
       } else {

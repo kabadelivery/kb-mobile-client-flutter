@@ -229,7 +229,8 @@ class OrderApiProvider {
       xrint("Response data: ${response.data}");
       xrint("Status code: ${response.statusCode}");
       if (response.statusCode == 200) {
-        if(abonnementData.isNotEmpty){
+        var newData = mJsonDecode(response.data);
+        if(newData['user_abonnement']!=null && newData['user_abonnement'].length>0){
           try{
             await dio.post(
               Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
@@ -464,9 +465,8 @@ class OrderApiProvider {
 
       if (response.statusCode == 200) {
         final decoded = mJsonDecode(response.data);
-
-        // ==== SAVE TO ABONNEMENT HISTORY ====
-        if (abonnementData.isNotEmpty) {
+        var newData = mJsonDecode(response.data);
+        if(newData['user_abonnement']!=null && newData['user_abonnement'].length>0){
           try {
             await dio.post(
               Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),

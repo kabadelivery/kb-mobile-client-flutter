@@ -1171,5 +1171,6 @@
   "getcodevia" : "Recevoir le code via",
   "otp_message" : "Votre Code OTP (KABA):",
   "get_otp_code" : "Recevoir le Code",
-  "enter_otp_code" : "Recevoir le Code OTP"
+  "enter_otp_code" : "Recevoir le Code OTP",
+  "search_article": "Rechercher un article"
 }

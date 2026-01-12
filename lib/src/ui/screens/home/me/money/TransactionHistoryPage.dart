@@ -74,7 +74,9 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     /*  _tabController!.addListener(() {
       _handleTabSelection();
     });*/
-
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      searchUserHistoryFallBack();
+    });
     CustomerUtils.getCustomer().then((customer) async{
       widget.customer = customer;
 
@@ -84,6 +86,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
       ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
       balance = await provider.checkBalance(customer);
       pointData = await provider.fetchPointTransactionsHistory(customer);
+
       setState(() {
         isMoneyBalanceLoading = false;
         isMoneyLoading = false;
@@ -127,6 +130,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("rebuild transaction history page ${this.moneyData}");
     if (_searchChoices == null) {
       _searchChoices = [
         "${AppLocalizations.of(context)?.translate("balance")}",
@@ -333,6 +337,18 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
     setState(() {
       this.moneyData = transactions.reversed.toList();
     });
+  }
+  void searchUserHistoryFallBack() async{
+    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
+    CustomerModel ? customer = await CustomerUtils.getCustomer();
+    var result = await provider.fetchMoneyTransactionsHistory(customer);
+    debugPrint("fallback money data set state ${result}");
+    if(result!=null &&  this.moneyData==null){
+
+      setState(() {
+        this.moneyData = result.reversed.toList();
+      });
+    }
   }
 
   @override
@@ -1573,7 +1589,6 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage>
 
   void _onMoneyTransactionTap(MoneyTransactionModel moneyData) {
     if (moneyData!.command_id != null && moneyData!.command_id! > 1) {
-      // jump to order details page
       _jumpToPage(
           context,
           OrderNewDetailsPage(

@@ -30,3 +30,7 @@ class showMoreReviewEvent extends RatingEvent {
   final bool showMore;
   showMoreReviewEvent({required this.showMore});
 }
+class KeyboardVisibilityChanged extends RatingEvent {
+  final bool isOpen;
+  KeyboardVisibilityChanged(this.isOpen);
+}

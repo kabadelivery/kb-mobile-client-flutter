@@ -169,6 +169,7 @@ class ServiceMainPresenter implements ServiceMainContract {
       if (result == null) {
         debugPrint("getAppPerformance returned null");
         _serviceMainView.getRating(false);
+        _serviceMainView.showLoading(false);
         return;
       }
       Map<String, dynamic> performance = Map<String, dynamic>.from(result);

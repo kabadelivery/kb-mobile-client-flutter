@@ -180,6 +180,47 @@ class RestaurantApiProvider {
       throw Exception(-2); // you have no network
     }
   }
+  searchForFood(String category, String query, String token) async {
+    if (await Utils.hasNetwork()) {
+      final dio = Dio();
+      dio.options
+        ..connectTimeout =3000
+        ..headers = {
+          'Authorization': 'Bearer $token',
+          'Accept': 'application/json',
+        };
+
+      (dio.httpClientAdapter as DefaultHttpClientAdapter)
+          .onHttpClientCreate = (HttpClient client) {
+        client.badCertificateCallback =
+            (X509Certificate cert, String host, int port) {
+          return validateSSL(cert, host, port);
+        };
+        return client;
+      };
+
+      final response = await dio.get(
+        ServerRoutes.NEW_SEARCH_FOOD_ACTION,
+        queryParameters: {
+          'category': category,
+          'filter': query,
+        },
+      );
+
+      final data = response.data;
+
+      if (response.statusCode == 200 && (data['error'] ?? 0) == 0) {
+        final List foodsJson = data['data'] ?? [];
+        return foodsJson
+            .map((e) => ShopProductModel.fromJson(e))
+            .toList();
+      }
+
+      return [];
+    } else {
+      throw Exception('No network');
+    }
+  }
 
   fetchRestaurantFoodProposalFromTagOld(String query) async {
     xrint("entered fetchRestaurantFoodProposalFromTag ${query}");
@@ -248,6 +289,7 @@ class RestaurantApiProvider {
       params.putIfAbsent("search_type", () => "shop");
       if (type != null && type != "all")
         params.putIfAbsent("category", () => type);
+      xrint("params $params");
       var response = await dio.get(
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: params);

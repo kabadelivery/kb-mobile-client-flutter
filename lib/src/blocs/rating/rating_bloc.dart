@@ -32,6 +32,9 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
       else if(event is initialEvent){
         emit(RatingInitial());
       }
+      else if(event is KeyboardVisibilityChanged){
+        emit(KeyboardVisibilityChangedState(isOpen: event.isOpen));
+      }
     });
   }
 }

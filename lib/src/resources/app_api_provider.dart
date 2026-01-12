@@ -591,11 +591,12 @@ class AppApiProvider {
       ),
       Uri.parse(ServerRoutes.LINK_GET_PERFORMANCE_RATING).toString(),
     );
-    xrint(response.data.toString());
+
+    xrint("response data ${response.data.toString()}");
     if (response.statusCode == 200|| response.statusCode == 201) {
       return mJsonDecode(response.data);
     } else {
-      throw Exception(-1); // there is an error in your request
+      throw Exception(-1);
     }
 }
 }

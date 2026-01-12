@@ -276,13 +276,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     children: [
                                       Row(
                                           children: [
-                                        Text(
-                                            "${widget.restaurant?.name == null ? '' : widget.restaurant?.name}",
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: KColors.new_black,
-                                                fontSize: 15)),
+                                        Container(
+                                          width:150,
+
+                                          child: Row(
+                                            children: [
+                                              Flexible(
+                                                child: Text(
+                                                    "${widget.restaurant?.name == null ? '' : widget.restaurant?.name}",
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        color: KColors.new_black,
+                                                        fontSize: 15)),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                         Container(),
                                         SizedBox(width: MediaQuery.of(context).size.width/3),
                                         _getRestaurantStateTag(
@@ -527,11 +537,20 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     );
   }
 
-  _computeBasketOffset() {
-    final RenderBox renderBox =
-        _menuBasketKey!.currentContext!.findRenderObject() as RenderBox;
-    _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
+  void _computeBasketOffset() {
+    final context = _menuBasketKey!.currentContext;
+    if (context == null) return;
+
+    final renderObject = context.findRenderObject();
+    if (renderObject == null || !renderObject.attached) return;
+
+    final renderBox = renderObject as RenderBox;
+
+    setState(() {
+      _menuBasketOffset = renderBox.localToGlobal(Offset.zero);
+    });
   }
+
 
   _buildRestaurantMenu() {
     if (hasSystemError || hasNetworkError) {

@@ -40,7 +40,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
-
 import '../../../../../blocs/rating/rating_bloc.dart';
 import '../../../../../microservices/expedition/Enums/expedition_type.dart';
 import '../../../../../microservices/expedition/presentation/pages/expedition.dart';
@@ -93,7 +92,8 @@ class ServiceMainPage extends StatefulWidget {
 
 class ServiceMainPageState extends State<ServiceMainPage>
     implements ServiceMainView {
-  bool? isLoading;
+  bool isLoading = true;
+
 
   bool? hasNetworkError;
 
@@ -104,15 +104,20 @@ class ServiceMainPageState extends State<ServiceMainPage>
   late SharedPreferences prefs;
 
   bool isPickLocation = false;
+  bool _initialized = false;
 
   CurrentLocationTile? _myCurrentTile;
   StreamSubscription<Position>? positionStream;
   Position? tmpLocation;
-
   @override
   void initState() {
     super.initState();
     this.widget.presenter!.checkVersion();
+    Future.delayed(Duration(seconds: 5), () {
+      if (mounted && isLoading) {
+        setState(() => isLoading = false);
+      }
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       this.widget.presenter!.getRating();
@@ -188,9 +193,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
       }
     }
     else{
+
       setState(() {
         isLoading = false;
       });
+
     }
   }
   Future<String?> _askUserChoice(BuildContext context,bool canSkip) {
@@ -563,6 +570,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    if (_initialized) return;
+    _initialized = true;
+
+    _bootstrap();
     if (widget.available_services?.length == 0 &&
         widget.coming_soon_services?.length == 0) {
       widget.presenter?.fetchServiceCategoryFromLocation(
@@ -585,6 +596,37 @@ class ServiceMainPageState extends State<ServiceMainPage>
               position: tween.animate(curvedAnimation), child: child);
         }));
   }
+  Future<void> _bootstrap() async {
+    setState(() => isLoading = true);
+
+    // 1. Version check
+    await widget.presenter!.checkVersion();
+
+    // 2. Ensure location
+    final hasLocation = await _ensureLocation();
+    if (!hasLocation) {
+      setState(() => isLoading = false);
+      return;
+    }
+
+    // 3. Fetch data
+    widget.presenter!.fetchServiceCategoryFromLocation(
+      StateContainer.of(context).location!,
+    );
+
+    widget.presenter!.fetchBilling();
+  }
+  Future<bool> _ensureLocation() async {
+    if (StateContainer.of(context).location != null) {
+      return true;
+    }
+
+    await _getLastKnowLocation();
+
+    // After modal / permission flow
+    return StateContainer.of(context).location != null;
+  }
+
   Future<void> _callCustomerCare() async {
 //    Toast.show("call customer care", context);
     const url = "tel:+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
@@ -688,13 +730,15 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 top: true,
                 child: Container(
                   child: Container(
-                      child: isLoading!
-                          ? Center(child: MyLoadingProgressWidget())
-                          : (hasNetworkError!
-                          ? Center(child: MyLoadingProgressWidget())
-                          : hasSystemError!
-                          ? _buildSysErrorPage()
-                          : _buildServicePage())),
+                    child: isLoading
+                        ? Center(child: MyLoadingProgressWidget())
+                        : hasNetworkError!
+                        ? _buildNetworkErrorPage()
+                        : hasSystemError!
+                        ? _buildSysErrorPage()
+                        : _buildServicePage(),
+
+                  ),
                 ))));
   }
 
@@ -1030,7 +1074,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/65dadcb9-e967-4c9e-9e06-c2f63962c332/VYwzwRMD84.json")),
+                                    child: Lottie.asset("assets/lottie/truck.json")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('expedition')}",

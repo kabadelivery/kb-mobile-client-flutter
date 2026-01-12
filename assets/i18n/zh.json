@@ -1170,5 +1170,6 @@
   "tr": "验证码将在以下时间后过期：",
   "otp_message": "您的验证码（KABA）：",
   "get_otp_code": "获取验证码",
-  "enter_otp_code": "输入验证码"
+  "enter_otp_code": "输入验证码",
+  "search_article": "搜索商品"
 }

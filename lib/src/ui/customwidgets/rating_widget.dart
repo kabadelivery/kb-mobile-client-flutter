@@ -22,27 +22,35 @@ class RatingWidget extends StatefulWidget {
   State<RatingWidget> createState() => _RatingWidgetState();
 }
 
-class _RatingWidgetState extends State<RatingWidget> {
+class _RatingWidgetState extends State<RatingWidget>  {
   int selectedRating = 3;
 
   @override
   void initState() {
     super.initState();
     selectedRating = widget.rate;
+
   }
+
   @override
   Widget build(BuildContext context) {
+
+
     return BlocSelector<RatingBloc, RatingState, RatingState>(
       selector: (state) {
         return state;
       },
+
       builder: (context, state) {
+        debugPrint("state $state");
+
         if(state is RateDeliveryTypeState) {
           if(state.deliveryRatingType == widget.rate_id) {
             selectedRating = state.rating;
           }
         }
-        return Container(
+        return ( state is KeyboardVisibilityChangedState && state.isOpen) ? Container():
+        Container(
           padding: EdgeInsets.symmetric(horizontal: 10,vertical: 5.0),
           width: MediaQuery.of(context).size.width*0.89,
           child: Row(

@@ -29,11 +29,13 @@ class RatingArticle extends StatefulWidget {
   State<RatingArticle> createState() => _RatingArticleState();
 }
 
-class _RatingArticleState extends State<RatingArticle> {
+class _RatingArticleState extends State<RatingArticle>with WidgetsBindingObserver {
   String sellerName = "DaVodou";
   String sellerImage = "https://t3.ftcdn.net/jpg/01/97/11/64/360_F_197116416_hpfTtXSoJMvMqU99n6hGP4xX0ejYa4M7.jpg";
   String articleName = "";
   int totalRating = 3;
+  bool _isKeyboardOpen = false;
+
   TextEditingController commentController = TextEditingController();
   DeliveryRatingPending deliveryRatingPending= DeliveryRatingPending();
   @override
@@ -54,6 +56,23 @@ void initState() {
     if(areSameArticle==true){
       deliveryRatingPending.articles = [];
       deliveryRatingPending.articles!.add(articleFirst);
+    }
+    WidgetsBinding.instance.addObserver(this);
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset =
+        WidgetsBinding.instance.window.viewInsets.bottom;
+    final newValue = bottomInset > 0;
+
+    if (newValue != _isKeyboardOpen) {
+      setState(() => _isKeyboardOpen = newValue);
     }
   }
   @override
@@ -204,7 +223,7 @@ void initState() {
                   ):Container(
                    height:  105,
                  ),
-                  SizedBox(height: 30,),
+                  SizedBox(height:_isKeyboardOpen?0: 30,),
                   Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(

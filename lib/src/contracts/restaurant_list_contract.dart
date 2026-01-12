@@ -184,21 +184,27 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async
     return [];
   }
 }
-_filteredData(List<ShopModel> data, String filter_key) {
-  List<ShopModel> d =[];
+List<ShopModel> _filteredData(List<ShopModel> data, String filterKey) {
+  List<ShopModel> result = [];
+
+  final search = normalize(filterKey.trim());
 
   for (var restaurant in data) {
-    String sentence =
-        removeAccentFromString("${restaurant.name}".toLowerCase());
-    String sentence1 = removeAccentFromString(filter_key.trim()).toLowerCase();
+    final name = normalize(restaurant.name ?? '');
 
-    if (sentence.contains(sentence1)) {
-      d.add(restaurant);
+    if (name.contains(search)) {
+      result.add(restaurant);
     }
   }
-  return d;
+
+  return result;
 }
 
+String normalize(String input){
+  return removeAccentFromString(input)
+      .toLowerCase()
+      .replaceAll(RegExp(r'[^a-z0-9]'), '');
+}
 String removeAccentFromString(String sentence) {
   String sentence1 = sentence
       .replaceAll(new RegExp(r'é'), "e")

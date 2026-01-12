@@ -61,7 +61,6 @@ class FoodItem {
   }
 }
 
-/// Grid widget displaying food list
 class FoodGrid extends StatefulWidget {
   final String foodType; // e.g. "Riz", "Spaghetti"
   final String typeOfSearch;
@@ -86,16 +85,15 @@ class _FoodGridState extends State<FoodGrid> {
   Future<Map<String,dynamic>> fetchFoods(String query) async {
     try {
       CustomerModel user = await CustomerUtils.getCustomer();
+      debugPrint("Fetching foods for query: $query and typeOfSearch: ${widget.typeOfSearch}");
       final List<ShopProductModel> products =
-      await _service.fetchRestaurantFoodProposal2FromTag(widget.typeOfSearch, widget.typeOfSearch=="food"?query:"");     await _service.fetchRestaurantFoodProposal2FromTag(widget.typeOfSearch, query);
+      await _service.searchForFood(widget.typeOfSearch, query,user.token ?? "");
       Map<String,dynamic> food_and_products = {
         'products':[],
         'food':[]
       };
       String? myBillingArray =await CustomerUtils.getLastStoredBilling();
-
       Map<String, String> billingMap = {};
-
       if (myBillingArray != null) {
         var billingData = json.decode(myBillingArray);
         var billingData2 = billingData[user.email != null ? "email" : "phoneNumber"];
@@ -373,12 +371,21 @@ class _FoodGridState extends State<FoodGrid> {
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return Container(
+                  return SizedBox(
                     height: 130,
-                    color: Colors.grey.shade200,
-                    child: const Icon(Icons.image_not_supported, color: Colors.grey),
+                    width: double.infinity,
+                    child: Container(
+                      color: Colors.grey.shade200,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.image_not_supported,
+                        color: Colors.grey,
+                        size: 40,
+                      ),
+                    ),
                   );
                 },
+
               );
             }),
           ),
@@ -398,6 +405,8 @@ class _FoodGridState extends State<FoodGrid> {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               food.restaurantName,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
               style: TextStyle(color: Colors.grey.shade600),
             ),
           ),

@@ -19,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 Future<bool> _isImageSizeValid(File imageFile) async {
   final fileSize = await imageFile.length();
-  return fileSize <= 15 * 1024 * 1024; // 3MB
+  return fileSize <= 15 * 1024 * 1024; // 15MB
 }
 
 Future<File?> pickImageIOS(BuildContext context) async {

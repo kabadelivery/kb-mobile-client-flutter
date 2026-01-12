@@ -334,8 +334,15 @@ class Utils {
   static double locationDistance(Position? position, ShopModel restaurant) {
       double lat1 = position!.latitude;
       double long1 = position!.longitude;
-      double lat2 = double.parse(restaurant.location!.split(":")[0]);
-      double long2 = double.parse(restaurant.location!.split(":")[1]);
+      late double lat2;
+      late double long2;
+      try{
+        lat2= double.parse(restaurant.location!.split(":")[0]);
+        long2= double.parse(restaurant.location!.split(":")[1]);
+      }catch(e){
+        lat2= double.parse(restaurant.location!.split(",")[0]);
+        long2= double.parse(restaurant.location!.split(",")[1]);
+      }
       double distance =
           Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
       distance = 1.15 /* error factor */ * distance / 1000; // distance meter

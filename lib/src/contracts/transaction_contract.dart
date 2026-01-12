@@ -4,6 +4,7 @@ import 'package:KABA/src/models/MoneyTransactionModel.dart';
 import 'package:KABA/src/models/PointObjModel.dart';
 import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:flutter/cupertino.dart';
 
 class TransactionContract {
 
@@ -100,19 +101,12 @@ class TransactionPresenter implements TransactionContract {
       return;
     isMoneyWorking = true;
     _transactionView.showMoneyLoading(true);
-    try {
+
       List<MoneyTransactionModel> moneyTransactions = await provider.fetchMoneyTransactionsHistory(customer);
       // also get the restaurant entity here.
+
       _transactionView.inflateMoneyTransaction(moneyTransactions);
-    } catch (_) {
-      /* Transaction failure */
-      xrint("error ${_}");
-      if (_ == -2) {
-        _transactionView.systemMoneyError();
-      } else {
-        _transactionView.networkMoneyError();
-      }
-    }
+
     isMoneyWorking = false;
   }
 

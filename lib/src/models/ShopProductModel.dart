@@ -69,6 +69,7 @@ class ShopProductModel {
     try {
       restaurant_entity = ShopModel.fromJson(json['restaurant_entity']);
     } catch (_) {
+      restaurant_entity = ShopModel.fromJson(json['restaurant']);
       debugPrint(_.toString());
     }
     try {
@@ -106,7 +107,6 @@ class ShopProductModel {
 
   static ShopProductModel randomFood() {
     ShopProductModel food = ShopProductModel();
-
     food.id = 999;
     food.name = "ATTIEKE + POULET + ALLOCO";
     food.price = "1500";

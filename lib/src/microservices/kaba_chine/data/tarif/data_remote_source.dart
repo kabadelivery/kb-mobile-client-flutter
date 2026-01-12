@@ -29,7 +29,7 @@ class ShippingRemoteDataSourceImpl implements ShippingRemoteDataSource {
     TarifModel(
         id: 'sea-default',
         mode: Tariftype.boat.value,
-        price: 23000,
+        price: 230000,
         unit: 'CBM',
         duration: 45,
         route: ShippingModel(departure: 'GuangZhou', destination: "Lomé"),

@@ -77,7 +77,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   String? _filterDropdownValue;
 
-  String  _selectedFilter = 'Spaghetti' ;
+  String  _selectedFilter = '' ;
 
   // GlobalKey firstItemKey = GlobalKey(debugLabel: Utils.getAlphaNumericString());
 
@@ -109,8 +109,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   // keep track of which chips are selected
   final List<String> _allFilters = [
     "spagho", "poissonbraise",
-    "foufou", "akoumé", "émakoume", "degue", "botokoin" , "tchintchinga" , "pizza" , "burger"  , "charwama" , "glaces" , "brochettes" , "poulet" , "riz",
-    "#jus", "#smoothie", "#milkshakes", "#théaulait", "#crêpes", "#bouillie"
+    "foufou", "akoumé", "émakoume", "degue", "botokoin" , "tchintchinga" , "pizza" , "burger"  , "shawarma" , "glaces" , "brochettes" , "poulet" , "riz",
+    "jus", "smoothie", "milkshakes", "théaulait", "crêpes", "bouillie"
   ];
   final Set<String> _selectedFilters = {}; // dynamic selection
 
@@ -234,55 +234,38 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             child: Column(
               children: [
                 Container(
-                  padding:  EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
-                  decoration: BoxDecoration(
+                  width: MediaQuery.of(context).size.width,
+                  height: 80,
+            decoration: BoxDecoration(
                     color: KColors.primaryColor,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(25),
                       bottomRight: Radius.circular(25),
                     ),
                   ),
-                  child: Column(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              autofocus: _searchAutoFocus,
-                              controller: _filterEditController,
-                              textInputAction: TextInputAction.search,
-                              onSubmitted: (val) => _searchAction(pressButton: true),
-                              onChanged: (val) {
-                                EasyDebounce.debounce(
-                                  'search-input-debouncer',
-                                  const Duration(milliseconds: 700),
-                                      () => _searchAction(),
-                                );
-                              },
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Find menu or restaurant",
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.close),
-                            onPressed: _clearFocus,
-                          ),
-                        ],
-                      ),
-
+                      IconButton(onPressed: (){
+                        Navigator.pop(context);
+                      }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,size: 20,)),
                       /// 🔍 Title / Search
 
-                      const SizedBox(height: 8),
-                      SearchSwitchWidget(
-                        searchTypePosition,
-                        _choice,
-                        _filterFunction,
-                        _listContentFilter,
-                        _scrollToTopFunction,
-                        widget.type!,
-                        filterConfiguration ?? {},
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+
+                          SearchSwitchWidget(
+                            searchTypePosition,
+                            _choice,
+                            _filterFunction,
+                            _listContentFilter,
+                            _scrollToTopFunction,
+                            widget.type!,
+                            filterConfiguration ?? {},
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -1022,7 +1005,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             ),
             child: TextField(
               decoration: InputDecoration(
-                hintText: "Rechercher un plat...",
+                hintText: "${AppLocalizations.of(context)!.translate('search_article')}",
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),

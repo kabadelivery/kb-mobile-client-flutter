@@ -23,7 +23,7 @@ class RatingDelivery extends StatefulWidget {
   @override
   State<RatingDelivery> createState() => _RatingDeliveryState();
 }
-class _RatingDeliveryState extends State<RatingDelivery> {
+class _RatingDeliveryState extends State<RatingDelivery>  with WidgetsBindingObserver{
   String livreurName = "";
   String livreurImage = "https://images.icon-icons.com/3560/PNG/512/delivery_courier_man_people_avatar_shipping_icon_225197.png";
   int speedRating =3;
@@ -32,6 +32,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
   int groomingOfDeliveryMan = 3;
   double totalRating = 3;
   int cumulRating = 12;
+  bool _isKeyboardOpen = false;
+
   TextEditingController commentController = TextEditingController();
   @override
   void initState(){
@@ -44,10 +46,30 @@ class _RatingDeliveryState extends State<RatingDelivery> {
     groomingOfDeliveryMan = widget.deliveryRatingPending.groomingOfDeliveryMan ?? 3;
     cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
     totalRating = cumulRating / 4;
+    WidgetsBinding.instance.addObserver(this);
+  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final bottomInset =
+        WidgetsBinding.instance.window.viewInsets.bottom;
+    final newValue = bottomInset > 0;
+
+    if (newValue != _isKeyboardOpen) {
+      setState(() => _isKeyboardOpen = newValue);
+    }
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    return  Scaffold(
+
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
@@ -65,30 +87,30 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                 ),
               ),
             ),
-           if(widget.canSkip)
-            Positioned(
-              right: 10,
-                top: 10,
-                child:
-            GestureDetector(
-              onTap: ()async{
-                if(widget.deleteAll){
-                  await  deleteRatePendingFromCache();
-                }else{
-                  await removeSingleRatePendingFromCache(widget.deliveryRatingPending.command_id.toString());
-                }
-                logButtonPress("Bouton skip pour la notation");
-                Navigator.pop(context);
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Text("Skip", style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 16)),
-                ),
-            )),
+            if(widget.canSkip)
+              Positioned(
+                  right: 10,
+                  top: 10,
+                  child:
+                  GestureDetector(
+                    onTap: ()async{
+                      if(widget.deleteAll){
+                        await  deleteRatePendingFromCache();
+                      }else{
+                        await removeSingleRatePendingFromCache(widget.deliveryRatingPending.command_id.toString());
+                      }
+                      logButtonPress("Bouton skip pour la notation");
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15,vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      child: Text("Skip", style: TextStyle(color: KColors.primaryColor,fontWeight: FontWeight.bold, fontSize: 16)),
+                    ),
+                  )),
             Positioned(
               top: 40,
               left: 120,
@@ -130,7 +152,7 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                       Text(
+                      Text(
                         "${AppLocalizations.of(context)!.translate("delivery_person")}",
                         style: TextStyle(fontWeight: FontWeight.normal,
                             fontSize: 16,
@@ -152,8 +174,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                   ),
 
                   const SizedBox(height: 10),
-                   Text(
-                     "${AppLocalizations.of(context)!.translate("delivery_feedback")}",
+                  Text(
+                    "${AppLocalizations.of(context)!.translate("delivery_feedback")}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16,
@@ -161,120 +183,125 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  RatingWidget(
-                    ratingTextAndIcon: SizedBox(
-                      width: 120,
-                      child: Row(
-                        children:  [
-                          Icon(CupertinoIcons.time, weight: .5, color: Colors.black87),
-                          SizedBox(width: 5),
-                          Flexible(child: Text( "${AppLocalizations.of(context)!.translate("delivery_speed")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
-                        ],
-                      ),
-                    ),
-                    rate_id: DeliveryRatingType.speedRating,
-                    rate: speedRating,
-
-                  ),
-                  RatingWidget(
-                    ratingTextAndIcon: SizedBox(
-                      width: 120,
-                      child: Row(
-                        children:  [
-                          Icon(Icons.location_on_outlined, weight: 100, color: Colors.black87),
-                          SizedBox(width: 5),
-                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_geolocation")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
-                        ],
-                      ),
-                    ),
-                    rate: respectOfGeolocation,
-                    rate_id: DeliveryRatingType.respectOfGeolocation,
-                  ),
-                  RatingWidget(
-                    ratingTextAndIcon: SizedBox(
-                      width: 140,
-                      child: Row(
-                        children:  [
-                          Icon(CupertinoIcons.smiley, weight: .5, color: Colors.black87),
-                          SizedBox(width: 5),
-                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_attitude")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
-                        ],
-                      ),
-                    ),
-                    rate: attidudeOfDeliveryMan,
-                    rate_id: DeliveryRatingType.attidudeOfDeliveryMan,
-                  ),
-                  RatingWidget(
-                    ratingTextAndIcon: SizedBox(
-                      width: 140,
-                      child: Row(
-                        children:  [
-                          Icon(CupertinoIcons.person, weight: 0.1, color: Colors.black87),
-                          SizedBox(width: 5),
-                          Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_uniform")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
-                        ],
-                      ),
-                    ),
-                    rate: groomingOfDeliveryMan,
-                    rate_id: DeliveryRatingType.groomingOfDeliveryMan,
-                  ),
-                  BlocSelector<RatingBloc, RatingState, RatingState>(
-                    selector: (state) => state,
-                    builder: (context, state) {
-                      if (state is RateDeliveryTypeState) {
-
-                        if(state.deliveryRatingType == DeliveryRatingType.speedRating) {
-                          speedRating = state.rating;
-                        }
-                        if(state.deliveryRatingType == DeliveryRatingType.respectOfGeolocation) {
-                          respectOfGeolocation = state.rating;
-                        }
-                        if(state.deliveryRatingType == DeliveryRatingType.attidudeOfDeliveryMan) {
-                          attidudeOfDeliveryMan = state.rating;
-                        }
-                        if(state.deliveryRatingType == DeliveryRatingType.groomingOfDeliveryMan) {
-                          groomingOfDeliveryMan = state.rating;
-                        }
-                         cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
-                        totalRating = cumulRating / 4;
-                      }
-                      if(state is PreviousPageState){
-                        speedRating = state.deliveryRatingPending.speedRating ?? 3;
-                        respectOfGeolocation = state.deliveryRatingPending.respectOfGeolocation ?? 3;
-                        attidudeOfDeliveryMan = state.deliveryRatingPending.attidudeOfDeliveryMan ?? 3;
-                        groomingOfDeliveryMan = state.deliveryRatingPending.groomingOfDeliveryMan ?? 3;
-                        cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
-                        totalRating = cumulRating / 4;
-                        commentController.text=state.deliveryRatingPending.delivery_comment??"";
-
-                      }
-                      return Container(
-                        width: MediaQuery.of(context).size.width*0.8,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(totalRating<3?FontAwesomeIcons.faceFrown:totalRating>=3&& totalRating<4?FontAwesomeIcons.faceSmile:totalRating>=4&& totalRating<5?FontAwesomeIcons.faceSmileWink:totalRating>=5?FontAwesomeIcons.faceSmileBeam:FontAwesomeIcons.faceSmileBeam, weight: .5, size:19,color: KColors.primaryColor),
-                            const SizedBox(width: 5),
-                             Flexible(child: Text("${AppLocalizations.of(context)!.translate("total_score")}", style: TextStyle(fontSize:14,color: Colors.black87))),
-                            const SizedBox(width: 5),
-                            Container(
-                              width: 50,
-                              child: Text(
-                                totalRating.toString(),
-                                style: const TextStyle(
-                                  color: Colors.black87,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 17,
-                                ),
-                              ),
+                  if (!_isKeyboardOpen)
+                    Column(
+                      children: [
+                        RatingWidget(
+                          ratingTextAndIcon: SizedBox(
+                            width: 120,
+                            child: Row(
+                              children:  [
+                                Icon(CupertinoIcons.time, weight: .5, color: Colors.black87),
+                                SizedBox(width: 5),
+                                Flexible(child: Text( "${AppLocalizations.of(context)!.translate("delivery_speed")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                              ],
                             ),
-                          ],
+                          ),
+                          rate_id: DeliveryRatingType.speedRating,
+                          rate: speedRating,
+
                         ),
-                      );
-                    },
-                  ),
+                        RatingWidget(
+                          ratingTextAndIcon: SizedBox(
+                            width: 120,
+                            child: Row(
+                              children:  [
+                                Icon(Icons.location_on_outlined, weight: 100, color: Colors.black87),
+                                SizedBox(width: 5),
+                                Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_geolocation")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                              ],
+                            ),
+                          ),
+                          rate: respectOfGeolocation,
+                          rate_id: DeliveryRatingType.respectOfGeolocation,
+                        ),
+                        RatingWidget(
+                          ratingTextAndIcon: SizedBox(
+                            width: 140,
+                            child: Row(
+                              children:  [
+                                Icon(CupertinoIcons.smiley, weight: .5, color: Colors.black87),
+                                SizedBox(width: 5),
+                                Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_attitude")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                              ],
+                            ),
+                          ),
+                          rate: attidudeOfDeliveryMan,
+                          rate_id: DeliveryRatingType.attidudeOfDeliveryMan,
+                        ),
+                        RatingWidget(
+                          ratingTextAndIcon: SizedBox(
+                            width: 140,
+                            child: Row(
+                              children:  [
+                                Icon(CupertinoIcons.person, weight: 0.1, color: Colors.black87),
+                                SizedBox(width: 5),
+                                Flexible(child: Text("${AppLocalizations.of(context)!.translate("delivery_uniform")}", style: TextStyle(color: Colors.black87,fontSize: 12))),
+                              ],
+                            ),
+                          ),
+                          rate: groomingOfDeliveryMan,
+                          rate_id: DeliveryRatingType.groomingOfDeliveryMan,
+                        ),
+                        BlocSelector<RatingBloc, RatingState, RatingState>(
+                          selector: (state) => state,
+                          builder: (context, state) {
+                            if (state is RateDeliveryTypeState) {
+
+                              if(state.deliveryRatingType == DeliveryRatingType.speedRating) {
+                                speedRating = state.rating;
+                              }
+                              if(state.deliveryRatingType == DeliveryRatingType.respectOfGeolocation) {
+                                respectOfGeolocation = state.rating;
+                              }
+                              if(state.deliveryRatingType == DeliveryRatingType.attidudeOfDeliveryMan) {
+                                attidudeOfDeliveryMan = state.rating;
+                              }
+                              if(state.deliveryRatingType == DeliveryRatingType.groomingOfDeliveryMan) {
+                                groomingOfDeliveryMan = state.rating;
+                              }
+                              cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
+                              totalRating = cumulRating / 4;
+                            }
+                            if(state is PreviousPageState){
+                              speedRating = state.deliveryRatingPending.speedRating ?? 3;
+                              respectOfGeolocation = state.deliveryRatingPending.respectOfGeolocation ?? 3;
+                              attidudeOfDeliveryMan = state.deliveryRatingPending.attidudeOfDeliveryMan ?? 3;
+                              groomingOfDeliveryMan = state.deliveryRatingPending.groomingOfDeliveryMan ?? 3;
+                              cumulRating = speedRating + respectOfGeolocation + attidudeOfDeliveryMan + groomingOfDeliveryMan;
+                              totalRating = cumulRating / 4;
+                              commentController.text=state.deliveryRatingPending.delivery_comment??"";
+
+                            }
+                            return Container(
+                              width: MediaQuery.of(context).size.width*0.8,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Icon(totalRating<3?FontAwesomeIcons.faceFrown:totalRating>=3&& totalRating<4?FontAwesomeIcons.faceSmile:totalRating>=4&& totalRating<5?FontAwesomeIcons.faceSmileWink:totalRating>=5?FontAwesomeIcons.faceSmileBeam:FontAwesomeIcons.faceSmileBeam, weight: .5, size:19,color: KColors.primaryColor),
+                                  const SizedBox(width: 5),
+                                  Flexible(child: Text("${AppLocalizations.of(context)!.translate("total_score")}", style: TextStyle(fontSize:14,color: Colors.black87))),
+                                  const SizedBox(width: 5),
+                                  Container(
+                                    width: 50,
+                                    child: Text(
+                                      totalRating.toString(),
+                                      style: const TextStyle(
+                                        color: Colors.black87,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   SizedBox(height: 20,),
-                   Container(
+                  Container(
                     width:MediaQuery.of(context).size.width * 0.8,
                     child:Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -299,6 +326,8 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                       ],
                     ),
                   ),
+                  SizedBox(height:!_isKeyboardOpen? 0:100,),
+
                   MaterialButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(50.0),
@@ -329,12 +358,12 @@ class _RatingDeliveryState extends State<RatingDelivery> {
                             "rating": totalRating,
                           };
                         }
-                    }
+                      }
                       BlocProvider.of<RatingBloc>(context).add(
                         sendDeliveryRatingPendingEvent(deliveryRatingPending: deliveryRatingPending),
                       );
                       BlocProvider.of<RatingBloc>(context).add(nextPageEvent());
-                      },
+                    },
                     child: Text( "${AppLocalizations.of(context)!.translate("confirm_continue")}",
                       style: TextStyle(fontWeight: FontWeight.bold,
                           fontSize: 14,

@@ -157,21 +157,20 @@ class ServerRoutes {
       ServerConfig.SERVER_ADDRESS + "/mobile/api/user/get/discussion";
 
   static const String LINK_SEND_VERIFCATION_SMS =
-      ServerConfig.SERVER_ADDRESS + "/api/code/request";
+      ServerConfig.SERVER_ADDRESS + "/api/code/requestV2";
 
   static const String LINK_SEND_VERIFCATION_EMAIL_SMS =
       ServerConfig.SERVER_ADDRESS +
-          "/api/code/request"; //"/api/code/request/main";
+          "/api/code/requestV2"; //"/api/code/request/main";
 
   static const String LINK_SEND_RECOVER_VERIFCATION_SMS =
-      ServerConfig.SERVER_ADDRESS + "/api/password/code/request";
+      ServerConfig.SERVER_ADDRESS + "/api/password/code/requestV2";
 
   static const String LINK_POST_SUGGESTION =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/add/suggestion";
 
   static const String LINK_GET_BESTSELLERS_LIST =
       ServerConfig.SERVER_ADDRESS + "/api/food/rating/get";
-
   /* get notification food data */
   static const String LINK_GET_FOOD_DETAILS_LOGGED =
       ServerConfig.SERVER_ADDRESS + "/mobile/api/food/details/get";
@@ -369,4 +368,5 @@ class ServerRoutes {
   static const String LINK_GET_SKIP_NOTATION_STATUS = ServerConfig.SERVER_ADDRESS + "/mobile/api/notation-skip/status/get";
   static const String LINK_GET_PERFORMANCE_RATING =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/rating/v4/get";
   static const String LINK_PAY_BY_WALLET = ServerConfig.PAY_SERVER_ADDRESS_SECURE+"/api/subscription/pay/wallet";
+  static const String NEW_SEARCH_FOOD_ACTION = ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/v4/foods/search";
 }

@@ -29,3 +29,7 @@ class showMoreReviewState extends RatingState {
   final bool showMore;
   showMoreReviewState({required this.showMore});
 }
+class KeyboardVisibilityChangedState extends RatingState {
+  final bool isOpen;
+  KeyboardVisibilityChangedState({required this.isOpen});
+}

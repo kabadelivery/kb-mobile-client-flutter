@@ -1103,18 +1103,18 @@
   "special_instructions": "Special Instructions",
   "store_or_prescription_image": "Store/Prescription Image (optional)",
   "subscription_code_hint": "Subscription code",
-    "secure_access": "Secure Access",
-     "pharmacies": "Pharmacies",
-       "fill_all_fields": "❌ Please fill in all fields.",
+ "secure_access": "Secure Access",
+ "pharmacies": "Pharmacies",
+  "fill_all_fields": "❌ Please fill in all fields.",
   "passwords_not_match": "❌ Passwords do not match.",
   "invalid_login": "❌ Invalid login.",
   "no_otp_received": "❌ No OTP code received.",
-    "invalid_otp_code": "❌ Invalid OTP code",
+  "invalid_otp_code": "❌ Invalid OTP code",
   "empty_password": "❌ Password is empty",
    "password_update_failed": "❌ Failed to update password",
   "incorrect_otp_code": "❌ Incorrect OTP code",
-    "password_reset_failed": "❌ Failed password",
-      "phone_number": "Phone Number",
+  "password_reset_failed": "❌ Failed password",
+  "phone_number": "Phone Number",
   "enter_phone": "Enter your number",
   "enter_password_error": "Please enter your password.",
   "password_min_error": "Password must be 4 characters.",
@@ -1165,6 +1165,6 @@
   "tr" : "The code will expire in : ",
   "otp_message" : "Your OTP Code (KABA):",
   "get_otp_code" : "Get the Code ",
-  "enter_otp_code" : "Get the OTP code"
-
+  "enter_otp_code" : "Get the OTP code",
+  "search_article": "Search for an article"
 }

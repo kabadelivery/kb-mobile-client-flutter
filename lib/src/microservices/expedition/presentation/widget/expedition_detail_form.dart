@@ -1594,6 +1594,11 @@ class _ImageSlotState extends State<ImageSlot> {
       if (Platform.isAndroid) {
         final value = await pickImageAndroid(context);
         if (value != null) {
+          final value = await pickImageIOS(context);
+          var compressedImage  = await compressImage(value!);
+          var newFile = File(compressedImage!.path);
+          debugPrint("old image size: ${value.lengthSync()/1024} KB");
+          debugPrint("new image size: ${newFile.lengthSync()/1024} KB");
           expeditionBloc.add(AddPhotoEvent(
               file: value,
               packageIndex: widget.packageIndex,
@@ -1610,9 +1615,14 @@ class _ImageSlotState extends State<ImageSlot> {
         final granted = await requestCameraAndGalleryPermissions();
         if (granted) {
           final value = await pickImageIOS(context);
+
           if (value != null) {
+            var compressedImage  = await compressImage(value!);
+            var newFile = File(compressedImage!.path);
+            debugPrint("old image size: ${value.lengthSync()/1024} KB");
+            debugPrint("new image size: ${newFile.lengthSync()/1024} KB");
             expeditionBloc.add(AddPhotoEvent(
-                file: value,
+                file: newFile,
                 packageIndex: widget.packageIndex,
                 photoIndex: widget.photoIndex));
           }

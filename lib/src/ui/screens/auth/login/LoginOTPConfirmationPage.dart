@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
+import 'package:KABA/src/resources/client_personal_api_provider.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:KABA/src/ui/screens/auth/pwd/RetrievePasswordPage.dart';
 import 'package:KABA/src/ui/screens/home/orders/OrderConfirmationPage2.dart';
@@ -39,7 +41,10 @@ class LoginOTPConfirmationPage extends StatefulWidget {
 
   String? otp_code;
 
-  LoginOTPConfirmationPage({Key? key, this.username, this.otp_code , required this.login}) : super(key: key);
+  String? request_id;
+
+
+  LoginOTPConfirmationPage({Key? key, this.username, this.otp_code , required this.login,required this.request_id}) : super(key: key);
 
   @override
   _LoginOTPConfirmationPageState createState() => _LoginOTPConfirmationPageState();
@@ -56,11 +61,8 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   String? _selectedOption = "whatsapp";
   int _remainingSeconds = 90; // 90 seconds timer
   Timer? _timer;
-
-  //00 int CODE_EXPIRATION_LAPSE = 2*60; /* minutes *  seconds */
-
   int? timeDiff = 0;
-
+  bool otp_loading=false;
   String? _requestId;
 
   int? _inputCount = 4;
@@ -270,6 +272,8 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
     bool isValid = await validateCodeAndConfirm(enteredPassword);
 
     if (isValid) {
+      ClientPersonalApiProvider clientPersonalApiProvider = ClientPersonalApiProvider();
+      await clientPersonalApiProvider.checkRequestCodeAction(widget.otp_code.toString(), widget.request_id!);
       setState(() {
         errorMessage = "";
         loadingToGoOut = true;
@@ -306,103 +310,137 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
             ),
           ),
         ),
-        body: Column(
-            children:[
-              Padding(
-                padding: const EdgeInsets.only(
-                    top: 50.0, left: 20, right: 20, bottom: 20),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(FontAwesomeIcons.rightFromBracket,
-                            color: KColors.primaryColor, size: 25),
-                        SizedBox(width: 10),
-                        Text("Connexion",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600)),
-                      ],
-                    ),
-                    const SizedBox(height: 40),
-                    Text(
-                      "Entrez le code de vérification",
-                      // "${AppLocalizations.of(context)!.translate('verif_c_t')}",
-                      style: TextStyle(fontSize: 16, color: Colors.black87),
-                    ),
-                    const SizedBox(height: 20),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children:
-                      List.generate(4, (index) => _buildOtpField(index)),
-                    ),
-                    const SizedBox(height: 20),
-
-                    // 🔹 Timer display
-                    if (!_showReceiveOption)
-                      Text(
-                        "Expiration du code dans $_remainingSeconds s",
-                        style: const TextStyle(
-                            color: Colors.black54, fontWeight: FontWeight.w500),
-                      ),
-
-                    const SizedBox(height: 30),
-
-                    if (errorMessage.isNotEmpty)
-                      Text(errorMessage,
-                          style:
-                          const TextStyle(color: Colors.red, fontSize: 12)),
-
-                    const SizedBox(height: 30),
-
-                    // ✅ Submit Button
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: KColors.primaryColor,
-                          padding:
-                          const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        onPressed: _submitCode,
-                        child: Text("${AppLocalizations.of(context)!.translate('validate')}",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                    ),
-
-                    // ✅ Show conditional "Recevoir le code via" button
-                    if (_showReceiveOption)
-                      TextButton(
-                        onPressed: () =>
-                            showReceiveCodeBottomSheet(context),
-                        child:  Text(
-                          "trr",
-                          style: TextStyle(color: KColors.primaryColor),
-                        ),
-                      )
-                    else
-                      TextButton(
-                        onPressed: () {}, // Disabled until timer ends
-                        child: const Text(
-                          "",
-                          style: TextStyle(color: Colors.black38),
-                        ),
-                      ),
+        body:     Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(FontAwesomeIcons.rightFromBracket,
+                        color: KColors.primaryColor, size: 25),
+                    SizedBox(width: 10),
+                    Text("Connexion",
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600)),
                   ],
                 ),
-              ),
-              const SizedBox(height: 50),
-              Image.asset("assets/images/background/Patternlogin.png",
-                  fit: BoxFit.cover, height: 290),
-            ]
-        )
+                const SizedBox(height: 40),
+                Text(
+                  "Entrez le code de vérification",
+                  // "${AppLocalizations.of(context)!.translate('verif_c_t')}",
+                  style: TextStyle(fontSize: 16, color: Colors.black87),
+                ),
+                const SizedBox(height: 20),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children:
+                  List.generate(4, (index) => _buildOtpField(index)),
+                ),
+                const SizedBox(height: 20),
+
+                // 🔹 Timer display
+                if (!_showReceiveOption)
+                  Text(
+                    "Expiration du code dans $_remainingSeconds s",
+                    style: const TextStyle(
+                        color: Colors.black54, fontWeight: FontWeight.w500),
+                  ),
+
+                const SizedBox(height: 30),
+
+                if (errorMessage.isNotEmpty)
+                  Text(errorMessage,
+                      style:
+                      const TextStyle(color: Colors.red, fontSize: 12)),
+
+                const SizedBox(height: 30),
+
+                // ✅ Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      padding:
+                      const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                    ),
+                    onPressed: _submitCode,
+                    child: Text("${AppLocalizations.of(context)!.translate('validate')}",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold)),
+                  ),
+                ),
+    SizedBox(height: 15,),
+                otp_loading?CircularProgressIndicator(color: KColors.primaryColor,):
+    Opacity(
+    opacity: _remainingSeconds == 0 ? 1.0 : 0.5,
+    child: OutlinedButton(
+    onPressed: _remainingSeconds == 0
+    ? () async {
+    debugPrint("resend code pressed; ${widget.username}");
+    ClientPersonalApiProvider client = ClientPersonalApiProvider();
+    setState(() {
+    otp_loading = true;
+    });
+    var response =
+    await client.recoverPasswordSendingCodeAction(widget.username!);
+
+    setState(() {
+    var data = jsonDecode(response);
+    if (data['error'] == 0) {
+    pwd = "";
+    _remainingSeconds = 90;
+    _showReceiveOption = false;
+    widget.otp_code = data['data']['code'].toString();
+    widget.request_id = data['data']['request_id'].toString();
+    otp_loading = false;
+    _startTimer();
+    mToast("Le code a été renvoyé avec succès.");
+    } else {
+    mToast("Erreur lors de l'envoi du code. Veuillez réessayer.");
+    }
+    });
+    }
+        : null, // désactive automatiquement le bouton
+    style: OutlinedButton.styleFrom(
+    backgroundColor: Colors.white,
+    side: const BorderSide(color: KColors.primaryColor, width: 1),
+    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(8),
+    ),
+    ),
+    child:  Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+        "Recevoir le code par WhatsApp",
+        style: TextStyle(
+        color: KColors.primaryColor,
+        fontWeight: FontWeight.w500,
+        ),
+        ),
+        SizedBox(width: 10),
+        Icon(FontAwesomeIcons.whatsapp,color: KColors.primaryColor,)
+      ],
+    ),
+    ),
+    ),
+
+    ],
+            ),
+            Image.asset("assets/images/background/Patternlogin.png",
+                fit: BoxFit.cover, width: MediaQuery.of(context).size.width),
+          ],
+        ),
 
       /* Stack(
               children: [
@@ -585,6 +623,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
 
 
     validateCodeAndConfirm(pwd!).then((isOtpValid) {
+
       if (isOtpValid) {
         // move to home page,,, with pop
         setState(() {

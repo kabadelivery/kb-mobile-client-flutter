@@ -39,7 +39,7 @@ dependencies:
   flare_flutter: ^3.0.2
   provider: ^6.0.4
   shimmer_animation: ^2.0.0
-  
+
   
   
   #  qr_code_scanner: ^0.7.0
@@ -280,6 +280,12 @@ flutter:
     - assets/images/png/horloge.png
     - assets/images/png/box.png
     - assets/images/png/condition.png
+    - assets/lottie/truck.json
+    - assets/lottie/Drink.json
+    - assets/lottie/truck.json
+    - assets/lottie/Chinese_Flag.json
+    - assets/lottie/Fast_food.json
+    - assets/lottie/supermarket.json
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:

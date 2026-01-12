@@ -333,12 +333,20 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
     }
 */
 
-    return widget.entity!.is_lottie_file == 1
+    return (widget.entity?.key=="food")?
+         Lottie.asset("assets/lottie/Fast_food.json")
+         : (widget.entity?.key=="drink")?
+    Lottie.asset("assets/lottie/Drink.json")
+        : (widget.entity?.key=="book")?
+    Lottie.asset("assets/lottie/books.json")
+        : (widget.entity?.key=="supermarket")?
+    Lottie.asset("assets/lottie/supermarket.json")
+        :(widget.entity!.is_lottie_file == 1
         ? Lottie.network(widget.entity!.file_link!)
         : CachedNetworkImage(
             imageUrl: widget.entity!.file_link!,
             errorWidget: (context, url, error) => Icon(Icons.not_interested),
-          );
+          ));
   }
 }
 

@@ -489,17 +489,21 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       * 1. check last time sent message, if before 5 minutes, then dont send,
       * 2. otherwise send
       *  */
-    CustomerUtils.getLastValidOtp(username: login).then((otp) {
+    CustomerUtils.getLastValidOtp(username: login).then((otp) async{
+      var packageInfo = PackageInfo.fromPlatform();
+      var appVersion = await packageInfo.then((PackageInfo info) {
+        return info.version;
+      });
       if ("no".compareTo(otp!) == 0) {
 
         if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 ) {
           // widget.autoLogin = true;
-          this.widget.presenter!.login(false, login, _mCode, widget.version!);
+          this.widget.presenter!.login(false, login, _mCode, widget.version??appVersion);
         } else
-          this.widget.presenter!.login(true, login, _mCode, widget.version!);
+          this.widget.presenter!.login(true, login, _mCode, widget.version??appVersion);
 
       } else {
-        this.widget.presenter!.login(false, login, _mCode, widget.version!);
+        this.widget.presenter!.login(false, login, _mCode, widget.version??appVersion);
       }
     });
 
@@ -633,7 +637,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',),
+                      username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}', request_id: obj['request_id'],),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);

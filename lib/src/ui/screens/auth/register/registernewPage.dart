@@ -615,7 +615,6 @@ class _RegisterPageState extends State<RegisterPage> implements RegisterView {
   }
 
   _checkCodeAndCreateAccount() {
-
     /* check request id and the code */
     String _code = _codeFieldController.text;
     if (Utils.isCode(_code)) {
