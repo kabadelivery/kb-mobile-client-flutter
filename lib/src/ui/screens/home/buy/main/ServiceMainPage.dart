@@ -109,47 +109,56 @@ class ServiceMainPageState extends State<ServiceMainPage>
   CurrentLocationTile? _myCurrentTile;
   StreamSubscription<Position>? positionStream;
   Position? tmpLocation;
+
+  Future<bool> _loadAndPersistLocation() async {
+    try {
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.deniedForever) {
+        openAppSettings();
+        return false;
+      }
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        await Geolocator.openLocationSettings();
+        return false;
+      }
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      StateContainer.of(context).location = position;
+      await CustomerUtils.saveAddressLocally(position);
+
+      return true;
+    } catch (e) {
+      debugPrint("Location error: $e");
+      return false;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    this.widget.presenter!.checkVersion();
-    Future.delayed(Duration(seconds: 5), () {
-      if (mounted && isLoading) {
-        setState(() => isLoading = false);
-      }
-    });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      this.widget.presenter!.getRating();
-    });
     widget.presenter!.serviceMainView = this;
-
-    if (widget.available_services == null) widget.available_services = [];
-
-    if (widget.coming_soon_services == null) widget.coming_soon_services = [];
 
     hasSystemError = false;
     hasNetworkError = false;
-    isLoading = false;
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      debugPrint("init state");
-      prefs= await SharedPreferences.getInstance();
-      String? ok = prefs!.getString("_has_accepted_gps");
-      var status = await Permission.notification.status;
-      if (status.isGranted) {
-        var loc_status = await Permission.notification.status;
-        if (loc_status.isGranted) {
+    isLoading = true;
 
-        }else if(ok!="ok" && loc_status.isDenied){
-          openLocationModal(context);
-        }else if (status.isPermanentlyDenied) {
-          openAppSettings();
-        }
-      } else if (status.isDenied && ok=="ok") {
-        openNotificationModal(context);
-      } else if (status.isPermanentlyDenied) {
-        openAppSettings();
-      }
+    if (widget.available_services == null) {
+      widget.available_services = [];
+    }
+
+    if (widget.coming_soon_services == null) {
+      widget.coming_soon_services = [];
+    }
+
+    // NON-BLOCKING calls only
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      widget.presenter!.getRating();
     });
   }
 
@@ -597,25 +606,35 @@ class ServiceMainPageState extends State<ServiceMainPage>
         }));
   }
   Future<void> _bootstrap() async {
+    if (!mounted) return;
+
     setState(() => isLoading = true);
 
     // 1. Version check
     await widget.presenter!.checkVersion();
 
     // 2. Ensure location
-    final hasLocation = await _ensureLocation();
-    if (!hasLocation) {
-      setState(() => isLoading = false);
-      return;
+    if (StateContainer.of(context).location == null) {
+      final ok = await _loadAndPersistLocation();
+      if (!ok) {
+        setState(() => isLoading = false);
+        return;
+      }
     }
 
-    // 3. Fetch data
+    // 3. Fetch services using location
     widget.presenter!.fetchServiceCategoryFromLocation(
       StateContainer.of(context).location!,
     );
 
     widget.presenter!.fetchBilling();
+
+    // 4. Refresh UI
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
   }
+
   Future<bool> _ensureLocation() async {
     if (StateContainer.of(context).location != null) {
       return true;

@@ -811,7 +811,8 @@ class ClientPersonalApiProvider {
       var response = await dio.post(
           Uri.parse(ServerRoutes.LINK_CHECK_RECOVER_VERIFCATION_CODE)
               .toString(),
-          data: json.encode({"code": code, "request_id": requestId}));
+          data: json.encode({"code": code,
+            "request_id": requestId}));
 
       xrint(json.encode({"code": code, "request_id": requestId}));
       xrint(response.data.toString());
