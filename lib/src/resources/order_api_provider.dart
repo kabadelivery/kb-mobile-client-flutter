@@ -230,20 +230,7 @@ class OrderApiProvider {
       xrint("Status code: ${response.statusCode}");
       if (response.statusCode == 200) {
         var newData = mJsonDecode(response.data);
-        if(newData['user_abonnement']!=null && newData['user_abonnement'].length>0){
-          try{
-            await dio.post(
-              Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
-              data: {
-                'user_id':customer.id.toString(),
-                'subscription_id':abonnementData['pack']['id'].toString(),
-                'codeAbo':abonnementData['codeAbonnement'].toString(),
-                'command_id':mJsonDecode(response.data)['data']['command_id'].toString(),
-                'total_price':mJsonDecode(response.data)['data']['total_price'].toString(),
-              },
-            );
-          }catch(_){}
-        }
+
         return mJsonDecode(response.data);
       } else {
         throw Exception(-1); // erreur côté serveur
@@ -466,23 +453,6 @@ class OrderApiProvider {
       if (response.statusCode == 200) {
         final decoded = mJsonDecode(response.data);
         var newData = mJsonDecode(response.data);
-        if(newData['user_abonnement']!=null && newData['user_abonnement'].length>0){
-          try {
-            await dio.post(
-              Uri.parse(ServerRoutes.KABA_ABONNEMENT_SAVE_USER_ORDER).toString(),
-              data: {
-                'user_id': customer.id.toString(),
-                'subscription_id': abonnementData['pack']['id'].toString(),
-                'codeAbo': abonnementData['codeAbonnement'].toString(),
-                'command_id': decoded['data']['command_id'].toString(),
-                'total_price': decoded['data']['total_price'].toString(),
-              },
-            );
-          } catch (e) {
-            xrint("ABONNEMENT SAVE FAILED: $e");
-          }
-        }
-
         return decoded;
       } else {
         throw Exception(-1);

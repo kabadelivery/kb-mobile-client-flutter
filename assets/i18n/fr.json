@@ -1175,5 +1175,6 @@
   "search_article": "Rechercher un article",
   "receive_code_via": "Recevoir le code via",
   "i_want_otp_code": "Bonjour/Bonsoir, je souhaite recevoir un code OTP s'il vous plaît.",
-  "contact_support_to_get_otp": "Contactez le support pour obtenir un code OTP."
+  "contact_support_to_get_otp": "Contactez le support pour obtenir un code OTP.",
+  "next_all": "Suivant (Tout)"
 }
