@@ -615,21 +615,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
     // 2. Ensure location
     if (StateContainer.of(context).location == null) {
-      final ok = await _loadAndPersistLocation();
-      if (!ok) {
-        setState(() => isLoading = false);
-        return;
-      }
+      await _loadAndPersistLocation();
     }
 
-    // 3. Fetch services using location
     widget.presenter!.fetchServiceCategoryFromLocation(
       StateContainer.of(context).location!,
     );
 
     widget.presenter!.fetchBilling();
-
-    // 4. Refresh UI
     if (mounted) {
       setState(() => isLoading = false);
     }
@@ -641,8 +634,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
     }
 
     await _getLastKnowLocation();
-
-    // After modal / permission flow
     return StateContainer.of(context).location != null;
   }
 
@@ -823,6 +814,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       : Container(),
                   GestureDetector(
                     onTap: () {
+                      debugPrint("tap");
                       showPlacePicker(context);
                     },
                     child: Stack(
@@ -1047,7 +1039,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 Container(
                                     width: 40,
                                     height: 40,
-                                    child: Lottie.network("https://lottie.host/fe005783-1b4c-457e-83a3-a826d7388550/3c37XYz9Fo.json")),
+                                    child: Image.network("https://uxwing.com/wp-content/themes/uxwing/download/flags-landmarks/china-flag-round-circle-icon.png")),
                                 SizedBox(width: 9),
                                 Text(
                                     "${AppLocalizations.of(context)!.translate('china')}",
@@ -1275,11 +1267,11 @@ class ServiceMainPageState extends State<ServiceMainPage>
               TextButton(
                 child:
                 Text("${AppLocalizations.of(context)!.translate('accept')}"),
-                onPressed: () {
-                  // SharedPreferences prefs = await SharedPreferences.getInstance();
+                onPressed: ()async {
+                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   prefs!.setString("_has_accepted_gps", "ok");
                   Navigator.of(context).pop();
-                  // call get location again...
+                  await Future.delayed(const Duration(milliseconds: 200));
                   showPlacePicker(context);
                 },
               )
@@ -1474,11 +1466,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
                 TextButton(
                   child: Text(
                       "${AppLocalizations.of(context)!.translate('accept')}"),
-                  onPressed: () {
+                  onPressed: () async{
                     /* */
                     prefs!.setString("_has_accepted_gps", "ok");
-                    showPlacePicker(context);
                     Navigator.of(context).pop();
+                    await Future.delayed(const Duration(milliseconds: 200));
+                    showPlacePicker(context);
                   },
                 )
               ],
@@ -1486,107 +1479,104 @@ class ServiceMainPageState extends State<ServiceMainPage>
           },
         );
       } else {
-        /* get last know position */
-        LocationPermission permission = await Geolocator.checkPermission();
+        final permission = await Geolocator.checkPermission();
+
         if (permission == LocationPermission.deniedForever) {
           await Geolocator.openAppSettings();
-        } else if (permission == LocationPermission.denied) {
-          await Geolocator.requestPermission();
-        } else {
-          bool isLocationServiceEnabled =
-          await Geolocator.isLocationServiceEnabled();
-          if (!isLocationServiceEnabled) {
-            await Geolocator.openLocationSettings();
-          } else {
-            if (isPickLocation) {
-              xrint("already picking address, OUTTTTT");
-              return;
-            } else {
-              setState(() {
-                if (StateContainer.of(context).location != null)
-                  widget.initialLocation = StateContainer.of(context).location;
-                StateContainer.of(context).location = null;
-                StateContainer.of(context).placemark = null;
-                isPickLocation = true;
-              });
+          return;
+        }
 
-              await Geolocator.getCurrentPosition(
-                  desiredAccuracy: LocationAccuracy.high);
-
-              Stream<Position> positionStream = Geolocator.getPositionStream();
-              positionStream.first.then((position) {
-                xrint("position stream");
-                positionStream = Geolocator.getPositionStream();
-                positionStream.first.then((position1) {
-                  // we do it twice to make sure we get a good location
-                  _jumpToPickAddressPage();
-                }).catchError((onError) {
-                  setState(() {
-                    isPickLocation = false;
-                  });
-                });
-              }).catchError((onError) {
-                setState(() {
-                  isPickLocation = false;
-                });
-              });
-            }
+        if (permission == LocationPermission.denied) {
+          final p = await Geolocator.requestPermission();
+          if (p != LocationPermission.always &&
+              p != LocationPermission.whileInUse) {
+            return;
           }
         }
-      }
-    });
-  }
 
-  void _jumpToPickAddressPage() async {
-    if (StateContainer.of(context)?.location != null) {
-      xrint("moving to me");
-      Pp.PlacePickerState.initialTarget = LatLng(
-          StateContainer.of(context).location!.latitude,
-          StateContainer.of(context).location!.longitude);
-    }
+        final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+        if (!serviceEnabled) {
+          await Geolocator.openLocationSettings();
+          return;
+        }
 
-    xrint("i pick address");
-
-    /* get my position */
-    LatLng result = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (context) => Pp.PlacePicker(AppConfig.GOOGLE_MAP_API_KEY,
-            alreadyHasLocation: StateContainer.of(context)?.location != null)));
-    /* use this location to generate details about the place the user lives and so on. */
-    Position pos = await Geolocator.getCurrentPosition();
-    if (result?.longitude != null) {
-      setState(() {
-        _myCurrentTile = null;
-        StateContainer.of(context).placemark = null;
-        StateContainer.of(context).location =
-            Position(
-              latitude: result.latitude,
-              longitude: result.longitude,
-              timestamp: DateTime.now(),
-              accuracy: pos.accuracy,
-              altitude: pos.altitude,
-              altitudeAccuracy: pos.altitudeAccuracy,
-              heading: pos.heading,
-              headingAccuracy: pos.headingAccuracy,
-              speed: pos.speed,
-              speedAccuracy: pos.speedAccuracy,
-            );
-
-      });
-    } else {
-      if (widget.initialLocation != null) {
         setState(() {
-          StateContainer.of(context).location = widget.initialLocation;
-          widget.initialLocation = null;
+          isPickLocation = true;
         });
-      }
-    }
 
-    /* location is saved locally */
-    CustomerUtils.saveAddressLocally(StateContainer.of(context).location!);
-    setState(() {
-      isPickLocation = false;
+        _jumpToPickAddressPage();
+
+        if (mounted) {
+          setState(() {
+            isPickLocation = false;
+          });
+        }
+      }
+
     });
   }
+
+  Future<void> _jumpToPickAddressPage() async {
+    if (StateContainer.of(context).location != null) {
+      Pp.PlacePickerState.initialTarget = LatLng(
+        StateContainer.of(context).location!.latitude,
+        StateContainer.of(context).location!.longitude,
+      );
+    }
+
+    final result = await Navigator.of(context).push<LatLng>(
+      MaterialPageRoute(
+        builder: (context) => Pp.PlacePicker(
+          AppConfig.GOOGLE_MAP_API_KEY,
+          alreadyHasLocation: StateContainer.of(context).location != null,
+        ),
+      ),
+    );
+
+    if (!mounted) return;
+
+    if (result == null) {
+      xrint("PlacePicker cancelled");
+      return;
+    }
+    xrint("PlacePicker result: ${result.latitude}, ${result.longitude}");
+
+    var pos;
+    if(result==null || result.latitude==null || result.longitude==null){
+       pos = await Geolocator.getCurrentPosition();
+
+    }
+     pos = StateContainer.of(context).location = Position(
+      latitude: result.latitude,
+      longitude: result.longitude,
+      timestamp: DateTime.now(),
+      accuracy: 1.0,
+      altitude: 0.0,
+      altitudeAccuracy: 0.0,
+      heading: 0.0,
+      headingAccuracy: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+    );
+    setState(() {
+      _myCurrentTile = null;
+      StateContainer.of(context).location = Position(
+        latitude: result.latitude,
+        longitude: result.longitude,
+        timestamp: DateTime.now(),
+        accuracy: pos.accuracy,
+        altitude: pos.altitude,
+        altitudeAccuracy: pos.altitudeAccuracy,
+        heading: pos.heading,
+        headingAccuracy: pos.headingAccuracy,
+        speed: pos.speed,
+        speedAccuracy: pos.speedAccuracy,
+      );
+    });
+
+    CustomerUtils.saveAddressLocally(StateContainer.of(context).location!);
+  }
+
   Future<void> _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
     final loc = await Permission.locationWhenInUse.status;
     final notif = await Permission.notification.status;
@@ -1622,8 +1612,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
     }
   }
 
-  getCurrentTile() {
-    if (_myCurrentTile == null) _myCurrentTile = new CurrentLocationTile(key: null,);
-    return _myCurrentTile;
+  Widget getCurrentTile() {
+    return CurrentLocationTile(
+      key: ValueKey(StateContainer.of(context).location?.latitude),
+    );
   }
+
 }

@@ -195,7 +195,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   @override
   void dispose() {
     // restaurantBloc.dispose();
+  try{
     mainTimer!.cancel();
+  }catch(e){}
     _filterEditController.dispose();
     _focus.dispose();
     super.dispose();

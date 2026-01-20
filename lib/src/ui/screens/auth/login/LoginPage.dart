@@ -94,7 +94,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       }
     });
 
-    if (widget?.autoLogin == true) {
+    if (widget.autoLogin == true) {
       _loginFieldController.text = widget.phone_number!;
         debugPrint("Mot de Passe is : "+widget!.password.toString());
       widget.presenter!.login(false/*bcs autologin*/, widget.phone_number!, widget.password!, widget.version??"");
@@ -394,6 +394,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
         builder: (context) => RegisterPage (presenter: RegisterPresenter()),
       ),
     );*/
+    if (!mounted) return;
 
     Map results = await Navigator.of(context).push(
         PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
@@ -444,10 +445,13 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
 
   Future _checklogin() async {
+    if (isConnecting) return;
+    showLoading(true);
+
     setState(() {
       _loading = true;
     });
-    String login = _loginFieldController.text ;
+    String login = _buildLogin();;
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
     }
@@ -507,6 +511,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       }
     });
 
+    showLoading(false);
 
   }
 
@@ -514,7 +519,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
 
 
-    String login = _loginFieldController.text ;
+    String login =_buildLogin(); ;
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
     }
@@ -530,6 +535,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
         login = _loginFieldController.text;
       }
     }
+    if (!mounted) return;
 
     ref.read(loginProvider.notifier).state = login;
     var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
@@ -552,14 +558,14 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       *  */
         CustomerUtils.getLastValidOtp(username: login).then((otp) {
           if ("no".compareTo(otp!) == 0) {
-            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false) {
+            if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=true) {
               widget.autoLogin = true;
-              this.widget.presenter!.login(false, login, _mCode, widget.version!);
+              this.widget.presenter!.login(false, login, _mCode, widget.version??"0.0");
             } else
-              this.widget.presenter!.login(true, login, _mCode, widget.version!);
+              this.widget.presenter!.login(true, login, _mCode, widget.version??"0.0");
 
           } else {
-            this.widget.presenter!.login(false, login, _mCode, widget.version!);
+            this.widget.presenter!.login(false, login, _mCode, widget.version??"0.0");
           }
         });
       }
@@ -618,6 +624,17 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
     StateContainer.of(context).myBillingArray = null;
     widget.autoLogin = true ;
   }
+  String _buildLogin() {
+    final input = _loginFieldController.text.trim();
+
+    if (Utils.isEmailValid(input)) return input;
+
+    if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+      return selectedCountryCode.substring(1) + input;
+    }
+
+    return input;
+  }
 
   Future<void> nextStepWithOtpConfirmationPage(CustomerModel customer, String mOtp, dynamic obj) async {
 
@@ -627,17 +644,21 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
     showLoading(false);
 
     Map results = Map();
+    debugPrint("Require OTP for login: $obj");
+    final bool requireOtp = obj['require_otp']??false;
 
-    if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0 || kDebugMode!=false)
+    if (!requireOtp)
       widget.autoLogin = true;
 
     if (!widget.autoLogin!) {
       /* we make sure the login is a success */
-      results = await Navigator.of(context).push(
+      if (!mounted) return;
+
+      final navResult = await Navigator.of(context).push(
           PageRouteBuilder(
               pageBuilder: (context, animation, secondaryAnimation) =>
                   LoginOTPConfirmationPage(
-                      username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}', request_id: obj['request_id'],),
+                    username: customer.username, otp_code: mOtp,login: '${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}', request_id: obj['request_id'],),
               transitionsBuilder: (context, animation, secondaryAnimation,
                   child) {
                 var begin = Offset(1.0, 0.0);
@@ -649,7 +670,18 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
                 return SlideTransition(
                     position: tween.animate(curvedAnimation), child: child);
               }
-          ));
+          )
+      );
+
+      if (!mounted) return;
+      if (navResult == null || navResult is! Map) {
+        debugPrint("OTP page dismissed by user");
+        showLoading(false);
+        return;
+      }
+
+      final Map results = navResult;
+
     } else {
       results['otp_valid'] = "valid";
     }
@@ -677,6 +709,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
             .of(context)
             .updateLoggingState(state: 1);
         StateContainer.of(context).customer = customer;
+        if (!mounted) return;
+
         Navigator.of(context).pushReplacement(
             PageRouteBuilder(
                 pageBuilder: (context, animation, secondaryAnimation) =>
@@ -695,7 +729,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
             ));
       }
     } else {
-      debugPrint("⚠️ OTP result invalid or missing: $res");
+      debugPrint("OTP result invalid or missing: $res");
       // only show error if not autologin
       if (!widget.autoLogin!) {
         mDialog("Login not ok, please try again.");
@@ -780,7 +814,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
     bool isOkWithTerms = false;
     try {
       // prove me it's not first time
-      isOkWithTerms = prefs.getBool("_is_ok_with_terms")!;
+      isOkWithTerms = prefs.getBool("_is_ok_with_terms") ?? false;
+
     } catch(_){
       // is first time
       isOkWithTerms = false;

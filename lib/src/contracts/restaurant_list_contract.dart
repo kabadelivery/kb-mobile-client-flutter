@@ -56,6 +56,7 @@ class RestaurantListPresenter implements RestaurantListContract {
       [bool silently = false, String? filter_key]) async {
     if (isWorking && position == null) return;
     isWorking = true;
+    xrint("made it to fetchShopList");
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
 
     // load from cache the last request while looking for the newest set of data
@@ -66,17 +67,16 @@ class RestaurantListPresenter implements RestaurantListContract {
       List<ShopModel> restaurants = [];
 
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
-
-      try {
-        final userPosition =  await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high,
-        );
-        //var address= await CustomerUtils.getSavedAddressLocally();
+      xrint("made it to configuration");
+        var address= await CustomerUtils.getSavedAddressLocally();
+        xrint("made it to address");
         CustomerModel user = await CustomerUtils.getCustomer();
+
+        xrint("made it to sortOutRestaurantList");
         await Future.delayed(Duration(seconds: 2), ()async {
           restaurants = await compute(sortOutRestaurantList, {
             "data": data,
-            "position": userPosition,
+            "position": address,
             "is_email_account": user.username == null
                 ? false
                 : (customer.username!.contains("@") ? true : false),
@@ -84,9 +84,7 @@ class RestaurantListPresenter implements RestaurantListContract {
             "filter_configuration": configuration
           });
         });
-       } catch (e) {
-        debugPrint('Erreur lors de la récupération de la localisation : $e');
-      }
+
 
       // save billing locally so that the other stuffs can use it.
       String billing = json.encode(data["billing"]);
@@ -100,6 +98,7 @@ class RestaurantListPresenter implements RestaurantListContract {
       // order list
       // restaurants = restaurants..sort((restA, restB) => _getDifferenceMeandRestaurant());
       // compare distance between i and the restaurant
+      xrint('made it to inflateRestaurants');
       _restaurantListView.inflateRestaurants(restaurants);
     } catch (_) {
       /* RestaurantList failure */
