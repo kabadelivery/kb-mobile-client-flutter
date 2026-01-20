@@ -57,22 +57,7 @@ class _KabaExpeditionHomePageState extends State<KabaExpeditionHomePage> {
                         Navigator.pop(context);
                       }, icon: Icon(Icons.arrow_back_ios,color: Colors.white,size: 20
                       )),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
 
-                        children: [
-                          Icon(FontAwesomeIcons.box,color: Colors.white,size: 19,),
-                          SizedBox(width: 5,),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("KABA Expédition",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white,fontSize: 15),),
-                              ],
-                          )
-                        ],
-                      ),
                       Row(
                         children: [
                           Container(

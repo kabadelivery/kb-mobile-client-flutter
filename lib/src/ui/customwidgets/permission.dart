@@ -201,26 +201,26 @@ class _PermissionsModalState extends State<PermissionsModal> {
                         children: [
                           const Icon(Icons.check, size: 18, color: Colors.white),
                           const SizedBox(width: 8),
-                          Text(AppLocalizations.of(context)!.translate('allow_all'),
+                          Text(AppLocalizations.of(context)!.translate('next_all'),
                               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
                         ],
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        side: BorderSide(color: Colors.grey.shade300),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                      ),
-                      child: Text(AppLocalizations.of(context)!.translate('later'), style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
+                  //  const SizedBox(height: 10),
+                  //                   SizedBox(
+                  //                     width: double.infinity,
+                  //                     child: OutlinedButton(
+                  //                       onPressed: () => Navigator.of(context).pop(),
+                  //                       style: OutlinedButton.styleFrom(
+                  //                         backgroundColor: Colors.white,
+                  //                         side: BorderSide(color: Colors.grey.shade300),
+                  //                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  //                         padding: const EdgeInsets.symmetric(vertical: 12),
+                  //                       ),
+                  //                       child: Text(AppLocalizations.of(context)!.translate('later'), style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold)),
+                  //                     ),
+                  //                   ),
                 ],
               ),
             ),
@@ -264,7 +264,7 @@ class _PermissionRow extends StatelessWidget {
           ),
           const SizedBox(width: 12),
           Expanded(child: Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-         ]),
+        ]),
       ),
     );
   }
@@ -323,44 +323,44 @@ void openNotificationModal(BuildContext context) {
     context: context,
     barrierDismissible: false,
     builder: (_) => Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40),
-      child: Center(
-        child: Stack(
-          clipBehavior: Clip.none,
-          children: [
-            // Card
-            Container(
-              padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
-              width: MediaQuery.of(context).size.width * 0.78,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(18),
-                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12)],
-              ),
-              child: Column(mainAxisSize: MainAxisSize.min, children: [
-                SizedBox(height: 30),
-                Text.rich(
-                  TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
-                    children: [
-                      TextSpan(
-                        text: AppLocalizations.of(context)!.translate('notifications'),
-                        style: const TextStyle(color: Color(0xFFD6334A), fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 40),
+        child: Center(
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              // Card
+              Container(
+                padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
+                width: MediaQuery.of(context).size.width * 0.78,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 12)],
+                ),
+                child: Column(mainAxisSize: MainAxisSize.min, children: [
+                  SizedBox(height: 30),
+                  Text.rich(
+                    TextSpan(
+                      text: "${AppLocalizations.of(context)!.translate('next')} ",
+                      children: [
+                        TextSpan(
+                          text: AppLocalizations.of(context)!.translate('notifications'),
+                          style: const TextStyle(color: Color(0xFFD6334A), fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  AppLocalizations.of(context)!.translate('notifications_explanation'),
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 13.5, color: Colors.black54),
-                ),
-                const SizedBox(height: 18),
-                ElevatedButton.icon(
+                  const SizedBox(height: 10),
+                  Text(
+                    AppLocalizations.of(context)!.translate('notifications_explanation'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 13.5, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 18),
+                  ElevatedButton.icon(
                     onPressed: () async {
                       if (Platform.isIOS) {
                         await requestIOSNotificationPermission(context);
@@ -380,53 +380,53 @@ void openNotificationModal(BuildContext context) {
                       Navigator.of(context).pop();
                     },
 
-                  icon: const Icon(Icons.notifications_none, color: Colors.white),
-                  label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    icon: const Icon(Icons.notifications_none, color: Colors.white),
+                    label: Text(
+                      AppLocalizations.of(context)!.translate('next'),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor: const Color(0xFFD13457),
+                      minimumSize: const Size(double.infinity, 48),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: const Color(0xFFD13457),
-                    minimumSize: const Size(double.infinity, 48),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ]),
-            ),
-
-            // Top icon decorations...
-            Positioned(
-              top: 10,
-              left: (MediaQuery.of(context).size.width * 0.78) / 2 - 40,
-              child: Container(
-                width: 72,
-                height: 72,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFFCD2247), Color(0xFFC94C66)]),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 6)],
-                ),
-                child: const Center(child: Icon(Icons.notifications_none, size: 36, color: Colors.white)),
+                  //           const SizedBox(height: 12),
+                  //                 OutlinedButton(
+                  //                   onPressed: () => Navigator.of(context).pop(),
+                  //                   style: OutlinedButton.styleFrom(
+                  //                     minimumSize: const Size(double.infinity, 48),
+                  //                     side: BorderSide(color: Colors.grey.shade300),
+                  //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  //                   ),
+                  //                   child: Text(
+                  //                     AppLocalizations.of(context)!.translate('later'),
+                  //                     style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                  //                   ),
+                  //                 ),
+                ]),
               ),
-            ),
-            // ...other positioned icons (messenger, notifications, assets) remain unchanged
-          ],
-        ),
-      )
+
+              // Top icon decorations...
+              Positioned(
+                top: 10,
+                left: (MediaQuery.of(context).size.width * 0.78) / 2 - 40,
+                child: Container(
+                  width: 72,
+                  height: 72,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(colors: [Color(0xFFCD2247), Color(0xFFC94C66)]),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 6)],
+                  ),
+                  child: const Center(child: Icon(Icons.notifications_none, size: 36, color: Colors.white)),
+                ),
+              ),
+              // ...other positioned icons (messenger, notifications, assets) remain unchanged
+            ],
+          ),
+        )
 
     ),
   );
@@ -458,7 +458,6 @@ void openLocationModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('location'),
@@ -506,13 +505,13 @@ void openLocationModal(BuildContext context) {
                       }
                       return;
                     }
-                    final allowed = (p == LocationPermission.always || p == LocationPermission.whileInUse);
+                    final nexted = (p == LocationPermission.always || p == LocationPermission.whileInUse);
                     Navigator.of(context).pop();
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            allowed
+                            nexted
                                 ? AppLocalizations.of(context)!.translate('location_granted')
                                 : AppLocalizations.of(context)!.translate('location_denied'),
                           ),
@@ -522,7 +521,7 @@ void openLocationModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.location_on, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
+                    AppLocalizations.of(context)!.translate('next'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -530,19 +529,6 @@ void openLocationModal(BuildContext context) {
                     backgroundColor: const Color(0xFFD6334A),
                     minimumSize: const Size(double.infinity, 48),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
                   ),
                 ),
               ]),
@@ -597,7 +583,7 @@ void openPhotosModal(BuildContext context) {
                 const SizedBox(height: 30),
                 Text.rich(
                   TextSpan(
-                    text: "${AppLocalizations.of(context)!.translate('allow')} ",
+                    text: "${AppLocalizations.of(context)!.translate('next')} ",
                     children: [
                       TextSpan(
                         text: AppLocalizations.of(context)!.translate('photos_media'),
@@ -633,7 +619,7 @@ void openPhotosModal(BuildContext context) {
                   },
                   icon: const Icon(Icons.photo, color: Colors.white),
                   label: Text(
-                    AppLocalizations.of(context)!.translate('allow'),
+                    AppLocalizations.of(context)!.translate('next'),
                     style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                   ),
                   style: ElevatedButton.styleFrom(
@@ -643,19 +629,19 @@ void openPhotosModal(BuildContext context) {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
-                const SizedBox(height: 12),
-                OutlinedButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 48),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: Text(
-                    AppLocalizations.of(context)!.translate('later'),
-                    style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
-                  ),
-                ),
+                // const SizedBox(height: 12),
+                //                 OutlinedButton(
+                //                   onPressed: () => Navigator.of(context).pop(),
+                //                   style: OutlinedButton.styleFrom(
+                //                     minimumSize: const Size(double.infinity, 48),
+                //                     side: BorderSide(color: Colors.grey.shade300),
+                //                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                //                   ),
+                //                   child: Text(
+                //                     AppLocalizations.of(context)!.translate('later'),
+                //                     style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                //                   ),
+                //                 ),
               ]),
             ),
             // Top icon
