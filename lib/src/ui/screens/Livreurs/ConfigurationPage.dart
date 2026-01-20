@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -56,12 +58,16 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
   }
 
   void _openMapPicker(int index) async {
-    final result = await showModalBottomSheet<Map<String, dynamic>>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _MapPickerModal(initialLat: widget.latitude, initialLon: widget.longitude),
+    final result = await Navigator.push<Map<String, dynamic>>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DestinationPickerPage(
+          initialLat: widget.latitude,
+          initialLon: widget.longitude,
+        ),
+      ),
     );
+
     if (result != null) {
       setState(() {
         deliveries[index].destinationAddress = result['address'];
@@ -97,7 +103,6 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
     );
   }
 
-  // --- HEADER ---
   Widget _buildHeader() {
     return Container(
       padding: const EdgeInsets.only(top: 50, bottom: 20, left: 16, right: 16),
@@ -117,7 +122,6 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
     );
   }
 
-  // --- TOP SELECTOR CARD ---
   Widget _buildCountSelectorCard() {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -189,7 +193,6 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
     );
   }
 
-  // --- MAIN DELIVERY CARD ---
   Widget _buildDeliveryCard(int index, DeliveryConfig config) {
     return Container(
       margin: const EdgeInsets.only(top: 20),
@@ -311,7 +314,6 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
     );
   }
 
-  // --- PAYMENT SECTION ---
   Widget _buildPaymentOptions(DeliveryConfig config) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -363,7 +365,6 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
     );
   }
 
-  // --- REUSABLE UI HELPERS ---
   Widget _circleBtn(IconData icon, VoidCallback onTap) => GestureDetector(
     onTap: onTap,
     child: Container(padding: const EdgeInsets.all(10), decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle, border: Border.all(color: Colors.grey.shade300)), child: Icon(icon, color: Colors.black, size: 20)),
@@ -464,27 +465,152 @@ class _DeliveryConfigurationPageState extends State<DeliveryConfigurationPage> {
   }
 }
 
-// Map Picker (Remains the same functional component)
-class _MapPickerModal extends StatefulWidget {
+class DestinationPickerPage extends StatefulWidget {
   final double initialLat, initialLon;
-  const _MapPickerModal({required this.initialLat, required this.initialLon});
-  @override State<_MapPickerModal> createState() => _MapPickerModalState();
+  const DestinationPickerPage({super.key, required this.initialLat, required this.initialLon});
+
+  @override
+  State<DestinationPickerPage> createState() => _DestinationPickerPageState();
 }
-class _MapPickerModalState extends State<_MapPickerModal> {
-  mapbox.MapboxMap? _map; String _address = "Déplacez pour choisir..."; mapbox.Point? _point;
-  @override Widget build(BuildContext context) {
-    return Container(height: MediaQuery.of(context).size.height * 0.8, decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.vertical(top: Radius.circular(30))), child: Stack(children: [
-      ClipRRect(borderRadius: const BorderRadius.vertical(top: Radius.circular(30)), child: mapbox.MapWidget(onMapCreated: (c) => _map = c, onCameraChangeListener: (p) async {
-        final pos = await _map!.getCameraState(); _point = pos.center;
-        final res = await http.get(Uri.parse('https://nominatim.openstreetmap.org/reverse?format=json&lat=${_point!.coordinates.lat}&lon=${_point!.coordinates.lng}'), headers: {'User-Agent': 'FlutterApp'});
-        if (res.statusCode == 200) setState(() => _address = jsonDecode(res.body)['display_name'].split(',')[0]);
-      }, styleUri: mapbox.MapboxStyles.MAPBOX_STREETS)),
-      const Center(child: Icon(Icons.location_on, color: Colors.red, size: 40)),
-      Positioned(bottom: 20, left: 20, right: 20, child: Column(children: [
-        Container(padding: const EdgeInsets.all(15), decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)), child: Text(_address, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
-        const SizedBox(height: 10),
-        ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD61C4E), minimumSize: const Size(double.infinity, 50)), onPressed: () => Navigator.pop(context, {'address': _address, 'lat': _point!.coordinates.lat, 'lon': _point!.coordinates.lng}), child: const Text("Confirmer", style: TextStyle(color: Colors.white)))
-      ]))
-    ]));
+
+class _DestinationPickerPageState extends State<DestinationPickerPage> {
+  mapbox.MapboxMap? _map;
+  String _address = "Déplacez pour choisir...";
+  mapbox.Point? _point;
+  final TextEditingController _searchController = TextEditingController();
+
+  // ADDED: Timer for debouncing
+  Timer? _debounceTimer;
+
+  @override
+  void dispose() {
+    // ADDED: Clean up timer and controller to prevent memory leaks or crashes
+    _debounceTimer?.cancel();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleSearch(String query) async {
+    if (query.isEmpty) return;
+
+    final url = 'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}, Lomé, Togo&format=json&limit=1';
+    final res = await http.get(Uri.parse(url), headers: {'User-Agent': 'FlutterKabaApp'});
+
+    if (res.statusCode == 200) {
+      final data = jsonDecode(res.body);
+      if (data.isNotEmpty) {
+        double lat = double.parse(data[0]['lat']);
+        double lon = double.parse(data[0]['lon']);
+
+        _map?.setCamera(mapbox.CameraOptions(
+          center: mapbox.Point(coordinates: mapbox.Position(lon, lat)),
+          zoom: 16.0,
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Lieu non trouvé à Lomé")));
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          mapbox.MapWidget(
+            onMapCreated: (c) => _map = c,
+            cameraOptions: mapbox.CameraOptions(
+              center: mapbox.Point(coordinates: mapbox.Position(widget.initialLon, widget.initialLat)),
+              zoom: 15.0,
+            ),
+            // UPDATED: Applied debouncing here
+            onCameraChangeListener: (p) {
+              if (_debounceTimer?.isActive ?? false) _debounceTimer!.cancel();
+
+              _debounceTimer = Timer(const Duration(milliseconds: 600), () async {
+                if (_map == null) return;
+
+                final pos = await _map!.getCameraState();
+                _point = pos.center;
+
+                final lat = _point!.coordinates.lat;
+                final lon = _point!.coordinates.lng;
+
+                try {
+                  final res = await http.get(
+                      Uri.parse('https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=18'),
+                      headers: {'User-Agent': 'FlutterKabaApp'}
+                  );
+
+                  if (res.statusCode == 200) {
+                    var decoded = jsonDecode(res.body);
+                    if (mounted) {
+                      setState(() => _address = decoded['display_name'].split(',')[0]);
+                    }
+                  }
+                } catch (e) {
+                  debugPrint("Reverse geocoding error: $e");
+                }
+              });
+            },
+            styleUri: mapbox.MapboxStyles.MAPBOX_STREETS,
+          ),
+
+          const Center(child: Padding(
+            padding: EdgeInsets.only(bottom: 35.0),
+            child: Icon(Icons.location_on, color: Color(0xFFD61C4E), size: 45),
+          )),
+
+          Positioned(
+            top: 50, left: 15, right: 15,
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(icon: const Icon(Icons.arrow_back, color: Colors.black), onPressed: () => Navigator.pop(context)),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)]),
+                    child: TextField(
+                      controller: _searchController,
+                      textInputAction: TextInputAction.search,
+                      decoration: const InputDecoration(hintText: "Rechercher un quartier/lieu...", border: InputBorder.none, suffixIcon: Icon(Icons.search)),
+                      onSubmitted: _handleSearch,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          Positioned(
+            bottom: 20, left: 20, right: 20,
+            child: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15), boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 10)]),
+                  child: Text(_address, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD61C4E), minimumSize: const Size(double.infinity, 55), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                  onPressed: () {
+                    if (_point != null) {
+                      Navigator.pop(context, {'address': _address, 'lat': _point!.coordinates.lat, 'lon': _point!.coordinates.lng});
+                    }
+                  },
+                  child: const Text("Confirmer l'adresse", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

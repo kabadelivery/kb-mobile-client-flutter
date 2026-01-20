@@ -21,6 +21,9 @@ class DeliveryConfig {
   String? scheduledTime;
   bool isShop = false;
 
+
+  double deliveryFee = 2500.0;
+
   // Package
   String packageNature = ""; // Renamed from parcelNature
   List<File?> photos = [null, null, null];

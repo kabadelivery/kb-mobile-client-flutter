@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-// Ensure this matches your project structure
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../../../models/Besoin_Livreurs/deliveryconfig.dart';
 
 class RecapPage extends StatelessWidget {
@@ -8,15 +8,168 @@ class RecapPage extends StatelessWidget {
 
   const RecapPage({super.key, required this.deliveries});
 
+  // --- Constants for Fees ---
+  static const double baseFeePerDelivery = 2500.0;
+  static const double serviceFee = 200.0;
+  static const double additionalFee = 150.0;
+
+
+  double get totalFees => deliveries.fold(0, (sum, item) => sum + item.deliveryFee);
+  double get totalToRecover => deliveries.fold(0, (sum, item) {
+    double val = double.tryParse(item.amountToRecover) ?? 0.0;
+    return sum + val;
+  });
+
+
+  double get grandTotal => totalFees + serviceFee + additionalFee;
+
+  // --- API SUBMISSION LOGIC ---
+  Future<void> _submitData(BuildContext context) async {
+    // 1. Configuration & IDs
+    final String userId = "36572"; // Replace with your actual user session ID
+    final String senderPhone = "+228 90 00 00 00"; // Replace with real user phone
+    final String baseUrl = "https://f0404f636233.ngrok-free.app/api/delivery";
+
+    // 2. Show Global Loading Spinner
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(color: Color(0xFFD61C4E)),
+      ),
+    );
+
+    try {
+      // --- STEP 1: LOGIC FOR NO RECOVERY (Wallet Check) ---
+      if (totalToRecover == 0) {
+        // Check if ANY delivery is set to Payment Type 1 (Wallet)
+        bool usesWallet = deliveries.any((d) => d.paymentType == 1);
+
+        if (usesWallet) {
+          // A. Fetch User Balance
+          final balanceRes = await http.get(Uri.parse("$baseUrl/getuserbalance?user_id=$userId"));
+          if (balanceRes.statusCode != 200) throw Exception("Impossible de vérifier le solde.");
+
+          final double currentBalance = double.tryParse(jsonDecode(balanceRes.body)['balance'].toString()) ?? 0.0;
+
+          // B. Insufficient Funds Check
+          if (currentBalance < grandTotal) {
+            Navigator.pop(context); // Close loading
+            _showErrorSnackBar(context, "Solde insuffisant (${currentBalance.toInt()} FCFA). Rechargez votre compte.");
+            return;
+          }
+
+          // C. Process Payment Action
+          final payRes = await http.post(
+            Uri.parse("$baseUrl/payfordeliveryaction"),
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({"user_id": userId, "amount": grandTotal}),
+          );
+          if (payRes.statusCode != 200) throw Exception("Échec du paiement via portefeuille.");
+        }
+      }
+      // --- STEP 2: LOGIC FOR RECOVERY (Estimated Deposit) ---
+      else if (totalToRecover > grandTotal) {
+        double difference = totalToRecover - grandTotal;
+
+        final depositRes = await http.post(
+          Uri.parse("$baseUrl/estimeddepositonwallet"),
+          headers: {"Content-Type": "application/json"},
+          body: jsonEncode({"user_id": userId, "amount": difference}),
+        );
+        if (depositRes.statusCode != 200) throw Exception("Erreur lors de l'estimation du dépôt.");
+      }
+
+      // --- STEP 3: FINAL SUBMISSION OF COMMANDS ---
+      List<Map<String, dynamic>> deliveriesPayload = [];
+      for (var d in deliveries) {
+        // Convert photos to Base64
+        List<String?> base64Photos = [];
+        for (var file in d.photos) {
+          if (file != null) {
+            final bytes = await file.readAsBytes();
+            base64Photos.add(base64Encode(bytes));
+          }
+        }
+
+        deliveriesPayload.add({
+          "start_address": d.startAddress,
+          "destination_address": d.useGps ? "GPS" : d.destinationAddress,
+          "dest_latitude": d.destLatitude,
+          "dest_longitude": d.destLongitude,
+          "receiver_phone": d.phoneNumber,
+          "address_details": d.addressDetails,
+          "package_nature": d.packageNature,
+          "is_scheduled": d.isScheduled,
+          "scheduled_date": d.scheduledDate,
+          "scheduled_time": d.scheduledTime,
+          "is_shop": d.isShop,
+          "delivery_fee": d.deliveryFee,
+          "recover_amount": d.recoverAmount,
+          "amount_to_recover": d.amountToRecover,
+          "payment_type": d.paymentType,
+          "photos": base64Photos,
+        });
+      }
+
+      final finalResponse = await http.post(
+        Uri.parse("$baseUrl/submit"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "user_id": userId,
+          "sender_phone": senderPhone,
+          "summary": {
+            "grand_total": grandTotal,
+            "total_recovery": totalToRecover,
+          },
+          "deliveries": deliveriesPayload,
+        }),
+      );
+
+      // --- STEP 4: UI FEEDBACK ---
+      Navigator.pop(context); // Close loading
+
+      if (finalResponse.statusCode == 200 || finalResponse.statusCode == 201) {
+        _showSuccessDialog(context);
+      } else {
+        throw Exception("Erreur lors de la création de la commande: ${finalResponse.body}");
+      }
+
+    } catch (e) {
+      if (Navigator.canPop(context)) Navigator.pop(context); // Close loading if open
+      _showErrorSnackBar(context, "Erreur: $e");
+    }
+  }
+
+// Helper to show error messages
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
+// Helper for Success Dialog
+  void _showSuccessDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Succès"),
+        content: const Text("Vos livraisons ont été enregistrées avec succès."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close Dialog
+              Navigator.pop(context); // Go back to Home/Previous
+            },
+            child: const Text("OK", style: TextStyle(color: Color(0xFFD61C4E))),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Logic to calculate totals for the red summary card
-    double totalFees = deliveries.fold(0, (sum, item) => sum + 2500.0); // Assuming 2500 per delivery
-    double totalToRecover = deliveries.fold(0, (sum, item) {
-      double val = double.tryParse(item.amountToRecover) ?? 0.0;
-      return sum + val;
-    });
-
     return Scaffold(
       backgroundColor: const Color(0xFFF9F9F9),
       body: Column(
@@ -36,7 +189,6 @@ class RecapPage extends StatelessWidget {
                     style: TextStyle(color: Colors.grey, fontWeight: FontWeight.w500),
                   ),
                   const SizedBox(height: 12),
-                  // List of delivery details
                   ...deliveries.asMap().entries.map((entry) {
                     return _buildDeliveryDetailCard(entry.key, entry.value);
                   }),
@@ -45,13 +197,13 @@ class RecapPage extends StatelessWidget {
               ),
             ),
           ),
-          _buildBottomActions(totalFees),
+          _buildBottomActions(context, grandTotal),
         ],
       ),
     );
   }
 
-  // --- HEADER ---
+  // --- HEADER remains the same ---
   Widget _buildHeader(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(top: 50, bottom: 20, left: 16, right: 16),
@@ -85,7 +237,6 @@ class RecapPage extends StatelessWidget {
     );
   }
 
-  // --- TOP RED SUMMARY CARD ---
   Widget _buildSummaryCard(int count, double fees, double recovery) {
     return Container(
       padding: const EdgeInsets.all(20),
@@ -119,12 +270,16 @@ class RecapPage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           const Divider(color: Colors.white24),
           const SizedBox(height: 10),
           _summaryRow("Total Frais de livraison", "${fees.toInt()} FCFA"),
-          const SizedBox(height: 12),
+          const SizedBox(height: 9),
           _summaryRow("Total Montant à récupérer", "${recovery.toInt()} FCFA"),
+          const SizedBox(height: 9),
+          _summaryRow("Frais de Service", "${serviceFee.toInt()} FCFA"),
+          const SizedBox(height: 9),
+          _summaryRow("Frais Supplémentaires", "${additionalFee.toInt()} FCFA"),
         ],
       ),
     );
@@ -140,8 +295,10 @@ class RecapPage extends StatelessWidget {
     );
   }
 
-  // --- INDIVIDUAL DELIVERY DETAIL CARD ---
   Widget _buildDeliveryDetailCard(int index, DeliveryConfig d) {
+    // Requirement 2: Logic for "Destinataire" vs "Vous"
+    final String payerLabel = (d.paymentType == 1 || d.paymentType == 2) ? "Vous" : "Destinataire";
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       padding: const EdgeInsets.all(16),
@@ -161,11 +318,11 @@ class RecapPage extends StatelessWidget {
                 child: Text("${index + 1}", style: const TextStyle(color: Colors.white, fontSize: 12)),
               ),
               const SizedBox(width: 12),
-              Column(
+               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Livraison ${index + 1}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Text("2500 FCFA", style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
+                  Text("Livraison", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${d.deliveryFee.toInt()} FCFA", style: TextStyle(color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold)),
                 ],
               ),
               const Spacer(),
@@ -173,7 +330,6 @@ class RecapPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          // Vertical Timeline for Addresses
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -190,13 +346,18 @@ class RecapPage extends StatelessWidget {
                     child: Container(width: 1, height: 20, color: Colors.grey.shade300),
                   ),
                 ),
-                _timelineRow(const Color(0xFF4CAF50), "Arrivée",
-             d.useGps ? "Position GPS sélectionnée" : (d.destinationAddress.isNotEmpty ? d.destinationAddress : "Quartier non défini"))
+                _timelineRow(
+                    const Color(0xFF4CAF50),
+                    "Arrivée",
+                    // Show the address if it's not empty, regardless of GPS/Quartier mode
+                    d.destinationAddress.isNotEmpty
+                        ? d.destinationAddress
+                        : (d.useGps ? "Position GPS non définie" : "Quartier non défini")
+                )
               ],
             ),
           ),
           const SizedBox(height: 16),
-          // Support Fee Toggle Style
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
@@ -213,19 +374,19 @@ class RecapPage extends StatelessWidget {
                     color: const Color(0xFF2E7DFF),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: const Text("Destinataire", // Hardcoded based on image
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+                  child: Text(payerLabel, // Dynamic based on paymentType
+                      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
                 ),
               ],
             ),
           ),
           const SizedBox(height: 16),
-          // Driver Info Snippet
+          // Driver snippet (keeping as is)
           Row(
             children: [
               const CircleAvatar(
                 radius: 16,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=ama'), // Example image
+                backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=ama'),
               ),
               const SizedBox(width: 10),
               const Text("Livreur Ama S.", style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
@@ -270,8 +431,7 @@ class RecapPage extends StatelessWidget {
     );
   }
 
-  // --- BOTTOM ACTIONS ---
-  Widget _buildBottomActions(double total) {
+  Widget _buildBottomActions(BuildContext context, double total) {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: const BoxDecoration(
@@ -300,7 +460,7 @@ class RecapPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                       side: BorderSide(color: Colors.grey.shade300),
                     ),
-                    onPressed: () {},
+                    onPressed: () => Navigator.pop(context),
                     child: const Text("Modifier", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                   ),
                 ),
@@ -312,7 +472,7 @@ class RecapPage extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                     ),
-                    onPressed: () {},
+                    onPressed: () => _submitData(context), // Trigger API Call
                     child: const Text("Confirmer", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
                   ),
                 ),
