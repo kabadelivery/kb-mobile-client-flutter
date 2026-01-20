@@ -5,10 +5,16 @@ import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/ui/screens/auth/login/ForgottenPasswordOTP.dart';
 import 'package:KABA/src/ui/screens/auth/login/LoginOTPnewPage.dart';
 import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
+import 'package:KABA/src/utils/_static_data/AppConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+
+import '../../../../utils/_static_data/ImageAssets.dart';
 
 class VerificationPage extends StatefulWidget {
   static var routeName = "/VerificationPage";
@@ -75,9 +81,7 @@ class _VerificationPageState extends State<VerificationPage> {
       return;
     }
 
-    _timer?.cancel(); // Stop timer on valid submission
-
-    // ✅ Navigate back with collected password
+    _timer?.cancel();
     Navigator.of(context)
         .pop({'code': enteredPassword, 'type': widget.type});
   }
@@ -91,74 +95,88 @@ class _VerificationPageState extends State<VerificationPage> {
     );
   }
 
-  void showReceiveCodeBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  showReceiveCodeBottomSheet(BuildContextcontext) {
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      expand: false,
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      backgroundColor: Colors.white,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+      builder: (context) => Container(
+          width: 335,
+          height: 155,
+          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Container(
+                  width:double.infinity,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    AppLocalizations.of(context)!.translate('receive_code_via'),
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 15),
-                  RadioListTile<String>(
-                    title: Text(AppLocalizations.of(context)!.translate('whatsapp')),
-                    value: "whatsapp",
-                    groupValue: _selectedOption,
-                    onChanged: (value) => setModalState(() => _selectedOption = value),
-                  ),
-                  RadioListTile<String>(
-                    title: Text(AppLocalizations.of(context)!.translate('email')),
-                    value: "email",
-                    groupValue: _selectedOption,
-                    onChanged: (value) => setModalState(() => _selectedOption = value),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: KColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _jumpToOTPPage();
-                      },
-                      child: Text(
-                        AppLocalizations.of(context)!.translate('receive_code_button'),
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_support_to_get_otp')}",style: TextStyle(color: Colors.white,fontSize: 14))),
+              InkWell(
+                onTap: ()async{
+                  var url = "tel:${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+                  if (await canLaunch(url)) {
+                  await launch(url);
+                  } else {
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('phone_call')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
               ),
-            );
-          },
-        );
-      },
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: KColors.new_gray,
+                  height: 1),
+              InkWell(
+                onTap: () async{
+                  final link = WhatsAppUnilink(
+                    phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+                    text: "${AppLocalizations.of(context)!.translate('i_want_otp_code')}",
+                  );
+                  await launch('$link');
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        Container(
+                            width: 20,
+                            height: 20,
+                            child: Image.asset(ImageAssets.whatsapp)),
+                      ]),
+                ),
+              ),
+            ],
+          )),
     );
   }
 
@@ -193,7 +211,7 @@ class _VerificationPageState extends State<VerificationPage> {
             FocusScope.of(context).nextFocus();
           }
           if (_controllers.every((c) => c.text.isNotEmpty)) {
-            _timer?.cancel(); // ✅ Stop timer once OTP is complete
+            _timer?.cancel();
           }
         },
       ),
@@ -284,13 +302,16 @@ class _VerificationPageState extends State<VerificationPage> {
                     ),
                   ),
                 ),
-
-                // ✅ Show conditional "Receive code via" button
+                SizedBox(height: 10,),
                 if (_showReceiveOption)
                   TextButton(
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.all(8.0),
+                      backgroundColor: KColors.primaryColor.withOpacity(.1)
+                    ),
                     onPressed: () => showReceiveCodeBottomSheet(context),
                     child: Text(
-                      AppLocalizations.of(context)!.translate('receive_code_via'),
+                      AppLocalizations.of(context)!.translate('contact_support_to_get_otp'),
                       style: const TextStyle(color: KColors.primaryColor),
                     ),
                   )

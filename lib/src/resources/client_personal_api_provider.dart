@@ -321,6 +321,7 @@ class ClientPersonalApiProvider {
           "error": responseData["error"],
           "code": responseData["code"],
           "message": responseData["message"],
+          "require_otp": responseData["require_otp"]??false,
           "data": responseData["data"],
           "login_code": responseData["login_code"],
           "request_id": responseData["request_id"],

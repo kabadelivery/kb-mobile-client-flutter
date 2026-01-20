@@ -21,10 +21,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 
 import '../../../../StateContainer.dart';
+import '../../../../utils/_static_data/AppConfig.dart';
 
 
 class LoginOTPConfirmationPage extends StatefulWidget {
@@ -159,132 +162,159 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
     );
   }
 
-  void showReceiveCodeBottomSheet(BuildContext context) {
-    showModalBottomSheet(
+  showReceiveCodeBottomSheet(BuildContextcontext) {
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      expand: false,
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      backgroundColor: Colors.white,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 50,
-                    height: 5,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[300],
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+      builder: (context) => Container(
+          width: 335,
+          height: 155,
+          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Container(
+                  width:double.infinity,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Recevoir le code via",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 15),
-                  RadioListTile<String>(
-                    title: const Text("WhatsApp"),
-                    value: "whatsapp",
-                    groupValue: _selectedOption,
-                    onChanged: (value) =>
-                        setModalState(() => _selectedOption = value),
-                  ),
-                  RadioListTile<String>(
-                    title: const Text("Email"),
-                    value: "email",
-                    groupValue: _selectedOption,
-                    onChanged: (value) =>
-                        setModalState(() => _selectedOption = value),
-                  ),
-                  const SizedBox(height: 15),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: KColors.primaryColor,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () async {
-                        Navigator.pop(context); // close bottom sheet
-                        String option = _selectedOption ?? "none";
-
-                        if (option == "whatsapp") {
-                          // Phone number in international format (no + or 0)
-                          String phone = widget.login!;
-
-                          // Message to send
-                          String message = "Votre Code OTP (KABA): "+ widget.otp_code! ;
-
-                          // Build WhatsApp URL
-                          final url = Uri.parse(
-                              "https://wa.me/$phone?text=${Uri.encodeComponent(message)}");
-
-                          // Launch WhatsApp
-                          if (await canLaunchUrl(url)) {
-                            await launchUrl(url, mode: LaunchMode.externalApplication);
-                          } else {
-                            mToast("Impossible d'ouvrir WhatsApp");
-                          }
-                        } else {
-                          mToast("Vous avez choisi : $option");
-                        }
-                      },
-
-                      child: const Text(
-                        "Recevoir le Code",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                ],
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_support_to_get_otp')}",style: TextStyle(color: Colors.white,fontSize: 14))),
+              InkWell(
+                onTap: ()async{
+                  var url = "tel:${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('phone_call')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
               ),
-            );
-          },
-        );
-      },
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: KColors.new_gray,
+                  height: 1),
+              InkWell(
+                onTap: () async{
+                  final link = WhatsAppUnilink(
+                    phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+                    text: "${AppLocalizations.of(context)!.translate('i_want_otp_code')}",
+                  );
+                  await launch('$link');
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        Container(
+                            width: 20,
+                            height: 20,
+                            child: Image.asset(ImageAssets.whatsapp)),
+                      ]),
+                ),
+              ),
+            ],
+          )),
     );
   }
+
   Future<void> _submitCode() async {
-    String enteredPassword = _controllers.map((c) => c.text).join();
-    if (enteredPassword.isEmpty) {
-      setState(() => errorMessage = "Veuillez entrer le Code OTP .");
+    final enteredCode = _controllers.map((c) => c.text).join();
+
+    // 1️⃣ Validation locale basique
+    if (enteredCode.length != 4 || !Utils.isCode(enteredCode)) {
+      setState(() => errorMessage = "Veuillez entrer un code OTP valide.");
       return;
     }
 
-    if (enteredPassword.length < 4) {
-      setState(() => errorMessage =
-      "Le mot de passe doit contenir au moins 4 caractères.");
-      return;
-    }
+    setState(() {
+      errorMessage = "";
+      otp_loading = true;
+    });
 
-    // _timer?.cancel();
+    final client = ClientPersonalApiProvider();
 
-    bool isValid = await validateCodeAndConfirm(enteredPassword);
+    try {
+      // 2️⃣ Tentative de validation serveur (SOURCE DE VÉRITÉ)
+      final response = await client.checkRequestCodeAction(
+        enteredCode,
+        widget.request_id!,
+      );
 
-    if (isValid) {
-      ClientPersonalApiProvider clientPersonalApiProvider = ClientPersonalApiProvider();
-      await clientPersonalApiProvider.checkRequestCodeAction(widget.otp_code.toString(), widget.request_id!);
+      final data = jsonDecode(response);
+
+      if (data['error'] == 0) {
+        // ✅ Validé par le backend
+        _goOutValid();
+        return;
+      }
+
+      // ❌ Le serveur a répondu → REFUS
       setState(() {
-        errorMessage = "";
-        loadingToGoOut = true;
+        otp_loading = false;
+        errorMessage = data['message'] ?? "Code OTP invalide.";
       });
 
-      Future.delayed(const Duration(seconds: 1), () {
-        Navigator.of(context).pop({'otp_valid': "valid"});
-      });
-    } else {
-      setState(() => errorMessage = "Code OTP invalide !");
+    } catch (e) {
+      // 3️⃣ FALLBACK CLIENT (serveur injoignable)
+      debugPrint("⚠️ Backend unreachable, fallback client validation");
+
+      if (enteredCode == widget.otp_code) {
+        // ⚠️ ACCEPTATION TEMPORAIRE
+        _goOutValid(fallback: true);
+      } else {
+        setState(() {
+          otp_loading = false;
+          errorMessage = "Code incorrect ou connexion indisponible.";
+        });
+      }
     }
+  }
+  void _goOutValid({bool fallback = false}) {
+    if (!mounted) return;
+
+    setState(() {
+      otp_loading = false;
+      loadingToGoOut = true;
+    });
+
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) {
+        Navigator.of(context).pop({
+          'otp_valid': "valid",
+          'fallback': fallback, // 🔍 info utile pour debug/log
+        });
+      }
+    });
   }
 
 
@@ -382,56 +412,76 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
                 otp_loading?CircularProgressIndicator(color: KColors.primaryColor,):
     Opacity(
     opacity: _remainingSeconds == 0 ? 1.0 : 0.5,
-    child: OutlinedButton(
-    onPressed: _remainingSeconds == 0
-    ? () async {
-    debugPrint("resend code pressed; ${widget.username}");
-    ClientPersonalApiProvider client = ClientPersonalApiProvider();
-    setState(() {
-    otp_loading = true;
-    });
-    var response =
-    await client.recoverPasswordSendingCodeAction(widget.username!);
-
-    setState(() {
-    var data = jsonDecode(response);
-    if (data['error'] == 0) {
-    pwd = "";
-    _remainingSeconds = 90;
-    _showReceiveOption = false;
-    widget.otp_code = data['data']['code'].toString();
-    widget.request_id = data['data']['request_id'].toString();
-    otp_loading = false;
-    _startTimer();
-    mToast("Le code a été renvoyé avec succès.");
-    } else {
-    mToast("Erreur lors de l'envoi du code. Veuillez réessayer.");
-    }
-    });
-    }
-        : null, // désactive automatiquement le bouton
-    style: OutlinedButton.styleFrom(
-    backgroundColor: Colors.white,
-    side: const BorderSide(color: KColors.primaryColor, width: 1),
-    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(8),
-    ),
-    ),
-    child:  Row(
-      mainAxisSize: MainAxisSize.min,
+    child: Column(
       children: [
-        Text(
-        "Recevoir le code par WhatsApp",
-        style: TextStyle(
-        color: KColors.primaryColor,
-        fontWeight: FontWeight.w500,
+        OutlinedButton(
+        onPressed: _remainingSeconds == 0
+        ? () async {
+        debugPrint("resend code pressed; ${widget.username}");
+        ClientPersonalApiProvider client = ClientPersonalApiProvider();
+        setState(() {
+        otp_loading = true;
+        });
+        var response =
+        await client.recoverPasswordSendingCodeAction(widget.username!);
+
+        setState(() {
+        var data = jsonDecode(response);
+        if (data['error'] == 0) {
+        pwd = "";
+        _remainingSeconds = 90;
+        _showReceiveOption = false;
+        widget.otp_code = data['data']['code'].toString();
+        widget.request_id = data['data']['request_id'].toString();
+        otp_loading = false;
+        _startTimer();
+        mToast("Le code a été renvoyé avec succès.");
+        } else {
+        mToast("Erreur lors de l'envoi du code. Veuillez réessayer.");
+        }
+        });
+        }
+            : null, // désactive automatiquement le bouton
+        style: OutlinedButton.styleFrom(
+        backgroundColor: Colors.white,
+        side: const BorderSide(color: KColors.primaryColor, width: 1),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+        shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
         ),
         ),
-        SizedBox(width: 10),
-        Icon(FontAwesomeIcons.whatsapp,color: KColors.primaryColor,)
+        child:  Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+            "Recevoir le code par WhatsApp",
+            style: TextStyle(
+            color: KColors.primaryColor,
+            fontWeight: FontWeight.w500,
+            ),
+            ),
+            SizedBox(width: 10),
+            Icon(FontAwesomeIcons.whatsapp,color: KColors.primaryColor,)
+          ],
+        ),
+        ),
+        SizedBox(height: 10),
+        _remainingSeconds==0?TextButton(
+          style: TextButton.styleFrom(
+              padding: EdgeInsets.all(8.0),
+              backgroundColor: KColors.primaryColor.withOpacity(.1)
+          ),
+          onPressed:(){
+            if(_remainingSeconds == 0){
+              showReceiveCodeBottomSheet(context);
+            }
+          },
+          child: Text(
+            AppLocalizations.of(context)!.translate('contact_support_to_get_otp'),
+            style: const TextStyle(color: KColors.primaryColor),
+          ),
+        ):SizedBox(),
       ],
-    ),
     ),
     ),
 

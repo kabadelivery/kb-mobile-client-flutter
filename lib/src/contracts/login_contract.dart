@@ -54,7 +54,7 @@ class LoginPresenter implements LoginContract {
         int error = int.parse("${obj["error"]}");
         if (error == 0  /* && token != null && token.length > 0*/) {
           /* login successful */
-          _loginView.loginSucess() ;
+         // _loginView.loginSucess() ;
           _loginView.loginSuccess(obj);
 
           return  ;
