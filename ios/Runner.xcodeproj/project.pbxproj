@@ -493,7 +493,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Kaba.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.7.9;
+				CURRENT_PROJECT_VERSION = 3.9.0;
 				DEVELOPMENT_TEAM = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -510,7 +510,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 3.7.9;
+				MARKETING_VERSION = 3.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -644,7 +644,7 @@
 				CODE_SIGN_ENTITLEMENTS = Runner/Kaba.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3.7.9;
+				CURRENT_PROJECT_VERSION = 3.9.0;
 				DEVELOPMENT_TEAM = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -661,7 +661,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 3.7.9;
+				MARKETING_VERSION = 3.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -683,7 +683,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3.7.9;
+				CURRENT_PROJECT_VERSION = 3.9.0;
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = WB8KSBC9W5;
 				ENABLE_BITCODE = NO;
@@ -701,7 +701,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				MARKETING_VERSION = 3.7.9;
+				MARKETING_VERSION = 3.9.0;
 				PRODUCT_BUNDLE_IDENTIFIER = tg.tmye.kaba.brave.one;
 				PRODUCT_NAME = KABA;
 				PROVISIONING_PROFILE_SPECIFIER = "";
