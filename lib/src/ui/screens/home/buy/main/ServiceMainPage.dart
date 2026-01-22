@@ -137,6 +137,23 @@ class ServiceMainPageState extends State<ServiceMainPage>
       return false;
     }
   }
+  Future<bool> ensureLocationPermission(BuildContext context) async {
+    if (!await Geolocator.isLocationServiceEnabled()) {
+      await Geolocator.openLocationSettings();
+      return false;
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   void initState() {
@@ -904,7 +921,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                            await Permission.camera.status;
+                            final status = await Permission.camera.request();
+                            if (!status.isGranted) return;
+
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => OutOfAppPres(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -1011,7 +1030,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                            await Permission.camera.status;
+                            final status = await Permission.camera.request();
+                            if (!status.isGranted) return;
+
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => WelcomeToKabaChine(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -1057,7 +1078,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                            await Permission.camera.status;
+                            final status = await Permission.camera.request();
+                            if (!status.isGranted) return;
+
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => KabaExpeditionHomePage(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -1103,7 +1126,8 @@ class ServiceMainPageState extends State<ServiceMainPage>
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
-                            await Permission.camera.status;
+                            final status = await Permission.camera.request();
+                            if (!status.isGranted) return;
                             Navigator.of(context).push(PageRouteBuilder(
                                 pageBuilder: (context, animation, secondaryAnimation) => PharmacyPage(),
                                 transitionsBuilder: (context, animation, secondaryAnimation, child) {
@@ -1420,100 +1444,39 @@ class ServiceMainPageState extends State<ServiceMainPage>
     );
   }
 
-  void showPlacePicker(BuildContext context) async {
-    SharedPreferences.getInstance().then((value) async {
-      prefs = value;
+  Future<void> showPlacePicker(BuildContext context) async {
+    final granted = await ensureLocationPermission(context);
 
-      String? _has_accepted_gps = prefs!.getString("_has_accepted_gps");
-      /* no need to commit */
-      /* expiration date in 3 months */
-      if (_has_accepted_gps != "ok") {
-        return showDialog<void>(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("${AppLocalizations.of(context)!.translate('info')}"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    /* add an image*/
-                    Container(
-                        height: 100,
-                        width: 100,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: new AssetImage(ImageAssets.address),
-                            ))),
-                    SizedBox(height: 10),
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('request_location_permission')}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 14))
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('refuse')}"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('accept')}"),
-                  onPressed: () async{
-                    /* */
-                    prefs!.setString("_has_accepted_gps", "ok");
-                    Navigator.of(context).pop();
-                    await Future.delayed(const Duration(milliseconds: 200));
-                    showPlacePicker(context);
-                  },
-                )
-              ],
-            );
-          },
-        );
-      } else {
-        final permission = await Geolocator.checkPermission();
+    if (!granted) {
+      _showPermissionInfoDialog(context);
+      return;
+    }
 
-        if (permission == LocationPermission.deniedForever) {
-          await Geolocator.openAppSettings();
-          return;
-        }
+    setState(() => isPickLocation = true);
 
-        if (permission == LocationPermission.denied) {
-          final p = await Geolocator.requestPermission();
-          if (p != LocationPermission.always &&
-              p != LocationPermission.whileInUse) {
-            return;
-          }
-        }
+    await _jumpToPickAddressPage();
 
-        final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-        if (!serviceEnabled) {
-          await Geolocator.openLocationSettings();
-          return;
-        }
-
-        setState(() {
-          isPickLocation = true;
-        });
-
-        _jumpToPickAddressPage();
-
-        if (mounted) {
-          setState(() {
-            isPickLocation = false;
-          });
-        }
-      }
-
-    });
+    if (mounted) {
+      setState(() => isPickLocation = false);
+    }
+  }
+  void _showPermissionInfoDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(AppLocalizations.of(context)!.translate('info')),
+        content: Text(
+          AppLocalizations.of(context)!
+              .translate('request_location_permission'),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.translate('ok')),
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _jumpToPickAddressPage() async {
