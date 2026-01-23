@@ -1545,29 +1545,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
     final notif = await Permission.notification.status;
 
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    // Case 1: both denied → show big modal ONCE
-    if (!loc.isGranted && !notif.isGranted) {
-      await showDialog(
-        context: context,
-        builder: (_) => const PermissionsModal(),
-      );
-      return;
-    }
-
-    // Case 2: location denied but notifications ok
     if (!loc.isGranted) {
       openLocationModal(context);
       return;
     }
-
-    // Case 3: location granted but GPS disabled
     if (!serviceEnabled) {
       openLocationModal(context);
       return;
     }
-
-    // Case 4: all good → start stream once
     if (positionStream == null) {
       positionStream = Geolocator.getPositionStream().listen((position) {
         // your position logic
