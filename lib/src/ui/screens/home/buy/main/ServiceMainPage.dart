@@ -1545,14 +1545,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
     final notif = await Permission.notification.status;
 
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!loc.isGranted) {
-      openLocationModal(context);
-      return;
-    }
-    if (!serviceEnabled) {
-      openLocationModal(context);
-      return;
-    }
+//    if (!loc.isGranted) {
+//       openLocationModal(context);
+//       return;
+//     }
+//     if (!serviceEnabled) {
+//       openLocationModal(context);
+//       return;
+//     }
     if (positionStream == null) {
       positionStream = Geolocator.getPositionStream().listen((position) {
         // your position logic
