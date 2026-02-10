@@ -68,15 +68,23 @@ class RestaurantListPresenter implements RestaurantListContract {
 
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
       xrint("made it to configuration");
-        var address= await CustomerUtils.getSavedAddressLocally();
-        xrint("made it to address");
+      final address = await CustomerUtils.getSavedAddressLocally();
+      final Position resolvedPosition = address ??
+          await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high,
+          );
+
+
+
+
+      xrint("made it to address");
         CustomerModel user = await CustomerUtils.getCustomer();
 
         xrint("made it to sortOutRestaurantList");
         await Future.delayed(Duration(seconds: 2), ()async {
           restaurants = await compute(sortOutRestaurantList, {
             "data": data,
-            "position": address,
+            "position": resolvedPosition,
             "is_email_account": user.username == null
                 ? false
                 : (customer.username!.contains("@") ? true : false),

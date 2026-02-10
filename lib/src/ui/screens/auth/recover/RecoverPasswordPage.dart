@@ -65,7 +65,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   int timeDiff = 0;
 
   String? _requestId;
-
+  CustomerModel tempUser =CustomerModel();
 
 
   @override
@@ -76,6 +76,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
     CustomerUtils.getCustomer().then((customer) {
       if (customer != null) {
         xrint("recoverpasswordPage : "+customer.toJson().toString());
+        tempUser = customer;
         setState(() {
           if (customer.phone_number == null) {
             if (customer.email == null) {
@@ -111,8 +112,12 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
   @override
   Widget build(BuildContext context) {
-    final raw = ref.watch(loginProvider).trim();
+    String raw = ref.watch(loginProvider).trim();
+    if(raw==null || raw.isEmpty){
+      raw =tempUser.username??"";
+    }
     String login = raw.contains('@') ? raw : raw.startsWith('+') ? raw.substring(1) : "228$raw";
+
     return Scaffold(
         appBar: AppBar(
           toolbarHeight: StateContainer.ANDROID_APP_SIZE,
@@ -273,7 +278,10 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
     /* check the fields */
 
     //String login = ref.watch(loginProvider).startsWith('+') ? ref.watch(loginProvider).substring(1) : "228${ref.watch(loginProvider)} " : Utils.isEmailValid(email);
-    final raw = ref.watch(loginProvider).trim();
+    String raw = ref.watch(loginProvider).trim();
+    if(raw==null || raw.isEmpty){
+      raw = tempUser.username??"";
+    }
     String login = raw.contains('@') ? raw : raw.startsWith('+') ? raw.substring(1) : "228$raw";
     if (login.isNotEmpty) {
       this.widget.presenter!.sendVerificationCode(login);
