@@ -14,11 +14,9 @@ Future<bool> fetchSubscription() async {
   try {
     final response = await http
         .get(url)
-        .timeout(const Duration(milliseconds: 3000));
-
+        .timeout(const Duration(milliseconds: 5000));
     if (response.statusCode == 200) {
       final rawData = json.decode(response.body);
-
       if (rawData is! Map<String, dynamic>) {
         throw Exception("Unexpected response format: not a JSON object");
       }
