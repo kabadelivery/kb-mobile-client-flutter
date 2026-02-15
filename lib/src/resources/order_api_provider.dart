@@ -51,18 +51,29 @@ class OrderApiProvider {
     // === Appel à l'endpoint KABA_ABONNEMENT_GET_BY_USER avant le compute billing ===
     try {
       var dio = Dio();
-      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
-      var abonnementResponse = await dio.post(
-        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
-        data: {
-          "userId": customer.id!,
-        },
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-          },
-        ),
+      dio.options = BaseOptions(
+        headers: Utils.getHeadersWithToken(customer.token!),
+        connectTimeout:  5000,
+        receiveTimeout:  5000,
+        sendTimeout:  5000,
       );
+      dio.options.headers = Utils.getHeadersWithToken(customer.token!);
+      var abonnementResponse;
+      try{
+        abonnementResponse = await dio.post(
+          ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+          data: {
+            "userId": customer.id!,
+          },
+          options: Options(
+            headers: {
+              "Content-Type": "application/json",
+            },
+          ),
+        );
+      }catch(e){
+
+      }
 
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         requestData['user_abonnement'] = abonnementResponse.data;
@@ -182,17 +193,28 @@ class OrderApiProvider {
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer!.token!);
-      var abonnementResponse = await dio.post(
-        ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
-        data: {
-          "userId": customer.id!,
-        },
-        options: Options(
-          headers: {
-            "Content-Type": "application/json",
-          },
-        ),
+      dio.options = BaseOptions(
+        headers: Utils.getHeadersWithToken(customer.token!),
+        connectTimeout:  5000,
+        receiveTimeout:  5000,
+        sendTimeout:  5000,
       );
+      var abonnementResponse;
+      try{
+        abonnementResponse = await dio.post(
+          ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
+          data: {
+            "userId": customer.id!,
+          },
+          options: Options(
+            headers: {
+              "Content-Type": "application/json",
+            },
+          ),
+        );
+      }catch(e){
+
+      }
       if (abonnementResponse.statusCode == 200 ||abonnementResponse.statusCode == 201) {
         abonnementData= abonnementResponse.data;
         requestData['user_abonnement'] = abonnementResponse.data;
@@ -407,7 +429,12 @@ class OrderApiProvider {
     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
-
+      dio.options = BaseOptions(
+        headers: Utils.getHeadersWithToken(customer.token!),
+        connectTimeout:  5000,
+        receiveTimeout:  5000,
+        sendTimeout:  5000,
+      );
       var aboRes = await dio.post(
         ServerRoutes.KABA_ABONNEMENT_GET_BY_USER,
         data: {"userId": customer.id!},

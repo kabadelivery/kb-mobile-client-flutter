@@ -97,7 +97,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   bool checkIsRestaurantOpenConfigIsLoading = true;
   bool has_subscription = false;
   TextEditingController codeController = TextEditingController();
-
+  bool sub=false;
   TextEditingController? _addInfoController;
 
   bool _checkOpenStateError = false;
@@ -130,6 +130,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_)async{
+      try{
+        sub  = await fetchSubscription();
+      }catch(e){}
       var status = await Permission.notification.status;
       if(!status.isGranted){
         await Permission.notification.request();
@@ -2476,7 +2479,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             configuration.shipping_pricing!.toDouble() /
             100))
         .toInt();
-   bool sub  = await fetchSubscription();
+
     setState(() {
       _orderBillConfiguration.isBillBuilt = true;
       if(sub==true){

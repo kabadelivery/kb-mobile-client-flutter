@@ -12,7 +12,9 @@ Future<bool> fetchSubscription() async {
     "${ServerRoutes.KABA_ABONNEMENT_SUSCRIBED_USER}/${customerModel.id}",
   );
   try {
-    final response = await http.get(url);
+    final response = await http
+        .get(url)
+        .timeout(const Duration(milliseconds: 3000));
 
     if (response.statusCode == 200) {
       final rawData = json.decode(response.body);
