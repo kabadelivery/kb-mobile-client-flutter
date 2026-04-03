@@ -161,7 +161,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                 SizedBox(height: 20,),
                 Container(
                   padding: const EdgeInsets.all(15),
-                  width: 350,
+                  width: size.width*.8,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -233,7 +233,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                 ),
                 SizedBox(height: 20,),
                 Container(
-                  width:350,
+                  width:size.width*.8,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       elevation: 0,
@@ -286,7 +286,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                             ]
             
                         ),
-                        width: 350,
+                        width: size.width*.8,
                         child:Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -341,7 +341,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                 outOfAppScreenState.isBillBuilt==true &&
                     outOfAppScreenState.showLoading==false?
                 Container(
-                    width: 350,
+                    width: size.width*.8,
                     padding: EdgeInsets.all(20),
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -362,12 +362,14 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                     :Container()
                 ,
                 SizedBox(height: 20,),
-                orderBillingState.orderBillConfiguration!=null?    Container(
-                  width: 350,
+                orderBillingState.orderBillConfiguration!=null?
+                Container(
+                  width: size.width*.8,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                     subscription.isSelected?
+                      /*
+                      * subscription.isSelected?
                          Container(
                            width: 180,
                            child: TextField(
@@ -401,6 +403,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                            ),
                          )
                          : BuildSubSpace(context,ref),
+                      * */
                       BuildCouponSpace(context,ref),
                     ],
                   ),
@@ -531,6 +534,7 @@ class _OutOfAppOrderPageState extends ConsumerState<OutOfAppOrderPage> {
                       }
                     },
                     child: Container(
+                      width: size.width*.8,
                       padding: EdgeInsets.all(10),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.center,

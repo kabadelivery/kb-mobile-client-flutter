@@ -11,6 +11,7 @@ import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:cherry_toast/cherry_toast.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -39,7 +40,7 @@ class TopNewUpPage extends StatefulWidget {
   var total = 0;
 
   var fees = 0;
-
+  String _selectedCountryCode = "+228";
   double? fees_tmoney = 4.0;
 
   double? fees_flooz = 4.0;
@@ -87,7 +88,7 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       filter_active_text_color = Colors.white;
 
   var _searchChoices = null;
-
+  String _selectedCountryCode = '+228';
   var dropdownValue = "Tmoney";
   List<Map<String, dynamic>> momoPaymentModes = [
     {"name": "Tmoney", "id": "t_money","logo":"assets/images/png/tmoney_logo.png"},
@@ -453,46 +454,81 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
 
                   ),
                 ),
-                widget.selectedPosition == 1
-                    ? Column(children: [
+                 Column(children: [
 
-                        /* phone number just in case we are working with moov*/
-                        Container(
-                          color: Colors.white,
-                          padding: EdgeInsets.all(20),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                FormTitle(
-                                  context: context,
-                                  title:  "${AppLocalizations.of(context)!.translate('topup_phone_number')}",
-                                  isRequired: true,
-                                ),
-                                SizedBox(height: 5),
-                          FormTextFieldContainerDecoration(
-                              context: context,child: Row(
+                            /* phone number just in case we are working with moov*/
+                            Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.all(20),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    SizedBox(width: 10),
-                                    Icon(Icons.phone_outlined, color: Colors.black54),
-                                    Expanded(
-                                      child: TextField(
-                                          controller: _phoneNumberFieldController,
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(fontSize: 20),
-                                          decoration: InputDecoration(
-                                              fillColor: Colors.yellow,
-                                              border: InputBorder.none,
-                                              hintMaxLines: 5,
-                                              hintStyle: TextStyle(fontSize: 13)),
-                                          keyboardType: TextInputType.phone),
+                                    FormTitle(
+                                      context: context,
+                                      title:  "${AppLocalizations.of(context)!.translate('topup_phone_number')}",
+                                      isRequired: true,
                                     ),
-                                  ],
-                                ))
-                              ]),
-                        ),
-                      ])
-                    : Container(),
+                                    SizedBox(height: 5),
+                                    FormTextFieldContainerDecoration(
+                                      context: context,
+                                      child: Row(
+                                        children: [
+                                          SizedBox(width: 10),
+                                          Icon(Icons.phone_outlined, color: Colors.black54),
+                                          SizedBox(width: 8),
+
+                                          Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.transparent,
+                                              border: Border(
+                                                right: BorderSide(color: Colors.black12, width: 1),
+                                              ),
+                                            ),
+                                            child: CountryCodePicker(
+                                              onChanged: (country) {
+                                                setState(() {
+                                                  _selectedCountryCode = country.dialCode ?? '+228';
+                                                  debugPrint(_selectedCountryCode);
+                                                });
+                                              },
+                                              initialSelection: 'TG',
+                                              favorite: ['+228', 'TG'],
+                                              showCountryOnly: false,
+                                              showOnlyCountryWhenClosed: false,
+                                              alignLeft: false,
+                                              showDropDownButton: true,
+                                              padding: EdgeInsets.zero,
+                                              textStyle: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 8),
+
+                                          Expanded(
+                                            child: TextField(
+                                              controller: _phoneNumberFieldController,
+                                              textAlign: TextAlign.right,
+                                              style: TextStyle(fontSize: 20),
+                                              decoration: InputDecoration(
+                                                border: InputBorder.none,
+                                                hintMaxLines: 5,
+                                                hintStyle: TextStyle(fontSize: 13),
+                                              ),
+                                              keyboardType: TextInputType.phone,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ]),
+                            ),
+                          ]),
+
                 Column(children: [
                   /* amount you wanna get paid */
                 widget.transactionType == TransactionType.expedition?Container():
@@ -1187,11 +1223,12 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       Map<String, dynamic> paymentData = {
         "amount": (_getRealTotalAmountFromInitial()),
         "description": "Paiement par carte",
-        "user": {
+        "client": {
           "lastname": "${customer.nickname}",
           "firstname": "",
-          "phone": "${customer.username}",
-        }
+          "phone": "${_selectedCountryCode}${_phoneNumberFieldController!.text}",
+        },
+        "type_notif": ["SMS", "MAIL"],
       };
       semoaResult = await provider.launchSemoa(customer, paymentData);
     }catch(_){

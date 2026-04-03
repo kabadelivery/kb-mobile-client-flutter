@@ -3155,7 +3155,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                 mainAxisAlignment:MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  !has_subscription?              Container(
+                                  /*
+                                  *   !has_subscription?              Container(
                                     padding: const EdgeInsets.all(16),
                                     decoration: BoxDecoration(
                                       gradient: LinearGradient(
@@ -3252,6 +3253,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
                                     ),
                                   ):Container(),
+
+                                  * */
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [

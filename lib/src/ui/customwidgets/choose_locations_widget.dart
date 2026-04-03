@@ -94,7 +94,7 @@ Widget PurchaseAddress(BuildContext context,
   final locationNotifier = ref.read(locationStateProvider.notifier);
   final additionnalInfoState = ref.watch(additionnalInfoProvider);
   return Container(
-    width: 350,
+    width: MediaQuery.sizeOf(context).width*.8,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
       border: Border.all(color: Colors.grey, width: .5),
@@ -218,7 +218,7 @@ Widget ShippingAddress(BuildContext context,
     isLocationPicked=false;
   }
   return Container(
-    width: 350,
+    width: MediaQuery.of(context).size.width*.8,
     padding: const EdgeInsets.all(18),
     decoration: BoxDecoration(
       color: Colors.white,

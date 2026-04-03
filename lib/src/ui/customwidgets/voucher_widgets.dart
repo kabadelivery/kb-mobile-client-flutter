@@ -68,7 +68,7 @@ Widget BuildCouponSpace(BuildContext context, WidgetRef ref) {
             //Default value
             direction: ShimmerDirection.fromLTRB(),
             child: Container(
-                width: 160,
+                width: MediaQuery.of(context).size.width*.8,
                 decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
                   gradient: LinearGradient(
@@ -444,7 +444,7 @@ Widget BuildSubSpace(BuildContext context, WidgetRef ref){
         ref.read(subscriptionStateProvider.notifier).setSelected(true);
       },
       child: Container(
-        width: 160,
+
         decoration: BoxDecoration(
           gradient: LinearGradient(
               begin: Alignment.topRight,

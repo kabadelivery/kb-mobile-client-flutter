@@ -810,6 +810,8 @@ class PaymentProcessor {
       Map<String, dynamic> paymentData = {
         "amount": price,
         "description": "Paiement Abonnement",
+        "phone": "${customer.username}",
+        "currency":"XOF",
         "user": {
           "lastname": "${customer.nickname}",
           "firstname": "",

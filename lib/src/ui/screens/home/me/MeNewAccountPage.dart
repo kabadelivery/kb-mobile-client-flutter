@@ -53,6 +53,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../StateContainer.dart';
+import '../../../../utils/functions/popups.dart';
 import '../../../customwidgets/actions.dart';
 import '../../../customwidgets/header.dart';
 import 'feeds/FeedsPage.dart';
@@ -367,11 +368,16 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
                     Expanded(
                       flex: 1,
                       child: InkWell(
-                        onTap: () => _jumpToPage(
-                            context,
-                            Kaba_abonnement( presenter: TransactionPresenter(TransactionView()))
+                        onTap: () {
+                          /*
+                          * _jumpToPage(
+                              context,
+                              Kaba_abonnement( presenter: TransactionPresenter(TransactionView()))
 
-                        ),
+                          );
+                          * */
+                          showModernPopup(context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+                        },
                         child: Container(
                           margin: EdgeInsets.only(top:5),
                           child: Column(

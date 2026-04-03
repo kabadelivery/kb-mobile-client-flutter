@@ -148,7 +148,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
           showModernPopup(
               context: context,
               text:
-              "Désolé. Ce service n’est pas encore disponible. Il le sera bientôt",
+              "${AppLocalizations.of(context)!.translate('service_unavailable')}",
               icon: Icon(Icons.store_mall_directory)
           );
         }else{

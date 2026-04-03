@@ -48,7 +48,8 @@ class OrderApiProvider {
       "use_kaba_point": useKabaPoints
     };
 
-    // === Appel à l'endpoint KABA_ABONNEMENT_GET_BY_USER avant le compute billing ===
+   /*
+   *   // === Appel à l'endpoint KABA_ABONNEMENT_GET_BY_USER avant le compute billing ===
     try {
       var dio = Dio();
       dio.options = BaseOptions(
@@ -85,6 +86,7 @@ class OrderApiProvider {
       xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
       requestData['user_abonnement'] = {};
     }
+   * */
     var _data = json.encode(requestData);
     xrint(_data.toString());
 
@@ -190,7 +192,8 @@ class OrderApiProvider {
       "use_kaba_point": useKabaPoint
     };
     var abonnementData ={};
-    try {
+    /*
+    *     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer!.token!);
       dio.options = BaseOptions(
@@ -226,6 +229,7 @@ class OrderApiProvider {
       xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
       requestData['user_abonnement'] = {};
     }
+    * */
     var _data = json.encode(requestData);
     xrint("Request data: $_data");
     try {
@@ -426,7 +430,8 @@ class OrderApiProvider {
 
     // ==== FETCH ABONNEMENT ====
     Map abonnementData = {};
-    try {
+    /*
+    *     try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
       dio.options = BaseOptions(
@@ -451,6 +456,7 @@ class OrderApiProvider {
       xrint("ABONNEMENT fetch error: $e");
       requestData["user_abonnement"] = {};
     }
+    * */
 
     var _data = json.encode(requestData);
     xrint("PREORDER DATA: $_data");

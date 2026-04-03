@@ -1174,5 +1174,6 @@
   "enter_otp_code": "输入验证码",
   "search_article": "搜索商品",
   "i_want_otp_code":"您好/晚上好，请问我可以接收一个验证码吗？",
-  "contact_support_to_get_otp": "请联系支持以获取验证码。"
+  "contact_support_to_get_otp": "请联系支持以获取验证码。",
+  "service_unavailable": "抱歉，此服务暂未开通，敬请期待。"
 }

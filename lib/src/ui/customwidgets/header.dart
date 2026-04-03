@@ -17,6 +17,7 @@ import '../../utils/_static_data/KTheme.dart';
 import '../../utils/functions/CustomerUtils.dart';
 import '../../utils/functions/NotLoggedInPopUp.dart';
 import '../../utils/functions/Utils.dart';
+import '../../utils/functions/popups.dart';
 import '../screens/chat/ChatPage.dart';
 import '../screens/home/me/abonnement/kaba_abonnements.dart';
 import 'performance_ui.dart';
@@ -180,13 +181,16 @@ class _HeaderState extends State<Header> {
                 // Abonnement button
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
+                    showModernPopup(context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+                    /*
+                    * Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) =>
                             Kaba_abonnement(presenter: TransactionPresenter(TransactionView())),
                       ),
                     );
+                    * */
                   },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

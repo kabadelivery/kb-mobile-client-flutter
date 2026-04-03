@@ -1169,5 +1169,6 @@
   "enter_otp_code" : "Get the OTP code",
   "search_article": "Search for an article",
   "i_want_otp_code": "Hello Kaba, i would like to get my OTP code",
-  "contact_support_to_get_otp": "Contact support to get your OTP code"
+  "contact_support_to_get_otp": "Contact support to get your OTP code",
+  "service_unavailable": "Sorry. This service is not yet available. It will be soon."
 }

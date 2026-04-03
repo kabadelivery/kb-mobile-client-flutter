@@ -782,6 +782,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
+          if(StateContainer.of(context).location==null){
+            showPlacePicker(context);
+          }else
           widget.presenter!.fetchServiceCategoryFromLocation(
               StateContainer.of(context).location!);
         });

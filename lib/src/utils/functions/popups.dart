@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
+import '../../localizations/AppLocalizations.dart';
+
 Future<void> showModernPopup({
   required BuildContext context,
   required String text,
@@ -45,7 +47,7 @@ Future<void> showModernPopup({
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text("Fermer"),
+                child:  Text("${AppLocalizations.of(context)!.translate('close')}",),
               ),
             ),
           ],
