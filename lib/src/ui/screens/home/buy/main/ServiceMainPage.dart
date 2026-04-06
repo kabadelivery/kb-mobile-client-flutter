@@ -32,6 +32,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -53,6 +54,7 @@ import '../../../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart'
 import '../../../../../utils/functions/analytics.dart';
 import '../../../../../utils/functions/new_rating_feature.dart';
 import '../../../../../utils/functions/permissions.dart';
+import '../../../../../utils/functions/popups.dart';
 import '../../../../../utils/functions/skipEndpoint.dart';
 import '../../../../customwidgets/header.dart';
 import '../../../../customwidgets/mapbox/map_screen.dart';
@@ -1030,6 +1032,9 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       */
                       GestureDetector(
                         onTap: () async{
+                          showModernPopup(context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+                          /*
+
                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
@@ -1051,6 +1056,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 }
                             ));
                           }
+                          * */
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -1078,7 +1084,10 @@ class ServiceMainPageState extends State<ServiceMainPage>
                       ),
                       GestureDetector(
                         onTap: () async{
-                          if (StateContainer.of(context).loggingState == 0){
+                          showModernPopup(context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+
+                          /*
+                           if (StateContainer.of(context).loggingState == 0){
                             NotLoggedInPopUp(context);
                           }else{
                             final status = await Permission.camera.request();
@@ -1099,6 +1108,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                                 }
                             ));
                           }
+                          */
                         },
                         child: Container(
                           decoration: BoxDecoration(
