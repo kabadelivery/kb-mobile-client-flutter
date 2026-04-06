@@ -1177,5 +1177,6 @@
   "i_want_otp_code": "Bonjour/Bonsoir, je souhaite recevoir un code OTP s'il vous plaît.",
   "contact_support_to_get_otp": "Contactez le support pour obtenir un code OTP.",
   "next_all": "Suivant (Tout)",
-  "service_unavailable": "Désolé. Ce service n’est pas encore disponible. Il le sera bientôt"
+  "service_unavailable": "Désolé. Ce service n’est pas encore disponible. Il le sera bientôt",
+  "top_up_by_card_unavailable": "le rechargement par carte est momentanément indisponible.\n\nIl sera disponible sous peu."
 }

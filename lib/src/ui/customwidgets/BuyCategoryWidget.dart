@@ -146,6 +146,7 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
             restaurantListPresenter: RestaurantListPresenter(RestaurantListView()));
         if(widget.entity!.key=="shop"){
           showModernPopup(
+              title: AppLocalizations.of(context)!.translate("t_unavailable"),
               context: context,
               text:
               "${AppLocalizations.of(context)!.translate('service_unavailable')}",

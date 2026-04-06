@@ -26,6 +26,7 @@ import '../../../../../microservices/kaba_chine/usecases/order/payForDelivery.da
 import '../../../../../resources/client_personal_api_provider.dart';
 import '../../../../../resources/kkiapay_provider.dart';
 import '../../../../../utils/Enums/type_of_transaction.dart';
+import '../../../../../utils/functions/popups.dart';
 import '../../../../../utils/functions/topups.dart';
 import '../../../webview/paymentWebView.dart';
 
@@ -235,7 +236,16 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                 SizedBox(width: 5),
                                 Expanded(
                                   child: InkWell(
-                                      onTap: () => _onSwitch(2),
+                                    onTap:(){
+                                      showModernPopup(
+                                          title: AppLocalizations.of(context)!.translate("t_unavailable"),
+                                          context: context,
+                                          text:
+                                          "${AppLocalizations.of(context)!.translate('top_up_by_card_unavailable')}",
+                                          icon: Icon(Icons.credit_card_rounded)
+                                      );
+                                    },
+                                     // onTap: () => _onSwitch(2),
                                       child: Container(
                                           padding: EdgeInsets.all(10),
                                           child: Center(

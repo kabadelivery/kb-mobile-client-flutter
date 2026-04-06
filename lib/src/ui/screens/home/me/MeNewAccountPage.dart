@@ -376,7 +376,7 @@ class _MeNewAccountPageState extends State<MeNewAccountPage>
 
                           );
                           * */
-                          showModernPopup(context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+                          showModernPopup(title: AppLocalizations.of(context)!.translate("t_unavailable"),context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
                         },
                         child: Container(
                           margin: EdgeInsets.only(top:5),
