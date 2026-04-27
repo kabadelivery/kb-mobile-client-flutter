@@ -1,0 +1,24 @@
+workflows:
+  android-release:
+    name: Android Release Build
+    max_build_duration: 60
+
+    environment:
+      flutter: stable
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          flutter clean
+          flutter pub get
+
+      - name: Ensure Android SDK 35
+        script: |
+          yes | sdkmanager "platforms;android-35" "build-tools;35.0.0"
+
+      - name: Build AAB
+        script: |
+          flutter build appbundle --release
+
+    artifacts:
+      - build/app/outputs/bundle/release/*.aab
