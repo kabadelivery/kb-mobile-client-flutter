@@ -10,7 +10,7 @@ class LoginContract {
 
 class LoginView {
   void showLoading(bool isLoading) {}
-  void loginSuccess (var obj) {}
+  Future<void> loginSuccess(dynamic obj)async {}
   void loginPasswordError (int error) {}
   void loginSucess() {}
   void networkError () {}
@@ -52,13 +52,10 @@ class LoginPresenter implements LoginContract {
         // xrint(jsonContent);
         // var obj = json.decode(data);
         int error = int.parse("${obj["error"]}");
-        if (error == 0  /* && token != null && token.length > 0*/) {
-          /* login successful */
-         // _loginView.loginSucess() ;
-          _loginView.loginSuccess(obj);
-
-          return  ;
-        } else if (error == 1 ) {
+        if (error == 0) {
+          await _loginView.loginSuccess(obj);
+          return;
+        }else if (error == 1 ) {
           if(password == '0000'){
             _loginView.handlefirstsend() ;
           }else{

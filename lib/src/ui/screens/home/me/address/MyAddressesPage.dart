@@ -61,6 +61,9 @@ class _MyAddressesPageState extends State<MyAddressesPage>
   bool isLoading = false;
   bool hasNetworkError = false;
   bool hasSystemError = false;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+  int _selectedAddressFilter = 0;
   void _getActualPositioAddress(){
 
     setState(() {
@@ -132,7 +135,11 @@ class _MyAddressesPageState extends State<MyAddressesPage>
      });
    }
   }
-
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -166,13 +173,64 @@ class _MyAddressesPageState extends State<MyAddressesPage>
       ),
       body: Stack(
         children: <Widget>[
+          isLoading||hasNetworkError ||hasSystemError?
+          Container(): Positioned(
+            top: widget.address_type == 1 || widget.address_type == 2 || widget.address_type == null
+                ? 70
+                : 10,
+            left: 10,
+            right: 10,
+            child: Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor.withOpacity(0.07),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: KColors.primaryColor.withOpacity(0.18),
+                    ),
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.trim().toLowerCase();
+                      });
+                    },
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!
+                          .translate('search_address'),
+                      border: InputBorder.none,
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: KColors.primaryColor,
+                        size: 20,
+                      ),
+                      suffixIcon: _searchQuery.isNotEmpty
+                          ? IconButton(
+                        icon: const Icon(Icons.close, size: 18),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() {
+                            _searchQuery = "";
+                          });
+                        },
+                      )
+                          : null,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
       widget.address_type==1 || widget.address_type==2|| widget.address_type==null ?
       isLoading||hasNetworkError ||hasSystemError?
       Container():
       InkWell(
       splashColor: Colors.white,
           child: Container(
-              margin: EdgeInsets.only(left: 10, right: 10,top: 40),
+              margin: EdgeInsets.only(left: 10, right: 10,top: 10),
               padding: EdgeInsets.only(top: 10, bottom: 10),
               decoration: BoxDecoration(
                   shape: BoxShape.rectangle,
@@ -214,7 +272,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
           widget.address_type==5?Center(child: CircularProgressIndicator()):
           Container(
               height: MediaQuery.of(context).size.height,
-              margin: EdgeInsets.only(top: 80),
+              margin: EdgeInsets.only(top: 130),
               child: isLoading
                   ? Center(child: MyLoadingProgressWidget())
                   : (hasNetworkError
@@ -284,26 +342,52 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         ],
       ));
     }
+    final query = _searchQuery.trim().toLowerCase();
 
+    final filteredAddresses = (widget.data ?? []).where((address) {
+      final name = "${address.name ?? ""}".toLowerCase();
+      final description = "${address.description ?? ""}".toLowerCase();
+      final quartier = "${address.quartier ?? ""}".toLowerCase();
+      final near = "${address.near ?? ""}".toLowerCase();
+      final phone = "${address.phone_number ?? ""}".toLowerCase();
+
+      final matchesSearch = query.isEmpty ||
+          name.contains(query) ||
+          description.contains(query) ||
+          quartier.contains(query) ||
+          near.contains(query) ||
+          phone.contains(query);
+
+      final matchesFilter =
+          _selectedAddressFilter == 0 ||
+              (_selectedAddressFilter == 1 &&
+                  widget.favoriteAddress!.contains(address.id)) ||
+              (_selectedAddressFilter == 2 &&
+                  name == AppLocalizations.of(context)!
+                      .translate('choose_actual_location')
+                      .toLowerCase());
+
+      return matchesSearch && matchesFilter;
+    }).toList();
     return SingleChildScrollView(
       child: Column(
           children: <Widget>[
         /*
             SwitchListTile(title: const Text("Bunch of interesting test that im not going to talk too much about.", style: TextStyle(fontSize: 14,color: Colors.grey), textAlign: TextAlign.center), onChanged: (bool value) {setState(() {_canReceiveSharedAddress=(!_canReceiveSharedAddress);});}, value: _canReceiveSharedAddress)
             */
-      ]..addAll(List<Widget>.generate(widget.data!.length! + 1, (int index) {
-              if (index < widget.data!.length!)
+      ]..addAll(List<Widget>.generate(filteredAddresses.length + 1, (int index) {
+              if (index < filteredAddresses.length)
                 return index == 0
                     ? Column(
                         children: [
                           SizedBox(height: 10),
-                          !_containsExcludedPhrase(widget.data![index].name!)
-                              ? buildAddressListWidgetNew(address: widget.data![index])
+                          !_containsExcludedPhrase(filteredAddresses[index].name!)
+                              ? buildAddressListWidgetNew(address:filteredAddresses[index])
                               : Container(),
                         ],
                       )
-                    : !_containsExcludedPhrase(widget.data![index].name!)
-                    ? buildAddressListWidgetNew(address: widget.data![index])
+                    : !_containsExcludedPhrase(filteredAddresses[index].name!)
+                    ? buildAddressListWidgetNew(address: filteredAddresses[index])
                     : Container();
               else
                 return Container(height: 100);
@@ -617,7 +701,37 @@ class _MyAddressesPageState extends State<MyAddressesPage>
         }
       });
   }
+  Widget _addressFilterChip({
+    required String title,
+    required int index,
+  }) {
+    final bool isSelected = _selectedAddressFilter == index;
 
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _selectedAddressFilter = index;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? KColors.primaryColor
+              : KColors.primaryColor.withOpacity(0.08),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 12,
+            color: isSelected ? Colors.white : KColors.primaryColor,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
+  }
   _buildSysErrorPage() {
     return ErrorPage(
         message: "${AppLocalizations.of(context)!.translate('system_error')}",
@@ -804,6 +918,7 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     });
   }
 }
+
 bool _containsExcludedPhrase(String name) {
   final normalizedName = name.replaceAll(' ', '').toLowerCase();
 

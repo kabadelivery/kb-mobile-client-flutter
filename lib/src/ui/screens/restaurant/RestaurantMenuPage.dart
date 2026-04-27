@@ -111,7 +111,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   List<String> _chipList = [];
 
   int MAX_CHIP_FOR_SCREEN = -1;
-
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _computeBasketOffset());
@@ -146,7 +147,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 //    foodAddAnimation = Tween(begin: 1.5, end: 1.0).animate(_controller);
     foodAddAnimation = Tween(begin: 0.0, end: 2 * pi).animate(_controller!);
   }
-
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     if (MAX_CHIP_FOR_SCREEN < 0) {
@@ -294,9 +299,10 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                             ],
                                           ),
                                         ),
-                                        Container(),
-                                        SizedBox(width: MediaQuery.of(context).size.width/3),
-                                        _getRestaurantStateTag(
+                                            Container(),
+                                            SizedBox(width: MediaQuery.of(context).size.width/3),
+
+                                            _getRestaurantStateTag(
                                             widget.restaurant)
                                       ]),
                                       SizedBox(
@@ -413,6 +419,52 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                         color: Colors.white,
                         child: Column(
                           children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFFFFF).withOpacity(0.08),
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: const Color(0xFFCB1F44).withOpacity(0.25), // bordure subtile
+                                  width: 1,
+                                ),
+                              ),
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _searchQuery = value.trim().toLowerCase();
+                                  });
+                                },
+                                style: const TextStyle(fontSize: 14),
+                                decoration: InputDecoration(
+                                  hintText: AppLocalizations.of(context)!.translate('search_article'),
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontSize: 13,
+                                  ),
+                                  border: InputBorder.none,
+                                  prefixIcon: const Icon(
+                                    Icons.search,
+                                    size: 18,
+                                    color: Color(0xFFCB1F44),
+                                  ),
+                                  suffixIcon: _searchQuery.isNotEmpty
+                                      ? IconButton(
+                                    icon: const Icon(Icons.close, size: 16),
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      setState(() {
+                                        _searchQuery = "";
+                                      });
+                                    },
+                                  )
+                                      : null,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                                ),
+                              ),
+                            ),
                             // Container(height: 140, width: MediaQuery.of(context).size.width, color: Colors.yellow.withAlpha(20),),
                             Row(
                               mainAxisSize: MainAxisSize.max,
@@ -435,32 +487,29 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ),
                             Container(
                               child: ChipList(
-                                /*   firstLineCount: _chipList?.length > MAX_CHIP_FOR_SCREEN &&
-                                        _chipList?.length <= MAX_CHIP_FOR_SCREEN * 2
-                                    ? MAX_CHIP_FOR_SCREEN
-                                    : (_chipList?.length > MAX_CHIP_FOR_SCREEN * 2
-                                        ? _chipList?.length ~/ 2 + 1
-                                        : _chipList?.length),*/
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                style: TextStyle(fontSize: 12),
+                                style: const TextStyle(fontSize: 12),
                                 listOfChipNames: _chipList,
                                 activeBgColorList: [
-                                  Theme.of(context).primaryColor
+                                  Theme.of(context).primaryColor,
                                 ],
                                 inactiveBgColorList: [
-                                  KColors.primaryColor.withOpacity(0.1)
+                                  KColors.primaryColor.withOpacity(0.1),
                                 ],
                                 activeTextColorList: [Colors.white],
                                 inactiveTextColorList: [KColors.primaryColor],
-                                listOfChipIndicesCurrentlySeclected: [
-                                  currentIndex
-                                ],
+
+                                listOfChipIndicesCurrentlySeclected:
+                                _searchQuery.trim().isNotEmpty ? [-1] : [currentIndex],
+
                                 extraOnToggle: (val) {
-                                  this.currentIndex = val;
-                                  setState(() {});
-                                  /* scroll to top */
+                                  setState(() {
+                                    currentIndex = val;
+                                    _searchQuery = "";
+                                    _searchController.clear();
+                                  });
                                 },
-                              ),
+                              )
                             ),
                             Expanded(
                               child: SingleChildScrollView(
@@ -471,20 +520,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                       child: isLoading
                                           ? Column(
                                         children: [
-                                         Row(
-                                           children: [
-                                             ListView.builder(
-                                               shrinkWrap: true,
-                                               physics: const NeverScrollableScrollPhysics(),
-                                               itemCount: 10,
-                                               itemBuilder: (context, index) {
-                                                 return Container(
-                                                   child: foodListShimmer(context),
-                                                 );
-                                               },
-                                             )
-                                           ],
-                                         ),
+                                          Container(
+                                            height: 40,
+                                            margin: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
+                                            child: ListView.builder(
+                                              shrinkWrap: true,
+                                              physics: const NeverScrollableScrollPhysics(),
+                                              itemCount: 10,
+                                              itemBuilder: (context, index) {
+                                                return Container(
+                                                  child: chipListShimmer(context),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(height: 20,),
                                           ListView.builder(
                                             shrinkWrap: true,
                                             physics: const NeverScrollableScrollPhysics(),
@@ -591,25 +641,64 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     if (_firstTime) {
       _firstTime = false;
     }
+
     SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
           this?.data = data;
-        }));
 
+        }));
+    final query = _searchQuery.trim().toLowerCase();
+
+    final List<Map<String, dynamic>> displayedFoods = [];
+
+    if (query.isNotEmpty) {
+      for (int menuIndex = 0; menuIndex < data!.length; menuIndex++) {
+        final foods = data![menuIndex].foods ?? [];
+
+        for (int foodIndex = 0; foodIndex < foods.length; foodIndex++) {
+          final food = foods[foodIndex];
+
+          final name = "${food.name}".toLowerCase();
+          final description = "${food.description ?? ""}".toLowerCase();
+
+          if (name.contains(query) || description.contains(query)) {
+            displayedFoods.add({
+              "food": food,
+              "foodIndex": foodIndex,
+              "menuIndex": menuIndex,
+            });
+          }
+        }
+      }
+    } else {
+      final foods = data![currentIndex].foods ?? [];
+
+      for (int foodIndex = 0; foodIndex < foods.length; foodIndex++) {
+        displayedFoods.add({
+          "food": foods[foodIndex],
+          "foodIndex": foodIndex,
+          "menuIndex": currentIndex,
+        });
+      }
+    }
     return Column(
-        children: <Widget>[SizedBox(height: 5)]
-          ..addAll(List.generate(data![currentIndex].foods!.length, (index) {
-            return Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                _buildFoodListWidget3(
-                    food: data![currentIndex].foods![index],
-                    foodIndex: index,
-                    menuIndex: currentIndex,
-                    highlightedFoodId: widget.highlightedFoodId!),
-              ],
-            );
-          }))
-          ..add(SizedBox(height: 30)));
+      children: <Widget>[const SizedBox(height: 5)]
+        ..addAll(List.generate(displayedFoods.length, (index) {
+          final item = displayedFoods[index];
+
+          return Row(
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              _buildFoodListWidget3(
+                food: item["food"],
+                foodIndex: item["foodIndex"],
+                menuIndex: item["menuIndex"],
+                highlightedFoodId: widget.highlightedFoodId!,
+              ),
+            ],
+          );
+        }))
+        ..add(const SizedBox(height: 30)),
+    );
   }
 
   /* build food list widget */

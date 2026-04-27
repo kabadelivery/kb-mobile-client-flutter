@@ -1171,5 +1171,10 @@
   "i_want_otp_code": "Hello Kaba, i would like to get my OTP code",
   "contact_support_to_get_otp": "Contact support to get your OTP code",
   "service_unavailable": "Sorry. This service is not yet available. It will be soon.",
-  "top_up_by_card_unavailable": "Top-up by card is temporarily unavailable.\n\nIt will be available soon."
+  "top_up_by_card_unavailable": "Top-up by card is temporarily unavailable.\n\nIt will be available soon.",
+  "confirm_payment": "Confirm payment",
+  "enter_secret_code": "Enter your secret code to continue",
+  "search_address": "Search for an address",
+  "favorites": "Favorites",
+  "current_location": "Current location"
 }

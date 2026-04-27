@@ -113,7 +113,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
           child: SingleChildScrollView(
             child:Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:[ Padding(
+                children:[
+                  Padding(
                   padding: EdgeInsets.all(20) ,
                   child:Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -255,7 +256,6 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
                             enabled: !isConnecting,
                             maxLength: TextField.noMaxLength,
                             decoration: InputDecoration(
-                              // 👈 reduce field height
                               prefixIcon: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0), // 👈 smaller padding
                                 child: CountryCodePicker(
@@ -338,10 +338,19 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
                             onPressed: () {
                               checkLogin();
                             },
-                            child:  Text(
-                              "${AppLocalizations.of(context)!.translate('continue_arrow')}",
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
+                            child: isConnecting
+                          ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                          ),
+                          )
+                              : Text(
+                          "${AppLocalizations.of(context)!.translate('continue_arrow')}",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
                           ),
                         ),
 
@@ -465,6 +474,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
       if (!(Utils.isEmailValid(login) || countlogin > 5)) {
         mToast("${AppLocalizations.of(context)!.translate('login_error')}");
+        showLoading(false);
+        setState(() => _loading = false);
         return;
       }
 
@@ -475,6 +486,9 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
       if (!mounted) return;
 
       if (otp == "no") {
+        showLoading(false);
+        setState(() => _loading = false);
+
         final result = await Navigator.of(context).push<Map<String, dynamic>>(
           MaterialPageRoute(
             builder: (_) => RetrievePasswordPage(
@@ -489,6 +503,9 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
         final code = result['code'] as String?;
         if (code == null || code.isEmpty) return;
 
+        showLoading(true);
+        setState(() => _loading = true);
+
         widget.presenter!.login(false, login, code, appVersion);
       } else {
         const mCode = '0000';
@@ -497,11 +514,9 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
     } catch (e, st) {
       debugPrint("_checklogin error: $e");
       debugPrintStack(stackTrace: st);
-    } finally {
-      if (mounted) {
-        setState(() => _loading = false);
-      }
+
       showLoading(false);
+      if (mounted) setState(() => _loading = false);
     }
   }
   Future _launchConnexion() async {
@@ -560,10 +575,12 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   @override
   void loginFailure(String message) {
-    mToast(message);
+    if (mounted) {
+      setState(() => _loading = false);
+    }
     showLoading(false);
+    mToast(message);
   }
-
   @override
   Future<void> loginSuccess(dynamic obj) async {
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);

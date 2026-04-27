@@ -53,6 +53,7 @@ import 'package:vibration/vibration.dart';
 
 import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../../../utils/functions/subscription.dart';
+import '../../../customwidgets/info_widget.dart';
 import '../../../customwidgets/voucher_widgets.dart';
 
 class OrderConfirmationPage2 extends StatefulWidget {
@@ -672,10 +673,29 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('additional_fees')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
+                    Row(
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('additional_fees')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                        SizedBox(width: 10,),
+                        InkWell(
+                          onTap: () {
+                            showInfoPopup(
+                              context,
+                              AppLocalizations.of(context)!
+                                  .translate('additional_fees_description'),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: Color(0xFFCB1F44),
+                          ),
+                        ),
+                      ],
+                    ),
                     /* check if there is promotion on Livraison */
                     Row(
                       children: <Widget>[
@@ -692,32 +712,38 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ])
                   : Container(),
               SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees_total_price != 0 ||
-                  _orderBillConfiguration!.additional_fees_total_price !=
-                      null
-                  ?   Container(
-                decoration: BoxDecoration(
-                    color: Color(0x1DCB1F44),
-                    border: Border.all(color: Color(0xFFCB1F44)),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('additional_fees_description')}",
-                      style: TextStyle(fontSize: 11, color: Colors.black)),
-                ),
-              ):Container(),
-              SizedBox(height: 10),
               _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null ||
                   _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] !=
                       0
                   ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
-                        "${AppLocalizations.of(context)!.translate('commission')}",
-                        style: TextStyle(
-                            fontWeight: FontWeight.normal, fontSize: 12)),
+                    Row(
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('commission')}",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal, fontSize: 12)),
+                        SizedBox(width: 10,),
+                        _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null &&
+                            _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] >
+                                0
+                            ?InkWell(
+                                onTap: () {
+                                  showInfoPopup(
+                                context,
+                                AppLocalizations.of(context)!.translate('commission_explain'),
+                                );
+                                },
+                                child: const Icon(
+                                Icons.info_outline,
+                                size: 16,
+                                color: Color(0xFFCB1F44),
+                                ),
+                                )
+                            :Container()
+                      ],
+                    ),
                     /* check if there is promotion on Livraison */
                     Row(
                       children: <Widget>[
@@ -731,22 +757,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     )
                   ])
                   : Container(),
-              SizedBox(height: 10),
-              _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] != null &&
-                  _orderBillConfiguration!.additional_fees!['COMMISSION_FEE'] >
-                      0
-                  ?  Container(
-                decoration: BoxDecoration(
-                    color: Color(0x1DCB1F44),
-                    border: Border.all(color: Color(0xFFCB1F44)),
-                    borderRadius: BorderRadius.circular(5)),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                      "${AppLocalizations.of(context)!.translate('commission_explain')}",
-                      style: TextStyle(fontSize: 11, color: Colors.black)),
-                ),
-              ):Container(),
               SizedBox(height: 10),
               _orderBillConfiguration!.remise! > 0
                   ? Row(
@@ -1490,47 +1500,35 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 */
   _payNow() async {
-    // 1. get password
-    var results = await Navigator.of(context)
-        .push(new MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-      return RetrievePasswordPage(type: 3);
-    }));
-    // retrieve password then do it,
-    if (results != null &&
-        results.containsKey('code') &&
-        results.containsKey('type')) {
-      if (results == null ||
-          results['code'] == null ||
-          !Utils.isCode(results['code'])) {
-        mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-      } else {
-        String _mCode = results['code'];
-        /* we can't continue because you are using a demo account */
-        if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) ==
-            0) {
-          sorryDemoAccountAlert();
-        } else {
-         // showLoadingPreorder(true);
-          if (Utils.isCode(_mCode)) {
-            CustomerModel customerModel = await CustomerUtils.getCustomer();
-            widget.presenter!.payNow(
-                customerModel,
-                widget.foods!,
-                _selectedAddress!,
-                _mCode,
-                _addInfoController!.text!,
-                _selectedVoucher??VoucherModel(),
-                _usePoint,
-                widget.restaurant!);
-          } else {
-            mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-          }
-        }
-      }
-    }
-//    _playMusicForSuccess();
-  }
+    final String? code = await _showPayAtDeliveryCodeDialog();
 
+    if (code == null) return;
+
+    if (!Utils.isCode(code)) {
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      return;
+    }
+
+    if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0) {
+      sorryDemoAccountAlert();
+      return;
+    }
+
+    CustomerModel customerModel = await CustomerUtils.getCustomer();
+
+    widget.presenter!.payNow(
+      customerModel,
+      widget.foods!,
+      _selectedAddress!,
+      code,
+      _addInfoController!.text,
+      _selectedVoucher ?? VoucherModel(),
+      _usePoint,
+      widget.restaurant!,
+    );
+
+    // _playMusicForSuccess();
+  }
   _payAtDelivery(bool isDialogShown) async {
     // if untrustful, you can't go further.
     if (_orderBillConfiguration!.trustful != 1) {
@@ -1563,47 +1561,136 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       return;
     }
 
-    // 1. get password
-    var results = await Navigator.of(context)
-        .push(new MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-      return RetrievePasswordPage(type: 3);
-    }));
-    // retrieve password then do it,
-    if (results != null &&
-        results.containsKey('code') &&
-        results.containsKey('type')) {
-      if (results == null ||
-          results['code'] == null ||
-          !Utils.isCode(results['code'])) {
-        mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-      } else {
-        String _mCode = results['code'];
+    final String? code = await _showPayAtDeliveryCodeDialog();
 
-        if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) ==
-            0) {
-          sorryDemoAccountAlert();
-        } else {
-          showLoadingPayAtDelivery(true);
-          if (Utils.isCode(_mCode)) {
+    if (code == null) return;
 
-            await widget.presenter!.payAtDelivery(
-                widget.customer,
-                widget.foods!,
-                _selectedAddress!,
-                _mCode,
-                _addInfoController!.text!,
-                _selectedVoucher,
-                _usePoint,
-                widget.restaurant!
-            );
-          } else {
-            mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-          }
-        }
-      }
+    if (!Utils.isCode(code)) {
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      return;
     }
-  }
 
+    if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0) {
+      sorryDemoAccountAlert();
+      return;
+    }
+
+    showLoadingPayAtDelivery(true);
+
+    await widget.presenter!.payAtDelivery(
+      widget.customer,
+      widget.foods!,
+      _selectedAddress!,
+      code,
+      _addInfoController!.text,
+      _selectedVoucher,
+      _usePoint,
+      widget.restaurant!,
+    );
+  }
+  Future<String?> _showPayAtDeliveryCodeDialog() async {
+    final TextEditingController codeController = TextEditingController();
+
+    return showDialog<String>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.lock_outline,
+                  color: KColors.primaryColor,
+                  size: 34,
+                ),
+                const SizedBox(height: 10),
+
+                Text(
+                  AppLocalizations.of(context)!
+                      .translate('confirm_payment'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+
+                const SizedBox(height: 8),
+
+                Text(
+                  AppLocalizations.of(context)!
+                      .translate('enter_secret_code'),
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                TextField(
+                  controller: codeController,
+                  keyboardType: TextInputType.number,
+                  obscureText: true,
+                  textAlign: TextAlign.center,
+                  maxLength: 6,
+                  decoration: InputDecoration(
+                    counterText: "",
+                    hintText: "------",
+                    filled: true,
+                    fillColor: KColors.new_gray,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          AppLocalizations.of(context)!.translate('cancel'),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: KColors.primaryColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context, codeController.text.trim());
+                        },
+                        child: Text(
+                          AppLocalizations.of(context)!.translate('confirm'),
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   _payPreorder(bool isDialogShown) async {
     DeliveryTimeFrameModel selectedFrame;
 
@@ -1631,45 +1718,34 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
       return;
     }
 
-    // 1. get password
-    var results = await Navigator.of(context)
-        .push(new MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-      return RetrievePasswordPage(type: 3);
-    }));
-    // retrieve password then do it,
-    if (results != null &&
-        results.containsKey('code') &&
-        results.containsKey('type')) {
-      if (results == null ||
-          results['code'] == null ||
-          !Utils.isCode(results['code'])) {
-        mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-      } else {
-        String _mCode = results['code'];
+    final String? code = await _showPayAtDeliveryCodeDialog();
 
-        if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) ==
-            0) {
-          sorryDemoAccountAlert();
-        } else {
-          showLoadingPayAtDelivery(true);
-          if (Utils.isCode(_mCode)) {
-            CustomerModel cus = await CustomerUtils.getCustomer();
-            await widget.presenter!.payPreorder(
-                cus,
-                widget.foods!,
-                _selectedAddress!,
-                _mCode,
-                _addInfoController!.text!,
-                selectedFrame.start!,
-                selectedFrame.end!,
-                widget.restaurant!
-            );
-          } else {
-            mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-          }
-        }
-      }
+    if (code == null) return;
+
+    if (!Utils.isCode(code)) {
+      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
+      return;
     }
+
+    if ("${widget.customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0) {
+      sorryDemoAccountAlert();
+      return;
+    }
+
+    showLoadingPayAtDelivery(true);
+
+    CustomerModel cus = await CustomerUtils.getCustomer();
+
+    await widget.presenter!.payPreorder(
+      cus,
+      widget.foods!,
+      _selectedAddress!,
+      code,
+      _addInfoController!.text,
+      selectedFrame.start!,
+      selectedFrame.end!,
+      widget.restaurant!,
+    );
   }
 
   void _showDialog(
@@ -2961,160 +3037,187 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     /* before we build the bill, we must know how much can you reduce your bill with*/
 
-    return Container(
-      decoration: BoxDecoration(
-          color: KColors.new_gray,
-          borderRadius: BorderRadius.all(Radius.circular(5))),
-      child: Column(
-        children: [
-          /* discount points available*/
-          InkWell(
-              splashColor: Colors.white,
-              child: Container(
-                  padding: EdgeInsets.only(top: 10, bottom: 5),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        Text(
-                            "${AppLocalizations.of(context)!.translate('discount_point_available')}",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: KColors.new_black,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(height: 5),
-                        Container(
-                            child: Text(
-                                "${_orderBillConfiguration!.kaba_point?.can_use_amount}",
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+              color: KColors.new_gray,
+              borderRadius: BorderRadius.all(Radius.circular(5))),
+          child: Column(
+            children: [
+              /* discount points available*/
+              InkWell(
+                  splashColor: Colors.white,
+                  child: Container(
+                      padding: EdgeInsets.only(top: 10, bottom: 5),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: <Widget>[
+                            Text(
+                                "${AppLocalizations.of(context)!.translate('discount_point_available')}",
                                 style: TextStyle(
                                     fontSize: 16,
-                                    color: KColors.primaryColor)))
-                      ])),
-              onTap: () {
-                // _pickDeliveryAddress();
-              }),
-          SizedBox(height: 5),
-          Container(
-            child: Text(
-                "${AppLocalizations.of(context)!.translate(_orderBillConfiguration.kaba_point!.is_eligible! ? (_orderBillConfiguration.kaba_point!.can_be_used! ? 'use_of_kaba_points' : 'kaba_points_monthly_limit_reached') : 'use_of_kaba_points_not_eligible')}",
-                textAlign: TextAlign.center,
-                style: TextStyle(
+                                    color: KColors.new_black,
+                                    fontWeight: FontWeight.bold)),
+                            SizedBox(height: 5),
+                            Container(
+                                child: Text(
+                                    "${_orderBillConfiguration!.kaba_point?.can_use_amount}",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        color: KColors.primaryColor)))
+                          ])),
+                  onTap: () {
+                    // _pickDeliveryAddress();
+                  }),
+              SizedBox(height: 5),
+              !_orderBillConfiguration.kaba_point!.can_be_used!
+                  ? Container(
+                margin: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text(
+                  _orderBillConfiguration.kaba_point!.is_eligible!
+                      ? AppLocalizations.of(context)!
+                      .translate('kaba_points_monthly_limit_reached')
+                      : AppLocalizations.of(context)!
+                      .translate('use_of_kaba_points_not_eligible'),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     fontSize: 12,
-                    color: !_orderBillConfiguration.kaba_point!.can_be_used! &&
-                        _orderBillConfiguration.kaba_point!.is_eligible!
-                        ? CommandStateColor.delivered
-                        : Colors.grey)),
-            margin: EdgeInsets.only(left: 10, right: 10),
+                    color: CommandStateColor.delivered,
+                  ),
+                ),
+              )
+              : const SizedBox.shrink(),
+              SizedBox(height: 10),
+              // appears only if you are eligible
+              _orderBillConfiguration.kaba_point!.is_eligible!
+                  ? (_orderBillConfiguration.kaba_point!.can_be_used!
+                  ? InkWell(
+                  splashColor: Colors.white,
+                  child: Container(
+                    padding: EdgeInsets.only(top: 5, bottom: 5),
+                    child: Row(children: <Widget>[
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 2,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            SizedBox(width: 20),
+                            Flexible(
+                              child: RichText(
+                                  text: TextSpan(
+                                    children: <TextSpan>[
+                                      TextSpan(
+                                          text:
+                                          "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
+                                          style: TextStyle(
+                                              color: KColors.new_black,
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold)),
+                                      TextSpan(
+                                          text:
+                                          "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
+                                          style: TextStyle(
+                                              color: KColors.primaryColor,
+                                              fontWeight: FontWeight.bold))
+                                    ],
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        flex: 1,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            FlutterSwitch(
+                              disabled: isConnecting,
+                              activeColor: KColors.primaryColor,
+                              inactiveColor: Colors.grey,
+                              width: 52.0,
+                              height: 28.0,
+                              valueFontSize: 9.0,
+                              toggleSize: 20.0,
+                              value: _usePoint,
+                              borderRadius: 12.0,
+                              padding: 2.5,
+                              showOnOff: true,
+                              activeText:
+                              "${AppLocalizations.of(context)!.translate('yes')}",
+                              inactiveText:
+                              "${AppLocalizations.of(context)!.translate('no')}",
+                              onToggle: (val) {
+                                setState(() {
+                                  _usePoint = val;
+                                });
+
+                                if (_usePoint && _selectedVoucher != null) {
+                                  // keep the old voucher
+                                  _oldSelectedVoucher = _selectedVoucher;
+                                  _selectedVoucher = null;
+                                } else if (!_usePoint &&
+                                    _oldSelectedVoucher != null) {
+                                  _selectedVoucher = _oldSelectedVoucher;
+                                }
+
+                                // according to what is there we can enable or disable
+                                CustomerUtils.getCustomer()
+                                    .then((customer) {
+                                  widget.customer = customer;
+                                  widget.presenter!.computeBilling(
+                                      widget.restaurant!,
+                                      widget.customer!,
+                                      widget.foods!,
+                                      _selectedAddress!,
+                                      _selectedVoucher!,
+                                      _usePoint);
+                                  Future.delayed(Duration(seconds: 1), () {
+                                    Scrollable.ensureVisible(
+                                        poweredByKey.currentContext!);
+                                  });
+                                  showLoading(true);
+                                  //   Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
+                                  Future.delayed(
+                                      Duration(milliseconds: 500), () {
+                                    Scrollable.ensureVisible(
+                                        poweredByKey.currentContext!);
+                                  });
+                                });
+                              },
+                            ),
+                            SizedBox(width: 20)
+                          ],
+                        ),
+                      ),
+                    ]),
+                  ))
+                  : Container())
+                  : Container(),
+            ],
           ),
-          SizedBox(height: 10),
-          // appears only if you are eligible
-          _orderBillConfiguration.kaba_point!.is_eligible!
-              ? (_orderBillConfiguration.kaba_point!.can_be_used!
-              ? InkWell(
-              splashColor: Colors.white,
-              child: Container(
-                padding: EdgeInsets.only(top: 5, bottom: 5),
-                child: Row(children: <Widget>[
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 2,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 20),
-                        Flexible(
-                          child: RichText(
-                              text: TextSpan(
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text:
-                                      "${AppLocalizations.of(context)!.translate('use_delivery_point')}",
-                                      style: TextStyle(
-                                          color: KColors.new_black,
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold)),
-                                  TextSpan(
-                                      text:
-                                      "${_orderBillConfiguration!.kaba_point?.amount_to_reduce}",
-                                      style: TextStyle(
-                                          color: KColors.primaryColor,
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              )),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        FlutterSwitch(
-                          disabled: isConnecting,
-                          activeColor: KColors.primaryColor,
-                          inactiveColor: Colors.grey,
-                          width: 52.0,
-                          height: 28.0,
-                          valueFontSize: 9.0,
-                          toggleSize: 20.0,
-                          value: _usePoint,
-                          borderRadius: 12.0,
-                          padding: 2.5,
-                          showOnOff: true,
-                          activeText:
-                          "${AppLocalizations.of(context)!.translate('yes')}",
-                          inactiveText:
-                          "${AppLocalizations.of(context)!.translate('no')}",
-                          onToggle: (val) {
-                            setState(() {
-                              _usePoint = val;
-                            });
-
-                            if (_usePoint && _selectedVoucher != null) {
-                              // keep the old voucher
-                              _oldSelectedVoucher = _selectedVoucher;
-                              _selectedVoucher = null;
-                            } else if (!_usePoint &&
-                                _oldSelectedVoucher != null) {
-                              _selectedVoucher = _oldSelectedVoucher;
-                            }
-
-                            // according to what is there we can enable or disable
-                            CustomerUtils.getCustomer()
-                                .then((customer) {
-                              widget.customer = customer;
-                              widget.presenter!.computeBilling(
-                                  widget.restaurant!,
-                                  widget.customer!,
-                                  widget.foods!,
-                                  _selectedAddress!,
-                                  _selectedVoucher!,
-                                  _usePoint);
-                              Future.delayed(Duration(seconds: 1), () {
-                                Scrollable.ensureVisible(
-                                    poweredByKey.currentContext!);
-                              });
-                              showLoading(true);
-                              //   Timer(Duration(milliseconds: 100), () => _listController.jumpTo(_listController.position.maxScrollExtent));
-                              Future.delayed(
-                                  Duration(milliseconds: 500), () {
-                                Scrollable.ensureVisible(
-                                    poweredByKey.currentContext!);
-                              });
-                            });
-                          },
-                        ),
-                        SizedBox(width: 20)
-                      ],
-                    ),
-                  ),
-                ]),
-              ))
-              : Container())
-              : Container(),
-        ],
-      ),
+        ),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: InkWell(
+            onTap: () {
+              showInfoPopup(
+                context,
+                AppLocalizations.of(context)!
+                    .translate('use_of_kaba_points'),
+              );
+            },
+            child: const Icon(
+              Icons.info_outline,
+              size: 18,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -3140,9 +3243,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                               : (Column(children: <Widget>[
                             /* _orderBillConfiguration!.kaba_point?.is_eligible == true && _orderBillConfiguration!.kaba_point?.can_be_used == true
                               && */
-                            _selectedVoucher == null
-                                ? _buildPointDiscountOption()
-                                : Container(),
+                            //_selectedVoucher == null
+                            //                                 ? _buildPointDiscountOption()
+                            //                                 : Container(),
 
                             SizedBox(height: 10),
                             _buildBill(),

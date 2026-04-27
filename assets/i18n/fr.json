@@ -1178,5 +1178,11 @@
   "contact_support_to_get_otp": "Contactez le support pour obtenir un code OTP.",
   "next_all": "Suivant (Tout)",
   "service_unavailable": "Désolé. Ce service n’est pas encore disponible. Il le sera bientôt",
-  "top_up_by_card_unavailable": "le rechargement par carte est momentanément indisponible.\n\nIl sera disponible sous peu."
+  "top_up_by_card_unavailable": "le rechargement par carte est momentanément indisponible.\n\nIl sera disponible sous peu.",
+  "confirm_payment": "Confirmer le paiement",
+  "enter_secret_code": "Entrez votre code secret pour continuer",
+  "search_address": "Rechercher une adresse",
+  "favorites": "Favoris",
+  "current_location": "Position actuelle"
+
 }
