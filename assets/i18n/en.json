@@ -1176,5 +1176,9 @@
   "enter_secret_code": "Enter your secret code to continue",
   "search_address": "Search for an address",
   "favorites": "Favorites",
-  "current_location": "Current location"
+  "current_location": "Current location",
+  "password_recovery": "Password recovery",
+  "otp_instruction": "Enter the OTP code received to reset your password",
+  "otp_sent_to": "You will receive an OTP code on:"
+
 }

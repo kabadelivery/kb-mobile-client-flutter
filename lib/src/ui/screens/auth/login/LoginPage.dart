@@ -543,7 +543,8 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
         builder: (BuildContext context) {
           return RetrievePasswordPage(
               type: 0,
-              login:login );
+              login:login
+          );
 
         }
     ));

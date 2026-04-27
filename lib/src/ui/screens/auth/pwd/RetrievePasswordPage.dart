@@ -107,6 +107,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (_) => RecoverPasswordPage(
+            login: widget.login,
             presenter: RecoverPasswordPresenter(RecoverPasswordView()),
           ),
         ),
@@ -168,6 +169,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("login ${widget.login}");
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

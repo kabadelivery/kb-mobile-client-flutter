@@ -1183,6 +1183,8 @@
   "enter_secret_code": "Entrez votre code secret pour continuer",
   "search_address": "Rechercher une adresse",
   "favorites": "Favoris",
-  "current_location": "Position actuelle"
-
+  "current_location": "Position actuelle",
+  "password_recovery": "Récupération du mot de passe",
+  "otp_instruction": "Entrez le code OTP reçu pour réinitialiser votre mot de passe",
+  "otp_sent_to": "Vous allez recevoir un code OTP sur :"
 }

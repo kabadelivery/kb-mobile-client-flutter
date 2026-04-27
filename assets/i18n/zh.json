@@ -1181,5 +1181,8 @@
   "enter_secret_code": "请输入您的安全码以继续",
   "search_address": "搜索地址",
   "favorites": "收藏",
-  "current_location": "当前位置"
+  "current_location": "当前位置",
+  "password_recovery": "找回密码",
+  "otp_instruction": "请输入收到的OTP验证码以重置您的密码",
+  "otp_sent_to": "您将收到一个OTP验证码："
 }

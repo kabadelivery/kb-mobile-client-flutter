@@ -30,8 +30,8 @@ class RecoverPasswordPage extends ConsumerStatefulWidget {
   RecoverPasswordPresenter? presenter;
 
   bool? is_a_process;
-
-  RecoverPasswordPage({Key? key, this.presenter, this.is_a_process = false}) : super(key: key);
+  String? login;
+  RecoverPasswordPage({Key? key, this.presenter, this.is_a_process = false, this.login}) : super(key: key);
 
   @override
   ConsumerState<RecoverPasswordPage> createState() => _RecoverPasswordPageState();
@@ -74,8 +74,9 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
     this.widget.presenter!.recoverPasswordView = this;
     CustomerUtils.getCustomer().then((customer) {
-      if (customer != null) {
+      if (customer != null && customer.id!=null) {
         xrint("recoverpasswordPage : "+customer.toJson().toString());
+        widget.login = customer.username;
         tempUser = customer;
         setState(() {
           if (customer.phone_number == null) {
@@ -112,153 +113,241 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
   @override
   Widget build(BuildContext context) {
-    String raw = ref.watch(loginProvider).trim();
-    if(raw==null || raw.isEmpty){
-      raw =tempUser.username??"";
-    }
+    String raw = widget.login??"";
     String login = raw.contains('@') ? raw : raw.startsWith('+') ? raw.substring(1) : "228$raw";
-
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: StateContainer.ANDROID_APP_SIZE,
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          leading: IconButton(
-            icon: const Icon(Icons.close, color: KColors.primaryColor, size: 20),
-            onPressed: () => Navigator.pop(context),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        toolbarHeight: StateContainer.ANDROID_APP_SIZE,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.close, color: KColors.primaryColor, size: 22),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          Utils.capitalize(
+            AppLocalizations.of(context)!.translate('input_password'),
           ),
-          title: Text(
-            Utils.capitalize(
-                "${AppLocalizations.of(context)!.translate('input_password')}"),
-            style: const TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
-        backgroundColor: Colors.white,
-        body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child:Center(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(FontAwesomeIcons.rightFromBracket,
-                            color: KColors.primaryColor, size: 25),
-                        SizedBox(width: 20),
-                        Text("Connexion",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600)),
-                      ],
+      ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 20),
+
+              Container(
+                height: 76,
+                width: 76,
+                decoration: BoxDecoration(
+                  color: KColors.primaryColor.withOpacity(0.10),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  FontAwesomeIcons.rightFromBracket,
+                  color: KColors.primaryColor,
+                  size: 32,
+                ),
+              ),
+
+              const SizedBox(height: 18),
+
+          Text(AppLocalizations.of(context)!.translate('password_recovery'),
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+                Text(AppLocalizations.of(context)!.translate('otp_instruction'),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 14,
+                ),
+              ),
+
+              const SizedBox(height: 30),
+
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(22),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.08),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
                     ),
-                    SizedBox(height: 30),
+                  ],
+                  border: Border.all(
+                    color: Colors.grey.shade200,
+                  ),
+                ),
+                child: Column(
+                  children: [
+                    Text(AppLocalizations.of(context)!.translate('otp_sent_to'),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 15,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
 
+                    const SizedBox(height: 12),
 
-                    SizedBox(height: 10),
-                    SizedBox(height: 10),
-                   // Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('insert_phone_number')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
                     Container(
-                        margin: EdgeInsets.only(left:40, right: 40),child: Text("Vous allez Recevoir un  code OTP sur :", textAlign: TextAlign.center,   style: const TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
-                    )),
-                    SizedBox(height: 10),
-                    Text(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 18,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: KColors.primaryColor.withOpacity(0.08),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(
                         Utils.isEmailValid(ref.watch(loginProvider))
-                            ? login                              // If email → display as-is
+                            ? login
                             : login.startsWith('+')
-                            ? login.substring(1)             // Remove "+" if exists
-                            : "$login"                    // Add prefix only for phone
-                    ),
-                   /* SizedBox(width: 250,
-                        child: Container(
-                            padding: EdgeInsets.all(14),
-                            child: Text(ref.watch(loginProvider)),
-                            //TextField(controller: _loginFieldController, enabled: widget.is_a_process == true ? false : !isCodeSent, onChanged: _onLoginFieldTextChanged,  maxLength: TextField.noMaxLength, keyboardType: TextInputType.text, decoration: InputDecoration.collapsed(hintText: _loginFieldHint), style: TextStyle(color:KColors.new_black)),
-                            decoration: isLoginError ?  BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)),   border: Border.all(color: Colors.red), color:Colors.grey.shade200) : BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5)), color:Colors.grey.shade200)
-                        )),*/
-                    //Container(margin: EdgeInsets.only(left:40, right: 40),child: Text("${AppLocalizations.of(context)!.translate('press_code_hint')}", textAlign: TextAlign.center, style: KStyles.hintTextStyle_gray)),
-                    SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-
-                      // ---------------- OTP FIELDS LINE ----------------
-                      if (isCodeSent)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: List.generate(
-                            4,
-                                (index) => Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 6),
-                              child: _buildOtpField(index),
-                            ),
-                          ),
+                            ? login.substring(1)
+                            : login,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: KColors.primaryColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
                         ),
+                      ),
+                    ),
 
-                      if (isCodeSent) const SizedBox(height: 20),
+                    const SizedBox(height: 28),
 
-                      // ---------------- BUTTON LINE ----------------
-                      SizedBox(
-                        width: 160, // medium size, not too big, not too small
-                        child: OutlinedButton(
-                          style: OutlinedButton.styleFrom(
-                            backgroundColor: KColors.primaryColor,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            foregroundColor: Colors.white,
-                            side: BorderSide(color: KColors.primaryColor, width: 1.5),
-                          ),
-                          onPressed: () {
-                            if (!isCodeSent && !isCodeSending) _sendCodeAction();
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                isCodeSent && timeDiff != 0
-                                    ? "$timeDiff ${AppLocalizations.of(context)!.translate('seconds')}"
-                                    : AppLocalizations.of(context)!.translate('code'),
-                                style: const TextStyle(fontSize: 14, color: Colors.white),
-                              ),
-
-                              if (!isCodeSent && isCodeSending)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: SizedBox(
-                                    width: 18,
-                                    height: 18,
-                                    child: CircularProgressIndicator(strokeWidth: 2),
-                                  ),
-                                ),
-                            ],
+                    if (isCodeSent)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          4,
+                              (index) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: _buildOtpField(index),
                           ),
                         ),
                       ),
-                    ],
+
+                    if (isCodeSent) const SizedBox(height: 26),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 52,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: KColors.primaryColor,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        onPressed: () {
+                          if (!isCodeSent && !isCodeSending) {
+                            _sendCodeAction();
+                          }
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              isCodeSent && timeDiff != 0
+                                  ? "$timeDiff ${AppLocalizations.of(context)!.translate('seconds')}"
+                                  : AppLocalizations.of(context)!.translate('code'),
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (!isCodeSent && isCodeSending) ...[
+                              const SizedBox(width: 10),
+                              const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 28),
+
+              if (isCodeSent)
+                SizedBox(
+                  width: double.infinity,
+                  height: 52,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    onPressed: () {
+                      _checkCodeAndCreateAccount();
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          AppLocalizations.of(context)!
+                              .translate('recover_password'),
+                          style: const TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
+                        ),
+                        if (isCodeSending) ...[
+                          const SizedBox(width: 10),
+                          const SizedBox(
+                            height: 18,
+                            width: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
-
-
-                SizedBox(height: 30),
-                    isCodeSent ? MaterialButton(padding: EdgeInsets.only(top:15, bottom:15, left:10, right:10), color:KColors.primaryColor,child: Row(mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text("${AppLocalizations.of(context)!.translate('recover_password')}", style: TextStyle(fontSize: 14, color: Colors.white)),
-                        SizedBox(width: 10),
-                        isCodeSending==true && isCodeSent==true ? SizedBox(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.white)), height: 15, width: 15) : Container(),
-                      ],
-                    ), onPressed: () {isCodeSent ? _checkCodeAndCreateAccount() : {};}) : Container(),
-                  ]
-              ),
-            ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
 //  void _handleRadioValueChange (int value) {
@@ -272,32 +361,26 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 //  }
 
   void _sendCodeAction() {
+    String raw = widget.login ?? "";
+    String login = raw.contains('@')
+        ? raw
+        : raw.startsWith('+')
+        ? raw.substring(1)
+        : "228$raw";
 
-    /* logins */
-
-    /* check the fields */
-
-    //String login = ref.watch(loginProvider).startsWith('+') ? ref.watch(loginProvider).substring(1) : "228${ref.watch(loginProvider)} " : Utils.isEmailValid(email);
-    String raw = ref.watch(loginProvider).trim();
-    if(raw==null || raw.isEmpty){
-      raw = tempUser.username??"";
-    }
-    String login = raw.contains('@') ? raw : raw.startsWith('+') ? raw.substring(1) : "228$raw";
-    if (login.isNotEmpty) {
-      this.widget.presenter!.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long')}",  is_code_confirmation: true);
-    } else if (Utils.isEmailValid(login)) {
-      this.widget.presenter!.sendVerificationCode(login);
-      mDialog("${AppLocalizations.of(context)!.translate('email_registration_code_too_long')}", is_code_confirmation: true);
-    } else {
-      /* login error */
+    if (login.isEmpty) {
       setState(() {
         isLoginError = true;
       });
+      return;
     }
 
-  }
+    setState(() {
+      isCodeSending = true;
+    });
 
+    widget.presenter!.sendVerificationCode(login);
+  }
   _clearSharedPreferences () async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("vlcst");
@@ -329,7 +412,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
     String login;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = prefs.getString("vlcst")!;
+    String tmp = await prefs.getString("vlcst")!;
     login = await prefs.getString("vl")??"";
 
     DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
@@ -432,26 +515,41 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   }
 
   @override
-  void keepRequestId(String login, String requestId) {
-    /* save the id somewhere in my .... */
-    xrint("request Id ${requestId}");
+  void keepRequestId(String login, String requestId) async {
+    _requestId = requestId;
 
-    this._requestId = requestId;
-    /* start minute-count of the seconds into the message thing */
-    _saveRequestParams(login, requestId);
-    _retrieveRequestParams();
+    await _saveRequestParams(login, requestId);
+
+    if (!mounted) return;
+
     setState(() {
       isCodeSent = true;
     });
-  }
 
+    _startOtpTimer();
+
+    mDialog(
+      Utils.isEmailValid(login)
+          ? AppLocalizations.of(context)!.translate('email_registration_code_too_long')
+          : AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long'),
+      is_code_confirmation: true,
+    );
+  }
   @override
   void onNetworkError() {
-    mToast("${AppLocalizations.of(context)!.translate('network_error')}");
+    setState(() {
+      isCodeSending = false;
+    });
+
+    mToast(AppLocalizations.of(context)!.translate('network_error'));
   }
 
   @override
   void onSysError({String message = ""}) {
+    setState(() {
+      isCodeSending = false;
+    });
+
     mToast(message);
   }
 
@@ -470,7 +568,35 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 //    mToast("user Exists Already");
   }
 
+  void _startOtpTimer() {
+    mainTimer?.cancel();
 
+    final expiryDate = DateTime.now().add(
+      Duration(seconds: CODE_EXPIRATION_LAPSE),
+    );
+
+    mainTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      final diff = expiryDate.difference(DateTime.now()).inSeconds;
+
+      if (diff <= 0) {
+        setState(() {
+          isCodeSent = false;
+          timeDiff = 0;
+        });
+        _clearSharedPreferences();
+        timer.cancel();
+      } else {
+        setState(() {
+          timeDiff = diff;
+        });
+      }
+    });
+  }
   _checkCodeAndCreateAccount() {
 
     /* check request id and the code */
@@ -488,6 +614,8 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
   @override
   void sendVerificationCodeLoading(bool isLoading) {
+    if (!mounted) return;
+
     setState(() {
       isCodeSending = isLoading;
     });
