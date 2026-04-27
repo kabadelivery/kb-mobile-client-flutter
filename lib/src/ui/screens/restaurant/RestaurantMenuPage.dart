@@ -34,6 +34,7 @@ import 'package:toast/toast.dart';
 
 import '../../../utils/functions/show_tutorials.dart';
 import '../../customwidgets/notation.dart';
+import '../../customwidgets/shimmer.dart';
 import '../rating/article_review.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
@@ -468,8 +469,34 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                   child: Container(
                                       margin: EdgeInsets.only(top: 10),
                                       child: isLoading
-                                          ? Center(
-                                              child: MyLoadingProgressWidget())
+                                          ? Column(
+                                        children: [
+                                         Row(
+                                           children: [
+                                             ListView.builder(
+                                               shrinkWrap: true,
+                                               physics: const NeverScrollableScrollPhysics(),
+                                               itemCount: 10,
+                                               itemBuilder: (context, index) {
+                                                 return Container(
+                                                   child: foodListShimmer(context),
+                                                 );
+                                               },
+                                             )
+                                           ],
+                                         ),
+                                          ListView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            itemCount: 10,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                child: foodListShimmer(context),
+                                              );
+                                            },
+                                          )
+                                        ],
+                                      )
                                           : (hasNetworkError
                                               ? _buildNetworkErrorPage()
                                               : hasSystemError

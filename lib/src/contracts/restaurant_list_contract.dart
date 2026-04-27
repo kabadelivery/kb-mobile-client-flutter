@@ -56,7 +56,7 @@ class RestaurantListPresenter implements RestaurantListContract {
       [bool silently = false, String? filter_key]) async {
     if (isWorking && position == null) return;
     isWorking = true;
-    xrint("made it to fetchShopList");
+    xrint("made it to fetchShopList, filter_key : $filter_key");
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
 
     // load from cache the last request while looking for the newest set of data
@@ -73,10 +73,6 @@ class RestaurantListPresenter implements RestaurantListContract {
           await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high,
           );
-
-
-
-
       xrint("made it to address");
         CustomerModel user = await CustomerUtils.getCustomer();
 

@@ -47,7 +47,8 @@ class OutOfAppOrderApiProvider{
       "use_kaba_point": useKabaPoints,
       "pay_at_delivery": true,
     };
-    try {
+    /*
+       try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
       var abonnementResponse = await dio.post(
@@ -71,6 +72,7 @@ class OutOfAppOrderApiProvider{
       xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
       requestData['user_abonnement'] = {};
     }
+   */
 
     // Encode le JSON final
     var _data = json.encode(requestData);
@@ -201,7 +203,8 @@ class OutOfAppOrderApiProvider{
       "phone_number": phone_number,
     };
      var abonnementData ={};
-    try {
+    /*
+        try {
       var dio = Dio();
       dio.options.headers = Utils.getHeadersWithToken(customer.token!);
       var abonnementResponse = await dio.post(
@@ -226,6 +229,7 @@ class OutOfAppOrderApiProvider{
       xrint("KABA_ABONNEMENT_GET_BY_USER exception: $e");
       requestData['user_abonnement'] = {};
     }
+     */
 
     // Encode le JSON final
     var _data = json.encode(requestData);

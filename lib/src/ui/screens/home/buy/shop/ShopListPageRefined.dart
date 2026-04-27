@@ -27,9 +27,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:toast/toast.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+
+import '../../../../customwidgets/shimmer.dart';
 class ShopListPageRefined extends StatefulWidget {
   Position? location;
   RestaurantFoodProposalPresenter? foodProposalPresenter;
@@ -38,6 +42,7 @@ class ShopListPageRefined extends StatefulWidget {
   PageStorageKey? key;
   BuildContext? context;
   CustomerModel? customer;
+
   List<ShopModel>? restaurantList = null;
   int? samePositionCount = 0;
   String? type;
@@ -105,7 +110,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   bool? _open_filter_value;
 
   Map<String, dynamic>? filterConfiguration;
-
+  String selectedFilter = "all";
   // keep track of which chips are selected
   final List<String> _allFilters = [
     "spagho", "poissonbraise",
@@ -114,16 +119,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   ];
   final Set<String> _selectedFilters = {}; // dynamic selection
 
- 
+
 
   @override
   void initState() {
     _restaurantListScrollController.addListener(_onScroll);
+
     super.initState();
 //    _filterDropdownValue = "${AppLocalizations.of(context)!.translate('cheap_to_exp')}";
     widget.foodProposalPresenter!.restaurantFoodProposalView = this;
     widget.restaurantListPresenter!.restaurantListView = this;
-
+    filterConfiguration = {};
+    CustomerUtils.updateShopListFilterConfiguration(filterConfiguration!);
     _filterEditController.addListener(_filterEditContent);
 
     _focus.addListener(_onFocusChange);
@@ -218,8 +225,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
   @override
   Widget build(BuildContext context) {
- 
-
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: PreferredSize(
@@ -272,6 +277,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     ],
                   ),
                 ),
+
                 searchTypePosition==1?    SizedBox(height: 20):Container(),
                 searchTypePosition==1?     Container(
                   width: MediaQuery.of(context).size.width*.9,
@@ -291,83 +297,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Container(
-                          height: 35,
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
-                          margin: EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.white.withAlpha(100)),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Expanded(
-                                child: Focus(
-                                  onFocusChange: (hasFocus) {
-                                    if (hasFocus) {
-                                      // do staff
-                                      _searchMode = true;
-                                    } else {
-                                      // out search mode
-                                      _searchMode = false;
-                                    }
-                                  },
-                                  child: TextField(
-
-                                      autofocus: _searchAutoFocus,
-                                      controller: _filterEditController,
-                                      onSubmitted: (val) {
-                                        _searchAction(pressButton: true);
-                                        xrint("on submitted");
-                                      },
-                                      onChanged: (val) {
-                                        if (_searchAutoFocus)
-                                          setState(() {
-                                            _searchAutoFocus = false;
-                                          });
-                                        xrint("on onChanged");
-                                        xrint("${val.toString()}");
-                                        EasyDebounce.debounce(
-                                            'search-input-debouncer',
-                                            Duration(milliseconds: 700),
-                                                () => {_searchAction()});
-                                      },
-                                      style: TextStyle(
-                                          color: KColors.new_black,
-                                          fontSize: 14),
-                                      textInputAction: TextInputAction.search,
-
-                                      decoration: InputDecoration.collapsed(
-
-                                          hintText:
-                                          "${AppLocalizations.of(context)!.translate('find_menu_or_restaurant')}",
-                                          hintStyle: TextStyle(
-                                              fontSize: 14,
-                                              color: KColors.new_black
-                                                  .withAlpha(150))),
-                                      enabled: true),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _clearFocus();
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      left: 5, right: 5, bottom: 3, top: 3),
-                                  child: Center(
-                                    child: Icon(Icons.close,
-                                        size: 20, color: Colors.white),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
+                      Expanded(child: _buildSearchField()),
+                      const SizedBox(width: 10),
+                      _buildFilterButton(),
                     ],
                   ),
                 ):Container(),
@@ -383,11 +315,18 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                     });
                   },
                 ):Container(),
-                 SizedBox(height: 10,),
                 Container(
-
                     child: isLoading
-                        ? Center(child: MyLoadingProgressWidget())
+                        ?ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: 20,
+                      itemBuilder: (context, index) {
+                        return Container(
+                          child: shopListShimmer(context),
+                        );
+                      },
+                    )
                         : (hasNetworkError
                             ? _buildNetworkErrorPage()
                             : hasSystemError
@@ -417,7 +356,166 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   return Center(child: Container(margin: EdgeInsets.only(top:20),child: MyLoadingProgressWidget()));
                 })));*/
   }
+  String getRestaurantStatus(ShopModel shop) {
+    if (shop.coming_soon == 1) return "unavailable";
 
+    if (shop.is_open == 1) return "open";
+
+    return "closed";
+  }
+  Widget _buildSearchField() {
+    return Container(
+      height: 50,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 5,
+            blurRadius: 7,
+          )
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              height: 35,
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              margin: EdgeInsets.symmetric(vertical: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _filterEditController,
+                      onChanged: (val) {
+                        EasyDebounce.debounce(
+                          'search-input-debouncer',
+                          Duration(milliseconds: 700),
+                              () => {_searchAction()},
+                        );
+                      },
+                      decoration: InputDecoration.collapsed(
+                        hintText: "Rechercher...",
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _buildFilterButton() {
+    return PopupMenuButton<String>(
+      color: Colors.white,
+      onSelected: (value) {
+        setState(() {
+          selectedFilter = value;
+        });
+      },
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: "all",
+          child: Row(
+            children: [
+              Icon(Icons.list, color: KColors.new_black, size: 20),
+              const SizedBox(width: 10),
+              Text(AppLocalizations.of(context)!.translate('see_all')),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: "open",
+          child: Row(
+            children: [
+              Icon(Icons.check_circle, color: Colors.green, size: 20),
+              const SizedBox(width: 10),
+              Text(AppLocalizations.of(context)!.translate("r_opened")),
+            ],
+          ),
+        ),
+        PopupMenuItem(
+          value: "closed",
+          child: Row(
+            children: [
+              Icon(Icons.cancel, color: KColors.primaryColor, size: 20),
+              const SizedBox(width: 10),
+              Text(AppLocalizations.of(context)!.translate("t_closed")),
+            ],
+          ),
+        ),
+      ],
+      child: Container(
+        height: 50,
+        width: 50,
+        decoration: BoxDecoration(
+          color: KColors.primaryColor,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Icon(Icons.tune, color: Colors.white),
+      ),
+    );
+  }
+  Widget _buildFilterChip(String label, String value) {
+    final bool isSelected = selectedFilter == value;
+
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            selectedFilter = value;
+          });
+        },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        margin: const EdgeInsets.only(right: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? KColors.primaryColor : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? KColors.primaryColor
+                : Colors.grey.withOpacity(0.3),
+          ),
+        ),
+        child: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : KColors.new_black,
+            fontWeight: FontWeight.w500,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+  List<ShopModel> filterShops(List<ShopModel> shops) {
+    debugPrint('Entered filterShops');
+    if (selectedFilter == "all") return shops;
+
+    return shops.where((shop) {
+      final status = getRestaurantStatus(shop);
+      if (selectedFilter == "open") return status == "open";
+      if (selectedFilter == "closed") {
+        return status == "closed" ||
+            status == "paused" ||
+            status == "blocked";
+      }
+
+      if (selectedFilter == "unavailable") {
+        return status == "unavailable";
+      }
+
+      return true;
+    }).toList();
+  }
   Map pageRestaurants = Map<int, dynamic>();
 
   _buildRestaurantList(List<ShopModel> d) {
@@ -444,6 +542,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height - 200,
         child: Column(
+
           children: <Widget>[
             Expanded(
               child: SingleChildScrollView(
@@ -499,14 +598,14 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                                 controller:
                                                     _restaurantListScrollController,
                                                 itemCount:
-                                                    visibleItems?.length != null
-                                                        ? visibleItems!.length +
+                                                filteredfilteredVisibleItems?.length != null
+                                                        ? filteredfilteredVisibleItems!.length +
                                                             1
                                                         : 0,
                                                 itemBuilder:
                                                     (context, position) {
                                                   if (position ==
-                                                      visibleItems?.length) {
+                                                      filteredfilteredVisibleItems?.length) {
                                                     if (hasMoreData()) {
                                                       return Container(
                                                           width: MediaQuery.of(
@@ -538,7 +637,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                                     }
                                                   } else {
                                                     return ShopListWidget(
-                                                        shopModel: visibleItems![
+                                                        shopModel: filteredfilteredVisibleItems![
                                                             position]);
                                                   }
                                                 },
@@ -582,7 +681,10 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       this.searchTypePosition = selected;
     });
   }
-
+  List<ShopModel> get filteredfilteredVisibleItems {
+    debugPrint("Get filteredfilteredVisibleItems");
+    return filterShops(visibleItems ?? []);
+  }
   void mDialog(String message) {
     _showDialog(
       icon: Icon(Icons.info_outline, color: Colors.red),
@@ -1231,7 +1333,7 @@ Padding
   }
 
   _showSearchPage() {
-    if (visibleItems?.length == 0)
+    if (filteredfilteredVisibleItems?.length == 0)
       return Container(
           child: Center(
               child: Column(children: <Widget>[
@@ -1250,9 +1352,9 @@ Padding
         controller: _restaurantListScrollController,
         child: ListView.builder(
           controller: _restaurantListScrollController,
-          itemCount: visibleItems?.length != null ? visibleItems!.length + 1 : 0,
+          itemCount: filteredfilteredVisibleItems?.length != null ? filteredfilteredVisibleItems!.length + 1 : 0,
           itemBuilder: (context, position) {
-            if (position == visibleItems?.length) {
+            if (position == filteredfilteredVisibleItems?.length) {
               if (hasMoreData()) {
                 return Container(
                     width: MediaQuery.of(context).size.width,
@@ -1272,17 +1374,17 @@ Padding
                     )));
               }
             } else {
-              return ShopListWidget(shopModel: visibleItems![position]);
+              return ShopListWidget(shopModel: filteredfilteredVisibleItems![position]);
             }
           },
         ),
         /*     child: ListView.builder(
           addAutomaticKeepAlives: true,
           controller: _restaurantListScrollController,
-          itemCount: visibleItems.length + 1,
+          itemCount: filteredVisibleItems.length + 1,
           itemBuilder: (context, index) {
-            if (index == visibleItems?.length) return Container(height: 300);
-            return ShopListWidget(shopModel: visibleItems[index]);
+            if (index == filteredVisibleItems?.length) return Container(height: 300);
+            return ShopListWidget(shopModel: filteredVisibleItems[index]);
           },
         ),*/
       ),

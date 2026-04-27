@@ -7,6 +7,7 @@ import 'package:KABA/src/ui/screens/auth/recover/RecoverPasswordPage.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class RetrievePasswordPage extends StatefulWidget {
@@ -23,7 +24,10 @@ class RetrievePasswordPage extends StatefulWidget {
 
 class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   final TextEditingController passwordController = TextEditingController();
+  final FocusNode passwordFocusNode = FocusNode();
+
   bool _obscurePassword = true;
+  bool _isSubmitting = false;
   String errorMessage = "";
 
   List<String>? retrievePasswordTitle;
@@ -38,42 +42,76 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     retrievePasswordTitle = [
-      "${AppLocalizations.of(context)!.translate('enter_password')}",
-      "${AppLocalizations.of(context)!.translate('setup_password')}",
-      "${AppLocalizations.of(context)!.translate('confirm_password')}",
-      "${AppLocalizations.of(context)!.translate('confirm_password_launch_order')}"
+      AppLocalizations.of(context)!.translate('enter_password'),
+      AppLocalizations.of(context)!.translate('setup_password'),
+      AppLocalizations.of(context)!.translate('confirm_password'),
+      AppLocalizations.of(context)!.translate('confirm_password_launch_order'),
     ];
   }
 
-  void _submitCode() {
-    String enteredPassword = passwordController.text;
+  @override
+  void dispose() {
+    passwordController.dispose();
+    passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submitCode() async {
+    if (_isSubmitting) return;
+
+    FocusScope.of(context).unfocus();
+
+    final enteredPassword = passwordController.text.trim();
 
     if (enteredPassword.isEmpty) {
-      setState(() => errorMessage =
-          AppLocalizations.of(context)!.translate('enter_password_error'));
+      setState(() {
+        errorMessage =
+            AppLocalizations.of(context)!.translate('enter_password_error');
+      });
       return;
     }
 
     if (enteredPassword.length != 4) {
-      setState(() => errorMessage =
-          AppLocalizations.of(context)!.translate('password_min_error'));
+      setState(() {
+        errorMessage =
+            AppLocalizations.of(context)!.translate('password_min_error');
+      });
       return;
     }
 
-    Navigator.of(context).pop({'code': enteredPassword, 'type': widget.type});
+    setState(() {
+      errorMessage = "";
+      _isSubmitting = true;
+    });
+
+    try {
+      if (!mounted) return;
+      Navigator.of(context).pop({
+        'code': enteredPassword,
+        'type': widget.type,
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
+  void _jumpToOTPPage(BuildContext sheetContext) {
+    Navigator.of(sheetContext).pop();
 
-  void _jumpToOTPPage() {
-    Navigator.of(context).pop();
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(
-          presenter: RecoverPasswordPresenter(RecoverPasswordView()),
+    Future.microtask(() {
+      if (!mounted) return;
 
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => RecoverPasswordPage(
+            presenter: RecoverPasswordPresenter(RecoverPasswordView()),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   void showReceiveCodeBottomSheet(BuildContext context) {
@@ -83,7 +121,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       backgroundColor: Colors.white,
-      builder: (context) {
+      builder: (sheetContext) {
         return Padding(
           padding: const EdgeInsets.all(20),
           child: SingleChildScrollView(
@@ -114,17 +152,9 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KColors.primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    onPressed: _jumpToOTPPage,
+                    onPressed: () => _jumpToOTPPage(sheetContext),
                     child: Text(
-                      "${AppLocalizations.of(context)!.translate('proceed')}",
-                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      AppLocalizations.of(context)!.translate('proceed'),
                     ),
                   ),
                 ),
@@ -139,6 +169,7 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         backgroundColor: Colors.white,
@@ -152,66 +183,100 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      body: SizedBox.expand(
+        child: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(top: 50.0, left: 20, right: 20, bottom: 20),
+              padding: const EdgeInsets.only(
+                top: 50.0,
+                left: 20,
+                right: 20,
+                bottom: 20,
+              ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        widget.type != 3 ? FontAwesomeIcons.rightFromBracket : Icons.shopping_bag,
+                        widget.type != 3
+                            ? FontAwesomeIcons.rightFromBracket
+                            : Icons.shopping_bag,
                         color: KColors.primaryColor,
                         size: 25,
                       ),
                       const SizedBox(width: 10),
                       Text(
                         widget.type != 3
-                            ? "${AppLocalizations.of(context)!.translate('login')}"
-                            : "${AppLocalizations.of(context)!.translate('validate_order')}",
-                        style: const TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                            ? AppLocalizations.of(context)!.translate('login')
+                            : AppLocalizations.of(context)!.translate('validate_order'),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 40),
                   Text(
-                    "${AppLocalizations.of(context)!.translate('enter_password')}",
+                    AppLocalizations.of(context)!.translate('enter_password'),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(color: Colors.black, fontSize: 19, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 19,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  // Password Field
+
                   TextField(
                     controller: passwordController,
+                    focusNode: passwordFocusNode,
                     obscureText: _obscurePassword,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _submitCode(),
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(4),
+                    ],
                     decoration: InputDecoration(
-                      hintText: "${AppLocalizations.of(context)!.translate('password')}",
-                      prefixIcon: const Icon(Icons.lock_outline, color: KColors.primaryColor),
+                      hintText: AppLocalizations.of(context)!.translate('password'),
+                      prefixIcon: const Icon(
+                        Icons.lock_outline,
+                        color: KColors.primaryColor,
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
                           _obscurePassword ? Icons.visibility_off : Icons.visibility,
                           color: KColors.primaryColor,
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    keyboardType: TextInputType.number,
                   ),
+
                   if (errorMessage.isNotEmpty) ...[
                     const SizedBox(height: 10),
-                    Text(errorMessage, style: const TextStyle(color: Colors.red, fontSize: 12)),
+                    Text(
+                      errorMessage,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 12,
+                      ),
+                    ),
                   ],
+
                   const SizedBox(height: 30),
-                  // Submit Button
+
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -225,27 +290,37 @@ class _RetrievePasswordPageState extends State<RetrievePasswordPage> {
                       onPressed: _submitCode,
                       child: Text(
                         widget.type != 3
-                            ? "${AppLocalizations.of(context)!.translate('login_button')}"
-                            : "${AppLocalizations.of(context)!.translate('validate_button')}",
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                            ? AppLocalizations.of(context)!.translate('login_button')
+                            : AppLocalizations.of(context)!.translate('validate_button'),
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                  // Forgot Password
+
                   TextButton(
                     onPressed: () => showReceiveCodeBottomSheet(context),
                     child: Text(
-                      "${AppLocalizations.of(context)!.translate('forgot_password')}",
+                      AppLocalizations.of(context)!.translate('forgot_password'),
                       style: const TextStyle(color: KColors.primaryColor),
                     ),
                   ),
                 ],
               ),
             ),
-            Image.asset(
-              "assets/images/background/Patternlogin.png",
-              width: double.infinity,
-              fit: BoxFit.cover,
+
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: ExcludeSemantics(
+                child: Image.asset(
+                  "assets/images/background/Patternlogin.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
           ],
         ),

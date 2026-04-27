@@ -21,20 +21,16 @@ class TagCarousel extends StatelessWidget {
     final topRow = allFilters.sublist(0, half);
     final bottomRow = allFilters.sublist(half);
 
-    return SizedBox(
-      height: 120,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildRow(topRow),
-              _buildRow(bottomRow),
-            ],
-          ),
+          SizedBox(height: 10,),
+          _buildRow(topRow),
+          _buildRow(bottomRow),
         ],
       ),
     );

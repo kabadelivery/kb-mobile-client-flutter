@@ -210,7 +210,10 @@ class _HeaderState extends State<Header> {
 
                 // Chat button with persistent unread badge
                 GestureDetector(
-                  onTap: _navigateToChat,
+                  onTap: (){
+                    //_navigateToChat
+                    showModernPopup(title: AppLocalizations.of(context)!.translate("t_unavailable"),context: context, text: "${AppLocalizations.of(context)!.translate('service_unavailable')}", icon:Icon( FontAwesomeIcons.lock));
+                  },
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

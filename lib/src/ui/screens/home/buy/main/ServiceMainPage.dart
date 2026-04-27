@@ -785,7 +785,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
         message: "${AppLocalizations.of(context)!.translate('network_error')}",
         onClickAction: () {
           if(StateContainer.of(context).location==null){
-            showPlacePicker(context);
+            PickCurrentUserPosition(context);
           }else
           widget.presenter!.fetchServiceCategoryFromLocation(
               StateContainer.of(context).location!);
@@ -807,7 +807,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   StateContainer.of(context).location == null
                       ? GestureDetector(
                     onTap: () {
-                      showPlacePicker(context);
+                      PickCurrentUserPosition(context);
                     },
                     child: Row(
                       children: [
@@ -834,75 +834,6 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     ),
                   )
                       : Container(),
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint("tap");
-                      showPlacePicker(context);
-                    },
-                    child: Stack(
-                      children: [
-                        StateContainer?.of(context)?.location == null
-                            ? Container(
-                          margin: EdgeInsets.only(
-                              left: 20, right: 20, top: 20, bottom: 15),
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 15),
-                          decoration: BoxDecoration(
-                              color: KColors.mBlue.withAlpha(10),
-                              borderRadius: BorderRadius.circular(5)),
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                      child: Icon(Icons.location_on,
-                                          color: KColors.mBlue, size: 15),
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: KColors.mBlue
-                                              .withAlpha(30)),
-                                      padding: EdgeInsets.all(5)),
-                                  SizedBox(width: 10),
-                                  Text(
-                                      Utils.capitalize(
-                                          "${AppLocalizations.of(context)!.translate('please_select_main_location')}"),
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey)),
-                                ],
-                              ),
-                              Container(
-                                  child: Icon(Icons.add,
-                                      color: KColors.primaryColor,
-                                      size: 15),
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: KColors.primaryColor
-                                          .withAlpha(30)),
-                                  padding: EdgeInsets.all(5)),
-                            ],
-                          ),
-                        )
-                            : getCurrentTile(),
-                        isPickLocation
-                            ? Positioned(
-                            top: 35,
-                            right: 70,
-                            child: SizedBox(
-                                height: 15,
-                                width: 15,
-                                child: CircularProgressIndicator(
-                                  color: Colors.green,
-                                  strokeWidth: 2,
-                                )))
-                            : Container()
-                      ],
-                    ),
-                  ),
                   InkWell(
                       child: SearchStatelessWidget(
                           title:
@@ -1187,7 +1118,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                     !.map((e) => BuyCategoryWidget(e,
                         available: true,
                         mDialog: mDialog,
-                        showPlacePicker: showPlacePicker))
+                        showPlacePicker: PickCurrentUserPosition))
                         .toList()),
                   ),
                   /*
@@ -1309,7 +1240,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
                   prefs!.setString("_has_accepted_gps", "ok");
                   Navigator.of(context).pop();
                   await Future.delayed(const Duration(milliseconds: 200));
-                  showPlacePicker(context);
+                  PickCurrentUserPosition(context);
                 },
               )
             ],
@@ -1457,7 +1388,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     );
   }
 
-  Future<void> showPlacePicker(BuildContext context) async {
+  Future<void> PickCurrentUserPosition(BuildContext context) async {
     final granted = await ensureLocationPermission(context);
 
     if (!granted) {
@@ -1465,13 +1396,37 @@ class ServiceMainPageState extends State<ServiceMainPage>
       return;
     }
 
-    setState(() => isPickLocation = true);
-
-    await _jumpToPickAddressPage();
-
-    if (mounted) {
-      setState(() => isPickLocation = false);
-    }
+    var pos;
+    pos = await Geolocator.getCurrentPosition();
+    pos = StateContainer.of(context).location = Position(
+      latitude: pos.latitude,
+      longitude: pos.longitude,
+      timestamp: DateTime.now(),
+      accuracy: 1.0,
+      altitude: 0.0,
+      altitudeAccuracy: 0.0,
+      heading: 0.0,
+      headingAccuracy: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+    );
+    setState(() {
+      _myCurrentTile = null;
+      StateContainer.of(context).location = Position(
+        latitude: pos.latitude,
+        longitude: pos.longitude,
+        timestamp: DateTime.now(),
+        accuracy: pos.accuracy,
+        altitude: pos.altitude,
+        altitudeAccuracy: pos.altitudeAccuracy,
+        heading: pos.heading,
+        headingAccuracy: pos.headingAccuracy,
+        speed: pos.speed,
+        speedAccuracy: pos.speedAccuracy,
+      );
+    });
+    debugPrint("Position picked ${pos.latitute}:${pos.longitude}");
+    CustomerUtils.saveAddressLocally(StateContainer.of(context).location!);
   }
   void _showPermissionInfoDialog(BuildContext context) {
     showDialog(

@@ -196,15 +196,6 @@ class _FoodGridState extends State<FoodGrid> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(Icons.error, color: Colors.red, size: 40),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Oops! Une erreur s'est produite.",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red.shade700,
-                    ),
-                  ),
                 ],
               ),
             ),

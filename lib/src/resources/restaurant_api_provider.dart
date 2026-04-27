@@ -297,9 +297,6 @@ class RestaurantApiProvider {
       xrint("data from fetchShopList ${response.data}");
       if (response.statusCode == 200) {
         dynamic data = mJsonDecode(response.data);
-        for(var shop in data["data"]){
-          xrint("shop found ${shop["name"]}");
-        }
         return data;
       } else {
         throw Exception(response.statusCode); // you have no right to do this

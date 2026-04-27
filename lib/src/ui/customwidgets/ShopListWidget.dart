@@ -27,6 +27,7 @@ class ShopListWidget extends StatefulWidget {
 }
 
 class _ShopListWidgetState extends State<ShopListWidget> {
+
   @override
   Widget build(BuildContext context) {
 

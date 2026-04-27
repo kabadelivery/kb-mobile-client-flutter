@@ -336,8 +336,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
                               ),
                             ),
                             onPressed: () {
-
-                              _checklogin();
+                              checkLogin();
                             },
                             child:  Text(
                               "${AppLocalizations.of(context)!.translate('continue_arrow')}",
@@ -441,84 +440,71 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
 
   }*/
+  Future<void> checkLogin() async {
+    if (isConnecting || _loading) return;
 
-
-
-  Future _checklogin() async {
-    if (isConnecting) return;
+    setState(() => _loading = true);
     showLoading(true);
 
-    setState(() {
-      _loading = true;
-    });
-    String login = _buildLogin();;
-    if(selectedCountryCode == '+228'){
-      login =  _loginFieldController.text;
-    }
-    else if (Utils.isEmailValid(login)){
+    try {
+      String login = _buildLogin();
 
-      login = _loginFieldController.text ;
-    }
-    else {
-      if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
-        login = selectedCountryCode.substring(1) + _loginFieldController.text;
+      if (selectedCountryCode == '+228') {
+        login = _loginFieldController.text.trim();
+      } else if (Utils.isEmailValid(login)) {
+        login = _loginFieldController.text.trim();
       } else {
-        // fallback → treat as local Togo number
-        login = _loginFieldController.text;
-      }
-    }
-
-    int countlogin = login.length ;
-    // control login stuff
-     if (!(Utils.isEmailValid(login) || countlogin > 5 )) {
-      /* login error */
-      mToast("${AppLocalizations.of(context)!.translate('login_error')} ");
-      return;
-    }
-
-    /* // 1. get password
-    var results =  await Navigator.of(context).push(new MaterialPageRoute<dynamic>(
-        builder: (BuildContext context) {
-          return RetrievePasswordPage(type: 0);
+        if (selectedCountryCode.isNotEmpty && selectedCountryCode.length > 1) {
+          login = selectedCountryCode.substring(1) + _loginFieldController.text.trim();
+        } else {
+          login = _loginFieldController.text.trim();
         }
-    )); */
-
-    // if (results != null && results.containsKey('code') && results.containsKey('type'))
-    String _mCode = '0000';
-//      int type = results['type'];
-    showLoading(true);
-
-
-    /* check if it's important to send another sms according to the time lapsed after the last sending
-      * 1. check last time sent message, if before 5 minutes, then dont send,
-      * 2. otherwise send
-      *  */
-    CustomerUtils.getLastValidOtp(username: login).then((otp) async{
-      var packageInfo = PackageInfo.fromPlatform();
-      var appVersion = await packageInfo.then((PackageInfo info) {
-        return info.version;
-      });
-      if ("no".compareTo(otp!) == 0) {
-
-        if (login.compareTo(DEMO_ACCOUNT_USERNAME) == 0 ) {
-          // widget.autoLogin = true;
-          this.widget.presenter!.login(false, login, _mCode, widget.version??appVersion);
-        } else
-          this.widget.presenter!.login(true, login, _mCode, widget.version??appVersion);
-
-      } else {
-        this.widget.presenter!.login(false, login, _mCode, widget.version??appVersion);
       }
-    });
 
-    showLoading(false);
+      final countlogin = login.length;
 
+      if (!(Utils.isEmailValid(login) || countlogin > 5)) {
+        mToast("${AppLocalizations.of(context)!.translate('login_error')}");
+        return;
+      }
+
+      final otp = await CustomerUtils.getLastValidOtp(username: login);
+      final info = await PackageInfo.fromPlatform();
+      final appVersion = widget.version ?? info.version;
+
+      if (!mounted) return;
+
+      if (otp == "no") {
+        final result = await Navigator.of(context).push<Map<String, dynamic>>(
+          MaterialPageRoute(
+            builder: (_) => RetrievePasswordPage(
+              type: 0,
+              login: login,
+            ),
+          ),
+        );
+
+        if (!mounted || result == null) return;
+
+        final code = result['code'] as String?;
+        if (code == null || code.isEmpty) return;
+
+        widget.presenter!.login(false, login, code, appVersion);
+      } else {
+        const mCode = '0000';
+        widget.presenter!.login(false, login, mCode, appVersion);
+      }
+    } catch (e, st) {
+      debugPrint("_checklogin error: $e");
+      debugPrintStack(stackTrace: st);
+    } finally {
+      if (mounted) {
+        setState(() => _loading = false);
+      }
+      showLoading(false);
+    }
   }
-
   Future _launchConnexion() async {
-
-
-
     String login =_buildLogin(); ;
     if(selectedCountryCode == '+228'){
       login =  _loginFieldController.text;
@@ -569,9 +555,6 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
           }
         });
       }
-    }else{
-      // mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
-      mToast("${AppLocalizations.of(context)!.translate('wrong_code')}");
     }
   }
 
@@ -583,46 +566,43 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   @override
   Future<void> loginSuccess(dynamic obj) async {
-
-
-
     CustomerModel customer = CustomerModel.fromJson(obj["data"]["customer"]);
+    final bool requireOtp = obj["require_otp"] ?? false;
 
-    String? otp = null;
+    String? otp;
+    if (obj["login_code"] != null) {
+      otp = "${obj["login_code"]}";
+    }
+
+    // Important: if no OTP required, go directly through nextStep
+    // so token/user/session are still persisted exactly like before.
+    if (!requireOtp) {
+      await nextStepWithOtpConfirmationPage(customer, "", obj);
+      StateContainer.of(context).myBillingArray = null;
+      widget.autoLogin = true;
+      return;
+    }
+
     if (!widget.autoLogin!) {
-      /* retrieve the otp and save it for later use */
-      try {
-        if (obj["login_code"] != null)
-          otp = "${obj["login_code"]}";
-      } catch (_) {
-        otp = null;
-      }
-      /* save it to the shared preferences */
       if (otp != null) {
-        CustomerUtils.saveOtpToSharedPreference(customer.username!,otp);
+        CustomerUtils.saveOtpToSharedPreference(customer.username!, otp);
         await nextStepWithOtpConfirmationPage(customer, otp, obj);
-
       } else {
-        CustomerUtils.getLastOtp(customer.username!).then((mOtp) async {
-          // this is the otp
-          if ("no".compareTo(mOtp!) == 0) {
-            // login_failure
-            showLoading(false);
-          } else {
+        final mOtp = await CustomerUtils.getLastOtp(customer.username!);
 
-            /* if you are coming from another process like already making an order, then just pop */
-            /* token must be saved by now. */
-            await nextStepWithOtpConfirmationPage(customer, mOtp!, obj);
-
-          }
-        });
+        if (mOtp == null || mOtp == "no") {
+          showLoading(false);
+          return;
+        } else {
+          await nextStepWithOtpConfirmationPage(customer, mOtp, obj);
+        }
       }
     } else {
-      // go directly
       await nextStepWithOtpConfirmationPage(customer, "", obj);
     }
+
     StateContainer.of(context).myBillingArray = null;
-    widget.autoLogin = true ;
+    widget.autoLogin = true;
   }
   String _buildLogin() {
     final input = _loginFieldController.text.trim();
@@ -989,6 +969,7 @@ class _LoginPageState extends ConsumerState<LoginPage>  implements LoginView {
 
   @override
   void loginPasswordError(error) async{
+    print('Error : $error');
     await _showDialog(
       icon: Icon(Icons.warning, color: KColors.primaryColor),
       message: "${AppLocalizations.of(context)!.translate('password_wrong_')}",

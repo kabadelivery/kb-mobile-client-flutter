@@ -69,11 +69,15 @@ class _MyAddressesPageState extends State<MyAddressesPage>
     CustomerUtils.getCustomer().then((customer)async {
       await determinePosition().then((value)async{
         DeliveryAddressModel old_address  =DeliveryAddressModel();
-        for(DeliveryAddressModel adr in widget.data!){
-          if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
-            old_address=adr;
-            break;
+        try{
+          for(DeliveryAddressModel adr in widget.data!){
+            if(adr.name==AppLocalizations.of(context)!.translate('choose_actual_location').toString()){
+              old_address=adr;
+              break;
+            }
           }
+        }catch(e){
+
         }
         DeliveryAddressModel address = DeliveryAddressModel(
           id: old_address.id,

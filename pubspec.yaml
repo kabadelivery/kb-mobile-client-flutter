@@ -286,6 +286,7 @@ flutter:
     - assets/lottie/Chinese_Flag.json
     - assets/lottie/Fast_food.json
     - assets/lottie/supermarket.json
+    - assets/lottie/food_loading.json
   #  - images/a_dot_ham.jpeg
 
 flutter_native_splash:
