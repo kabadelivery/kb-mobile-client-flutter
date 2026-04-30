@@ -62,7 +62,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
   String errorMessage = "";
 
   String? _selectedOption = "whatsapp";
-  int _remainingSeconds = 90; // 90 seconds timer
+  int _remainingSeconds = 60; // 90 seconds timer
   Timer? _timer;
   int? timeDiff = 0;
   bool otp_loading=false;
@@ -429,7 +429,7 @@ class _LoginOTPConfirmationPageState extends State<LoginOTPConfirmationPage> {
         var data = jsonDecode(response);
         if (data['error'] == 0) {
         pwd = "";
-        _remainingSeconds = 90;
+        _remainingSeconds = 60;
         _showReceiveOption = false;
         widget.otp_code = data['data']['code'].toString();
         widget.request_id = data['data']['request_id'].toString();

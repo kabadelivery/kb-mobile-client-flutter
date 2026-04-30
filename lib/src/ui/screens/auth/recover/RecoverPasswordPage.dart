@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:KABA/src/contracts/login_contract.dart';
 import 'package:KABA/src/contracts/recover_password_contract.dart';
@@ -15,10 +16,16 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 import '../../../../StateContainer.dart';
+import '../../../../resources/client_personal_api_provider.dart';
 import '../../../../resources/login_provider.dart';
+import '../../../../utils/_static_data/AppConfig.dart';
+import '../../../../utils/_static_data/ImageAssets.dart';
 import '../recover/NewPasswordPage.dart';
 
 class RecoverPasswordPage extends ConsumerStatefulWidget {
@@ -60,7 +67,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   /* circle loading progressing */
   bool isCodeSending = false;
 
-  int CODE_EXPIRATION_LAPSE = 10*60; /* minutes *  seconds */
+  int CODE_EXPIRATION_LAPSE = 1*60; /* minutes *  seconds */
 
   int timeDiff = 0;
 
@@ -249,7 +256,33 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
                       ),
 
                     if (isCodeSent) const SizedBox(height: 26),
-
+                    Opacity(
+                      opacity: timeDiff == 0 ? 1.0 : 0.5,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 10),
+                          timeDiff==0?TextButton(
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 30),
+                                backgroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide(width: 1,color: KColors.primaryColor.withOpacity(.2))
+                                )
+                            ),
+                            onPressed:(){
+                              if(timeDiff == 0){
+                                showReceiveCodeBottomSheet(context);
+                              }
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.translate('contact_support_to_get_otp'),
+                              style: const TextStyle(color: KColors.primaryColor),
+                            ),
+                          ):SizedBox(),
+                        ],
+                      ),
+                    ),
                     SizedBox(
                       width: double.infinity,
                       height: 52,
@@ -359,6 +392,90 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 //      this._codeFieldController.text = "";
 //    });
 //  }
+  showReceiveCodeBottomSheet(BuildContextcontext) {
+    showMaterialModalBottomSheet(
+      backgroundColor: Colors.transparent,
+      expand: false,
+      context: context,
+      builder: (context) => Container(
+          width: 335,
+          height: 155,
+          margin: EdgeInsets.all(20),
+          decoration: BoxDecoration(
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: Column(
+            children: [
+              Container(
+                  width:double.infinity,
+                  height: 50,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10),
+                        topRight: Radius.circular(10)),
+                  ),
+                  child: Text("${AppLocalizations.of(context)!.translate('contact_support_to_get_otp')}",style: TextStyle(color: Colors.white,fontSize: 14))),
+              InkWell(
+                onTap: ()async{
+                  var url = "tel:${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}";
+                  if (await canLaunch(url)) {
+                    await launch(url);
+                  } else {
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('phone_call')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                      ]),
+                ),
+              ),
+              Container(
+                  width: MediaQuery.of(context).size.width,
+                  color: KColors.new_gray,
+                  height: 1),
+              InkWell(
+                onTap: () async{
+                  final link = WhatsAppUnilink(
+                    phoneNumber: '+228${AppConfig.CUSTOMER_CARE_PHONE_NUMBER}',
+                    text: "${AppLocalizations.of(context)!.translate('i_want_otp_code')}",
+                  );
+                  await launch('$link');
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "${AppLocalizations.of(context)!.translate('whatsapp')}",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: KColors.new_black,
+                                fontWeight: FontWeight.w500)),
+                        // Icon(Icons.call, size: 20, color: KColors.primaryColor)
+                        Container(
+                            width: 20,
+                            height: 20,
+                            child: Image.asset(ImageAssets.whatsapp)),
+                      ]),
+                ),
+              ),
+            ],
+          )),
+    );
+  }
 
   void _sendCodeAction() {
     String raw = widget.login ?? "";
@@ -555,7 +672,9 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
   @override
   void showLoading(bool isLoading) {
-
+    setState(() {
+      isLoading=true;
+    });
   }
 
   @override
@@ -664,55 +783,140 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
     );
   }
 
-  void _showDialog(
-      {String? svgIcons, Icon? icon, var message, bool okBackToHome = false, bool isYesOrNo = false, bool? is_code_confirmation}) {
+  void _showDialog({
+    String? svgIcons,
+    Icon? icon,
+    required String message,
+    bool okBackToHome = false,
+    bool isYesOrNo = false,
+    bool? is_code_confirmation,
+  }) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-            content: Column(mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                      height: 80,
-                      width: 80,
-                      child: icon == null ? SvgPicture.asset(
+      barrierDismissible: true,
+      builder: (BuildContext dialogContext) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          insetPadding: const EdgeInsets.symmetric(horizontal: 28),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(22, 26, 22, 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  height: 86,
+                  width: 86,
+                  padding: const EdgeInsets.all(18),
+                  decoration: BoxDecoration(
+                    color: KColors.primaryColor.withOpacity(0.08),
+                    shape: BoxShape.circle,
+                  ),
+                  child: icon ??
+                      SvgPicture.asset(
                         svgIcons!,
-                      ) : icon),
-                  SizedBox(height: 10),
-                  Text(message, textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]
+                        fit: BoxFit.contain,
+                      ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: KColors.new_black,
+                    fontSize: 15,
+                    height: 1.45,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+
+                const SizedBox(height: 26),
+
+                if (isYesOrNo)
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            side: const BorderSide(color: Colors.grey),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.translate('refuse'),
+                            style: const TextStyle(
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: KColors.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(dialogContext).pop();
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!.translate('accept'),
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                else
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: KColors.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.of(dialogContext).pop();
+
+                        if (widget.is_a_process! && is_code_confirmation == false) {
+                          Navigator.of(context).pop();
+                        }
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.translate('ok'),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
-            actions:
-            isYesOrNo ? <Widget>[
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text("${AppLocalizations.of(context)!.translate('refuse')}", style: TextStyle(color: Colors.grey)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: KColors.primaryColor, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('accept')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ] : <Widget>[
-              //
-              OutlinedButton(
-                style: ButtonStyle(side: MaterialStateProperty.all(BorderSide(color: Colors.grey, width: 1))),
-                child: new Text(
-                    "${AppLocalizations.of(context)!.translate('ok')}", style: TextStyle(color: KColors.primaryColor)),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (widget.is_a_process! && is_code_confirmation == false)
-                    Navigator.of(context).pop();
-                },
-              ),
-            ]
+          ),
         );
       },
     );
