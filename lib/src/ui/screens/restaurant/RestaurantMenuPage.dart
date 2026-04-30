@@ -421,7 +421,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           children: [
                             Container(
                               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              padding: const EdgeInsets.symmetric(horizontal: 8),
                               decoration: BoxDecoration(
                                 color: const Color(0xFFFFFFFF).withOpacity(0.08),
                                 borderRadius: BorderRadius.circular(12),
@@ -437,12 +437,12 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                     _searchQuery = value.trim().toLowerCase();
                                   });
                                 },
-                                style: const TextStyle(fontSize: 14),
+                                style: const TextStyle(fontSize: 13),
                                 decoration: InputDecoration(
                                   hintText: AppLocalizations.of(context)!.translate('search_article'),
                                   hintStyle: TextStyle(
                                     color: Colors.grey.shade600,
-                                    fontSize: 13,
+                                    fontSize: 12,
                                   ),
                                   border: InputBorder.none,
                                   prefixIcon: const Icon(

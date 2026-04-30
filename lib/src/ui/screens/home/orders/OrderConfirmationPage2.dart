@@ -46,6 +46,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:kkiapay_flutter_sdk/app/app.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -1000,7 +1001,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                               ),
                             ),
                             const SizedBox(width: 5),
-                            Text("${widget.foods!.length!>1?"articles":"article"}",  style: TextStyle(
+                            Text(AppLocalizations.of(context)!.translate(widget.foods!.length!>1?"itemCount_other":"itemCount_one"),  style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold
@@ -1132,7 +1133,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   child:Icon(Icons.location_on_outlined,color: Colors.blue,size:22)
                               ),
                               SizedBox(width:32),
-                              Flexible(child: Text("Choisir l'adresse de Livraison ",style: TextStyle(fontWeight:FontWeight.normal),)),
+                              Flexible(child: Text(AppLocalizations.of(context)!.translate('chooseDeliveryAddress'),style: TextStyle(fontWeight:FontWeight.normal),)),
                               SizedBox(width:70),
                               Icon(Icons.control_point_outlined, color: Colors.blue),
                               /*  ElevatedButton(
@@ -1977,8 +1978,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ),
                 const SizedBox(height: 20),
 
-                // Titre en gras
-                Text('Félicitations pour avoir passé votre commande avec succès !',
+                Text(AppLocalizations.of(context)!.translate('orderSuccessTitle'),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18,
@@ -1989,9 +1989,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ),
 
                 const SizedBox(height: 10),
-
-                // Description
-                Text("Veuillez garder votre téléphone à  côté pour être informé en temps réel sur l’état de votre commande",
+                Text(
+                  AppLocalizations.of(context)!.translate('orderSuccessDescription')
+                 ,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -2001,8 +2001,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ),
 
                 const SizedBox(height: 20),
-
-                // Bouton "Parfait !"
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -2015,14 +2013,23 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       ),
                     ),
                     child: Text(
-                      "Parfait !",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                        AppLocalizations.of(context)!.translate('perfectButton'),
+                        style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     onPressed: () {
                       Navigator.of(context).pop();
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                            (Route<dynamic> route) => false,
+                      StateContainer.of(context)
+                          .updateTabPosition(tabPosition: 2);
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          settings:
+                          RouteSettings(name: HomePage.routeName),
+                          builder: (BuildContext _) => HomePage(
+                            is_out_of_app_order: false,
+                          ),
+                        ),
+                            (r) => false,
                       );
                     },
                   ),
@@ -2838,7 +2845,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                           Icon(Icons.code, color: KColors.white, size: 18),
                           const SizedBox(width: 6),
                           Text(
-                            "Ajouter Code Abo.",
+                            AppLocalizations.of(context)!.translate('addSubscriptionCode'),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 12,
@@ -2929,7 +2936,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ElevatedButton(
                   onPressed: () {
                     SubscriptionSuccessSheet.show(context);
-                    print("Code entré: ${codeController.text}");
+                    debugPrint("Code entré: ${codeController.text}");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: KColors.primaryColor,
@@ -2937,7 +2944,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   ),
                   child: Container(
                       width: MediaQuery.of(context).size.width*9,
-                      child: Text('Valider le code',textAlign: TextAlign.center,style:TextStyle())),
+                      child: Text(AppLocalizations.of(context)!.translate('validateCode'),textAlign: TextAlign.center,style:TextStyle())),
                 ),
               ],
             ),

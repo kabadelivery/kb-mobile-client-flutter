@@ -16,7 +16,7 @@ class ServerConfig {
 
 
   //LOCAL
-  //static const String ip_address = "stewart-programmer-yeah-marc.trycloudflare.com"; // dev server
+  //static const String ip_address = "c6c9-102-64-159-69.ngrok-free.app"; // dev server
   //static const String pay_ip_address = "d6d3-102-64-159-69.ngrok-free.app";
   //static const String stat_ip_address="ce6d7af6e733.ngrok-free.app";//dev
 

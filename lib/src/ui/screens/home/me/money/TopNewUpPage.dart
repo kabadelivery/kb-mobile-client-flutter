@@ -484,12 +484,8 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                       context: context,
                                       child: Row(
                                         children: [
-                                          SizedBox(width: 10),
-                                          Icon(Icons.phone_outlined, color: Colors.black54),
-                                          SizedBox(width: 8),
-
                                           Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                            padding: EdgeInsets.symmetric(horizontal: 0, vertical: 4),
                                             decoration: BoxDecoration(
                                               color: Colors.transparent,
                                               border: Border(
@@ -511,14 +507,11 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
                                               showDropDownButton: true,
                                               padding: EdgeInsets.zero,
                                               textStyle: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 14,
                                                 color: Colors.black87,
                                               ),
                                             ),
                                           ),
-
-                                          SizedBox(width: 8),
-
                                           Expanded(
                                             child: TextField(
                                               controller: _phoneNumberFieldController,

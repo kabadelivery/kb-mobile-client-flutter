@@ -35,6 +35,7 @@ class VoucherPresenter implements VoucherContract {
 
   @override
   Future<void> loadVoucherList({CustomerModel? customer, int restaurantId = -1, List<int>? foodsId, bool pick=false}) async {
+
     if (isWorking)
       return;
     isWorking = true;

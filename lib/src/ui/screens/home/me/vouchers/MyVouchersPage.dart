@@ -58,7 +58,9 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
     widget.presenter!.voucherView = this;
     CustomerUtils.getCustomer().then((customer) {
       widget.customer = customer;
+      _reloadData();
       // according to if we are picking something, we can just request stuffs differently
+      debugPrint('MyVouchersPage restaurantId : ${widget.restaurantId}');
       widget.presenter!.loadVoucherList(customer: customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
     });
     super.initState();
@@ -116,13 +118,29 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
       ),
     );
   }
+  void _reloadData() {
+    if (!mounted) return;
 
+    setState(() {
+      isLoading = true;
+      hasNetworkError = false;
+      hasSystemError = false;
+    });
+
+    widget.presenter!.loadVoucherList(
+      customer: widget.customer,
+      restaurantId: widget.restaurantId!,
+      foodsId: widget.foods,
+    );
+  }
   _buildSysErrorPage() {
+    debugPrint('restaurantId : ${widget.restaurantId}');
     return ErrorPage(message: "${AppLocalizations.of(context)!.translate('system_error')}",onClickAction: (){  widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods); });
   }
 
   _buildNetworkErrorPage() {
     return ErrorPage(message: "${AppLocalizations.of(context)!.translate('network_error')}",onClickAction: (){
+      debugPrint('restaurantId : ${widget.restaurantId}');
       widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
     });
   }
@@ -174,20 +192,21 @@ class _MyVouchersPageState extends State<MyVouchersPage> implements VoucherView 
 
 
   Future _jumpToAddNewVoucher_Code({String qrCode = ""}) async {
-    Map results = await Navigator.of(context).push(
-        PageRouteBuilder (pageBuilder: (context, animation, secondaryAnimation)=>
-            AddVouchersPage(presenter: AddVoucherPresenter(AddVoucherView()), customer: widget.customer, qrCode: qrCode),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-              var begin = Offset(1.0, 0.0);
-              var end = Offset.zero;
-              var curve = Curves.ease;
-              var tween = Tween(begin:begin, end:end);
-              var curvedAnimation = CurvedAnimation(parent:animation, curve:curve);
-              return SlideTransition(position: tween.animate(curvedAnimation), child: child);
-            }
-        ));
-    // when you come back,
-    widget.presenter!.loadVoucherList(customer: widget.customer, restaurantId: widget.restaurantId!, foodsId: widget.foods);
+    final result = await Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => AddVouchersPage(
+          presenter: AddVoucherPresenter(AddVoucherView()),
+          customer: widget.customer,
+          qrCode: qrCode,
+        ),
+      ),
+    );
+
+    if (result == true) {
+      _reloadData();
+    }
+
+
   }
 
 

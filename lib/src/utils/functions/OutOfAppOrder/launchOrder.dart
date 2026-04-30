@@ -92,7 +92,109 @@ void sorryDemoAccountAlert(BuildContext context, WidgetRef ref) {
       context: context,
       ref: ref);
 }
+Future<String?> _showPayAtDeliveryCodeDialog(BuildContext context) async {
+  final TextEditingController codeController = TextEditingController();
 
+  return showDialog<String>(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.lock_outline,
+                color: KColors.primaryColor,
+                size: 34,
+              ),
+              const SizedBox(height: 10),
+
+              Text(
+                AppLocalizations.of(context)!
+                    .translate('confirm_payment'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              const SizedBox(height: 8),
+
+              Text(
+                AppLocalizations.of(context)!
+                    .translate('enter_secret_code'),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey,
+                ),
+              ),
+
+              const SizedBox(height: 14),
+
+              TextField(
+                controller: codeController,
+                keyboardType: TextInputType.number,
+                obscureText: true,
+                textAlign: TextAlign.center,
+                maxLength: 6,
+                decoration: InputDecoration(
+                  counterText: "",
+                  hintText: "------",
+                  filled: true,
+                  fillColor: KColors.new_gray,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text(
+                        AppLocalizations.of(context)!.translate('cancel'),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: KColors.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context, codeController.text.trim());
+                      },
+                      child: Text(
+                        AppLocalizations.of(context)!.translate('confirm'),
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+}
 void payAtDelivery(
   BuildContext context,
   WidgetRef ref,
@@ -155,22 +257,15 @@ void payAtDelivery(
     return;
   }
 
-  // 1. get password
-  var results = await Navigator.of(context)
-      .push(new MaterialPageRoute<dynamic>(builder: (BuildContext context) {
-    return RetrievePasswordPage(type: 3);
-  }));
-  // retrieve password then do it,
-  if (results != null &&
-      results.containsKey('code') &&
-      results.containsKey('type')) {
-    if (results == null ||
-        results['code'] == null ||
-        !Utils.isCode(results['code'])) {
-      mToast(
-          "${AppLocalizations.of(context)!.translate('wrong_code')}", context);
-    } else {
-      String _mCode = results['code'];
+      final String? code = await _showPayAtDeliveryCodeDialog(context);
+
+      if (code == null) return;
+
+      if (!Utils.isCode(code)) {
+        mToast("${AppLocalizations.of(context)!.translate('wrong_code')}",context);
+        return;
+      }
+      String _mCode = code;
 
       if ("${customer?.username}".compareTo(DEMO_ACCOUNT_USERNAME) == 0) {
         sorryDemoAccountAlert(context, ref);
@@ -228,9 +323,8 @@ void payAtDelivery(
               context);
         }
       }
-    }
+
   }
-}
 
 void _showDialog({
   String? iccon,

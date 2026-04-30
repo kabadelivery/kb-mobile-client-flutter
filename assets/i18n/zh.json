@@ -1184,5 +1184,13 @@
   "current_location": "当前位置",
   "password_recovery": "找回密码",
   "otp_instruction": "请输入收到的OTP验证码以重置您的密码",
-  "otp_sent_to": "您将收到一个OTP验证码："
+  "otp_sent_to": "您将收到一个OTP验证码：",
+  "orderSuccessTitle": "恭喜！您的订单已成功提交！",
+  "orderSuccessDescription": "请保持您的手机在身边，以便实时获取订单状态更新",
+  "perfectButton": "好的！",
+  "validateCode": "验证代码",
+  "chooseDeliveryAddress": "选择配送地址",
+  "itemCount_one": "件商品",
+  "itemCount_other": "件商品",
+  "addSubscriptionCode": "添加订阅代码"
 }

@@ -9,6 +9,7 @@ import 'package:KABA/src/utils/ssl/ssl_validation_certificate.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:dio/adapter.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 
 class VoucherApiProvider {
   loadVouchers(
@@ -17,6 +18,7 @@ class VoucherApiProvider {
       List<int>? foodsId,
       bool pick = false}) async {
     xrint("entered loadVouchers");
+    debugPrint("loadVouchers restaurantId ${restaurantId}");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options

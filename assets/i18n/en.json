@@ -1167,7 +1167,7 @@
   "otp_message" : "Your OTP Code (KABA):",
   "get_otp_code" : "Get the Code ",
   "enter_otp_code" : "Get the OTP code",
-  "search_article": "Search for an article",
+  "search_article": "Search for a dish, drink ...",
   "i_want_otp_code": "Hello Kaba, i would like to get my OTP code",
   "contact_support_to_get_otp": "Contact support to get your OTP code",
   "service_unavailable": "Sorry. This service is not yet available. It will be soon.",
@@ -1179,6 +1179,13 @@
   "current_location": "Current location",
   "password_recovery": "Password recovery",
   "otp_instruction": "Enter the OTP code received to reset your password",
-  "otp_sent_to": "You will receive an OTP code on:"
-
+  "otp_sent_to": "You will receive an OTP code on:",
+  "orderSuccessTitle": "Congratulations! Your order has been placed successfully!",
+  "orderSuccessDescription": "Please keep your phone nearby to receive real-time updates on your order status",
+  "perfectButton": "Perfect!",
+  "validateCode": "Validate code",
+  "chooseDeliveryAddress": "Choose delivery address",
+  "itemCount_one": "item",
+  "itemCount_other": "items",
+  "addSubscriptionCode": "Add subscription code"
 }

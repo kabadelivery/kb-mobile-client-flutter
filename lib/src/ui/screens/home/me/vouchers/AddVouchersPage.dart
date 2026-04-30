@@ -351,7 +351,7 @@ class _AddVouchersPageState extends State<AddVouchersPage>
   @override
   void subscribeSuccessfull(VoucherModel voucher) {
     // open success page
-    Navigator.pop(context);
+    Navigator.pop(context, true);
     /*  Navigator.of(context).push(new MaterialPageRoute<dynamic>(
         builder: (BuildContext context) {
           return VoucherSubscribeSuccessPage(voucher: voucher);
