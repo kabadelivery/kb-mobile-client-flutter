@@ -1187,5 +1187,6 @@
   "chooseDeliveryAddress": "Choose delivery address",
   "itemCount_one": "item",
   "itemCount_other": "items",
-  "addSubscriptionCode": "Add subscription code"
+  "addSubscriptionCode": "Add subscription code",
+  "resend_code": "Resend"
 }

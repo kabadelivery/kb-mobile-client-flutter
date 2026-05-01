@@ -63,13 +63,13 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   bool isCodeSent = false;
   bool isLoginError = false;
   bool isCodeError = false;
-
+  int attemps= 0;
   /* circle loading progressing */
   bool isCodeSending = false;
 
   int CODE_EXPIRATION_LAPSE = 1*60; /* minutes *  seconds */
 
-  int timeDiff = 0;
+  int timeDiff = 60;
 
   String? _requestId;
   CustomerModel tempUser =CustomerModel();
@@ -306,7 +306,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
                             Text(
                               isCodeSent && timeDiff != 0
                                   ? "$timeDiff ${AppLocalizations.of(context)!.translate('seconds')}"
-                                  : AppLocalizations.of(context)!.translate('code'),
+                                  : attemps>0?AppLocalizations.of(context)!.translate('resend_code'):AppLocalizations.of(context)!.translate('receive_code'),
                               style: const TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.w600,
@@ -354,7 +354,7 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
                       children: [
                         Text(
                           AppLocalizations.of(context)!
-                              .translate('recover_password'),
+                              .translate('validateCode'),
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
@@ -478,19 +478,14 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   }
 
   void _sendCodeAction() {
-    String raw = widget.login ?? "";
-    String login = raw.contains('@')
+    if (isCodeSending) return;
+
+    final raw = widget.login ?? "";
+    final login = raw.contains('@')
         ? raw
         : raw.startsWith('+')
         ? raw.substring(1)
         : "228$raw";
-
-    if (login.isEmpty) {
-      setState(() {
-        isLoginError = true;
-      });
-      return;
-    }
 
     setState(() {
       isCodeSending = true;
@@ -529,7 +524,8 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
     String login;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String tmp = await prefs.getString("vlcst")!;
+    String? tmp = prefs.getString("vlcst");
+    if (tmp == null) return;
     login = await prefs.getString("vl")??"";
 
     DateTime lastCodeSentDatetime = DateTime.fromMillisecondsSinceEpoch(0);
@@ -550,27 +546,16 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
       this._requestId = prefs.getString("vri");
       _loginFieldController.text = prefs.getString("vl")??"";
 
-      mainTimer = Timer.periodic(Duration(seconds: 1), (timer) {
-        if (DateTime.now().isAfter(lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)))) {
-          setState(() {
-            isCodeSent = false;
-          });
-          _clearSharedPreferences();
-          timer.cancel();
-        } else {
-          /* update text;;; if codeIsSent */
-          setState(() {
-            /* convert into minutes, and show it */
-            Duration duration = lastCodeSentDatetime.add(Duration(seconds: CODE_EXPIRATION_LAPSE)).difference(DateTime.now());
-            timeDiff = duration.inSeconds;
-          });
-        }
-      });
+      _startOtpTimerFrom(lastCodeSentDatetime);
     }
   }
 
   Timer? mainTimer;
-
+  @override
+  void reassemble() {
+    super.reassemble();
+    mainTimer?.cancel();
+  }
   @override
   void dispose() {
     try {
@@ -632,25 +617,34 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   }
 
   @override
-  void keepRequestId(String login, String requestId) async {
+  Future<void> keepRequestId(String login, String requestId) async {
     _requestId = requestId;
 
     await _saveRequestParams(login, requestId);
 
     if (!mounted) return;
 
+    mainTimer?.cancel();
+
     setState(() {
+      attemps += 1;
+      isCodeSending = false;
       isCodeSent = true;
+      timeDiff = CODE_EXPIRATION_LAPSE;
     });
 
     _startOtpTimer();
 
-    mDialog(
-      Utils.isEmailValid(login)
-          ? AppLocalizations.of(context)!.translate('email_registration_code_too_long')
-          : AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long'),
-      is_code_confirmation: true,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      mDialog(
+        Utils.isEmailValid(login)
+            ? AppLocalizations.of(context)!.translate('email_registration_code_too_long')
+            : AppLocalizations.of(context)!.translate('pnumber_registration_code_too_long'),
+        is_code_confirmation: true,
+      );
+    });
   }
   @override
   void onNetworkError() {
@@ -671,9 +665,11 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
   }
 
   @override
-  void showLoading(bool isLoading) {
+  void showLoading(bool loading) {
+    if (!mounted) return;
+
     setState(() {
-      isLoading=true;
+      isCodeSending = loading;
     });
   }
 
@@ -684,13 +680,11 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
 
   @override
   void userExistsAlready() {
-//    mToast("user Exists Already");
   }
-
-  void _startOtpTimer() {
+  void _startOtpTimerFrom(DateTime startTime) {
     mainTimer?.cancel();
 
-    final expiryDate = DateTime.now().add(
+    final expiryDate = startTime.add(
       Duration(seconds: CODE_EXPIRATION_LAPSE),
     );
 
@@ -707,6 +701,42 @@ class _RecoverPasswordPageState extends ConsumerState<RecoverPasswordPage> imple
           isCodeSent = false;
           timeDiff = 0;
         });
+
+        _clearSharedPreferences();
+        timer.cancel();
+      } else {
+        setState(() {
+          timeDiff = diff;
+        });
+      }
+    });
+  }
+  void _startOtpTimer() {
+    mainTimer?.cancel();
+
+    final expiryDate = DateTime.now().add(
+      Duration(seconds: CODE_EXPIRATION_LAPSE),
+    );
+
+    setState(() {
+      isCodeSent = true;
+      timeDiff = CODE_EXPIRATION_LAPSE;
+    });
+
+    mainTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      final diff = expiryDate.difference(DateTime.now()).inSeconds;
+
+      if (diff <= 0) {
+        setState(() {
+          isCodeSent = false;
+          timeDiff = 0;
+        });
+
         _clearSharedPreferences();
         timer.cancel();
       } else {

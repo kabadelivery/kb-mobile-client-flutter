@@ -1194,5 +1194,8 @@
   "chooseDeliveryAddress": "Choisir l'adresse de livraison",
   "itemCount_one": "article",
   "itemCount_other": "articles",
-  "addSubscriptionCode": "Ajouter un code Abo."
+  "addSubscriptionCode": "Ajouter un code Abo.",
+  "resend_code": "Renvoyer le code"
+
+
 }

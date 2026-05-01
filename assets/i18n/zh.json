@@ -1192,5 +1192,6 @@
   "chooseDeliveryAddress": "选择配送地址",
   "itemCount_one": "件商品",
   "itemCount_other": "件商品",
-  "addSubscriptionCode": "添加订阅代码"
+  "addSubscriptionCode": "添加订阅代码",
+  "resend_code": "返回代码"
 }

@@ -43,53 +43,63 @@ class RecoverPasswordPresenter implements RecoverPasswordContract {
   }
 
   @override
-  Future checkVerificationCode(String code, String requestId) async {
+  Future<void> checkVerificationCode(String code, String requestId) async {
+    if (isWorking) return;
 
-    /* */
-    if (isWorking)
-      return;
-    isWorking = true;
-
-    _recoverPasswordView.sendVerificationCodeLoading(true); /*  */
-
-    String jsonContent = await provider.checkRecoverPasswordRequestCodeAction(code, requestId);
-    int error = json.decode(jsonContent)["error"];
-    try {
-      if (error == 0) {
-        _recoverPasswordView.codeIsOk(true);
-      } else {
-        _recoverPasswordView.codeIsOk(false);
-      }
-    } catch (_) {
-      _recoverPasswordView.codeIsOk(false);
-    }
-    isWorking = false;
-    _recoverPasswordView.sendVerificationCodeLoading(false); /*  */
-  }
-
-
-  @override
-  Future sendVerificationCode(String phone_number) async {
-    if (isWorking)
-      return;
     isWorking = true;
     _recoverPasswordView.sendVerificationCodeLoading(true);
-    String jsonContent = await provider.recoverPasswordSendingCodeAction(
-        phone_number);
-    int error = json.decode(jsonContent)["error"];
-    if (error == -1) {
-      _recoverPasswordView.onSysError(message: "Sorry, user doesn't exist.");
-    } else if (error == 0) {
-      String requestId = json.decode(jsonContent)["data"]["request_id"];
-      _recoverPasswordView.keepRequestId(phone_number, requestId);
-    } else {
-      _recoverPasswordView.onSysError(
-          message: json.decode(jsonContent)["message"]);
-    }
-    isWorking = false;
-    _recoverPasswordView.sendVerificationCodeLoading(false); /*  */
-  }
 
+    try {
+      final jsonContent =
+      await provider.checkRecoverPasswordRequestCodeAction(code, requestId);
+
+      final decoded = json.decode(jsonContent);
+      final int error = decoded["error"];
+
+      _recoverPasswordView.codeIsOk(error == 0);
+    } catch (e) {
+      xrint(e.toString());
+      _recoverPasswordView.codeIsOk(false);
+      _recoverPasswordView.onNetworkError();
+    } finally {
+      isWorking = false;
+      _recoverPasswordView.sendVerificationCodeLoading(false);
+    }
+  }
+  @override
+  Future<void> sendVerificationCode(String phoneNumber) async {
+    if (isWorking) return;
+
+    isWorking = true;
+    _recoverPasswordView.sendVerificationCodeLoading(true);
+
+    try {
+      final jsonContent =
+      await provider.recoverPasswordSendingCodeAction(phoneNumber);
+
+      final decoded = json.decode(jsonContent);
+      final int error = decoded["error"];
+
+      if (error == -1) {
+        _recoverPasswordView.onSysError(
+          message: "Sorry, user doesn't exist.",
+        );
+      } else if (error == 0) {
+        final String requestId = decoded["data"]["request_id"];
+        _recoverPasswordView.keepRequestId(phoneNumber, requestId);
+      } else {
+        _recoverPasswordView.onSysError(
+          message: decoded["message"] ?? "",
+        );
+      }
+    } catch (e) {
+      xrint(e.toString());
+      _recoverPasswordView.onNetworkError();
+    } finally {
+      isWorking = false;
+      _recoverPasswordView.sendVerificationCodeLoading(false);
+    }
+  }
   set recoverPasswordView(RecoverPasswordView value) {
     _recoverPasswordView = value;
   }
