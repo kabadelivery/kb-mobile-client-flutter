@@ -113,7 +113,7 @@ class _RatingDeliveryState extends State<RatingDelivery>  with WidgetsBindingObs
                   )),
             Positioned(
               top: 40,
-              left: 120,
+              left: (MediaQuery.of(context).size.width-(120))/2.5,
               child: Container(
                 width: 120,
                 height: 120,

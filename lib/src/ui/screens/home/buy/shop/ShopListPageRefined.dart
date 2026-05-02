@@ -508,7 +508,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             status == "paused" ||
             status == "blocked";
       }
-
       if (selectedFilter == "unavailable") {
         return status == "unavailable";
       }

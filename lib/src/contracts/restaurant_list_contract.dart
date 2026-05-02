@@ -53,17 +53,17 @@ class RestaurantListPresenter implements RestaurantListContract {
   @override
   Future<void> fetchShopList(
       CustomerModel customer, String type, Position? position,
-      [bool silently = false, String? filter_key]) async {
+      [bool silently = false, String? filter_key])
+  async {
     if (isWorking && position == null) return;
     isWorking = true;
     xrint("made it to fetchShopList, filter_key : $filter_key");
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
-
-    // load from cache the last request while looking for the newest set of data
-
     try {
-      Map<String, dynamic> data = await provider.fetchShopList(customer, type, position!);
-      // save data if it contains restaurants, then the filtering will be done on it
+      Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      Map<String, dynamic> data = await provider.fetchShopList(customer, type, currentPosition);
       List<ShopModel> restaurants = [];
 
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
