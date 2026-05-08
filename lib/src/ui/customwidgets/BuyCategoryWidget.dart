@@ -11,6 +11,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -170,7 +171,17 @@ class _BuyCategoryWidgetState extends State<BuyCategoryWidget> {
        }
     }
   }
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
 
+      StateContainer.of(context).location =currentPosition;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
