@@ -147,6 +147,11 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       // timeout stuff
       // last_update_timeout = getTimeOutLastTime();
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      Position currentPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      StateContainer.of(context).location =currentPosition;
       bool has_subscribed = false;
       try {
         prefs.getBool('has_subscribed');
@@ -1443,8 +1448,6 @@ Padding
       // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
-        /*fd.sort(
-            (fd1, fd2) => int.parse(fd1.price).compareTo(int.parse(fd2.price)));*/
         fd.sort((ShopProductModel fd1, ShopProductModel fd2) {
           try {
             return int.parse(fd1.price.toString()).compareTo(int.parse(fd2.price.toString()));
@@ -1461,7 +1464,6 @@ Padding
 
     if (filterDropdownValue ==
         ("${AppLocalizations.of(context)!.translate('exp_to_cheap')}")) {
-      // cheap to exp
       List<ShopProductModel> fd = foodProposals;
       try {
         fd.sort((ShopProductModel fd1, ShopProductModel fd2) {

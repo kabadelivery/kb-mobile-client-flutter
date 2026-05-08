@@ -63,6 +63,7 @@ class RestaurantListPresenter implements RestaurantListContract {
       Position currentPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
       );
+
       Map<String, dynamic> data = await provider.fetchShopList(customer, type, currentPosition);
       List<ShopModel> restaurants = [];
 

@@ -331,26 +331,29 @@ class Utils {
     return _validURL;
   }
 
-  static double locationDistance(Position? position, ShopModel restaurant) {
-      double lat1 = position!.latitude;
-      double long1 = position!.longitude;
-      late double lat2;
-      late double long2;
-      try{
-        lat2= double.parse(restaurant.location!.split(":")[0]);
-        long2= double.parse(restaurant.location!.split(":")[1]);
-      }catch(e){
-        lat2= double.parse(restaurant.location!.split(",")[0]);
-        long2= double.parse(restaurant.location!.split(",")[1]);
-      }
-      double distance =
-          Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
-      distance = 1.15 /* error factor */ * distance / 1000; // distance meter
-      return double.parse(distance.toStringAsPrecision(1));
-      // crop to 1 number after comma
+  static double locationDistance(Position position, ShopModel restaurant) {
+    final lat1 = position.latitude;
+    final lon1 = position.longitude;
 
+    final separator =
+    restaurant.location!.contains(":") ? ":" : ",";
+
+    final parts = restaurant.location!.split(separator);
+
+    final lat2 = double.parse(parts[0].trim());
+    final lon2 = double.parse(parts[1].trim());
+
+    final meters = Geolocator.distanceBetween(
+      lat1,
+      lon1,
+      lat2,
+      lon2,
+    );
+
+    final km = meters / 1000;
+
+    return double.parse(km.toStringAsFixed(1));
   }
-
   static String capitalize(String s) {
     if (s.length < 2) return s;
     return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();

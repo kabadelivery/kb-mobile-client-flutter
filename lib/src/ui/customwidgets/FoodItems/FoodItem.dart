@@ -113,7 +113,7 @@ class _FoodGridState extends State<FoodGrid> {
 
       for(var product in products){
         if(product.restaurant_entity!=null){
-          final double dist = Utils.locationDistance(StateContainer.of(context).location,product.restaurant_entity!);
+          final double dist = Utils.locationDistance(StateContainer.of(context).location!,product.restaurant_entity!);
           product.restaurant_entity!.distanceBetweenMeandRestaurant = double.parse(dist > 100 ? "100" : dist.toStringAsFixed(2));
           product.restaurant_entity!.delivery_pricing =_getShippingPrice((dist).toString(),billingMap);
         }
