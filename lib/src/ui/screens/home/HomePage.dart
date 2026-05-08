@@ -73,6 +73,7 @@ import '../../../utils/functions/OutOfAppOrder/dialogToFetchDistrict.dart';
 import '../../../utils/functions/permissions.dart';
 import '../../../utils/functions/subscribe_with_code.dart';
 import '../../customwidgets/permission.dart';
+import '../newAuth/loginpage.dart';
 import '_home/HomeWelcomeNewPage.dart';
 import 'me/abonnement/kaba_abonnements.dart';
 import 'me/money/TransactionHistoryPage.dart';
@@ -973,8 +974,7 @@ class _HomePageState extends State<HomePage> {
                           Navigator.of(context).pop();
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  LoginPage(presenter: LoginPresenter(LoginView())),
+                              builder: (BuildContext context) =>LoginPageV2(),
                             ),
                           );
                         },

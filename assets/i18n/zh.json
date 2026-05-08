@@ -1193,5 +1193,20 @@
   "itemCount_one": "件商品",
   "itemCount_other": "件商品",
   "addSubscriptionCode": "添加订阅代码",
-  "resend_code": "返回代码"
+  "resend_code": "返回代码",
+  "kaba_delivery": "KABA DELIVERY",
+  "signup": "注册",
+  "no_account_yet": "还没有账户？",
+  "already_have_an_account": "您已经拥有一个帐户了吗？",
+  "full_name_required": "请输入您的全名",
+  "full_name_too_short": "姓名太短",
+  "email_required": "请输入您的邮箱",
+  "email_invalid": "邮箱无效",
+  "phone_required": "请输入您的电话号码",
+  "phone_invalid": "电话号码无效",
+  "password_required": "请输入密码",
+  "password_min_length": "至少 4 个字符",
+  "confirm_password_required": "请确认您的密码",
+  "passwords_do_not_match": "两次输入的密码不一致",
+  "auth_success": "您已成功通过身份验证"
 }

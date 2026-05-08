@@ -432,6 +432,7 @@ class _RestaurantMenuDetailsState extends State<RestaurantMenuDetails> {
           food_selected.update(
               food, (int val) => food_selected[food]!.toInt() - 1);
         else {
+          if(context.mounted)
           showToast("${AppLocalizations.of(context)!.translate('min_reached')}");
         }
       } else {

@@ -270,8 +270,7 @@ class RestaurantApiProvider {
 
   Future<dynamic> fetchShopList(
       CustomerModel model, String type, Position position) async {
-    xrint(
-        "entered fetchShopList ${position?.latitude} : ${position?.longitude}");
+    xrint("entered fetchShopList ${position?.latitude} : ${position?.longitude}");
     if (await Utils.hasNetwork()) {
       var dio = Dio();
       dio.options..connectTimeout = 10000;
@@ -282,20 +281,16 @@ class RestaurantApiProvider {
           return validateSSL(cert, host, port);
         };
       };
-      xrint({"location": "${position?.latitude}:${position?.longitude}"}
-          .toString());
       Map<String, dynamic> params = Map();
       params.putIfAbsent("limit", () => 1000);
       params.putIfAbsent("search_type", () => "shop");
       if (type != null && type != "all")
         params.putIfAbsent("category", () => type);
-      xrint("params $params");
       var response = await dio.get(
           Uri.parse(ServerRoutes.LINK_SHOP_LIST_V4).toString(),
           queryParameters: params);
-
-      xrint("data from fetchShopList ${response.data}");
       if (response.statusCode == 200) {
+        debugPrint("Data fetched ${response.data['data'].length}");
         dynamic data = mJsonDecode(response.data);
         return data;
       } else {

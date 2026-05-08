@@ -497,7 +497,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     );
   }
   List<ShopModel> filterShops(List<ShopModel> shops) {
-    debugPrint('Entered filterShops');
+    debugPrint('Entered filterShops : len(${shops.length})');
+
+
     if (selectedFilter == "all") return shops;
 
     return shops.where((shop) {

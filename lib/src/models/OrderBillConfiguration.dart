@@ -118,6 +118,7 @@ class OrderBillConfiguration {
       l = json["eligible_vouchers"];
     eligible_vouchers = l?.map((voucher_model) => VoucherModel.fromJson(voucher_model))?.toList();
     is_new_user = json['is_new_user'] ?? false;
+    discount=json['discount'].toString();
   }
 
   Map toJson () => {
@@ -139,6 +140,7 @@ class OrderBillConfiguration {
     "additional_fees":additional_fees,
     "additional_fees_total_price":additional_fees_total_price,
     "is_new_user": is_new_user,
+    "discount":discount.toString()
   };
 
   @override

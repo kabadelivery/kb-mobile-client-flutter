@@ -16,6 +16,7 @@ import 'package:KABA/src/models/DeliveryRatingPending.dart';
 import 'package:KABA/src/models/NotificationFDestination.dart';
 import 'package:KABA/src/models/NotificationItem.dart';
 import 'package:KABA/src/resources/app_api_provider.dart';
+import 'package:KABA/src/ui/screens/newAuth/bloc/auth_bloc.dart';
 import 'package:KABA/src/ui/screens/rating/rating_article.dart';
 import 'package:KABA/src/ui/screens/rating/rating_delivery.dart';
 import 'package:KABA/src/ui/screens/splash/SplashPage.dart';
@@ -140,6 +141,9 @@ Future<void> main() async {
               ),
               BlocProvider<EstimationBloc>(
                 create: (context) => EstimationBloc(),
+              ),
+              BlocProvider<AuthBloc>(
+                create: (context) => AuthBloc(),
               ),
             ], child: MyApp(appLanguage: appLanguage))))
     );

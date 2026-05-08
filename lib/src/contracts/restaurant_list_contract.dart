@@ -69,25 +69,19 @@ class RestaurantListPresenter implements RestaurantListContract {
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
       xrint("made it to configuration");
       final address = await CustomerUtils.getSavedAddressLocally();
-      final Position resolvedPosition = address ??
-          await Geolocator.getCurrentPosition(
-            desiredAccuracy: LocationAccuracy.high,
-          );
       xrint("made it to address");
         CustomerModel user = await CustomerUtils.getCustomer();
 
         xrint("made it to sortOutRestaurantList");
-        await Future.delayed(Duration(seconds: 2), ()async {
-          restaurants = await compute(sortOutRestaurantList, {
-            "data": data,
-            "position": resolvedPosition,
-            "is_email_account": user.username == null
-                ? false
-                : (customer.username!.contains("@") ? true : false),
-            "filter_key": filter_key,
-            "filter_configuration": configuration
-          });
-        });
+      restaurants = await compute(sortOutRestaurantList, {
+        "data": data,
+        "position": currentPosition,
+        "is_email_account": user.username == null
+            ? false
+            : (customer.username!.contains("@") ? true : false),
+        "filter_key": filter_key,
+        "filter_configuration": configuration
+      });
 
 
       // save billing locally so that the other stuffs can use it.

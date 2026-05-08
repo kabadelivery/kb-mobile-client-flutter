@@ -21,7 +21,6 @@ import 'package:flutter/cupertino.dart';
 
 class ClientPersonalApiProvider {
   var TGO = "";
-
   fetchRestaurantComment(
       ShopModel restaurantModel, UserTokenModel userToken) async {
     xrint("entered fetchRestaurantComment");
@@ -244,10 +243,11 @@ class ClientPersonalApiProvider {
 
   Future<dynamic> loginAction(
       {
-        String? login,
+      String? login,
       String? password,
       String? app_version,
-      bool? shouldSendOtpCode}) async {
+      bool? shouldSendOtpCode
+      }) async {
     xrint("entered loginAction");
     if (await Utils.hasNetwork()) {
       DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -332,7 +332,6 @@ class ClientPersonalApiProvider {
       throw Exception(-2); // there is an error in your request
     }
   }
-
   Future<CustomerModel> updatePersonnalPage(CustomerModel customer) async {
     xrint("entered updatePersonnalPage");
     if (await Utils.hasNetwork()) {

@@ -1,18 +1,23 @@
 import 'package:flutter/cupertino.dart';
-
 class PopInWidget extends StatefulWidget {
   final Widget child;
   final Duration duration;
-  const PopInWidget({super.key, required this.child,required this.duration});
+  bool visible=true;
+
+   PopInWidget({
+    super.key,
+    required this.child,
+    required this.duration,
+    this.visible=true,
+  });
 
   @override
   State<PopInWidget> createState() => _PopInWidgetState();
 }
 
-class _PopInWidgetState extends State<PopInWidget> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _scaleAnimation;
-  late Animation<double> _fadeAnimation;
+class _PopInWidgetState extends State<PopInWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
 
   @override
   void initState() {
@@ -22,15 +27,21 @@ class _PopInWidgetState extends State<PopInWidget> with SingleTickerProviderStat
       duration: widget.duration,
       vsync: this,
     );
-    _scaleAnimation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
 
-    _fadeAnimation = Tween(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOutBack),
-    );
+    if (widget.visible) {
+      _controller.forward();
+    }
+  }
 
-    _controller.forward();
+  @override
+  void didUpdateWidget(covariant PopInWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.visible) {
+      _controller.forward();
+    } else {
+      _controller.reverse();
+    }
   }
 
   @override
@@ -41,10 +52,26 @@ class _PopInWidgetState extends State<PopInWidget> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    final scaleAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.elasticOut,
+        reverseCurve: Curves.easeInBack,
+      ),
+    );
+
+    final fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(_controller);
+
     return FadeTransition(
-      opacity: _fadeAnimation,
+      opacity: fadeAnimation,
       child: ScaleTransition(
-        scale: _scaleAnimation,
+        scale: scaleAnimation,
         child: widget.child,
       ),
     );

@@ -2408,6 +2408,14 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
               width: 60,
               height: 60,
               fit: BoxFit.cover,
+              errorBuilder: (context,error,stackTrace){
+                return Container(
+                  width: 60,
+                  height: 60,
+                  color: KColors.primaryColor.withOpacity(.1),
+                  child: Icon(Icons.set_meal, size: 30,color:KColors.primaryColor),
+                );
+              },
             ),
           ),
           const SizedBox(width: 10),
@@ -2539,6 +2547,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.prepayed = configuration.prepayed;
     _orderBillConfiguration.trustful = configuration.trustful;
     _orderBillConfiguration.is_new_user = configuration.is_new_user;
+    _orderBillConfiguration.discount = configuration.discount;
     _orderBillConfiguration.shipping_pricing = configuration.shipping_pricing;
     _orderBillConfiguration.command_pricing = configuration.command_pricing;
     _orderBillConfiguration.promotion_pricing = configuration.promotion_pricing;
