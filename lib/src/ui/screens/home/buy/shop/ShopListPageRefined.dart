@@ -147,11 +147,6 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       // timeout stuff
       // last_update_timeout = getTimeOutLastTime();
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      Position currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      StateContainer.of(context).location =currentPosition;
       bool has_subscribed = false;
       try {
         prefs.getBool('has_subscribed');
@@ -560,9 +555,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                     height: MediaQuery.of(context).size.height -
                                         150,
             //                              padding: EdgeInsets.only(bottom:230),
-                                    child: widget.restaurantList?.length ==
+                                    child: (widget.restaurantList?.length ==
                                                 null ||
-                                            widget.restaurantList?.length == 0
+                                            widget.restaurantList?.length == 0)
                                         ? Container(
                                             child: Center(
                                                 child:
