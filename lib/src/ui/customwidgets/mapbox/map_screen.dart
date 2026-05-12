@@ -18,7 +18,7 @@ class _UserLocationMapState extends State<UserLocationMap> {
   mapbox.Point? _userPoint;
   final TextEditingController _searchController = TextEditingController();
   late Position position ;
-  static const _mapboxAccessToken = "pk.eyJ1Ijoia2FiYWRlbGl2ZXJ5IiwiYSI6ImNtaDk4dXhveTBiMzQya3NoaTRnNTVqcjcifQ.qxZKDptlhWj_XxGQeMjgQw";
+  static const _mapboxAccessToken ="";
   double _userLatitude = 0;
   double _userLongitude = 0;
   mapbox.PointAnnotationManager? _pointAnnotationManager;

@@ -110,8 +110,6 @@ Future<void> main() async {
       networkType: NetworkType.connected,
     ),
   );
- // MapboxOptions.setAccessToken(
- //     "pk.eyJ1Ijoia2FiYWRlbGl2ZXJ5IiwiYSI6ImNtaDk4dXhveTBiMzQya3NoaTRnNTVqcjcifQ.qxZKDptlhWj_XxGQeMjgQw");
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
       .then((_) async {
     runApp(StateContainer(child:
