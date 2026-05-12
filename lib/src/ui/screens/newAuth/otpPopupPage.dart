@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../customwidgets/customerservicepopup.dart';
 import 'bloc/auth_bloc.dart';
 enum OtpType{
   login,
@@ -14,7 +15,8 @@ enum OtpType{
 }
 class OtpDialog extends StatefulWidget {
   final OtpType otp_type;
-  const OtpDialog({super.key,required this.otp_type});
+  final bool phoneIsSelected;
+  const OtpDialog({super.key,required this.otp_type,required this.phoneIsSelected});
 
   @override
   State<OtpDialog> createState() => _OtpDialogState();
@@ -29,7 +31,10 @@ class _OtpDialogState extends State<OtpDialog> {
   List.generate(4, (_) => FocusNode());
   int secondsLeft = 60;
   Timer? timer;
-  AuthBloc authBloc=AuthBloc();
+  late AuthBloc authBloc;
+  int _secondsLeft = 60;
+  bool _isLoading = false;
+  String? _errorMessage;
   @override
   void initState() {
     super.initState();
@@ -48,8 +53,9 @@ class _OtpDialogState extends State<OtpDialog> {
     if (!isOtpComplete) return;
     if(widget.otp_type==OtpType.login)
       authBloc.add(onLoginOtpEvent(otp: otpCode));
-    else if(widget.otp_type==OtpType.password_recovery)
-      authBloc.add(onPasswordRecoveryOtpEvent(otp: otpCode));
+    else if(widget.otp_type == OtpType.password_recovery) {
+      authBloc.add(VerifyPasswordRecoveryOtpEvent(otp: otpCode));
+    }
     else if (widget.otp_type==OtpType.signUp)
       authBloc.add(onSignupOtpEvent(otp: otpCode));
   }
@@ -57,29 +63,23 @@ class _OtpDialogState extends State<OtpDialog> {
   void resendOtp() {
     authBloc.add(StartOtpTimerEvent());
     if(widget.otp_type==OtpType.login)
-      authBloc.add(onSendLoginOtpEvent(login: authBloc.email.isEmpty?authBloc.phoneNumber:authBloc.email,password: authBloc.password,app_version: authBloc.app_version,shouldSendOtp: authBloc.shouldSendOtp));
+      authBloc.add(onSendLoginOtpEvent(login: widget.phoneIsSelected?authBloc.phoneNumber:authBloc.email,password: authBloc.password,app_version: authBloc.app_version,shouldSendOtp: authBloc.shouldSendOtp));
     else if(widget.otp_type==OtpType.password_recovery)
-      authBloc.add(onSendPasswordRecoveryOtpEvent(otp: otpCode));
+      authBloc.add(SendPasswordRecoveryOtpEvent(login: widget.phoneIsSelected?authBloc.phoneNumber:authBloc.email));
     else if (widget.otp_type==OtpType.signUp)
-      authBloc.add(onSendSignupOtpEvent(otp: otpCode));
+      authBloc.add(onSendSignupOtpEvent());
   }
 
   void contactCustomerService() {
-    // TODO: contacter le service client
-    // authBloc.add(
-    //   ContactCustomerServiceEvent(),
-    // );
+
+    showReceiveCodeBottomSheet(context);
   }
   void resetOtp() {
     for (final controller in controllers) {
       controller.clear();
     }
-    focusNodes.first.requestFocus();
-    timer?.cancel();
 
-    setState(() {
-      secondsLeft = 60;
-    });
+    focusNodes.first.requestFocus();
     authBloc.add(StartOtpTimerEvent());
   }
   @override
@@ -100,21 +100,67 @@ class _OtpDialogState extends State<OtpDialog> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
-        if(state is OtpInitialState){
-          resetOtp();
+      listener: (context, state) async {
+        if (state is OtpTimerRunningState) {
+          setState(() {
+            _secondsLeft = state.secondsLeft;
+          });
         }
-        if (state is OtpSuccessState) {
-          authBloc.saveUser(authBloc.obj, context);
-          Navigator.pop(context, true);
+        if (state is RequiredOtpState) {
+          if (state.type == widget.otp_type) {
+            setState(() {
+              _isLoading = false;
+              _errorMessage = null;
+              _secondsLeft = 60;
+            });
+
+            resetOtp();
+          }
+        }
+        if (state is OtpTimerFinishedState) {
+          setState(() {
+            _secondsLeft = 0;
+          });
+        }
+
+        if (state is OtpLoadingState) {
+          setState(() {
+            _isLoading = true;
+            _errorMessage = null;
+          });
         }
 
         if (state is OtpFailureState) {
-          // TODO: afficher snackbar, message d'erreur, etc.
+            _isLoading = false;
+            _errorMessage = state.message;
+          Future.delayed(const Duration(seconds: 3), () {
+            if (!mounted) return;
+            setState(() {
+              _errorMessage = null;
+            });
+          });
+        }
+        if(state is AuthFailure){
+          _isLoading = false;
+        }
+
+        if (state is OtpSuccessState || state is PasswordRecoveryOtpVerifiedState) {
+          setState(() {
+            _isLoading = false;
+            _errorMessage = null;
+          });
+
+          authBloc.add(StopOtpTimerEvent());
+
+          await Future.delayed(const Duration(milliseconds: 250));
+
+          if (!mounted) return;
+          Navigator.pop(context, true);
         }
       },
       builder: (context, state) {
-        final bool isLoading = state is OtpLoadingState;
+        secondsLeft = _secondsLeft;
+        final isLoading = _isLoading;
 
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -151,8 +197,8 @@ class _OtpDialogState extends State<OtpDialog> {
 
                 const SizedBox(height: 20),
 
-                const Text(
-                  "Validation OTP",
+                 Text(
+                  AppLocalizations.of(context)!.translate('validateCode'),
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w800,
@@ -160,7 +206,7 @@ class _OtpDialogState extends State<OtpDialog> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  "Vous allez recevoir un code OTP. Entrez le code à 4 chiffres pour continuer.",
+                  AppLocalizations.of(context)!.translate('otp_description'),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
@@ -223,10 +269,9 @@ class _OtpDialogState extends State<OtpDialog> {
                 ),
 
                 const SizedBox(height: 20),
-
-                if (secondsLeft > 0)
+                if (_secondsLeft > 0)
                   Text(
-                    "Renvoyer le code dans ${secondsLeft}s",
+                    "${AppLocalizations.of(context)!.translate('resend_code_in')} ${_secondsLeft}s",
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontWeight: FontWeight.w500,
@@ -238,7 +283,7 @@ class _OtpDialogState extends State<OtpDialog> {
                       TextButton(
                         onPressed: isLoading ? null : resendOtp,
                         child: Text(
-                          "Renvoyer l'OTP",
+                          AppLocalizations.of(context)!.translate('resend_otp'),
                           style: TextStyle(
                             color: baseColor,
                             fontWeight: FontWeight.w700,
@@ -247,8 +292,8 @@ class _OtpDialogState extends State<OtpDialog> {
                       ),
                       TextButton(
                         onPressed: isLoading ? null : contactCustomerService,
-                        child: const Text(
-                          "Contacter le service client",
+                        child:  Text(
+                          AppLocalizations.of(context)!.translate("contact_customer_service"),
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
                           ),
@@ -294,15 +339,23 @@ class _OtpDialogState extends State<OtpDialog> {
                 ),
 
                 const SizedBox(height: 12),
-                if (state is OtpFailureState)
-                  OtpErrorOverlay(
-                    message: state.message,
+                Center(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: _errorMessage == null
+                        ? const SizedBox.shrink()
+                        : OtpErrorOverlay(
+                      key: ValueKey(_errorMessage),
+                      message: AppLocalizations.of(context)!
+                          .translate(_errorMessage!),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextButton(
-                  onPressed: isLoading
-                      ? null
-                      : () {
+                  onPressed:(){
+                    authBloc.add(StopOtpTimerEvent());
+                    resetOtp();
                     Navigator.pop(context, false);
                   },
                   child: Text(
@@ -329,57 +382,49 @@ class OtpErrorOverlay extends StatelessWidget {
   const OtpErrorOverlay({
     super.key,
     required this.message,
-    this.backgroundColor = const Color(0xFFE53935),
+    this.backgroundColor = const Color(0xFF1D1D1D),
     this.textColor = Colors.white,
     this.icon = Icons.error_rounded,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 24,
-      left: 24,
-      right: 24,
-      child: Material(
-        color: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 14,
+    return Container(
+      margin: const EdgeInsets.only(top: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 14,
+      ),
+      decoration: BoxDecoration(
+        color: backgroundColor,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(.15),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
-          decoration: BoxDecoration(
-            color: backgroundColor,
-            borderRadius: BorderRadius.circular(18),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.15),
-                blurRadius: 12,
-                offset: const Offset(0, 6),
-              ),
-            ],
+        ],
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            color: textColor,
           ),
-          child: Row(
-            children: [
-              Icon(
-                icon,
+          const SizedBox(width: 12),
+          Expanded(
+            child: Text(
+              textAlign: TextAlign.center,
+              message,
+              style: TextStyle(
                 color: textColor,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
               ),
-
-              const SizedBox(width: 12),
-
-              Expanded(
-                child: Text(
-                  message,
-                  style: TextStyle(
-                    color: textColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

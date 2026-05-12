@@ -3,6 +3,8 @@ import 'package:KABA/src/ui/screens/auth/login/LoginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:kkiapay_flutter_sdk/utils/config.dart' as KColors;
 
+import '../../screens/newAuth/loginpage.dart';
+
 class Modal_2_connect extends StatelessWidget {
     const Modal_2_connect({super.key});
 
@@ -111,7 +113,7 @@ class Modal_2_connect extends StatelessWidget {
 
                     Navigator.of(context).push(new MaterialPageRoute(
                         builder: (BuildContext context) =>
-                            LoginPage(presenter: LoginPresenter(LoginView()))));
+                        LoginPageV2()));
                 },
                 icon: const Icon(Icons.person_outline),
                 label: const Text("Se connecter =>"),

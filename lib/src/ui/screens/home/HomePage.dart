@@ -132,8 +132,7 @@ class _HomePageState extends State<HomePage> {
   Position? tmpLocation;
 
   Future<int> checkLogin() async {
-    StatefulWidget launchPage =
-        LoginPage(presenter: LoginPresenter(LoginView()));
+    StatefulWidget launchPage =LoginPageV2();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String expDate =
         prefs.getString("_login_expiration_date" + CustomerUtils.signature) ??
@@ -1416,8 +1415,7 @@ class _HomePageState extends State<HomePage> {
                   /* jump to login page... */
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter(LoginView()))));
+                      builder: (BuildContext context) =>LoginPageV2()));
                 },
               )
             ],

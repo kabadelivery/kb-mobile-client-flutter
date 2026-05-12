@@ -31,6 +31,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../../../newAuth/loginpage.dart';
+
 class ShopDetailsPage extends StatefulWidget {
   static var routeName = "/ShopDetailsPage";
 
@@ -1218,9 +1220,7 @@ class _ShopDetailsPageState extends State<ShopDetailsPage>
                   Navigator.of(context).pop();
 
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(LoginView()),
-                          fromOrderingProcess: true)));
+                      builder: (BuildContext context) => LoginPageV2()));
                 },
               )
             ],

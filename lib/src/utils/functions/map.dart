@@ -42,7 +42,10 @@ Future<Position?> getCurrentLocation() async {
     return null;
   }
 
-  return await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.high,
-  );
+  return await Geolocator.getPositionStream(
+    locationSettings: const LocationSettings(
+      accuracy: LocationAccuracy.bestForNavigation,
+      distanceFilter: 0,
+    ),
+  ).first;
 }

@@ -461,8 +461,12 @@ class _EditAddressPageState extends State<EditAddressPage>
                 return;
               } else {
                 xrint("accuracy high set up --- 44Four");
-                await Geolocator.getCurrentPosition(
-                    desiredAccuracy: LocationAccuracy.high);
+                await Geolocator.getPositionStream(
+                  locationSettings: const LocationSettings(
+                    accuracy: LocationAccuracy.bestForNavigation,
+                    distanceFilter: 0,
+                  ),
+                ).first;
 
                 Stream<Position> positionStream =
                     Geolocator.getPositionStream();

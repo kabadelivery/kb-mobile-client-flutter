@@ -62,6 +62,7 @@ import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 // the url_launcher package.
 
 import '../../../../StateContainer.dart';
+import '../../newAuth/loginpage.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomePage extends StatefulWidget {
@@ -1512,8 +1513,7 @@ class _HomeWelcomePageState extends State<HomeWelcomePage>
                   /* jump to login page... */
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter(LoginView()))));
+                      builder: (BuildContext context) =>LoginPageV2()));
                 },
               )
             ],

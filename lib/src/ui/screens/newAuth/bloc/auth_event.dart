@@ -90,10 +90,14 @@ final class onSignupOtpEvent extends AuthEvent{
   onSignupOtpEvent({required this.otp});
 }
 
-final class onSendPasswordRecoveryOtpEvent extends AuthEvent{
-  final String otp;
-  onSendPasswordRecoveryOtpEvent({required this.otp});
+final class onSendPasswordRecoveryOtpEvent extends AuthEvent {
+  final String login;
+
+  onSendPasswordRecoveryOtpEvent({
+    required this.login,
+  });
 }
+
 final class onSendLoginOtpEvent extends AuthEvent{
   final String login;
   final String password;
@@ -106,8 +110,6 @@ final class selectCodeCountryEvent extends AuthEvent{
   selectCodeCountryEvent({required this.code});
 }
 final class onSendSignupOtpEvent extends AuthEvent{
-  final String otp;
-  onSendSignupOtpEvent({required this.otp});
 }
 final class OtpInitEvent extends AuthEvent{}
 class StartOtpTimerEvent extends AuthEvent {}
@@ -128,4 +130,27 @@ class UpdatePhone extends AuthEvent{
 class UpdatePassword extends AuthEvent{
   final String text;
   UpdatePassword({required this.text});
+}
+class StopOtpTimerEvent extends AuthEvent {}
+
+final class SendPasswordRecoveryOtpEvent extends AuthEvent {
+  final String login;
+
+  SendPasswordRecoveryOtpEvent({required this.login});
+}
+
+final class VerifyPasswordRecoveryOtpEvent extends AuthEvent {
+  final String otp;
+
+  VerifyPasswordRecoveryOtpEvent({required this.otp});
+}
+
+final class ResetPasswordEvent extends AuthEvent {
+  final String login;
+  final String password;
+
+  ResetPasswordEvent({
+    required this.login,
+    required this.password,
+  });
 }

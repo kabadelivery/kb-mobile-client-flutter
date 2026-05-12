@@ -47,7 +47,10 @@ final class ClickAuthTypeState extends AuthState{
 }
 final class OtpLoadingState extends AuthState{}
 final class OtpSuccessState extends AuthState{}
-final class RequiredOtpState extends AuthState{}
+final class RequiredOtpState extends AuthState{
+  final OtpType type;
+  RequiredOtpState({required this.type});
+}
 final class OtpFailureState extends AuthState{
   final String message;
   OtpFailureState({required this.message});
@@ -64,3 +67,20 @@ final class selectCodeCountryState extends AuthState{
   final String code;
   selectCodeCountryState({required this.code});
 }
+
+final class PasswordRecoveryOtpVerifiedState extends AuthState {}
+
+final class PasswordResetLoadingState extends AuthState {}
+
+final class PasswordResetSuccessState extends AuthState {
+  final String message;
+
+  PasswordResetSuccessState({required this.message});
+}
+
+final class PasswordResetFailureState extends AuthState {
+  final String message;
+
+  PasswordResetFailureState({required this.message});
+}
+

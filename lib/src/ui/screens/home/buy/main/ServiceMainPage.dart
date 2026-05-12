@@ -41,6 +41,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:whatsapp_unilink/whatsapp_unilink.dart';
+import '../../../../../../test/utils/testRandomPosition.dart';
 import '../../../../../blocs/rating/rating_bloc.dart';
 import '../../../../../microservices/expedition/Enums/expedition_type.dart';
 import '../../../../../microservices/expedition/presentation/pages/expedition.dart';
@@ -127,10 +128,14 @@ class ServiceMainPageState extends State<ServiceMainPage>
         await Geolocator.openLocationSettings();
         return false;
       }
-      final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      StateContainer.of(context).location = position;
+      var position = await Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+        ),
+      ).first;
+      //position =generateRandomPositionAroundLome();
+      StateContainer.of(context).updateLocation(location: position);
       await CustomerUtils.saveAddressLocally(position);
 
       return true;
@@ -633,9 +638,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     await widget.presenter!.checkVersion();
 
     // 2. Ensure location
-    if (StateContainer.of(context).location == null) {
-      await _loadAndPersistLocation();
-    }
+    _loadAndPersistLocation();
 
     widget.presenter!.fetchServiceCategoryFromLocation(
       StateContainer.of(context).location!,
@@ -1397,7 +1400,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
     }
 
     var pos;
-    pos = await Geolocator.getCurrentPosition();
+    pos = await Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0,
+      ),
+    ).first;
     pos = StateContainer.of(context).location = Position(
       latitude: pos.latitude,
       longitude: pos.longitude,
@@ -1474,7 +1482,12 @@ class ServiceMainPageState extends State<ServiceMainPage>
 
     var pos;
     if(result==null || result.latitude==null || result.longitude==null){
-       pos = await Geolocator.getCurrentPosition();
+       pos = await Geolocator.getPositionStream(
+         locationSettings: const LocationSettings(
+           accuracy: LocationAccuracy.bestForNavigation,
+           distanceFilter: 0,
+         ),
+       ).first;
 
     }
      pos = StateContainer.of(context).location = Position(

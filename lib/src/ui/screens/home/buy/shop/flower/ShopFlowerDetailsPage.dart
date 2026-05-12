@@ -25,6 +25,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../../../../../utils/functions/popups.dart';
 import '../../../../../customwidgets/notation.dart';
+import '../../../../newAuth/loginpage.dart';
 
 class ShopFlowerDetailsPage extends StatefulWidget {
   static var routeName = "/ShopFlowerDetailsPage";
@@ -594,10 +595,7 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
                         Navigator.of(context).pop();
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (BuildContext context) => LoginPage(
-                              presenter: LoginPresenter(LoginView()),
-                              fromOrderingProcess: true,
-                            ),
+                            builder: (BuildContext context) =>LoginPageV2()
                           ),
                         );
                       },

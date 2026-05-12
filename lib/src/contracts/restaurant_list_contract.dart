@@ -10,6 +10,7 @@ import 'package:KABA/src/xrint.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 
+import '../../test/utils/testRandomPosition.dart';
 import '../utils/functions/map.dart';
 
 class RestaurantListContract {
@@ -60,19 +61,17 @@ class RestaurantListPresenter implements RestaurantListContract {
     xrint("made it to fetchShopList, filter_key : $filter_key");
     if (!silently) _restaurantListView.loadRestaurantListLoading(true);
     try {
-      Position currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
+      Position currentPosition = await Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+        ),
+      ).first;
+      //currentPosition = generateRandomPositionAroundLome();
       Map<String, dynamic> data = await provider.fetchShopList(customer, type, currentPosition);
       List<ShopModel> restaurants = [];
-
       var configuration = await CustomerUtils.getShopListFilterConfiguration();
-      xrint("made it to configuration");
-      final address = await CustomerUtils.getSavedAddressLocally();
-      xrint("made it to address");
-        CustomerModel user = await CustomerUtils.getCustomer();
-
-        xrint("made it to sortOutRestaurantList");
+      CustomerModel user = await CustomerUtils.getCustomer();
       restaurants = await compute(sortOutRestaurantList, {
         "data": data,
         "position": currentPosition,
@@ -137,15 +136,10 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async
     final Position userPosition = data["position"];
     final Map<String, dynamic> config = data["filter_configuration"];
 
-    // Convert raw data into ShopModel list
     List<ShopModel> shops = rawList.map((resto) => ShopModel.fromJson(resto)).toList();
-
-    // Optional filter by 'opened'
     if (config["opened_filter"] == true) {
       shops = shops.where((shop) => shop.is_open == 1 && shop.coming_soon == 0).toList();
     }
-
-    // Generate billing map
     final List<dynamic> billingData =
     data["data"]["billing"][isEmailAccount ? "email" : "phoneNumber"];
     final Map<String, String> billingMap = {};
@@ -157,23 +151,26 @@ FutureOr<List<ShopModel>> sortOutRestaurantList(Map<String, dynamic> data) async
         billingMap["$i"] = value;
       }
     }
-
-    // Helper to safely parse distance
     double parseDistance(String? distance) {
       if (distance == null || distance.contains(">")) return 9999.0;
       return double.tryParse(distance) ?? 9999.0;
     }
 
-    // Calculate distance and shipping
     for (final shop in shops) {
       final double dist = Utils.locationDistance(userPosition, shop);
-      shop.distance = dist > 100 ? "100" : dist.toStringAsFixed(2);
+      shop.distance = dist.toStringAsFixed(2);
       shop.delivery_pricing = _getShippingPrice(shop.distance!, billingMap);
     }
+    const double maxDistanceKm = 20;
 
-    // Sort by distance
-    shops.sort((a, b) => parseDistance(a.distance).compareTo(parseDistance(b.distance)));
+    shops = shops.where((shop) {
+      final d = double.tryParse(shop.distance ?? "");
+      return d != null && d <= maxDistanceKm;
+    }).toList();
 
+
+    shops.sort((a, b) =>
+        parseDistance(a.distance).compareTo(parseDistance(b.distance)));
     return shops;
   } catch (e, stacktrace) {
     print("Error in sortOutRestaurantList: $e");

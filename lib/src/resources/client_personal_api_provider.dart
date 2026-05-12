@@ -119,6 +119,7 @@ class ClientPersonalApiProvider {
   /* register sending code */
   Future<String> registerSendingCodeAction(String login) async {
     xrint("entered registerSendingCodeAction");
+    xrint('Data sent ${json.encode({"email": login, "type": 1})}');
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
 
@@ -140,6 +141,7 @@ class ClientPersonalApiProvider {
           return validateSSL(cert, host, port);
         };
       };
+
       var response = await dio.post(
           Uri.parse(Utils.isEmailValid(login)
                   ? ServerRoutes.LINK_SEND_VERIFCATION_EMAIL_SMS
@@ -149,7 +151,7 @@ class ClientPersonalApiProvider {
               ? json.encode({"email": login, "type": 1})
               : json.encode({"phone_number": TGO + login, "type": 0}));
 
-      xrint( "RESPONSE FROM SERVER"+response.data.toString());
+      xrint( "RESPONSE"+response.data.toString());
       if (response.statusCode == 200) {
         return response.data;
       } else {
@@ -162,7 +164,7 @@ class ClientPersonalApiProvider {
 
   Future<String> checkRequestCodeAction(String code, String requestId) async {
     /*  */
-    xrint("entered checkRequestCodeAction");
+    xrint("entered checkRequestCodeAction ${code} : $requestId}");
     if (await Utils.hasNetwork()) {
       await Future.delayed(const Duration(seconds: 1));
 

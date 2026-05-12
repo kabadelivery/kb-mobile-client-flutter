@@ -18,10 +18,10 @@ if (flutterRoot == null) {
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-flutterVersionCode = '404'
+flutterVersionCode = '408'
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
-flutterVersionName = '4.0.4z'
+flutterVersionName = '4.0.6'
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')

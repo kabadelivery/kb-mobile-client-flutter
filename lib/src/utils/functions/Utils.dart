@@ -331,24 +331,49 @@ class Utils {
     return _validURL;
   }
 
-  static double locationDistance(Position? position, ShopModel restaurant) {
-      double lat1 = position!.latitude;
-      double long1 = position!.longitude;
-      late double lat2;
-      late double long2;
-      try{
-        lat2= double.parse(restaurant.location!.split(":")[0]);
-        long2= double.parse(restaurant.location!.split(":")[1]);
-      }catch(e){
-        lat2= double.parse(restaurant.location!.split(",")[0]);
-        long2= double.parse(restaurant.location!.split(",")[1]);
-      }
-      double distance =
-          Geolocator.distanceBetween(lat1, long1, lat2, long2); // meter
-      distance = 1.15 /* error factor */ * distance / 1000; // distance meter
-      return double.parse(distance.toStringAsPrecision(1));
-      // crop to 1 number after comma
+  static double locationDistance(
+      Position? position,
+      ShopModel restaurant,
+      ) {
 
+    if (position == null) return 999999;
+
+    final lat1 = position.latitude;
+    final long1 = position.longitude;
+
+    late double lat2;
+    late double long2;
+
+    try {
+      lat2 = double.parse(
+        restaurant.location!.split(":")[0].trim(),
+      );
+
+      long2 = double.parse(
+        restaurant.location!.split(":")[1].trim(),
+      );
+
+    } catch (e) {
+
+      lat2 = double.parse(
+        restaurant.location!.split(",")[0].trim(),
+      );
+
+      long2 = double.parse(
+        restaurant.location!.split(",")[1].trim(),
+      );
+    }
+
+    double distance = Geolocator.distanceBetween(
+      lat1,
+      long1,
+      lat2,
+      long2,
+    );
+    distance = distance / 1000;
+    return double.parse(
+      distance.toStringAsFixed(1),
+    );
   }
 
   static String capitalize(String s) {

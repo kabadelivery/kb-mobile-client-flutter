@@ -70,6 +70,7 @@ import '../../../../resources/out_of_app_order_api.dart';
 import '../../../../utils/functions/OutOfAppOrder/out_of_app_sharedPref.dart';
 import '../../../../utils/functions/requestLocation.dart';
 import '../../../customwidgets/header.dart';
+import '../../newAuth/loginpage.dart';
 import 'events/EventsPage.dart';
 
 class HomeWelcomeNewPage extends StatefulWidget {
@@ -1639,8 +1640,7 @@ void iShowDialog(BuildContext context, String version, int force,{String? change
                   /* jump to login page... */
                   Navigator.of(context).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          LoginPage(presenter: LoginPresenter(LoginView()))));
+                      builder: (BuildContext context) =>LoginPageV2()));
                 },
               )
             ],

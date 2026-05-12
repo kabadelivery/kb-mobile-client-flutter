@@ -56,6 +56,7 @@ import '../../../../utils/Enums/type_of_transaction.dart';
 import '../../../../utils/functions/subscription.dart';
 import '../../../customwidgets/info_widget.dart';
 import '../../../customwidgets/voucher_widgets.dart';
+import '../../newAuth/recoverPassword.dart';
 
 class OrderConfirmationPage2 extends StatefulWidget {
   static var routeName = "/OrderConfirmationPage2";
@@ -1261,9 +1262,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(RecoverPasswordView()),
-            is_a_process: true),
+        builder: (context) => RecoverPasswordPageV2(),
       ),
     );
   }
@@ -2560,6 +2559,10 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     _orderBillConfiguration.kaba_point = configuration.kaba_point;
     _orderBillConfiguration.eligible_vouchers = configuration.eligible_vouchers;
     _orderBillConfiguration.additional_fees = configuration.additional_fees;
+    _orderBillConfiguration.discount = configuration.discount;
+    if(_orderBillConfiguration.discount==null || _orderBillConfiguration.discount=="null"){
+      _orderBillConfiguration.discount = "0";
+    }
     _orderBillConfiguration.additional_fees_total_price =
         configuration.additional_fees_total_price;
     double additionnal_fee_total = configuration.additional_fees_total_price!=null?configuration.additional_fees_total_price!.toDouble():0;

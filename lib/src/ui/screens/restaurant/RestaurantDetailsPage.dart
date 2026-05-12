@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../StateContainer.dart';
+import '../newAuth/loginpage.dart';
 
 class RestaurantDetailsPage extends StatefulWidget {
   static var routeName = "/RestaurantDetailsPage";
@@ -783,9 +784,7 @@ class _RestaurantDetailsPageState extends State<RestaurantDetailsPage>
                   Navigator.of(context).pop();
 
                   Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(LoginView()),
-                          fromOrderingProcess: true)));
+                      builder: (BuildContext context) =>LoginPageV2()));
                 },
               )
             ],

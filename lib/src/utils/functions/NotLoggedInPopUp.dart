@@ -9,6 +9,7 @@ import '../../StateContainer.dart';
 import '../../contracts/login_contract.dart';
 import '../../localizations/AppLocalizations.dart';
 import '../../ui/screens/auth/login/LoginPage.dart';
+import '../../ui/screens/newAuth/loginpage.dart';
 import '../../utils/_static_data/ImageAssets.dart';
 void NotLoggedInPopUp(BuildContext context) {
   showDialog<void>(
@@ -110,10 +111,7 @@ void NotLoggedInPopUp(BuildContext context) {
                     Navigator.of(context).pop();
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (BuildContext context) => LoginPage(
-                          presenter: LoginPresenter(LoginView()),
-                          fromOrderingProcess: true,
-                        ),
+                        builder: (BuildContext context) => LoginPageV2()
                       ),
                     );
                   },

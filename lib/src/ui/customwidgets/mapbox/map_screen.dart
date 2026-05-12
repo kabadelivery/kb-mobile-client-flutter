@@ -57,9 +57,19 @@ class _UserLocationMapState extends State<UserLocationMap> {
 
   Future<void> _initLocation() async {
     await Permission.locationWhenInUse.request();
-    position = await Geolocator.getCurrentPosition();
+    position = await Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.bestForNavigation,
+        distanceFilter: 0,
+      ),
+    ).first;
     if (await Permission.locationWhenInUse.isGranted) {
-      Position position = await Geolocator.getCurrentPosition();
+      Position position = await Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+        ),
+      ).first;
       setState(() {
         _userLatitude = position.latitude;
         _userLongitude = position.longitude;

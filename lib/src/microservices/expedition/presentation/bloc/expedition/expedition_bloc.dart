@@ -339,7 +339,12 @@ class ExpeditionBloc extends Bloc<ExpeditionEvent, ExpeditionState> {
       chooseShippingMethodAddressType event,
       Emitter<ExpeditionState> emit,)async{
     if(event.method=="POSITION"){
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      Position position = await Geolocator.getPositionStream(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.bestForNavigation,
+          distanceFilter: 0,
+        ),
+      ).first;
       String coords = "${position.latitude}:${position.longitude}";
       emit(chooseShippingMethodAddressTypeState(method: event.method,coords: coords));
     }else{

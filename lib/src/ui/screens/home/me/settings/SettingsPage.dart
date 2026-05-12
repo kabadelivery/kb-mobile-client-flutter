@@ -1,7 +1,9 @@
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/delete_account_questionning_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/ui/screens/delete_account/DeleteAccountQuestioningPage.dart';
+import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,6 +14,8 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/_static_data/ServerRoutes.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../../newAuth/recoverPassword.dart';
 
 class SettingsPage extends StatefulWidget {
   static var routeName = "/SettingsPage";
@@ -25,6 +29,18 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  CustomerModel customerModel=CustomerModel();
+  @override
+  void initState(){
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_)async{
+      try{
+        customerModel = await CustomerUtils.getCustomer();
+      }catch(e){
+        debugPrint(e.toString());
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -219,10 +235,8 @@ class _SettingsPageState extends State<SettingsPage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => RecoverPasswordPage(
-            presenter: RecoverPasswordPresenter(RecoverPasswordView()), is_a_process: true),
-      ),
-    );
+        builder: (context) => RecoverPasswordPageV2(login: customerModel.username),
+    ));
   }
 
   _startDeleteAccountProcess() {
