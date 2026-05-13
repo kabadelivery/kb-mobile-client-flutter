@@ -87,7 +87,6 @@ class _ShippingFeeTagState extends State<ShippingFeeTag> {
         widget.distance??"0", StateContainer.of(context).myBillingArray);
 
     return Container(
-        padding: EdgeInsets.all(5),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(10)),
             color: KColors.new_gray),

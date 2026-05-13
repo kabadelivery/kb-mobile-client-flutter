@@ -6,10 +6,12 @@ import 'package:KABA/src/blocs/RestaurantBloc.dart';
 import 'package:KABA/src/contracts/menu_contract.dart';
 import 'package:KABA/src/contracts/restaurant_details_contract.dart';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:KABA/src/microservices/expedition/presentation/widget/popAnimation.dart';
 import 'package:KABA/src/models/CustomerModel.dart';
 import 'package:KABA/src/models/ShopCategoryModelModel.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/ui/customwidgets/FloatingCartButton/FloatingCartButton.dart';
 import 'package:KABA/src/ui/customwidgets/MyLoadingProgressWidget.dart';
 import 'package:KABA/src/ui/customwidgets/ShippingFeeTag.dart';
@@ -34,7 +36,9 @@ import 'package:toast/toast.dart';
 
 import '../../../utils/functions/show_tutorials.dart';
 import '../../customwidgets/notation.dart';
+import '../../customwidgets/promotion_banner.dart';
 import '../../customwidgets/shimmer.dart';
+import '../newAuth/colors.dart';
 import '../rating/article_review.dart';
 
 class RestaurantMenuPage extends StatefulWidget {
@@ -109,10 +113,20 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   Animation? foodAddAnimation;
 
   List<String> _chipList = [];
-
+  List<Map<String,dynamic>> shippingPromotion =[];
   int MAX_CHIP_FOR_SCREEN = -1;
+  final OutlineInputBorder commonBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(15),
+    borderSide: BorderSide(
+      width: 1,
+      color: AuthColors.inputBorder,
+    ),
+  );
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = "";
+
+  bool isTherePromotion=false;
+  bool isThereShippingPromotion=false;
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _computeBasketOffset());
@@ -152,14 +166,18 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     _searchController.dispose();
     super.dispose();
   }
+  bool _notificationHandled = false;
+
   @override
-  Widget build(BuildContext context) {
-    if (MAX_CHIP_FOR_SCREEN < 0) {
-      MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
-    }
-    if (widget.fromNotification!) {
-      final int args = ModalRoute.of(context)!.settings.arguments as int;
-      if (args != null && args != 0) {
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (widget.fromNotification == true && !_notificationHandled) {
+      _notificationHandled = true;
+
+      final args = ModalRoute.of(context)?.settings.arguments;
+
+      if (args is int && args != 0) {
         if (args < 0) {
           widget.foodId = -1 * args;
           widget.highlightedFoodId = widget.foodId;
@@ -170,82 +188,181 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
         }
       }
     }
+  }
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('shippingPromotions ${shippingPromotion}');
+
+    if (MAX_CHIP_FOR_SCREEN < 0) {
+      MAX_CHIP_FOR_SCREEN = MediaQuery.of(context).size.width ~/ 50;
+    }
 
     var appBar = AppBar(
+      toolbarHeight: 130,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(24),
+        ),
+      ),
       backgroundColor: KColors.primaryColor,
+      elevation: 0,
       titleSpacing: 0,
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back, color: Colors.white),
+        onPressed: () => Navigator.pop(context),
+      ),
       title: GestureDetector(
-          onTap: () => _jumpToShopDetails(widget.restaurant!),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-              Widget>[
-            /*  Icon(Icons.home, color: Colors.white, size: 20),
-                SizedBox(width: 10),*/
-            Expanded(
-              child: Container(
-                  padding:
-                      EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+        onTap: () => _jumpToShopDetails(widget.restaurant!),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
                   child: Row(
                     children: [
-                      Text(
-                          widget.restaurant == null ? "" : widget.restaurant!.name!,
+                      Expanded(
+                        child: Text(
+                          widget.restaurant?.name ?? "",
                           overflow: TextOverflow.ellipsis,
-                          maxLines: 1,
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white)),
-                      SizedBox(width:10),
-                      widget?.restaurant!=null?
-                      widget?.restaurant!.is_certified==true?   GestureDetector(
-                        onTap:(){
-                          showCertificationTutorial(context:context);
-                        },
-                        child: Image.asset("assets/images/png/certif_white.png",
-                            width: 20,
-                            height: 20,
-                            fit: BoxFit.cover),
-                      ):Container():Container(),
+                          maxLines: 2,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+
+                      if (widget.restaurant?.is_certified == true) ...[
+                        const SizedBox(width: 6),
+                        GestureDetector(
+                          onTap: () {
+                            showCertificationTutorial(context: context);
+                          },
+                          child: Image.asset(
+                            "assets/images/png/certif_white.png",
+                            width: 18,
+                            height: 18,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ],
                     ],
-                  )),
-            ),
-          ])),
-      leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          }),
-      actions: <Widget>[
-      /*   GestureDetector(
-          onTap: () => _showMenuBottomSheet(ALL),
-          child: Row(
-            children: <Widget>[
-              RotatedBox(
-                  child: AnimatedBuilder(
-                    animation: foodAddAnimation!,
-                    child: Text("${_foodCount}/${FOOD_MAX}",
-                        style: TextStyle(color: Colors.white, fontSize: 14)),
-                    builder: (BuildContext context, Widget? child) {
-                      return Transform.rotate(
-                          angle: foodAddAnimation!.value, child: child);
-                    },
                   ),
-                  quarterTurns: 0),
-              BouncingWidget(
-                duration: Duration(milliseconds: 500),
-                scaleFactor: 3,
-                onPressed: () {},
-                child: IconButton(
-                    key: _menuBasketKey,
-                    icon: Icon(Icons.shopping_cart, color: Colors.white),
-                    onPressed: () => _showMenuBottomSheet(ALL)),
+                ),
+
+                _getRestaurantStateTag(widget.restaurant),
+              ],
+            ),
+            const SizedBox(height: 3),
+
+            Row(
+              children: [
+                const Icon(
+                  Icons.location_on_rounded,
+                  color: Colors.white70,
+                  size: 13,
+                ),
+                const SizedBox(width: 3),
+                Expanded(
+                  child: Text(
+                    widget.restaurant?.address ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 1,
+                    style: const TextStyle(
+                      fontSize: 11.5,
+                      color: Colors.white70,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 3),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(18),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 14,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
               ),
-            ],
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isLoading &&
+                      StateContainer.of(context).location?.latitude != null &&
+                      widget.restaurant?.distance != null)
+                    _RestaurantInfoChip(
+                      icon: FontAwesomeIcons.locationArrow,
+                      text:
+                      "${widget.restaurant?.distance} ${AppLocalizations.of(context)!.translate('km')}",
+                      iconColor: KColors.mGreen,
+                    ),
+
+                  const SizedBox(width: 8),
+
+                  if (widget.restaurant != null)
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+                      decoration: BoxDecoration(
+                        color: KColors.new_gray,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: ShippingFeeTag(widget.restaurant!.distance),
+                    ),
+                  SizedBox(width: 10,),
+                  GestureDetector(
+                    onTap: () => _jumpToShopDetails(widget.restaurant!),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                      decoration: BoxDecoration(
+                        color: KColors.primaryColor,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.translate("more_details"),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 12,
+                            ),
+                          ),
+                          const SizedBox(width: 5),
+                          const Icon(
+                            Icons.arrow_forward_rounded,
+                            color: Colors.white,
+                            size: 15,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 10),
+          child: Center(
+
           ),
-        ) */
+        ),
       ],
     );
-
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.miniEndTop,
       floatingActionButton: FloatingCartButton(
@@ -266,151 +383,8 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                     NestedScrollView(
                       headerSliverBuilder: (context, innerBoxIsScrolled) {
                         return [
-                          SliverAppBar(
-                            collapsedHeight: 120,
-                            leading: null,
-                            automaticallyImplyLeading: false,
-                            elevation: -10,
-                            expandedHeight: 120,
-                            backgroundColor: Colors.white,
-                            flexibleSpace: SingleChildScrollView(
-                              child: Container(
-                                  padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 10, bottom: 10),
-                                  height: 140,
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                          children: [
-                                        Container(
-                                          width:150,
-
-                                          child: Row(
-                                            children: [
-                                              Flexible(
-                                                child: Text(
-                                                    "${widget.restaurant?.name == null ? '' : widget.restaurant?.name}",
-                                                    textAlign: TextAlign.start,
-                                                    style: TextStyle(
-                                                        fontWeight: FontWeight.bold,
-                                                        color: KColors.new_black,
-                                                        fontSize: 15)),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                            Container(),
-                                            SizedBox(width: MediaQuery.of(context).size.width/3),
-
-                                            _getRestaurantStateTag(
-                                            widget.restaurant)
-                                      ]),
-                                      SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(children: [
-                                        Icon(
-                                          Icons.location_on,
-                                          color: KColors.mBlue,
-                                          size: 15,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Container(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.8,
-                                          child: Text(
-                                              "${widget.restaurant?.address == null ? '' : widget.restaurant?.address}",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12)),
-                                        )
-                                      ]),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          isLoading ||
-                                                  StateContainer.of(context)
-                                                          .location
-                                                          ?.latitude ==
-                                                      null
-                                              ? Container()
-                                              : Row(
-                                                  children: [
-                                                    widget.restaurant
-                                                                ?.distance ==
-                                                            null
-                                                        ? Container()
-                                                        : Container(
-                                                            padding:
-                                                                EdgeInsets.all(
-                                                                    5),
-                                                            decoration: BoxDecoration(
-                                                                borderRadius: BorderRadius
-                                                                    .all(Radius
-                                                                        .circular(
-                                                                            10)),
-                                                                color: KColors
-                                                                    .new_gray),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(
-                                                                    FontAwesomeIcons
-                                                                        .locationArrow,
-                                                                    color: KColors
-                                                                        .mGreen,
-                                                                    size: 10),
-                                                                SizedBox(
-                                                                    width: 10),
-                                                                Text(
-                                                                    "${widget.restaurant?.distance} ${AppLocalizations.of(context)!.translate('km')}",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .grey,
-                                                                        fontWeight:
-                                                                            FontWeight
-                                                                                .normal,
-                                                                        fontStyle:
-                                                                            FontStyle
-                                                                                .normal,
-                                                                        fontSize:
-                                                                            12)),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                    SizedBox(width: 10),
-                                                    widget
-                                                        .restaurant!=null?
-                                                    ShippingFeeTag(widget
-                                                        .restaurant!.distance):Container(),
-                                                  ],
-                                                ),
-                                          GestureDetector(
-                                              onTap: () => _jumpToShopDetails(
-                                                  widget.restaurant!),
-                                              child: Container(
-                                                padding: EdgeInsets.only(
-                                                    left: 30,
-                                                    top: 15,
-                                                    bottom: 10,
-                                                    right: 15),
-                                                child: Text(
-                                                  "${AppLocalizations.of(context)!.translate("more_details")}",
-                                                  style: TextStyle(
-                                                      color:
-                                                          KColors.primaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 12),
-                                                ),
-                                              ))
-                                        ],
-                                      ),
-                                    ],
-                                  )),
-                            ),
+                          const SliverToBoxAdapter(
+                            child: SizedBox(height: 10),
                           ),
                         ];
                       },
@@ -419,49 +393,61 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                         color: Colors.white,
                         child: Column(
                           children: [
-                            Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                              padding: const EdgeInsets.symmetric(horizontal: 8),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFFFFF).withOpacity(0.08),
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: const Color(0xFFCB1F44).withOpacity(0.25), // bordure subtile
-                                  width: 1,
-                                ),
-                              ),
-                              child: TextField(
-                                controller: _searchController,
-                                onChanged: (value) {
+                            isTherePromotion ||isThereShippingPromotion
+                                ? PopInWidget(
+                              duration: const Duration(seconds: 2),
+                              child: PromotionCarousel(
+                                merchantName: widget.restaurant!.name!,
+                                foodPromotion: isTherePromotion?{
+                                  "title": "Promo spéciale",
+                                  "message": "Profite d’une offre gourmande chez ${widget.restaurant!.name!}",
+                                  "type": "food",
+                                }:null,
+                                deliveryPromotions: isThereShippingPromotion?shippingPromotion:[],
+                                onTap: () {
                                   setState(() {
-                                    _searchQuery = value.trim().toLowerCase();
+                                    currentIndex = -1;
                                   });
                                 },
-                                style: const TextStyle(fontSize: 13),
-                                decoration: InputDecoration(
-                                  hintText: AppLocalizations.of(context)!.translate('search_article'),
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade600,
-                                    fontSize: 12,
+                              ),
+                            )
+                            : const SizedBox(),
+                            SizedBox(height: 8,),
+                            PopInWidget(
+                              duration: Duration(milliseconds: 500),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 0.0,horizontal: 8.0),
+                                child: TextField(
+                                  controller: _searchController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      _searchQuery = value.trim().toLowerCase();
+                                    });
+                                  },
+                                  style: const TextStyle(fontSize: 13),
+                                  decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.search),
+                                    filled: true,
+                                    fillColor: AuthColors.inputBackground,
+                                    errorStyle: const TextStyle(
+                                      fontSize: 11,
+                                      height: 1,
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 18,
+                                      horizontal: 12,
+                                    ),
+                                    hintText:
+                                    AppLocalizations.of(context)!
+                                        .translate('search_article'),
+
+                                    hintStyle: const TextStyle(fontSize: 14),
+
+                                    border: commonBorder,
+                                    enabledBorder: commonBorder,
+                                    focusedBorder: commonBorder,
                                   ),
-                                  border: InputBorder.none,
-                                  prefixIcon: const Icon(
-                                    Icons.search,
-                                    size: 18,
-                                    color: Color(0xFFCB1F44),
-                                  ),
-                                  suffixIcon: _searchQuery.isNotEmpty
-                                      ? IconButton(
-                                    icon: const Icon(Icons.close, size: 16),
-                                    onPressed: () {
-                                      _searchController.clear();
-                                      setState(() {
-                                        _searchQuery = "";
-                                      });
-                                    },
-                                  )
-                                      : null,
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
+
                                 ),
                               ),
                             ),
@@ -484,32 +470,81 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ),
                             SizedBox(
                               height: 5,
-                            ),
-                            Container(
-                              child: ChipList(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                style: const TextStyle(fontSize: 12),
-                                listOfChipNames: _chipList,
-                                activeBgColorList: [
-                                  Theme.of(context).primaryColor,
-                                ],
-                                inactiveBgColorList: [
-                                  KColors.primaryColor.withOpacity(0.1),
-                                ],
-                                activeTextColorList: [Colors.white],
-                                inactiveTextColorList: [KColors.primaryColor],
+                            ),Row(
+                              children: [
+                                isTherePromotion?  GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      currentIndex = -1; // -1 = mode promo
+                                      _searchQuery = "";
+                                      _searchController.clear();
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8, right: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: currentIndex == -1
+                                          ? KColors.primaryColor
+                                          : KColors.primaryColor.withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(999),
+                                      border: Border.all(
+                                        color: KColors.primaryColor.withOpacity(0.25),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.local_offer_rounded,
+                                          size: 15,
+                                          color: currentIndex == -1
+                                              ? Colors.white
+                                              : KColors.primaryColor,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          "Promos",
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w800,
+                                            color: currentIndex == -1
+                                                ? Colors.white
+                                                : KColors.primaryColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ):Container(),
 
-                                listOfChipIndicesCurrentlySeclected:
-                                _searchQuery.trim().isNotEmpty ? [-1] : [currentIndex],
-
-                                extraOnToggle: (val) {
-                                  setState(() {
-                                    currentIndex = val;
-                                    _searchQuery = "";
-                                    _searchController.clear();
-                                  });
-                                },
-                              )
+                                Expanded(
+                                  child: ChipList(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    style: const TextStyle(fontSize: 12),
+                                    listOfChipNames: _chipList,
+                                    activeBgColorList: [
+                                      Theme.of(context).primaryColor,
+                                    ],
+                                    inactiveBgColorList: [
+                                      KColors.primaryColor.withOpacity(0.1),
+                                    ],
+                                    activeTextColorList: [Colors.white],
+                                    inactiveTextColorList: [KColors.primaryColor],
+                                    listOfChipIndicesCurrentlySeclected:
+                                    _searchQuery.trim().isNotEmpty || currentIndex == -1
+                                        ? [-1]
+                                        : [currentIndex],
+                                    extraOnToggle: (val) {
+                                      setState(() {
+                                        currentIndex = val;
+                                        _searchQuery = "";
+                                        _searchController.clear();
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                             Expanded(
                               child: SingleChildScrollView(
@@ -642,13 +677,11 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       _firstTime = false;
     }
 
-    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
-          this?.data = data;
-
-        }));
     final query = _searchQuery.trim().toLowerCase();
 
     final List<Map<String, dynamic>> displayedFoods = [];
+
+
 
     if (query.isNotEmpty) {
       for (int menuIndex = 0; menuIndex < data!.length; menuIndex++) {
@@ -669,7 +702,25 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
           }
         }
       }
-    } else {
+    }
+    else if (currentIndex == -1) {
+      for (int menuIndex = 0; menuIndex < data!.length; menuIndex++) {
+        final foods = data![menuIndex].foods ?? [];
+
+        for (int foodIndex = 0; foodIndex < foods.length; foodIndex++) {
+          final food = foods[foodIndex];
+
+          if (food.promotion != 0) {
+            displayedFoods.add({
+              "food": food,
+              "foodIndex": foodIndex,
+              "menuIndex": menuIndex,
+            });
+          }
+        }
+      }
+    }
+    else {
       final foods = data![currentIndex].foods ?? [];
 
       for (int foodIndex = 0; foodIndex < foods.length; foodIndex++) {
@@ -1024,12 +1075,33 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       {ShopProductModel? food,
       int? foodIndex,
       int? menuIndex,
-      int? highlightedFoodId}) {
+      int? highlightedFoodId})
+  {
+    final double oldPrice = double.tryParse("${food?.price}") ?? 0;
+    final double newPrice = double.tryParse("${food?.promotion_price}") ?? 0;
+
+    final int discountPercent =
+    oldPrice > 0
+        ? (((oldPrice - newPrice) / oldPrice) * 100).round()
+        : 0;
     return InkWell(
       onTap: () => _jumpToFoodDetails(context, food!),
       child: Container(
           width: MediaQuery.of(context).size.width - 20,
           margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
+          decoration: BoxDecoration(
+            border: Border.all(width: 1,color: AuthColors.inputBorder.withOpacity(.8)),
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                spreadRadius: 10,
+                blurRadius: 20,
+                color: Colors.grey.withOpacity(.05)
+              )
+            ]
+          ),
+          padding: EdgeInsets.all(15),
           key: food!.id == highlightedFoodId ? dataKey : null,
           child: Container(
             color: food!.id == highlightedFoodId
@@ -1042,9 +1114,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                 Expanded(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8)),
+                      borderRadius: BorderRadius.circular(20),
                       color: food!.id == highlightedFoodId
                           ? Colors.yellow.withAlpha(50)
                           : KColors.new_gray),
@@ -1107,41 +1177,72 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               // added
-                              Row(children: <Widget>[
-                                Text("${food!.price}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        decoration: food.promotion != 0
-                                            ? TextDecoration.lineThrough
-                                            : TextDecoration.none,
-                                        color: KColors.primaryColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600)),
-                                SizedBox(width: 3),
-                                (food.promotion != 0
-                                    ? Text("${food!.promotion_price}",
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.center,
+                              Row(
+                                children: [
+                                  if (food.promotion != 0) ...[
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 7,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFFE5EA),
+                                        borderRadius: BorderRadius.circular(999),
+                                      ),
+                                      child: Text(
+                                        "-${discountPercent}%",
                                         style: TextStyle(
-                                            color: KColors.primaryColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.normal))
-                                    : Container()),
-                                SizedBox(width: 2),
-                                Text(
-                                    "${AppLocalizations.of(context)!.translate('currency')}",
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: KColors.primaryColor,
-                                        fontSize: 10,
-                                        fontWeight: FontWeight.w600)),
-                              ]),
+                                          color: KColors.primaryColor,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
 
+                                    const SizedBox(width: 8),
+                                  ],
+
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (food.promotion != 0)
+                                        Text(
+                                          "${food.price} ${AppLocalizations.of(context)!.translate('currency')}",
+                                          style: TextStyle(
+                                            decoration: TextDecoration.lineThrough,
+                                            color: Colors.grey.shade500,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${food.promotion != 0 ? food.promotion_price : food.price}",
+                                            style: TextStyle(
+                                              color: KColors.primaryColor,
+                                              fontSize: food.promotion != 0 ? 15 : 13,
+                                              fontWeight: FontWeight.w900,
+                                            ),
+                                          ),
+
+                                          const SizedBox(width: 4),
+
+                                          Text(
+                                            AppLocalizations.of(context)!.translate('currency'),
+                                            style: TextStyle(
+                                              color: KColors.primaryColor,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                               GestureDetector(
                                 onTap: () => _addFoodToChart(
                                     food, foodIndex!, menuIndex!),
@@ -1168,15 +1269,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ])
                       ]),
                 )),
+                SizedBox(width: 5,),
                 Container(
                   color: KColors.new_gray,
                   child: Container(
                     height: 115,
                     width: 115,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topRight: Radius.circular(8),
-                            bottomRight: Radius.circular(8)),
+                        borderRadius: BorderRadius.circular(20),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(
@@ -1326,6 +1426,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   _showMenuBottomSheet(int type) async {
+
     await Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             RestaurantMenuDetails(
@@ -1372,8 +1473,23 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   }
 
   @override
-  void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) {
+  void inflateMenu(ShopModel restaurant, List<RestaurantSubMenuModel> data) async{
+    RestaurantApiProvider rp =RestaurantApiProvider();
+    List<dynamic>  dataJson =[];
+    List<Map<String,dynamic>>  finalPromo =[];
+    try{
+      dataJson = await rp.fetchRestaurantPromotion(widget.restaurant!.id!);
+      for(var promo in dataJson){
+        finalPromo.add(promo);
+      }
+    }catch(e){
+      debugPrint("dataJson error $e");
+    }
     setState(() {
+      if(dataJson.isNotEmpty){
+        shippingPromotion =finalPromo;
+        isThereShippingPromotion = true;
+      }
       if (restaurant.max_food == null) restaurant.max_food = "5";
       if (restaurant.max_food != null || int.parse(restaurant.max_food!) > 0)
         FOOD_MAX = int.parse(restaurant.max_food!);
@@ -1426,6 +1542,9 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       if (currentIndex < 0 || currentIndex > this.data!.length) {
         currentIndex = 0;
       }
+
+        isTherePromotion = _hasPromotion(data);
+        if(isTherePromotion)currentIndex=-1;
     });
     showLoading(false);
     // two seconds after, we jump
@@ -1642,7 +1761,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       },
     );
   }
+  bool _hasPromotion(List<RestaurantSubMenuModel>? menus) {
+    if (menus == null || menus.isEmpty) return false;
 
+    for (final menu in menus) {
+      final foods = menu.foods ?? [];
+
+      for (final food in foods) {
+        if ((food.promotion ?? 0) != 0) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
   _jumpToShopDetails(ShopModel shopModel) {
     Navigator.of(context).push(PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
@@ -1679,7 +1812,47 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     }
   }
 }
+class _RestaurantInfoChip extends StatelessWidget {
+  final IconData icon;
+  final String text;
+  final Color iconColor;
 
+  const _RestaurantInfoChip({
+    required this.icon,
+    required this.text,
+    required this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: KColors.new_gray,
+        borderRadius: BorderRadius.circular(999),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            color: iconColor,
+            size: 10,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            text,
+            style: const TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
 class CustomAnimatedPosition extends AnimatedPositioned {
   var child;
   double? left;

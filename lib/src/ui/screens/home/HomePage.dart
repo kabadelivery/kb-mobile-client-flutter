@@ -390,7 +390,7 @@ class _HomePageState extends State<HomePage> {
     if(kDebugMode){
       _firebaseMessaging
           .subscribeToTopic(ServerConfig.DEV_TOPIC);
-      debugPrint("✅Subscribed to ${ServerConfig.DEV_TOPIC} topic");
+      debugPrint("Subscribed to ${ServerConfig.DEV_TOPIC} topic");
     }
     _firebaseMessaging
         .subscribeToTopic(ServerConfig.TOPIC)
@@ -1426,111 +1426,75 @@ class _HomePageState extends State<HomePage> {
       callback();
     }
   }
+  Future<bool> requestNeededPermissions() async {
+    LocationPermission locationPermission = await Geolocator.checkPermission();
 
+    if (locationPermission == LocationPermission.denied) {
+      locationPermission = await Geolocator.requestPermission();
+    }
+
+    if (locationPermission == LocationPermission.denied ||
+        locationPermission == LocationPermission.deniedForever) {
+      return false;
+    }
+
+    if (Platform.isAndroid || Platform.isIOS) {
+      final notifStatus = await Permission.notification.status;
+
+      if (notifStatus.isDenied) {
+        await Permission.notification.request();
+      }
+    }
+
+    return true;
+  }
   Future _getLastKnowLocation({bool jumpToBuyPageDetails = false}) async {
-    SharedPreferences.getInstance().then((value) async {
-      prefs = value;
+    prefs = await SharedPreferences.getInstance();
 
-      String? _has_accepted_gps = await prefs.getString("_has_accepted_gps");
-      var status = await Permission.location.status;
-      var notif_status=await Permission.notification.status;
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.deniedForever) {
-        /*  ---- */
-        // await Geolocator.openAppSettings();
-        /* ---- */
-        if(status.isDenied &&!notif_status.isDenied){
-          openLocationModal(context);
-        }else{
-          return  showDialog(
-            context: context,
-            builder: (_) => const PermissionsModal(),
-          );
-        }
-        /* ---- */
-      } else if (permission == LocationPermission.denied) {
-        /* ---- */
-        // Geolocator.requestPermission();
-        /* ---- */
-        if(status.isDenied &&!notif_status.isDenied){
-          openLocationModal(context);
-        }else{
-          return  showDialog(
-            context: context,
-            builder: (_) => const PermissionsModal(),
-          );
-        }
+    final hasPermissions = await requestNeededPermissions();
+
+    if (!hasPermissions) {
+      return;
+    }
+
+    final isLocationServiceEnabled =
+    await Geolocator.isLocationServiceEnabled();
+
+    if (!isLocationServiceEnabled) {
+      await Geolocator.openLocationSettings();
+      return;
+    }
+
+    if (jumpToBuyPageDetails) {
+      setState(() {
+        StateContainer.of(context).updateTabPosition(tabPosition: 1);
+      });
+    }
+
+    positionStream = Geolocator.getPositionStream().listen((Position position) {
+      if (tmpLocation?.latitude != null &&
+          (position.latitude * 100).round() ==
+              (tmpLocation!.latitude! * 100).round() &&
+          (position.longitude * 100).round() ==
+              (tmpLocation!.longitude * 100).round()) {
+        widget.samePositionCount++;
       } else {
-        bool isLocationServiceEnabled =
-        await Geolocator.isLocationServiceEnabled();
-        var status  = await Permission.notification.status;
-        if (!isLocationServiceEnabled ) {
-          if(status.isDenied && !notif_status.isDenied){
-            openLocationModal(context);
-          }else{
-            return  showDialog(
-              context: context,
-              builder: (_) => const PermissionsModal(),
-            );
-          }
+        widget.samePositionCount = 0;
+        tmpLocation = StateContainer.of(context).location;
 
-          /* ---- */
-        } else {
-          /* show loading dialog until this finishes then close */
-
-          // switch to page two
-          if (jumpToBuyPageDetails) {
-            setState(() {
-              StateContainer.of(context).updateTabPosition(tabPosition: 1);
-            });
-          }
-
-          positionStream =Geolocator.getPositionStream().listen((Position position) {
-            /* compare current and old position */
-            if (position?.latitude != null &&
-                tmpLocation?.latitude != null &&
-                (position.latitude * 100).round() ==
-                    (tmpLocation!.latitude! * 100).round() &&
-                (position.longitude * 100).round() ==
-                    (tmpLocation!.longitude * 100).round()) {
-              widget.samePositionCount++;
-            } else {
-              widget.samePositionCount = 0;
-              tmpLocation = StateContainer.of(context).location;
-              if (position != null && mounted) {
-                widget.hasGps = true;
-                setState(() {
-                  StateContainer.of(context)
-                      .updateLocation(location: position);
-                });
-              }
-            }
-            if (widget.samePositionCount >= 3 || widget.hasGps!)
-              positionStream?.cancel();
+        if (mounted) {
+          widget.hasGps = true;
+          setState(() {
+            StateContainer.of(context).updateLocation(location: position);
           });
         }
       }
+
+      if (widget.samePositionCount >= 3 || widget.hasGps == true) {
+        positionStream?.cancel();
+      }
     });
-
-    var loc_status =await Permission.location.status ;
-    var notif_status=await Permission.notification.status;
-    var storage_status = await Permission.storage.status;
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      int sdkVersion = androidInfo.version.sdkInt;
-      if (sdkVersion <= 32) {
-        storage_status = await Permission.storage.status;
-      }
-    }
-    if(loc_status.isGranted&&notif_status.isGranted){
-      if(storage_status.isDenied){
-        //  openPhotosModal(context);
-        //   openLocationModal(context);
-        // openNotificationModal(context);
-      }
-    }
   }
-
   void _requestGpsPermissionAndLocation() {
     /* has been requested already, we shouldnt request a second time during this time */
     //  explain to the user why we need it, and then pick it

@@ -300,7 +300,37 @@ class RestaurantApiProvider {
       throw Exception(-2); // you have no network
     }
   }
-
+  Future<dynamic> fetchRestaurantPromotion(int id)async{
+    xrint('Entered fetchRestaurantPromotion');
+    try{
+      if(await Utils.hasNetwork()){
+        var dio = Dio();
+        dio.options..connectTimeout = 10000;
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+            (HttpClient client) {
+          client.badCertificateCallback =
+              (X509Certificate cert, String host, int port) {
+            return validateSSL(cert, host, port);
+          };
+        };
+        var response = await dio.post(
+          Uri.parse(ServerRoutes.GET_PROMOTION).toString(),
+          data: json.encode({'id': id}),
+        );
+        if(response.statusCode==200 || response.statusCode==201){
+          var data = (response.data);
+          debugPrint("XXX fetchRestaurantPromotion data ${data}");
+          return data['data'];
+        }else{
+          throw Exception(response.statusCode);
+        }
+      }else {
+        throw Exception(-2); // you have no network
+      }
+    }catch(e){
+      debugPrint("Can't get promotion $e");
+    }
+  }
   Future<dynamic> fetchRestaurantList(
       CustomerModel model, String type, Position position) async {
     xrint(

@@ -103,6 +103,7 @@ dependencies:
   workmanager: ^0.7.0
   mapbox_maps_flutter: ^2.12.0
   flutter_typeahead: ^5.2.0
+  device_preview: ^1.2.0
 #  in_app_update: ^3.0.0
 #  firebase_database: ^9.0.15
 #  sentry_flutter: ^6.5.0
@@ -278,6 +279,8 @@ flutter:
     - assets/images/png/grey-service.png
     - assets/images/png/medical-cross.png
     - assets/images/png/horloge.png
+    - assets/images/png/scooter.png
+    - assets/images/png/coupon.png
     - assets/images/png/box.png
     - assets/images/png/condition.png
     - assets/lottie/truck.json

@@ -82,7 +82,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:showWhenLocked="false"
             android:theme="@style/LaunchTheme"
             android:turnScreenOn="false"

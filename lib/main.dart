@@ -65,9 +65,9 @@ void callbackDispatcher() {
           CustomerModel ? customer = await CustomerUtils.getCustomer();
           customer.token = token;
           await apiProvider.updateUserFcmToken(token);
-          print("✅ Subscribed to topic successfully!");
+          print("Subscribed to topic successfully!");
         } catch (e) {
-          print("❌ Subscription failed: $e");
+          print("Subscription failed: $e");
         }
         break;
     }
@@ -94,7 +94,7 @@ Future<void> main() async {
       AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
   await Firebase.initializeApp();
- // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+ FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await _initializeLocalNotifications();
   await Workmanager().initialize(
     callbackDispatcher,
@@ -164,15 +164,14 @@ Future<void> _initializeLocalNotifications() async {
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
-
+  await _initializeLocalNotifications();
   try {
     final data = message.data;
     final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
 
-    // 🔹 Récupération du contenu principal
     final notificationJson = data['notification'];
     if (notificationJson == null) {
-      print("⚠️ Aucun champ 'notification' trouvé dans le message");
+      print("Aucun champ 'notification' trouvé dans le message");
       return;
     }
 
@@ -183,7 +182,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     final expeditionId = decodedNotification['expedition_id'];
     final destinationString = decodedNotification['destination'] ?? data['payload'] ?? '';
 
-    // 🔹 Téléchargement éventuel de l’image
     String? filePath;
     if (imageUrl != null && imageUrl.toString().isNotEmpty) {
       try {
@@ -191,7 +189,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         filePath = '${directory.path}/notif_image_${now}.jpg';
         final response = await http
             .get(Uri.parse(imageUrl))
-            .timeout(const Duration(seconds: 5));
+            .timeout(const Duration(seconds: 120));
 
         if (response.statusCode == 200) {
           final file = File(filePath);
@@ -205,7 +203,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       }
     }
 
-    // 🔹 Style Android avec ou sans image
     final BigPictureStyleInformation? styleInformation = (filePath != null)
         ? BigPictureStyleInformation(
       FilePathAndroidBitmap(filePath),
@@ -226,7 +223,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       largeIcon: (filePath != null) ? FilePathAndroidBitmap(filePath) : null,
     );
 
-    // 🔹 iOS style
     final List<DarwinNotificationAttachment> iOSAttachments = [];
     if (filePath != null) {
       iOSAttachments.add(DarwinNotificationAttachment(filePath));
@@ -245,23 +241,26 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       iOS: iOSDetails,
     );
 
-    // 🔹 Déterminer le payload
     final payload = expeditionId?.toString().isNotEmpty == true
         ? expeditionId.toString()
         : destinationString;
+    final notificationUid =
+        decodedNotification['notification_id']?.toString()
+            ?? message.messageId
+            ?? payload;
 
-    // 🔹 Affichage de la notification
+    final notificationId = notificationUid.hashCode & 0x7fffffff;
+
     await flutterLocalNotificationsPlugin.show(
-      now,
+      notificationId,
       title,
       body,
       platformDetails,
       payload: payload,
     );
-
-    print("✅ Background notification affichée avec image (si présente)");
+    print("Background notification affichée avec image (si présente)");
   } catch (e) {
-    print("❌ Erreur dans _firebaseMessagingBackgroundHandler : $e");
+    print("Erreur dans _firebaseMessagingBackgroundHandler : $e");
   }
 }
 

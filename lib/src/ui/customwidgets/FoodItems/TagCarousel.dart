@@ -1,3 +1,4 @@
+import 'package:KABA/src/ui/screens/newAuth/colors.dart';
 import 'package:flutter/material.dart';
 
 class TagCarousel extends StatelessWidget {
@@ -89,12 +90,12 @@ class TagCarousel extends StatelessWidget {
           ),
           showCheckmark: false,
           selected: isSelected,
-          selectedColor: primaryColor,
+          selectedColor: primaryColor.withOpacity(.8),
           backgroundColor: Colors.grey.shade200,
           side: BorderSide(
             color: isSelected
                 ? Colors.transparent
-                : Color(0xFFFC90A8),
+                : AuthColors.inputBorder,
             width: 1.4,
           ),
           shape: RoundedRectangleBorder(
