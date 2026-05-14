@@ -232,7 +232,7 @@ class OrderApiProvider {
     * */
     var _data = json.encode(requestData);
     xrint("Request data: $_data");
-    try {
+    xrint("Customer data ${customer!.toJson()}");
       var dio = Dio();
       dio.options
         ..headers = Utils.getHeadersWithToken(customer!.token!)
@@ -261,10 +261,7 @@ class OrderApiProvider {
       } else {
         throw Exception(-1); // erreur côté serveur
       }
-    } catch (e) {
-      xrint("launchOrder exception: $e");
-      throw Exception(-1);
-    }
+
   }
 
 

@@ -23,6 +23,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:bouncing_widget/bouncing_widget.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chip_list/chip_list.dart';
@@ -104,7 +105,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
 
   /* create a presenter for menu page */
 
-  bool isLoading = false;
+  bool isLoading = true;
   bool hasNetworkError = false;
   bool hasSystemError = false;
 
@@ -222,7 +223,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                 Expanded(
                   child: Row(
                     children: [
-                      Expanded(
+                      Flexible(
                         child: Text(
                           widget.restaurant?.name ?? "",
                           overflow: TextOverflow.ellipsis,
@@ -322,6 +323,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                   GestureDetector(
                     onTap: () => _jumpToShopDetails(widget.restaurant!),
                     child: Container(
+                      width: 100,
                       padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
                       decoration: BoxDecoration(
                         color: KColors.primaryColor,
@@ -330,12 +332,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            AppLocalizations.of(context)!.translate("more_details"),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w800,
-                              fontSize: 12,
+                          Flexible(
+                            child: AutoSizeText(
+                              AppLocalizations.of(context)!.translate("more_details"),
+                              minFontSize: 8,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w800,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                           const SizedBox(width: 5),
@@ -388,148 +395,136 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           ),
                         ];
                       },
-                      body: Container(
-                        height: MediaQuery.of(context).size.height,
-                        color: Colors.white,
+                      body: SingleChildScrollView(
+                        key: PageStorageKey<String>("menu_id_$currentIndex"),
                         child: Column(
                           children: [
-                            isTherePromotion ||isThereShippingPromotion
-                                ? PopInWidget(
-                              duration: const Duration(seconds: 2),
-                              child: PromotionCarousel(
-                                merchantName: widget.restaurant!.name!,
-                                foodPromotion: isTherePromotion?{
-                                  "title": "Promo spéciale",
-                                  "message": "Profite d’une offre gourmande chez ${widget.restaurant!.name!}",
-                                  "type": "food",
-                                }:null,
-                                deliveryPromotions: isThereShippingPromotion?shippingPromotion:[],
-                                onTap: () {
-                                  setState(() {
-                                    currentIndex = -1;
-                                  });
-                                },
-                              ),
-                            )
-                            : const SizedBox(),
-                            SizedBox(height: 8,),
-                            PopInWidget(
-                              duration: Duration(milliseconds: 500),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 0.0,horizontal: 8.0),
-                                child: TextField(
-                                  controller: _searchController,
-                                  onChanged: (value) {
+                            if (isTherePromotion || isThereShippingPromotion)
+                              PopInWidget(
+                                duration: const Duration(seconds: 2),
+                                child: PromotionCarousel(
+                                  merchantName: widget.restaurant!.name!,
+                                  foodPromotion: isTherePromotion
+                                      ? {
+                                    "title": "${AppLocalizations.of(context)!.translate("special_promo")}",
+                                    "message":
+                                    "${AppLocalizations.of(context)!.translate('enjoy_gourmet_offer_at')} ${widget.restaurant!.name!}",
+                                    "type": "food",
+                                      }
+                                      : null,
+                                  deliveryPromotions:
+                                  isThereShippingPromotion ? shippingPromotion : [],
+                                  onTap: () {
                                     setState(() {
-                                      _searchQuery = value.trim().toLowerCase();
+                                      currentIndex = -1;
                                     });
                                   },
-                                  style: const TextStyle(fontSize: 13),
-                                  decoration: InputDecoration(
-                                    prefixIcon: Icon(Icons.search),
-                                    filled: true,
-                                    fillColor: AuthColors.inputBackground,
-                                    errorStyle: const TextStyle(
-                                      fontSize: 11,
-                                      height: 1,
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      vertical: 18,
-                                      horizontal: 12,
-                                    ),
-                                    hintText:
-                                    AppLocalizations.of(context)!
-                                        .translate('search_article'),
+                                ),
+                              ),
 
-                                    hintStyle: const TextStyle(fontSize: 14),
+                            const SizedBox(height: 8),
 
-                                    border: commonBorder,
-                                    enabledBorder: commonBorder,
-                                    focusedBorder: commonBorder,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: TextField(
+                                controller: _searchController,
+                                onChanged: (value) {
+                                  setState(() {
+                                    _searchQuery = value.trim().toLowerCase();
+                                  });
+                                },
+                                style: const TextStyle(fontSize: 13),
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(Icons.search),
+                                  filled: true,
+                                  fillColor: AuthColors.inputBackground,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 18,
+                                    horizontal: 12,
                                   ),
-
+                                  hintText: AppLocalizations.of(context)!
+                                      .translate('search_article'),
+                                  hintStyle: const TextStyle(fontSize: 14),
+                                  border: commonBorder,
+                                  enabledBorder: commonBorder,
+                                  focusedBorder: commonBorder,
                                 ),
                               ),
                             ),
-                            // Container(height: 140, width: MediaQuery.of(context).size.width, color: Colors.yellow.withAlpha(20),),
+
+                            const SizedBox(height: 10),
+
                             Row(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Container(
-                                  margin: EdgeInsets.only(
-                                      top: 10, right: 10, left: 20),
+                                  margin: const EdgeInsets.only(
+                                    top: 10,
+                                    right: 10,
+                                    left: 20,
+                                  ),
                                   child: Text(
-                                      "${Utils.capitalize(AppLocalizations.of(context)!.translate('our_menu'))}",
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500)),
+                                    Utils.capitalize(
+                                      AppLocalizations.of(context)!
+                                          .translate('our_menu'),
+                                    ),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),Row(
+
+                            const SizedBox(height: 5),
+
+                            Row(
                               children: [
-                                isTherePromotion?  GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      currentIndex = -1; // -1 = mode promo
-                                      _searchQuery = "";
-                                      _searchController.clear();
-                                    });
-                                  },
-                                  child: Container(
-                                    margin: const EdgeInsets.only(left: 8, right: 6),
-                                    padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: currentIndex == -1
-                                          ? KColors.primaryColor
-                                          : KColors.primaryColor.withOpacity(0.1),
-                                      borderRadius: BorderRadius.circular(999),
-                                      border: Border.all(
-                                        color: KColors.primaryColor.withOpacity(0.25),
+                                if (isTherePromotion)
+                                  GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        currentIndex = -1;
+                                        _searchQuery = "";
+                                        _searchController.clear();
+                                      });
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(left: 8, right: 6),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 13,
+                                        vertical: 8,
                                       ),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.local_offer_rounded,
-                                          size: 15,
+                                      decoration: BoxDecoration(
+                                        color: currentIndex == -1
+                                            ? KColors.primaryColor
+                                            : KColors.primaryColor.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(999),
+                                      ),
+                                      child: Text(
+                                        "Promos",
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w800,
                                           color: currentIndex == -1
                                               ? Colors.white
                                               : KColors.primaryColor,
                                         ),
-                                        const SizedBox(width: 5),
-                                        Text(
-                                          "Promos",
-                                          style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w800,
-                                            color: currentIndex == -1
-                                                ? Colors.white
-                                                : KColors.primaryColor,
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ):Container(),
 
                                 Expanded(
                                   child: ChipList(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     style: const TextStyle(fontSize: 12),
                                     listOfChipNames: _chipList,
-                                    activeBgColorList: [
-                                      Theme.of(context).primaryColor,
-                                    ],
+                                    activeBgColorList: [Theme.of(context).primaryColor],
                                     inactiveBgColorList: [
                                       KColors.primaryColor.withOpacity(0.1),
                                     ],
-                                    activeTextColorList: [Colors.white],
+                                    activeTextColorList: const [Colors.white],
                                     inactiveTextColorList: [KColors.primaryColor],
                                     listOfChipIndicesCurrentlySeclected:
                                     _searchQuery.trim().isNotEmpty || currentIndex == -1
@@ -546,95 +541,21 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 ),
                               ],
                             ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                  key: PageStorageKey<String>(
-                                      "menu_id_${currentIndex}"),
-                                  child: Container(
-                                      margin: EdgeInsets.only(top: 10),
-                                      child: isLoading
-                                          ? Column(
-                                        children: [
-                                          Container(
-                                            height: 40,
-                                            margin: EdgeInsets.symmetric(vertical: 0,horizontal: 10),
-                                            child: ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: const NeverScrollableScrollPhysics(),
-                                              itemCount: 10,
-                                              itemBuilder: (context, index) {
-                                                return Container(
-                                                  child: chipListShimmer(context),
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          SizedBox(height: 20,),
-                                          ListView.builder(
-                                            shrinkWrap: true,
-                                            physics: const NeverScrollableScrollPhysics(),
-                                            itemCount: 10,
-                                            itemBuilder: (context, index) {
-                                              return Container(
-                                                child: foodListShimmer(context),
-                                              );
-                                            },
-                                          )
-                                        ],
-                                      )
-                                          : (hasNetworkError
-                                              ? _buildNetworkErrorPage()
-                                              : hasSystemError
-                                                  ? _buildSysErrorPage()
-                                                  : Column(children: <Widget>[
-                                                      isLoading
-                                                          ? Center(
-                                                              child:
-                                                                  MyLoadingProgressWidget())
-                                                          : (hasNetworkError
-                                                              ? ErrorPage(
-                                                                  message:
-                                                                      "${AppLocalizations.of(context)!.translate('network_error')}",
-                                                                  onClickAction:
-                                                                      () {
-                                                                    if (!widget
-                                                                        .fromNotification!) {
-                                                                      if (widget
-                                                                              .menuId ==
-                                                                          -1)
-                                                                        widget.presenter!.fetchMenuWithRestaurantId(widget
-                                                                            .restaurant!
-                                                                            .id!);
-                                                                      else
-                                                                        widget
-                                                                            .presenter!
-                                                                            .fetchMenuWithMenuId(widget.menuId!);
-                                                                    } else {
-                                                                      restaurantBloc
-                                                                          .fetchRestaurantMenuList(
-                                                                              widget.restaurant!);
-                                                                    }
-                                                                  })
-                                                              : hasSystemError
-                                                                  ? ErrorPage(
-                                                                      message:
-                                                                          "${AppLocalizations.of(context)!.translate('system_error')}",
-                                                                      onClickAction:
-                                                                          () {
-                                                                        if (!widget!
-                                                                            .fromNotification!) {
-                                                                          if (widget.menuId ==
-                                                                              -1)
-                                                                            widget.presenter!.fetchMenuWithRestaurantId(widget.restaurant!.id!);
-                                                                          else
-                                                                            widget.presenter!.fetchMenuWithMenuId(widget.menuId!);
-                                                                        } else
-                                                                          restaurantBloc
-                                                                              .fetchRestaurantMenuList(widget.restaurant!);
-                                                                      })
-                                                                  : _buildRestaurantMenu()),
-                                                    ])))),
-                            ),
+
+                            const SizedBox(height: 10),
+
+                            isLoading
+                                ? Column(
+                              children: List.generate(
+                                10,
+                                    (index) => foodListShimmer(context),
+                              ),
+                            )
+                                : hasNetworkError
+                                ? _buildNetworkErrorPage()
+                                : hasSystemError
+                                ? _buildSysErrorPage()
+                                : _buildRestaurantMenu(),
                           ],
                         ),
                       ),
@@ -669,9 +590,17 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       return Container();
     }
 
-    if (data == null || data?.length == 0)
+    if (data == null) {
+      return Center(child: MyLoadingProgressWidget());
+    }
+
+    if (data!.isEmpty) {
       return Center(
-          child: Text("${AppLocalizations.of(context)!.translate('no_data')}"));
+        child: Text(
+          AppLocalizations.of(context)!.translate('no_data'),
+        ),
+      );
+    }
 
     if (_firstTime) {
       _firstTime = false;
@@ -1079,7 +1008,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
   {
     final double oldPrice = double.tryParse("${food?.price}") ?? 0;
     final double newPrice = double.tryParse("${food?.promotion_price}") ?? 0;
-
+    debugPrint('foodId ${food!.id} food ${food!.name} price ${food!.price} promo ${food!.promotion_price} menu_id ${food.menu_id}');
     final int discountPercent =
     oldPrice > 0
         ? (((oldPrice - newPrice) / oldPrice) * 100).round()
@@ -1119,7 +1048,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                           ? Colors.yellow.withAlpha(50)
                           : KColors.new_gray),
                   padding: EdgeInsets.all(10),
-                  height: 115,
+
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1245,26 +1174,58 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                               ),
                               GestureDetector(
                                 onTap: () => _addFoodToChart(
-                                    food, foodIndex!, menuIndex!),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      color: KColors.primaryColor.withOpacity(.1),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  padding: EdgeInsets.only(
-                                      top: 10, bottom: 10, right: 8, left: 8),
-                                  child: Row(children: <Widget>[
-                                    Text(
-                                        "${AppLocalizations.of(context)!.translate('add_to_basket')}",
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            color: KColors.primaryColor)),
-                                    SizedBox(width: 5),
-                                    Icon(Icons.shopping_cart_checkout,
-                                        color: KColors.primaryColor, size: 14),
-                                  ]),
+                                  food,
+                                  foodIndex!,
+                                  menuIndex!,
                                 ),
-                              ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) {
+                                    final screenWidth = MediaQuery.of(context).size.width;
+                                    final isSmall = screenWidth < 500;
+                                    return Container(
+                                      decoration: BoxDecoration(
+                                        color: KColors.primaryColor.withOpacity(.1),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 10,
+                                        horizontal: 8,
+                                      ),
+                                      child: isSmall
+                                          ? Icon(
+                                        Icons.shopping_cart_checkout,
+                                        color: KColors.primaryColor,
+                                        size: 18,
+                                      )
+                                          : Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Flexible(
+                                            child: Text(
+                                              AppLocalizations.of(context)!
+                                                  .translate('add_to_basket'),
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: KColors.primaryColor,
+                                              ),
+                                            ),
+                                          ),
 
+                                          const SizedBox(width: 5),
+
+                                          Icon(
+                                            Icons.shopping_cart_checkout,
+                                            color: KColors.primaryColor,
+                                            size: 14,
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
                               // not added
                             ])
                       ]),
@@ -1544,13 +1505,14 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       }
 
         isTherePromotion = _hasPromotion(data);
-        if(isTherePromotion)currentIndex=-1;
+        if(isTherePromotion && widget.highlightedFoodId==null)currentIndex=-1;
     });
     showLoading(false);
     // two seconds after, we jump
     Future.delayed(Duration(seconds: 1), () {
-      Scrollable.ensureVisible(dataKey.currentContext!,
-          duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
+      if(dataKey.currentContext!=null)
+        Scrollable.ensureVisible(dataKey.currentContext!,
+            duration: Duration(milliseconds: 500), curve: Curves.easeInOut);
     });
 
     String dialogText = "";
@@ -1589,42 +1551,176 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
     }
   }
 
-  void _comingSoon(BuildContext context, ShopModel shopModel, String message) {
-    /* show the coming soon dialog */
+  void _comingSoon(
+      BuildContext context,
+      ShopModel shopModel,
+      String message,
+      ) {
     showDialog(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-                content:
-                    Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-                  Container(
-                      height: 80,
-                      width: 80,
-                      decoration: BoxDecoration(
-                          border: new Border.all(
-                              color: KColors.primaryYellowColor, width: 2),
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.cover,
-                              image: CachedNetworkImageProvider(
-                                  Utils.inflateLink(shopModel!.pic!))))),
-                  SizedBox(height: 10),
-                  Text("${message}",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: KColors.new_black, fontSize: 13))
-                ]),
-                actions: <Widget>[
-                  //
-                  OutlinedButton(
-                    child: new Text(
-                        "${AppLocalizations.of(context)!.translate('ok')}",
-                        style: TextStyle(color: KColors.primaryColor)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ]));
-  }
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 24),
 
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(22, 24, 22, 20),
+
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(28),
+
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(.08),
+                  blurRadius: 30,
+                  offset: const Offset(0, 14),
+                ),
+              ],
+            ),
+
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                /// IMAGE
+                Stack(
+                  clipBehavior: Clip.none,
+                  alignment: Alignment.center,
+                  children: [
+
+                    Container(
+                      width: 92,
+                      height: 92,
+
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: KColors.primaryYellowColor,
+                          width: 3,
+                        ),
+
+                        boxShadow: [
+                          BoxShadow(
+                            color: KColors.primaryYellowColor.withOpacity(.25),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+
+                      child: ClipOval(
+                        child: CachedNetworkImage(
+                          imageUrl: Utils.inflateLink(
+                            shopModel.pic ?? "",
+                          ),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      right: -2,
+                      bottom: 2,
+                      child: Container(
+                        width: 28,
+                        height: 28,
+
+                        decoration: BoxDecoration(
+                          color: KColors.primaryColor,
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 3,
+                          ),
+                        ),
+
+                        child: const Icon(
+                          Icons.lock_clock_rounded,
+                          size: 15,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 22),
+
+                /// TITLE
+                Text(
+                  AppLocalizations.of(context)!
+                      .translate('coming_soon'),
+
+                  textAlign: TextAlign.center,
+
+                  style: TextStyle(
+                    color: KColors.new_black,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+
+                const SizedBox(height: 10),
+
+                /// MESSAGE
+                Text(
+                  message,
+
+                  textAlign: TextAlign.center,
+
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 13.5,
+                    height: 1.45,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+
+                const SizedBox(height: 24),
+
+                /// BUTTON
+                SizedBox(
+                  width: double.infinity,
+                  height: 50,
+
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: KColors.primaryColor,
+                      elevation: 0,
+
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+
+                    child: Text(
+                      AppLocalizations.of(context)!
+                          .translate('ok')
+                          .toUpperCase(),
+
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: .4,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
   @override
   void networkError() {
     showLoading(false);

@@ -3,17 +3,22 @@ import 'dart:convert';
 import 'package:KABA/src/localizations/AppLocalizations.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/resources/restaurant_api_provider.dart';
 import 'package:KABA/src/models/ShopModel.dart';
 import 'package:KABA/src/models/ShopProductModel.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 import '../../../StateContainer.dart';
+import '../../../contracts/menu_contract.dart';
 import '../../../models/CustomerModel.dart';
 import '../../../xrint.dart';
 import '../../screens/home/buy/shop/flower/ShopFlowerDetailsPage.dart';
+import '../../screens/restaurant/RestaurantMenuPage.dart';
 
 /// UI model mapped from ShopProductModel
 class FoodItem {
@@ -25,27 +30,23 @@ class FoodItem {
   final String restaurantName;
   final String buttonLabel;
   List<Map>? food_review_array = [];
-  int?review_count;
+  int? review_count;
   ShopModel? restaurant_entity;
 
-
-  FoodItem({
-    required this.id,
-    required this.name,
-    required this.pic,
-    required this.rating,
-    required this.price,
-    required this.restaurantName,
-    required this.buttonLabel,
-    this.food_review_array,
-    this.review_count,
-    this.restaurant_entity
-  });
+  FoodItem(
+      {required this.id,
+      required this.name,
+      required this.pic,
+      required this.rating,
+      required this.price,
+      required this.restaurantName,
+      required this.buttonLabel,
+      this.food_review_array,
+      this.review_count,
+      this.restaurant_entity});
 
   /// Factory to convert ShopProductModel → FoodItem
   factory FoodItem.fromShopProduct(ShopProductModel p) {
-
-
     return FoodItem(
       id: p.id ?? 0,
       name: p.name ?? "Plat inconnu",
@@ -64,14 +65,15 @@ class FoodItem {
 class FoodGrid extends StatefulWidget {
   final String foodType; // e.g. "Riz", "Spaghetti"
   final String typeOfSearch;
-  const FoodGrid({super.key, required this.foodType, required this.typeOfSearch});
+  const FoodGrid(
+      {super.key, required this.foodType, required this.typeOfSearch});
 
   @override
   State<FoodGrid> createState() => _FoodGridState();
 }
 
 class _FoodGridState extends State<FoodGrid> {
-  late Future<Map<String,dynamic>> futureFoods;
+  late Future<Map<String, dynamic>> futureFoods;
   final RestaurantApiProvider _service = RestaurantApiProvider();
   final int _perPage = 10;
   List<dynamic> _allProducts = [];
@@ -81,22 +83,22 @@ class _FoodGridState extends State<FoodGrid> {
   bool _hasMore = false;
   bool _isLoadingMore = false;
   late final ScrollController _scrollController;
+
   /// Fetch data from API and map to FoodItem
-  Future<Map<String,dynamic>> fetchFoods(String query) async {
+  Future<Map<String, dynamic>> fetchFoods(String query) async {
     try {
       CustomerModel user = await CustomerUtils.getCustomer();
-      debugPrint("Fetching foods for query: $query and typeOfSearch: ${widget.typeOfSearch}");
-      final List<ShopProductModel> products =
-      await _service.searchForFood(widget.typeOfSearch, query,user.token ?? "");
-      Map<String,dynamic> food_and_products = {
-        'products':[],
-        'food':[]
-      };
-      String? myBillingArray =await CustomerUtils.getLastStoredBilling();
+      debugPrint(
+          "Fetching foods for query: $query and typeOfSearch: ${widget.typeOfSearch}");
+      final List<ShopProductModel> products = await _service.searchForFood(
+          widget.typeOfSearch, query, user.token ?? "");
+      Map<String, dynamic> food_and_products = {'products': [], 'food': []};
+      String? myBillingArray = await CustomerUtils.getLastStoredBilling();
       Map<String, String> billingMap = {};
       if (myBillingArray != null) {
         var billingData = json.decode(myBillingArray);
-        var billingData2 = billingData[user.email != null ? "email" : "phoneNumber"];
+        var billingData2 =
+            billingData[user.email != null ? "email" : "phoneNumber"];
 
         for (var entry in billingData2) {
           int from = int.parse(entry["from"]);
@@ -110,17 +112,29 @@ class _FoodGridState extends State<FoodGrid> {
 
         debugPrint('myBillingArray $billingMap');
       }
+      Position? currentPosition = StateContainer.of(context).location;
 
-      for(var product in products){
-        if(product.restaurant_entity!=null){
-          final double dist = Utils.locationDistance(StateContainer.of(context).location,product.restaurant_entity!);
-          product.restaurant_entity!.distanceBetweenMeandRestaurant = double.parse(dist > 100 ? "100" : dist.toStringAsFixed(2));
-          product.restaurant_entity!.delivery_pricing =_getShippingPrice((dist).toString(),billingMap);
+      currentPosition ??= await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      ).timeout(const Duration(seconds: 8));
+
+      for (var product in products) {
+        if (product.restaurant_entity != null) {
+          final double dist = Utils.locationDistance(
+            currentPosition,
+            product.restaurant_entity!,
+          );
+
+          product.restaurant_entity!.distanceBetweenMeandRestaurant =
+              double.parse(dist > 100 ? "100" : dist.toStringAsFixed(2));
+
+          product.restaurant_entity!.delivery_pricing =
+              _getShippingPrice(dist.toString(), billingMap);
         }
       }
-      food_and_products['products'] = products.map((p) => FoodItem.fromShopProduct(p)).toList();
-      food_and_products['foods'] =products
-      ;
+      food_and_products['products'] =
+          products.map((p) => FoodItem.fromShopProduct(p)).toList();
+      food_and_products['foods'] = products;
 
       return food_and_products;
     } catch (e, stack) {
@@ -131,10 +145,13 @@ class _FoodGridState extends State<FoodGrid> {
       throw Exception("Erreur lors du fetch: $e\nStack trace: $stack");
     }
   }
+
   void _onScroll() {
     if (!_scrollController.hasClients || _isLoadingMore || !_hasMore) return;
     const threshold = 200.0; // pixels before reaching bottom
-    if (_scrollController.position.maxScrollExtent - _scrollController.position.pixels <= threshold) {
+    if (_scrollController.position.maxScrollExtent -
+            _scrollController.position.pixels <=
+        threshold) {
       _loadMore();
     }
   }
@@ -165,12 +182,14 @@ class _FoodGridState extends State<FoodGrid> {
     futureFoods = fetchFoods(widget.foodType);
     _scrollController = ScrollController()..addListener(_onScroll);
   }
+
   @override
   void dispose() {
     _scrollController.removeListener(_onScroll);
     _scrollController.dispose();
     super.dispose();
   }
+
   @override
   void didUpdateWidget(covariant FoodGrid oldWidget) {
     super.didUpdateWidget(oldWidget);
@@ -183,12 +202,27 @@ class _FoodGridState extends State<FoodGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String,dynamic>>(
+    return FutureBuilder<Map<String, dynamic>>(
       future: futureFoods,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
+          return GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8),
+            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+              maxCrossAxisExtent: 230,
+              mainAxisExtent: 295,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
+            ),
+            itemCount: 6,
+            itemBuilder: (context, index) {
+              return buildFoodCardShimmer(context);
+            },
+          );
+        }
+        else if (snapshot.hasError) {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: SingleChildScrollView(
@@ -200,7 +234,8 @@ class _FoodGridState extends State<FoodGrid> {
               ),
             ),
           );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        }
+        else if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return const Center(child: Text("Aucun plat trouvé"));
         }
 
@@ -209,7 +244,8 @@ class _FoodGridState extends State<FoodGrid> {
         final foods = snapshot.data!["products"] ?? [];
 
         // Initialize the in-state lists if needed (first time or when data changed)
-        if (_allProducts.isEmpty || _allProducts.length != (foods as List).length) {
+        if (_allProducts.isEmpty ||
+            _allProducts.length != (foods as List).length) {
           // store all products and real foods in state so pagination can work
           _allProducts = List<dynamic>.from(foods);
           _allRealFoods = List<dynamic>.from(real_foods);
@@ -221,48 +257,67 @@ class _FoodGridState extends State<FoodGrid> {
           }
 
           // prepare initial slice
-          final initialCount = _allProducts.length < _perPage ? _allProducts.length : _perPage;
+          final initialCount =
+              _allProducts.length < _perPage ? _allProducts.length : _perPage;
           _displayedProducts = _allProducts.take(initialCount).toList();
           _hasMore = _displayedProducts.length < _allProducts.length;
         }
 
         // GridView with scroll controller that triggers loading more
         return LayoutBuilder(builder: (context, constraints) {
-          final bool hasFiniteHeight = constraints.maxHeight != double.infinity && constraints.maxHeight > 0;
+          final bool hasFiniteHeight =
+              constraints.maxHeight != double.infinity &&
+                  constraints.maxHeight > 0;
 
           if (hasFiniteHeight) {
             // GRID CAN SCROLL: use controller + auto load more on scroll
-            return GridView.builder(
+            return  GridView.builder(
               controller: _scrollController,
               padding: const EdgeInsets.all(8),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                mainAxisExtent: 300,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+              gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 230,
+                mainAxisExtent: 295,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
               ),
               itemCount: _displayedProducts.length + (_hasMore ? 1 : 0),
               itemBuilder: (context, index) {
                 if (index >= _displayedProducts.length) {
-                  return const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator()));
+                  return const Center(
+                      child: SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator()));
                 }
                 final food = _displayedProducts[index];
-                final ShopProductModel? real_food = (_realById.containsKey(food.id)) ? _realById[food.id] as ShopProductModel : null;
+                final ShopProductModel? real_food =
+                    (_realById.containsKey(food.id))
+                        ? _realById[food.id] as ShopProductModel
+                        : null;
 
                 final String ratingText = (real_food?.rating != null)
                     ? real_food!.rating!.toStringAsFixed(0)
-                    : (food.rating != null ? food.rating.toStringAsFixed(0) : '0');
-                final int reviewCount = real_food?.review_count ?? (food.review_count ?? 0);
-                final String distanceText = (real_food?.restaurant_entity?.distanceBetweenMeandRestaurant != null)
+                    : (food.rating != null
+                        ? food.rating.toStringAsFixed(0)
+                        : '0');
+                final int reviewCount =
+                    real_food?.review_count ?? (food.review_count ?? 0);
+                final String distanceText = (real_food?.restaurant_entity
+                            ?.distanceBetweenMeandRestaurant !=
+                        null)
                     ? "${real_food!.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
-                    : (food.restaurant_entity?.distanceBetweenMeandRestaurant != null
-                    ? "${food.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
-                    : "-Km");
-                final String deliveryPriceText = real_food?.restaurant_entity?.delivery_pricing?.toString() ??
+                    : (food.restaurant_entity?.distanceBetweenMeandRestaurant !=
+                            null
+                        ? "${food.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
+                        : "-Km");
+                final String deliveryPriceText = real_food
+                        ?.restaurant_entity?.delivery_pricing
+                        ?.toString() ??
                     food.restaurant_entity?.delivery_pricing?.toString() ??
                     "~";
 
-                return _buildFoodCard(context, food, ratingText, reviewCount, distanceText, deliveryPriceText, real_food);
+                return _buildFoodCard(context, food, ratingText, reviewCount,
+                    distanceText, deliveryPriceText, real_food);
               },
             );
           } else {
@@ -276,53 +331,81 @@ class _FoodGridState extends State<FoodGrid> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.all(8),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 300,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 230,
+                    mainAxisExtent: 295,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
                   ),
                   // only show the already loaded items (no load-more cell inside the grid)
                   itemCount: _displayedProducts.length,
                   itemBuilder: (context, index) {
                     final food = _displayedProducts[index];
                     final ShopProductModel? real_food =
-                    (_realById.containsKey(food.id)) ? _realById[food.id] as ShopProductModel : null;
+                        (_realById.containsKey(food.id))
+                            ? _realById[food.id] as ShopProductModel
+                            : null;
 
                     final String ratingText = (real_food?.rating != null)
                         ? real_food!.rating!.toStringAsFixed(0)
-                        : (food.rating != null ? food.rating.toStringAsFixed(0) : '0');
-                    final int reviewCount = real_food?.review_count ?? (food.review_count ?? 0);
-                    final String distanceText = (real_food?.restaurant_entity?.distanceBetweenMeandRestaurant != null)
+                        : (food.rating != null
+                            ? food.rating.toStringAsFixed(0)
+                            : '0');
+                    final int reviewCount =
+                        real_food?.review_count ?? (food.review_count ?? 0);
+                    final String distanceText = (real_food?.restaurant_entity
+                                ?.distanceBetweenMeandRestaurant !=
+                            null)
                         ? "${real_food!.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
-                        : (food.restaurant_entity?.distanceBetweenMeandRestaurant != null
-                        ? "${food.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
-                        : "-Km");
-                    final String deliveryPriceText = real_food?.restaurant_entity?.delivery_pricing?.toString() ??
+                        : (food.restaurant_entity
+                                    ?.distanceBetweenMeandRestaurant !=
+                                null
+                            ? "${food.restaurant_entity!.distanceBetweenMeandRestaurant}Km"
+                            : "-Km");
+                    final String deliveryPriceText = real_food
+                            ?.restaurant_entity?.delivery_pricing
+                            ?.toString() ??
                         food.restaurant_entity?.delivery_pricing?.toString() ??
                         "~";
 
-                    return _buildFoodCard(context, food, ratingText, reviewCount, distanceText, deliveryPriceText, real_food);
+                    return _buildFoodCard(
+                        context,
+                        food,
+                        ratingText,
+                        reviewCount,
+                        distanceText,
+                        deliveryPriceText,
+                        real_food);
                   },
                 ),
 
                 // Load more button / spinner (full width, outside grid)
                 if (_hasMore)
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 12.0),
                     child: SizedBox(
                       width: double.infinity,
                       child: _isLoadingMore
-                          ? const SizedBox(height: 44, child: Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator())))
+                          ? const SizedBox(
+                              height: 44,
+                              child: Center(
+                                  child: SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: CircularProgressIndicator())))
                           : ElevatedButton(
-                        onPressed: _loadMore,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(44),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          backgroundColor: KColors.primaryColor,
-                        ),
-                        child: Text("${AppLocalizations.of(context)!.translate("load_more")}", ),
-                      ),
+                              onPressed: _loadMore,
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(44),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12)),
+                                backgroundColor: KColors.primaryColor,
+                              ),
+                              child: Text(
+                                "${AppLocalizations.of(context)!.translate("load_more")}",
+                              ),
+                            ),
                     ),
                   ),
               ],
@@ -331,34 +414,114 @@ class _FoodGridState extends State<FoodGrid> {
         });
       },
     );
-
   }
-  Widget _buildFoodCard(
-      BuildContext context,
-      dynamic food,
-      String ratingText,
-      int reviewCount,
-      String distanceText,
-      String deliveryPriceText,
-      ShopProductModel? real_food,
-      ) {
+  Widget buildFoodCardShimmer(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: BorderSide(width: .5, color: KColors.primaryColor),
-      ),
+      clipBehavior: Clip.antiAlias,
       color: Colors.white,
-      elevation: 3,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      elevation: 1,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            child: Builder(builder: (context) {
-              final imageUrl = Utils.inflateLink(food.pic);
-              return Image.network(
+          Stack(
+            children: [
+              _shimmerBox(
+                width: double.infinity,
+                height: 135,
+                radius: 0,
+              ),
+
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: _shimmerBox(
+                  width: 78,
+                  height: 26,
+                  radius: 20,
+                ),
+              ),
+            ],
+          ),
+
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _shimmerBox(width: double.infinity, height: 14),
+                const SizedBox(height: 6),
+
+                _shimmerBox(width: 120, height: 12),
+                const SizedBox(height: 10),
+
+                _shimmerBox(width: 95, height: 12),
+                const SizedBox(height: 6),
+
+                _shimmerBox(width: 135, height: 12),
+                const SizedBox(height: 12),
+
+                _shimmerBox(
+                  width: double.infinity,
+                  height: 34,
+                  radius: 10,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  Widget _shimmerBox({
+    required double width,
+    required double height,
+    double radius = 8,
+  }) {
+    return Shimmer(
+      duration: const Duration(seconds: 2),
+      interval: const Duration(milliseconds: 300),
+      color: Colors.white,
+      colorOpacity: 0.4,
+      enabled: true,
+      direction: const ShimmerDirection.fromLTRB(),
+      child: Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey.shade300.withOpacity(.5),
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+    );
+  }
+  Widget _buildFoodCard(
+    BuildContext context,
+    dynamic food,
+    String ratingText,
+    int reviewCount,
+    String distanceText,
+    String deliveryPriceText,
+    ShopProductModel? real_food,
+  ) {
+    final imageUrl = Utils.inflateLink(food.pic);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      elevation: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Image.network(
                 imageUrl,
-                height: 130,
+                height: 135,
                 width: double.infinity,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
@@ -376,95 +539,139 @@ class _FoodGridState extends State<FoodGrid> {
                     ),
                   );
                 },
-
-              );
-            }),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              food.name,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              food.restaurantName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.grey.shade600),
-            ),
-          ),
-          const SizedBox(height: 5),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 18),
-                        const SizedBox(width: 4),
-                        Text(ratingText),
-                        const SizedBox(width: 5),
-                        reviewCount != 0 ? Text("($reviewCount)") : Container(),
-                      ],
-                    ),
-                    Text(
-                      "${food.price} FCFA",
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.location_on_outlined),
-                        Text(distanceText),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Text("$deliveryPriceText FCFA", style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.bold))
-                  ],
-                )
-              ],
-            ),
-          ),
-          const Spacer(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SizedBox(
-              width: double.infinity,
-              height: 36,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+              Positioned(
+                right: 8,
+                bottom: 8,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 5,
                   ),
-                  backgroundColor: KColors.primaryColor,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Wrap(
+                    children: [
+                      AutoSizeText(
+                        "${food!.price} F",
+                        minFontSize: 9,
+                        maxFontSize: 13,
+                        overflow: TextOverflow.ellipsis,
+                        style:  TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: real_food!.promotion==1? Colors.grey: Colors.red,
+                            fontSize: 13,
+                            decoration:real_food!.promotion==1?  TextDecoration.lineThrough:null
+                        ),
+                      ),
+                      AutoSizeText(
+                        "${real_food!.promotion_price} F",
+                        minFontSize: 9,
+                        maxFontSize: 13,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.red,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  final safePrice = (food.price != 0) ? food.price.toString() : '0';
-                  final safeFood = ShopProductModel(id: food.id, name: food.name, price: safePrice, pic: food.pic, stars: 0, restaurant_entity: null);
-                  final navFood = real_food ?? safeFood;
-                  debugPrint("NAV -> ShopFlowerDetailsPage: id=${navFood.id} price=${navFood.price}");
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ShopFlowerDetailsPage(food: navFood, foodId: food.id)),
-                  );
-                },
-                child: Text("${AppLocalizations.of(context)!.translate("buy")}"),
               ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  food.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 14,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  food.restaurantName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "⭐ $ratingText · $reviewCount avis",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 12),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "📍 $distanceText · 🚴 $deliveryPriceText F",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: Colors.grey.shade700,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  width: double.infinity,
+                  height: 34,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      backgroundColor:real_food!.promotion ==1?KColors.pureGreen.withOpacity(.8):KColors.primaryColor,
+                    ),
+
+                    onPressed: () async{
+                      CustomerModel customer = await CustomerUtils.getCustomer();
+                      final safePrice =
+                          (food.price != 0) ? food.price.toString() : '0';
+                      final safeFood = ShopProductModel(
+                          id: food.id,
+                          name: food.name,
+                          price: safePrice,
+                          pic: food.pic,
+                          stars: 0,
+                          restaurant_entity: null);
+                      final navFood = real_food ?? safeFood;
+                      debugPrint(
+                          "NAV -> ShopFlowerDetailsPage: id=${navFood.id} price=${navFood.price}");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => real_food!.promotion!=1?
+                                ShopFlowerDetailsPage(food: navFood, foodId: food.id):
+                                RestaurantMenuPage(
+                                  presenter: MenuPresenter(MenuView()),
+                                  restaurant: real_food.restaurant_entity,
+                                  menuId: int.parse(real_food.menu_id!),
+                                  customer: customer,
+                                  highlightedFoodId: real_food.id,
+                                  fromNotification: false,
+                                )),
+                      );
+                    },
+                    child: AutoSizeText(
+                      AppLocalizations.of(context)!.translate(real_food!.promotion==1?"ad_check_menu":"buy"),
+                      maxFontSize: 15,
+                      minFontSize: 10,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -472,7 +679,8 @@ class _FoodGridState extends State<FoodGrid> {
     );
   }
 
-  String? _getShippingPrice(String distance, Map<String, String> myBillingArray) {
+  String? _getShippingPrice(
+      String distance, Map<String, String> myBillingArray) {
     try {
       int distanceInt = double.parse(distance).round();
       return myBillingArray["$distanceInt"] ?? "~";

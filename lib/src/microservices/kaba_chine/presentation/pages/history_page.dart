@@ -73,16 +73,7 @@ class _DeliveryHistoryState extends State<DeliveryHistory> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
 
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text("${AppLocalizations.of(context)!.translate("delivery_history")}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
-                    SizedBox(height: 10),
-                    Icon(Icons.history,color: Colors.white,size: 30,)
-
-                  ],
-                ),
+                Text("${AppLocalizations.of(context)!.translate("delivery_history")}",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 23),),
                 GestureDetector(
                   onTap: (){
                     Navigator.of(context).pop();

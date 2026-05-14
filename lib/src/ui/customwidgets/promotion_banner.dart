@@ -1,7 +1,10 @@
 import 'dart:math' as math;
 
+import 'package:KABA/src/localizations/AppLocalizations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class PromoBadge extends StatefulWidget {
   final String text;
@@ -63,7 +66,10 @@ class _PromoBadgeState extends State<PromoBadge>
                 ),
               ],
             ),
-            child: Text(
+            child: AutoSizeText(
+              maxLines: 1,
+              minFontSize: 10,
+              maxFontSize: 13,
               widget.text,
               style: const TextStyle(
                 color: Color(0xFFD7194A),
@@ -97,7 +103,7 @@ class PromoBanner extends StatelessWidget {
         clipBehavior: Clip.none,
         children: [
           Container(
-            height: 210,
+            height: 210.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(26),
               gradient: const LinearGradient(
@@ -131,12 +137,16 @@ class PromoBanner extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const PromoBadge(text: "OFFRES DU MOMENT"),
+                            PromoBadge(text: AppLocalizations.of(context)!.translate('offers_of_the_moment')),
 
                             const SizedBox(height: 16),
 
-                            const Text(
-                              "Le bon moment\npour commander",
+                             AutoSizeText
+                              (
+                              AppLocalizations.of(context)!.translate('best_time_to_order'),
+                              maxLines: 2,
+                              minFontSize: 10,
+                              maxFontSize: 24,
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 24,
@@ -147,10 +157,11 @@ class PromoBanner extends StatelessWidget {
 
                             const SizedBox(height: 8),
 
-                            Text(
-                              "Des promotions sont disponibles chez $merchantName",
+                            AutoSizeText(
                               maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
+                              "${AppLocalizations.of(context)!.translate("promotions_available_at")} $merchantName",
+                              maxFontSize: 14,
+                              minFontSize: 10,
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.92),
                                 fontSize: 13.5,
@@ -172,8 +183,8 @@ class PromoBanner extends StatelessWidget {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(999),
                                 ),
-                                child: const Text(
-                                  "Voir les offres",
+                                child:  Text(
+                                  "${AppLocalizations.of(context)!.translate("see_offers")}",
                                   style: TextStyle(
                                     color: Color(0xFFD7194A),
                                     fontSize: 13,
@@ -299,20 +310,30 @@ class DeliveryPromoBanner extends StatelessWidget {
 
   String get discountText => promo["type_reduction"] ?? "";
 
-  String? get minimumText {
+  String?  minimumText(BuildContext context) {
     final value = promo["montant_minimum"];
     if (value == null || value.toString().isEmpty) return null;
-    return "Dès $value d’achat";
+    return  AppLocalizations.of(context)!
+        .translate("minimum_purchase")
+        .replaceAll("{amount}", value.toString());
   }
 
-  List<Map<String, dynamic>> get chips {
+  List<Map<String, dynamic>> chips(BuildContext context) {
     final items = <Map<String, dynamic>>[];
-    int rayon = int.parse(
-      promo["rayon_km"]
-          .toString()
-          .replaceAll("km", "")
-          .replaceAll(" ", ""),
-    );
+
+    final rayonRaw = promo["rayon_km"];
+
+    int? rayon;
+
+    if (rayonRaw != null) {
+      rayon = int.tryParse(
+        rayonRaw
+            .toString()
+            .replaceAll("km", "")
+            .replaceAll(" ", ""),
+      );
+    }
+
     final heureDebut = promo["heure_debut"];
     final heureFin = promo["heure_fin"];
     final dateFin = promo["date_fin"];
@@ -320,24 +341,29 @@ class DeliveryPromoBanner extends StatelessWidget {
     if (rayon == null) {
       items.add({
         "icon": Icons.location_on_rounded,
-        "text": "Zone éligible",
+        "text": AppLocalizations.of(context)!
+            .translate("eligible_zone"),
       });
     } else if (rayon >= 15) {
       items.add({
         "icon": Icons.location_on_rounded,
-        "text": "Partout à Lomé",
+        "text": AppLocalizations.of(context)!
+            .translate("everywhere_in_lome"),
       });
     } else {
       items.add({
         "icon": Icons.location_on_rounded,
-        "text": "$rayon km autour",
+        "text": AppLocalizations.of(context)!
+            .translate("km_around")
+            .replaceAll("{km}", rayon.toString()),
       });
     }
 
     if (heureDebut == null || heureFin == null) {
       items.add({
         "icon": Icons.access_time_rounded,
-        "text": "À tout moment",
+        "text": AppLocalizations.of(context)!
+            .translate("anytime"),
       });
     } else {
       items.add({
@@ -349,16 +375,17 @@ class DeliveryPromoBanner extends StatelessWidget {
     if (dateFin != null && dateFin.toString().isNotEmpty) {
       items.add({
         "icon": Icons.calendar_month_rounded,
-        "text": "Jusqu’au $dateFin",
+        "text": AppLocalizations.of(context)!
+            .translate("until_date")
+            .replaceAll("{date}", dateFin.toString()),
       });
     }
 
     return items;
   }
-
   @override
   Widget build(BuildContext context) {
-    final promoChips = chips;
+    final promoChips = chips(context);
 
     return GestureDetector(
       onTap: onTap,
@@ -368,7 +395,7 @@ class DeliveryPromoBanner extends StatelessWidget {
           clipBehavior: Clip.none,
           children: [
             Container(
-              height: 210,
+              height: 210.h,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(26),
                 gradient: const LinearGradient(
@@ -402,12 +429,14 @@ class DeliveryPromoBanner extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const PromoBadge(text: "PROMO LIVRAISON"),
+                              PromoBadge(text: AppLocalizations.of(context)!.translate('delivery_promo')),
 
                               const SizedBox(height: 12),
 
-                              Text(
-                                "-$discountText sur la livraison",
+                              AutoSizeText(
+                                maxFontSize: 30,
+                                minFontSize: 15,
+                                "-$discountText ${AppLocalizations.of(context)!.translate("delivery_discount_2")}",
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
@@ -421,9 +450,9 @@ class DeliveryPromoBanner extends StatelessWidget {
                               const SizedBox(height: 7),
 
                               Text(
-                                minimumText ??
-                                    "Profite d’une livraison réduite chez $merchantName",
-                                maxLines: 1,
+                                minimumText(context) ??
+                                    "${AppLocalizations.of(context)!.translate("reduced_delivery_at")} $merchantName",
+                                maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color:
@@ -436,16 +465,20 @@ class DeliveryPromoBanner extends StatelessWidget {
 
                               const Spacer(),
 
-                              Wrap(
-                                spacing: 6,
-                                runSpacing: 6,
-                                children: promoChips.take(3).map((chip) {
-                                  return _PromoInfoChip(
-                                    icon: chip["icon"],
-                                    text: chip["text"],
-                                  );
-                                }).toList(),
-                              ),
+                              SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  children: promoChips.take(3).map((chip) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(right: 6),
+                                      child: _PromoInfoChip(
+                                        icon: chip["icon"],
+                                        text: chip["text"],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -562,8 +595,8 @@ class DiscountSticker extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              "OFFRE",
+             Text(
+              "${AppLocalizations.of(context)!.translate("offer")}",
               style: TextStyle(
                 color: Color(0xFFFFB800),
                 fontSize: 10,
@@ -582,8 +615,8 @@ class DiscountSticker extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 3),
-            const Text(
-              "sur livraison",
+            Text(
+              "${AppLocalizations.of(context)!.translate("on_delivery")}",
               style: TextStyle(
                 color: Color(0xFF7A3E00),
                 fontSize: 11,
@@ -682,7 +715,7 @@ class _PromotionCarouselState extends State<PromotionCarousel>
     return Column(
       children: [
         SizedBox(
-          height: 215,
+          height: 215.h,
           child: PageView.builder(
             controller: _pageController,
             itemCount: _items.length,
@@ -786,8 +819,8 @@ class _DiscountBurst extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "JUSQU’À",
+            Text(
+              "${AppLocalizations.of(context)!.translate("up_to")}",
               style: TextStyle(
                 color: Color(0xFFFF9F1C),
                 fontSize: 9,
@@ -804,8 +837,8 @@ class _DiscountBurst extends StatelessWidget {
                 height: 1,
               ),
             ),
-            const Text(
-              "OFFERT",
+             Text(
+              "${AppLocalizations.of(context)!.translate("free")}",
               style: TextStyle(
                 color: Color(0xFF7A3E00),
                 fontSize: 9,

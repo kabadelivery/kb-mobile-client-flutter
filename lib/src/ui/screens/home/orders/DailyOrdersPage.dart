@@ -252,17 +252,19 @@ class _DailyOrdersPageState extends State<DailyOrdersPage>
                 ),
               ),
             ),
-            AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.dark,
-              child: Container(
-                height: MediaQuery.of(context).size.height*.70,
-                  child: isLoading
-                      ? Center(child: MyLoadingProgressWidget())
-                      : (hasNetworkError
-                          ? _buildNetworkErrorPage()
-                          : hasSystemError
-                              ? _buildSysErrorPage()
-                              : _buildOrderList())),
+            Expanded(
+              child: AnnotatedRegion<SystemUiOverlayStyle>(
+                value: SystemUiOverlayStyle.dark,
+                child: Container(
+                  height: MediaQuery.of(context).size.height*.70,
+                    child: isLoading
+                        ? Center(child: MyLoadingProgressWidget())
+                        : (hasNetworkError
+                            ? _buildNetworkErrorPage()
+                            : hasSystemError
+                                ? _buildSysErrorPage()
+                                : _buildOrderList())),
+              ),
             ),
           ],
         ));

@@ -17,6 +17,7 @@ import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/_static_data/ServerConfig.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
 import 'package:KABA/src/xrint.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -115,6 +116,9 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
       appBar: AppBar(
         toolbarHeight: StateContainer.ANDROID_APP_SIZE,
         backgroundColor: KColors.primaryColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25),bottomRight: Radius.circular(25))
+        ),
         leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white, size: 20),
             onPressed: () {
@@ -182,263 +186,407 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
         Expanded(
           child: Stack(
             children: <Widget>[
-              Container(
-                height: 9 * MediaQuery.of(context).size.width / 16,
-                width: MediaQuery.of(context).size.width,
-                color: Colors.redAccent,
-                child: CarouselSlider(
-                  options: CarouselOptions(
-                    viewportFraction: 1.0,
-                    autoPlay: images?.length != null && images.length > 1
-                        ? true
-                        : false,
-                    reverse: images?.length != null && images.length > 1
-                        ? true
-                        : false,
-                    enableInfiniteScroll:
-                        images?.length != null && images.length > 1
-                            ? true
-                            : false,
-                    autoPlayInterval: Duration(seconds: 5),
-                    autoPlayAnimationDuration: Duration(milliseconds: 300),
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    height: expandedHeight,
-                    onPageChanged: _carousselPageChanged,
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  height: 9 * MediaQuery.of(context).size.width / 16,
+                  width: MediaQuery.of(context).size.width,
+                  decoration:BoxDecoration(
+                    color: Colors.redAccent,
+                    borderRadius: BorderRadius.circular(25)
                   ),
-                  items: images?.map<Widget>((pictureLink) {
-                    return Builder(
-                      builder: (BuildContext context) {
-                        return Container(
-                            height: 9 * MediaQuery.of(context).size.width / 16,
-                            width: MediaQuery.of(context).size.width,
-                            child: CachedNetworkImage(
+                  child: CarouselSlider(
+                    options: CarouselOptions(
+                      viewportFraction: 1.0,
+                      autoPlay: images?.length != null && images.length > 1
+                          ? true
+                          : false,
+                      reverse: images?.length != null && images.length > 1
+                          ? true
+                          : false,
+                      enableInfiniteScroll:
+                          images?.length != null && images.length > 1
+                              ? true
+                              : false,
+                      autoPlayInterval: Duration(seconds: 5),
+                      autoPlayAnimationDuration: Duration(milliseconds: 300),
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      height: expandedHeight,
+                      onPageChanged: _carousselPageChanged,
+                    ),
+                    items: images?.map<Widget>((pictureLink) {
+                      return Builder(
+                        builder: (BuildContext context) {
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(25),
+                            child: Container(
+                              height: 9 * MediaQuery.of(context).size.width / 16,
+                              width: MediaQuery.of(context).size.width,
+                              child: CachedNetworkImage(
                                 imageUrl: Utils.inflateLink(pictureLink),
-                                fit: BoxFit.cover));
-                      },
-                    );
-                  })?.toList(),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    })?.toList(),
+                  ),
                 ),
               ),
               SingleChildScrollView(
-                  child: Column(children: <Widget>[
-                SizedBox(
-                  height: 9 * MediaQuery.of(context).size.width / 16,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 9 * MediaQuery.of(context).size.width / 15,
+                    ),
+
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 18,
+                      ),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          /// INDICATORS
+                          if ((images?.length ?? 0) > 1)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 18),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: List.generate(
+                                  images?.length ?? 0,
+                                      (index) {
+                                    final bool isActive =
+                                        _carousselPageIndex == index;
+
+                                    return AnimatedContainer(
+                                      duration: const Duration(milliseconds: 250),
+                                      margin: const EdgeInsets.symmetric(horizontal: 3),
+                                      height: 8,
+                                      width: isActive ? 22 : 8,
+
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(999),
+                                        color: isActive
+                                            ? KColors.primaryColor
+                                            : KColors.primaryColor.withOpacity(.2),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+
+                          /// TITLE + PRICE
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              /// LEFT
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+
+                                    Text(
+                                      Utils.capitalize(
+                                        widget.food?.name ?? "",
+                                      ),
+
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.w800,
+                                        color: KColors.new_black,
+                                        height: 1.2,
+                                      ),
+                                    ),
+
+                                    const SizedBox(height: 10),
+
+                                    if (widget.food?.promotion != 0)
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 5,
+                                        ),
+
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFFFE5EA),
+                                          borderRadius: BorderRadius.circular(999),
+                                        ),
+
+                                        child: Text(
+                                          "PROMO",
+
+                                          style: TextStyle(
+                                            color: KColors.primaryColor,
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+
+                              const SizedBox(width: 12),
+
+                              /// RIGHT PRICE
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+
+                                  if (widget.food!.promotion != 0)
+                                    Text(
+                                      "${widget.food?.price} ${AppLocalizations.of(context)!.translate('currency')}",
+
+                                      style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: 12,
+                                        decoration: TextDecoration.lineThrough,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      AutoSizeText(
+                                        "${widget.food!.promotion != 0 ? widget.food?.promotion_price : widget.food?.price}",
+
+                                        maxLines: 1,
+                                        minFontSize: 16,
+
+                                        style: TextStyle(
+                                          color: widget.food!.promotion == 0
+                                              ? KColors.primaryColor
+                                              : KColors.primaryYellowColor,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 4),
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 3),
+                                        child: Text(
+                                          AppLocalizations.of(context)!
+                                              .translate('currency'),
+
+                                          style: TextStyle(
+                                            color: widget.food!.promotion == 0
+                                                ? KColors.primaryColor
+                                                : KColors.primaryYellowColor,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 25),
+
+                          /// DESCRIPTION TITLE
+                          Text(
+                            AppLocalizations.of(context)!
+                                .translate('product_description_section_title'),
+
+                            style: TextStyle(
+                              color: KColors.new_black,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          /// DESCRIPTION
+                          Text(
+                            "${widget.food?.description?.trim()}",
+
+                            style: TextStyle(
+                              color: Colors.grey.shade700,
+                              fontSize: 13,
+                              height: 1.5,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+
+                          const SizedBox(height: 20),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
+              ),
+              /* bottom bar for quantity and others */
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 18,
+                    right: 18,
+                    top: 16,
+                    bottom: MediaQuery.of(context).padding.bottom + 16,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    /*  borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(20),
-                          topRight: Radius.circular(20))*/
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(28),
+                      topRight: Radius.circular(28),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(.08),
+                        blurRadius: 28,
+                        offset: const Offset(0, -8),
+                      ),
+                    ],
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            right: 8.0, top: 10, bottom: 5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[]..addAll(List<Widget>.generate(
-                                    images?.length == null ? 0 : images?.length,
-                                    (int index) {
-                              return Container(
-                                  margin: EdgeInsets.only(right: 2.5, top: 2.5),
-                                  height: 9,
-                                  width: _carousselPageIndex == index ? 18 : 9,
-                                  decoration: new BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(10)),
-                                      color: (index == _carousselPageIndex ||
-                                              index == images.length)
-                                          ? KColors.primaryColor
-                                          : KColors.primaryColor
-                                              .withAlpha(50)));
-                            })
-                                /* add a list of rounded views */
-                                ),
+                      Container(
+                        width: 45,
+                        height: 4,
+                        margin: const EdgeInsets.only(bottom: 18),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(999),
                         ),
                       ),
-                      Container(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                            SizedBox(
-                              height: 10,
+
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 8,
                             ),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            decoration: BoxDecoration(
+                              color: KColors.primaryColor.withOpacity(.08),
+                              borderRadius: BorderRadius.circular(999),
+                            ),
+                            child: Row(
                               children: [
-                                Expanded(
-                                  child: Text(
-                                      "${widget.food?.name?.toUpperCase()}",
-                                      textAlign: TextAlign.start,
-                                      style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey)),
+                                _qtyButton(
+                                  icon: Icons.remove,
+                                  onTap: _decreaseQuantity,
                                 ),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      widget.food!.promotion == 0
-                                          ? Text("${widget.food?.price}",
-                                              style: TextStyle(
-                                                  color: KColors.primaryColor,
-                                                  fontSize: 20,
-                                                  fontWeight: FontWeight.bold))
-                                          : Text("${widget.food?.price}",
-                                              style: TextStyle(
-                                                  color: KColors.new_black,
-                                                  decoration: TextDecoration
-                                                      .lineThrough,
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold)),
-                                      widget.food!.promotion != 0
-                                          ? Row(children: <Widget>[
-                                              SizedBox(width: 5),
-                                              Text(
-                                                  "${widget.food?.promotion_price}",
-                                                  style: TextStyle(
-                                                      color: KColors
-                                                          .primaryYellowColor,
-                                                      fontSize: 20,
-                                                      fontWeight:
-                                                          FontWeight.bold)
-                                              ),
-                                            ])
-                                          : Container(),
-                                      SizedBox(width: 5),
-                                      Text(
-                                          "${AppLocalizations.of(context)!.translate('currency')}",
-                                          style: TextStyle(
-                                              color: widget.food!.promotion == 0
-                                                  ? KColors.primaryColor
-                                                  : KColors.primaryYellowColor,
-                                              fontSize: 12))
-                                    ]),
-                              ],
-                            ),
-                            SizedBox(height: 20),
-                            Row(children: [
-                              Text(
-                                  "${AppLocalizations.of(context)!.translate('product_description_section_title')}",
-                                  style: TextStyle(
+
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 18),
+                                  child: Text(
+                                    "$quantity",
+                                    style: TextStyle(
                                       color: KColors.new_black,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600))
-                            ]),
-                            SizedBox(height: 5),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                      "${widget.food?.description?.trim()}",
-                                      style: TextStyle(
-                                          color: Colors.grey, fontSize: 12)),
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                    ),
+                                  ),
+                                ),
+
+                                _qtyButton(
+                                  icon: Icons.add,
+                                  onTap: _increaseQuantity,
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20)
-                          ])),
+                          ),
+
+                          const Spacer(),
+
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                AppLocalizations.of(context)!.translate('total'),
+                                style: TextStyle(
+                                  color: Colors.grey.shade500,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
+                                "${_getTotalPrice()} ${AppLocalizations.of(context)!.translate('currency')}",
+                                style: TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 54,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: KColors.primaryColor,
+                            elevation: 0,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
+                            ),
+                          ),
+                          onPressed: () async {
+                            await showDialog(
+                              context: context,
+                              builder: (context) => PreparationPopup(
+                                preparationTime:
+                                widget.food!.restaurant_entity!.cooking_time ?? 35,
+                              ),
+                            ).then((value) {
+                              if (value != null) {
+                                if (value['success']) {
+                                  _continuePurchase();
+                                } else {
+                                  Navigator.pop(context);
+                                }
+                              }
+                            });
+                          },
+                          child: Text(
+                            AppLocalizations.of(context)!
+                                .translate('buy')
+                                .toUpperCase(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w900,
+                              letterSpacing: .5,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
-              ])),
-              /* bottom bar for quantity and others */
-              Positioned(
-                bottom: 0,
-                child: Container(
-                  color: Colors.white,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(bottom: 40),
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                              Container(
-                                child: IconButton(
-                                    icon: Icon(Icons.remove,
-                                        size: 15, color: KColors.primaryColor),
-                                    onPressed: () => _decreaseQuantity()),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: KColors.primaryColor.withAlpha(50)),
-                              ),
-                              SizedBox(width: 15),
-                              Text("${quantity}",
-                                  style: TextStyle(
-                                      color: KColors.new_black,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                              SizedBox(width: 15),
-                              Container(
-                                child: IconButton(
-                                    icon: Icon(Icons.add,
-                                        size: 15, color: KColors.primaryColor),
-                                    onPressed: () => _increaseQuantity()),
-                                height: 30,
-                                width: 30,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: KColors.primaryColor.withAlpha(50)),
-                              ),
-                            ])),
-                        SizedBox(height: 10),
-                        Text(
-                            "${_getTotalPrice()}${AppLocalizations.of(context)!.translate('currency')}",
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey)),
-                        SizedBox(height: 15),
-                        Container(
-                          margin:
-                              EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                          child: ElevatedButton(
-                              onPressed: () async{
-                               await showDialog(
-                                  context: context,
-                                  builder: (context) => PreparationPopup(
-                                    preparationTime: widget.food!.restaurant_entity!.cooking_time??35, // Dynamic value here
-                                  ),
-                                ).then((value ){
-                                  if(value != null ){
-                                    if(value['success']){
-                                      _continuePurchase();
-                                    }else{
-                                      Navigator.pop(context);
-                                    }
-                                  }
-                                });
-
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Text(
-                                      "${AppLocalizations.of(context)!.translate('buy')}"!
-                                          .toUpperCase(),
-                                      style: TextStyle(
-                                          color: KColors.white, fontSize: 15)),
-                                ],
-                              )),
-                        )
-                      ]),
-                ),
-              )
+              ),
             ],
           ),
         ),
@@ -702,5 +850,33 @@ class _ShopFlowerDetailsPageState extends State<ShopFlowerDetailsPage>
     );
 
 
+  }
+  Widget _qtyButton({
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        height: 32,
+        width: 32,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Icon(
+          icon,
+          size: 16,
+          color: KColors.primaryColor,
+        ),
+      ),
+    );
   }
 }

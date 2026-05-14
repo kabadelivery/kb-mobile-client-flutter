@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -266,30 +267,30 @@ class PreparationPopup extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "de votre commande:",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Container(
-                            child: Text(
-                              "$preparationTime minutes",
-                              style: const TextStyle(
-                                fontSize: 18,
-                                color: Color(0xFFD02245),
-                                fontWeight: FontWeight.bold,
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
+                          children: [
+                            Text(
+                              "de votre commande:",
+                              style: TextStyle(
+                                fontSize: 16,
                               ),
-                              textAlign: TextAlign.center,
                             ),
-                          ),
-                        ],
-                      ),
+
+                            SizedBox(width: 5),
+
+                            Text(
+                              "$preparationTime minutes",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color(0xFFD02245),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

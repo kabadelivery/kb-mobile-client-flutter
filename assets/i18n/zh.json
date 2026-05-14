@@ -1228,5 +1228,59 @@
   "sendCodeButton": "发送验证码",
   "enter_num_or_email": "请输入您的电话号码或电子邮件地址以接收一次性密码。",
   "resetPasswordTitle": "设置新密码",
-  "recoverAccountTitle": "恢复您的账户"
+  "recoverAccountTitle": "恢复您的账户",
+  "offers_of_the_moment": "当前优惠",
+  "best_time_to_order": "现在正是\n下单的好时机",
+  "promotions_available_at": "有优惠活动",
+  "see_offers": "查看优惠",
+  "delivery_promo": "配送优惠",
+  "delivery_discount_2": "配送立减",
+  "minimum_purchase": "满 {amount} 可用",
+  "reduced_delivery_at": "享受 {merchantName} 的配送优惠",
+  "eligible_zone": "适用区域",
+  "everywhere_in_lome": "洛美全城适用",
+  "km_around": "{km} 公里范围内",
+  "anytime": "任何时间",
+  "until_date": "截止至 {date}",
+  "offer": "优惠",
+  "on_delivery": "配送优惠",
+  "up_to": "最高",
+  "free": "免费",
+  "enjoy_gourmet_offer_at": "享受美食优惠",
+  "special_promo": "特别优惠",
+  "@promotions_available_at": {
+    "placeholders": {
+      "merchantName": {}
+    }
+  },
+
+  "@delivery_discount": {
+    "placeholders": {
+      "discount": {}
+    }
+  },
+
+  "@minimum_purchase": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "@reduced_delivery_at": {
+    "placeholders": {
+      "merchantName": {}
+    }
+  },
+
+  "@km_around": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "@until_date": {
+    "placeholders": {
+      "date": {}
+    }
+  }
 }

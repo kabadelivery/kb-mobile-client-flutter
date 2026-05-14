@@ -1230,5 +1230,59 @@
   "sendCodeButton": "Envoyer le code",
   "enter_num_or_email": "Entrez votre téléphone ou email pour recevoir un code OTP.",
   "resetPasswordTitle": "Définir un nouveau mot de passe",
-  "recoverAccountTitle": "Récupérer votre compte"
+  "recoverAccountTitle": "Récupérer votre compte",
+  "offers_of_the_moment": "OFFRES DU MOMENT",
+  "best_time_to_order": "Le bon moment\npour commander",
+  "promotions_available_at": "Des promotions sont disponibles chez",
+  "see_offers": "Voir les offres",
+  "delivery_promo": "PROMO LIVRAISON",
+  "delivery_discount_2": " sur la livraison",
+  "minimum_purchase": "Dès {amount} d’achat",
+  "reduced_delivery_at": "Profite d’une livraison réduite chez",
+  "eligible_zone": "Zone éligible",
+  "everywhere_in_lome": "Partout à Lomé",
+  "km_around": "{km} km autour",
+  "anytime": "À tout moment",
+  "until_date": "Jusqu’au {date}",
+  "offer": "OFFRE",
+  "on_delivery": "sur livraison",
+  "up_to": "JUSQU’À",
+  "free": "OFFERT",
+  "enjoy_gourmet_offer_at": "Profite d’une offre gourmande chez",
+  "special_promo": "Promo spéciale",
+  "@promotions_available_at": {
+    "placeholders": {
+      "merchantName": {}
+    }
+  },
+
+  "@delivery_discount": {
+    "placeholders": {
+      "discount": {}
+    }
+  },
+
+  "@minimum_purchase": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+
+  "@reduced_delivery_at": {
+    "placeholders": {
+      "merchantName": {}
+    }
+  },
+
+  "@km_around": {
+    "placeholders": {
+      "km": {}
+    }
+  },
+
+  "@until_date": {
+    "placeholders": {
+      "date": {}
+    }
+  }
 }

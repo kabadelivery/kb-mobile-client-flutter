@@ -181,6 +181,7 @@ class RestaurantApiProvider {
     }
   }
   searchForFood(String category, String query, String token) async {
+    xrint("Entered searchForFood  : $query");
     if (await Utils.hasNetwork()) {
       final dio = Dio();
       dio.options
@@ -200,15 +201,19 @@ class RestaurantApiProvider {
       };
 
       final response = await dio.get(
-        ServerRoutes.NEW_SEARCH_FOOD_ACTION,
-        queryParameters: {
+        query.toLowerCase().contains('promo')?
+            ServerRoutes.SEARCH_FOOD_PROMO_ACTION
+            :ServerRoutes.NEW_SEARCH_FOOD_ACTION,
+        queryParameters: query.toLowerCase().contains('promo')?{
+          'category': category,
+        }:{
           'category': category,
           'filter': query,
         },
       );
 
       final data = response.data;
-
+      xrint("Fetched Data $data");
       if (response.statusCode == 200 && (data['error'] ?? 0) == 0) {
         final List foodsJson = data['data'] ?? [];
         return foodsJson

@@ -28,6 +28,7 @@ import 'package:KABA/src/utils/_static_data/routes.dart';
 import 'package:KABA/src/utils/functions/CustomerUtils.dart';
 import 'package:KABA/src/xrint.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -38,6 +39,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:http/http.dart' as http;
 //import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -143,7 +145,11 @@ Future<void> main() async {
               BlocProvider<AuthBloc>(
                 create: (context) => AuthBloc(),
               ),
-            ], child: MyApp(appLanguage: appLanguage))))
+          ], child:DevicePreview(
+          enabled: kDebugMode,
+          builder: (context) =>  MyApp(appLanguage: appLanguage,),
+        ),
+        )))
     );
   });
 }
@@ -307,106 +313,118 @@ class _MyAppState extends State<MyApp> {
         create: (_) => widget.appLanguage,
         child: Consumer<AppLanguage>(builder: (context, model, child) {
           return OverlaySupport.global(
-            child: MaterialApp(
-              supportedLocales: [
-                Locale('en', 'US'),
-                Locale('fr', 'FR'),
-                Locale.fromSubtags(languageCode: 'zh')
-              ],
-              navigatorObservers: [
-                FirebaseAnalyticsObserver(analytics: widget.analytics!),
-              ],
-              localizationsDelegates: [
-                AppLocalizations.delegate,
-                CountryLocalizations.delegate,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              debugShowCheckedModeBanner: false,
-              navigatorKey: navigatorKey,
-              onGenerateTitle: (BuildContext context) => "KABA",
-              theme: ThemeData(
-                  appBarTheme: AppBarTheme(
-                    iconTheme: IconThemeData(color: Colors.white),
-                  ),
-                  dialogTheme: DialogTheme(
-                      backgroundColor: Colors.white),
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: KColors.colorCustom, // couleur de fond
-                      foregroundColor: Colors.white,        // texte / icône
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+            child: ScreenUtilInit(
+                designSize: const Size(390, 844),
+                minTextAdapt: true,
+                splitScreenMode: true,
+                builder: (context,child) {
+                return MaterialApp(
+                  useInheritedMediaQuery: true,
+                  locale: DevicePreview.locale(context),
+                  builder: DevicePreview.appBuilder,
+                  supportedLocales: [
+                    Locale('en', 'US'),
+                    Locale('fr', 'FR'),
+                    Locale.fromSubtags(languageCode: 'zh')
+                  ],
+                  navigatorObservers: [
+                    FirebaseAnalyticsObserver(analytics: widget.analytics!),
+                  ],
+                  localizationsDelegates: [
+                    AppLocalizations.delegate,
+                    CountryLocalizations.delegate,
+                    GlobalMaterialLocalizations.delegate,
+                    GlobalWidgetsLocalizations.delegate,
+                    GlobalCupertinoLocalizations.delegate,
+                  ],
+                  debugShowCheckedModeBanner: false,
+                  navigatorKey: navigatorKey,
+                  onGenerateTitle: (BuildContext context) => "KABA",
+                  theme: ThemeData(
+
+                      platform: TargetPlatform.iOS,
+                      appBarTheme: AppBarTheme(
+                        iconTheme: IconThemeData(color: Colors.white),
                       ),
-                    ),
-                  ),
-                  useMaterial3: true,
-                  colorScheme: ColorScheme.fromSeed(
-                    seedColor: Colors.white,
-                    primary: KColors.colorCustom,
-                    brightness: Brightness.light,
-                    onPrimary: Colors.white,
-                    secondary: KColors.colorCustom,
-                    onSecondary: Colors.white,
-                    surface: Colors.white,
+                      dialogTheme: DialogTheme(
+                          backgroundColor: Colors.white),
+                      elevatedButtonTheme: ElevatedButtonThemeData(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: KColors.colorCustom, // couleur de fond
+                          foregroundColor: Colors.white,        // texte / icône
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                      useMaterial3: true,
+                      colorScheme: ColorScheme.fromSeed(
+                        seedColor: Colors.white,
+                        primary: KColors.colorCustom,
+                        brightness: Brightness.light,
+                        onPrimary: Colors.white,
+                        secondary: KColors.colorCustom,
+                        onSecondary: Colors.white,
+                        surface: Colors.white,
 
 
-                  ),
-                  scaffoldBackgroundColor: Colors.white,
-                  primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
-              // home: RestaurantMenuPage(presenter: MenuPresenter(MenuView()), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
-//      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
-              /*  home: ShopSimpleList(
+                      ),
+                      scaffoldBackgroundColor: Colors.white,
+                      primarySwatch: KColors.colorCustom, fontFamily: 'Inter'),
+                  // home: RestaurantMenuPage(presenter: MenuPresenter(MenuView()), restaurant: ShopModel(id:31, name:"FESTIVAL DES GLACES")),
+                //      home: OrderConfirmationPage2 (presenter: OrderConfirmationPresenter()),
+                  /*  home: ShopSimpleList(
 
-            //  coque de noix de coco...
+                //  coque de noix de coco...
 
-            //  desxintox, buvable, infections, probleme de trompes, dents, empoisonement,
-            //  morsures danniamales, constipation, maux de foi, rein
+                //  desxintox, buvable, infections, probleme de trompes, dents, empoisonement,
+                //  morsures danniamales, constipation, maux de foi, rein
 
-                  type: "shop",
-                  restaurantListPresenter: RestaurantListPresenter()),*/
-              // home: TestPage(),
+                      type: "shop",
+                      restaurantListPresenter: RestaurantListPresenter()),*/
+                  // home: TestPage(),
 
-              home:  //RatingArticle(deliveryRatingPending:deliveryRatingPending ,),
-              SplashPage(   analytics: widget.analytics, observer: widget.observer),
-              // home: DeleteAccountSuccessfulPage(),
-              // home: DeleteAccountFixPropositionPage(),
-              /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
-                restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
-              // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
-//             home: MovieCataloguePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
-//               home: MovieDetailsPage(presenter: MoviePresenter()),
-//             home: SearchProductPage(),
-//             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
-              // home: FlowerCatalogPage(presenter: MenuPresenter(MenuView()), menuId: 800),
-              //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
-              /*home: RestaurantListPage (
-                  context: context,
-                  foodProposalPresenter: RestaurantFoodProposalPresenter(),
-                  restaurantListPresenter: RestaurantListPresenter()),*/
-              // home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
-              // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
-              //   home: TestPage(),
-//          home: RegisterPage(presenter: RegisterPresenter()),
-//           home: MyAddressesPage(presenter: AddressPresenter(AddressView())),
-//          home: EditAddressPage(presenter: EditAddressPresenter(AddressView())),
-//      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
-//      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
-//      home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
-//      home: TopUpPage(presenter: TopUpPresenter(TopUpView())),
-//      home: FeedsPage(presenter: FeedPresenter(FeedView()),),
-//      home: EvenementPage(presenter: EvenementPresenter(),),
-//      home: NotificationTestPage(),
-//            home: TopUpPage(presenter: TopUpPresenter(TopUpView())),
-//      home: WebViewPage(agreement: true),
-//      home: WebTestPage(),
-//      home: TransferMoneySuccessPage(),
-//      home: MyVouchersPage(presenter: VoucherPresenter(VoucherView())),
-//      home: AddVouchersPage(presenter: AddVoucherPresenter(AddVoucherView())),
-//      home: VoucherDetailsPage(),
-//          home: VoucherSubscribeSuccessPage(voucher: VoucherModel.randomDelivery()),
-              routes: generalRoutes,
+                  home:  //RatingArticle(deliveryRatingPending:deliveryRatingPending ,),
+                  SplashPage(   analytics: widget.analytics, observer: widget.observer),
+                  // home: DeleteAccountSuccessfulPage(),
+                  // home: DeleteAccountFixPropositionPage(),
+                  /*  home: ShopListPageRefined(foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                    restaurantListPresenter: RestaurantListPresenter(), type: "food"), */
+                  // home: ShopScheduleMiniPage(restaurant_id: 3, presenter: new ShopSchedulePresenter()),
+                //             home: MovieCataloguePage(presenter: CinemaPresenter(), cinema: ShopModel()..name="C. Olympia Godopé"),
+                //               home: MovieDetailsPage(presenter: MoviePresenter()),
+                //             home: SearchProductPage(),
+                //             home: ShopListPage(foodProposalPresenter: RestaurantFoodProposalPresenter(), restaurantListPresenter: RestaurantListPresenter()),
+                  // home: FlowerCatalogPage(presenter: MenuPresenter(MenuView()), menuId: 800),
+                  //   home: ShopFlowerDetailsPage(presenter: FoodPresenter(), foodId: 396,),
+                  /*home: RestaurantListPage (
+                      context: context,
+                      foodProposalPresenter: RestaurantFoodProposalPresenter(),
+                      restaurantListPresenter: RestaurantListPresenter()),*/
+                  // home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
+                  // home : LoginOTPConfirmationPage(username: "90628725", otp_code: "8833"),
+                  //   home: TestPage(),
+                //          home: RegisterPage(presenter: RegisterPresenter()),
+                //           home: MyAddressesPage(presenter: AddressPresenter(AddressView())),
+                //          home: EditAddressPage(presenter: EditAddressPresenter(AddressView())),
+                //      home: OrderFeedbackPage(presenter: OrderFeedbackPresenter()),
+                //      home: RestaurantFoodDetailsPage(presenter: FoodPresenter(), foodId: 1999) ,
+                //      home: TransactionHistoryPage(presenter: TransactionPresenter(TransactionView())),
+                //      home: TopUpPage(presenter: TopUpPresenter(TopUpView())),
+                //      home: FeedsPage(presenter: FeedPresenter(FeedView()),),
+                //      home: EvenementPage(presenter: EvenementPresenter(),),
+                //      home: NotificationTestPage(),
+                //            home: TopUpPage(presenter: TopUpPresenter(TopUpView())),
+                //      home: WebViewPage(agreement: true),
+                //      home: WebTestPage(),
+                //      home: TransferMoneySuccessPage(),
+                //      home: MyVouchersPage(presenter: VoucherPresenter(VoucherView())),
+                //      home: AddVouchersPage(presenter: AddVoucherPresenter(AddVoucherView())),
+                //      home: VoucherDetailsPage(),
+                //          home: VoucherSubscribeSuccessPage(voucher: VoucherModel.randomDelivery()),
+                  routes: generalRoutes,
+                );
+              }
             ),
           );
         }));

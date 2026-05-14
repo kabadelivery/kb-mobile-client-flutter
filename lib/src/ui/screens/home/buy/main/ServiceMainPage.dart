@@ -638,7 +638,7 @@ class ServiceMainPageState extends State<ServiceMainPage>
     await widget.presenter!.checkVersion();
 
     // 2. Ensure location
-    _loadAndPersistLocation();
+   await _loadAndPersistLocation();
 
     widget.presenter!.fetchServiceCategoryFromLocation(
       StateContainer.of(context).location!,

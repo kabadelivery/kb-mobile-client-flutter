@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+
+import '../screens/newAuth/colors.dart';
 Widget foodListShimmer(BuildContext context) {
   return Shimmer(
     enabled: true,
@@ -12,6 +14,19 @@ Widget foodListShimmer(BuildContext context) {
     child: Container(
       width: MediaQuery.of(context).size.width - 20,
       margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
+      padding: EdgeInsets.all(15),
+      decoration: BoxDecoration(
+          border: Border.all(width: 1,color: AuthColors.inputBorder.withOpacity(.8)),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+                spreadRadius: 10,
+                blurRadius: 20,
+                color: Colors.grey.withOpacity(.05)
+            )
+          ]
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -22,9 +37,8 @@ Widget foodListShimmer(BuildContext context) {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: const Color.fromRGBO(247, 247, 247, 1.0),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8),
-                  bottomLeft: Radius.circular(8),
+                borderRadius:  BorderRadius.circular(
+                 15
                 ),
               ),
               child: Column(
@@ -68,16 +82,15 @@ Widget foodListShimmer(BuildContext context) {
               ),
             ),
           ),
-
+          SizedBox(width: 5,),
           /// RIGHT IMAGE
           Container(
             height: 115,
             width: 115,
-            decoration: const BoxDecoration(
-              color: Color.fromRGBO(247, 247, 247, 1.0),
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(8),
-                bottomRight: Radius.circular(8),
+            decoration: BoxDecoration(
+              color: const Color.fromRGBO(247, 247, 247, 1.0),
+              borderRadius: BorderRadius.circular(
+                15
               ),
             ),
             child:  Center(
@@ -98,67 +111,96 @@ Widget shopListShimmer(BuildContext context) {
     interval: const Duration(milliseconds: 300),
     direction: ShimmerDirection.fromLTRB(),
     child: Container(
-      margin: const EdgeInsets.symmetric(horizontal: 10.0),
+      padding:EdgeInsets.all(15),
+      decoration:BoxDecoration(
+          color:Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(width: 1,color:Colors.grey.withOpacity(.2)),
+          boxShadow: [
+            BoxShadow(
+                spreadRadius: 5,
+                blurRadius: 10,
+                color:Colors.grey.withOpacity(.08)
+            )
+          ]
+      ),
+      margin: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 10),
       child: Stack(
         children: [
           Container(
-            margin: const EdgeInsets.only(top: 20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: const Color.fromRGBO(247, 247, 247, 1.0),
             ),
             child: Padding(
               padding: const EdgeInsets.only(top: 10, bottom: 10),
-              child: Row(
+              child: Column(
                 children: [
-                  Container(
-                    height: 80,
-                    width: 60,
-                    padding: const EdgeInsets.all(5),
-                    child: Center(
-                      child: Container(
-                        height: 60,
-                        width: 60,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          Container(
+                            height: 80,
+                            width: 60,
+                            padding: const EdgeInsets.all(5),
+                            child: Center(
+                              child: Container(
+                                height: 60,
+                                width: 60,
+                                decoration: const BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(width: 15),
+
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Flexible(child: _shimmerBox(width: 120, height: 14)),
+                                const SizedBox(width: 10),
+                                _shimmerCircle(size: 20),
+                                const SizedBox(width: 10),
+                                _shimmerBox(width: 35, height: 18),
+                              ],
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            FractionallySizedBox(
+                              widthFactor: 0.8,
+                              alignment: Alignment.centerLeft,
+                              child: _shimmerBox(
+                                width: double.infinity,
+                                height: 13,
+                              ),
+                            ),
+
+
+                          ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-
-                  const SizedBox(width: 15),
-
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: Row(
                       children: [
-                        Row(
-                          children: [
-                            _shimmerBox(width: 120, height: 14),
-                            const SizedBox(width: 10),
-                            _shimmerCircle(size: 20),
-                            const SizedBox(width: 10),
-                            _shimmerBox(width: 35, height: 18),
-                          ],
+                        Flexible(
+                          child: _shimmerBox(width: 65, height: 24, radius: 10),
                         ),
-
-                        const SizedBox(height: 8),
-
-                        _shimmerBox(
-                          width: MediaQuery.of(context).size.width * 0.55,
-                          height: 13,
-                        ),
-
-                        const SizedBox(height: 12),
-
-                        Row(
-                          children: [
-                            _shimmerBox(width: 65, height: 24, radius: 10),
-                            const SizedBox(width: 5),
-                            _shimmerBox(width: 85, height: 24, radius: 10),
-                          ],
+                        const SizedBox(width: 5),
+                        Flexible(
+                          child: _shimmerBox(width: 85, height: 24, radius: 10),
                         ),
                       ],
                     ),
@@ -168,11 +210,7 @@ Widget shopListShimmer(BuildContext context) {
             ),
           ),
 
-          Positioned(
-            top: 0,
-            right: 0,
-            child: _shimmerCircle(size: 40),
-          ),
+
         ],
       ),
     ),
@@ -238,4 +276,63 @@ class _ChipShimmer extends StatelessWidget {
     );
   }
 }
+Widget buildFoodCardShimmer(BuildContext context) {
+  return Card(
+    clipBehavior: Clip.antiAlias,
+    color: Colors.white,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(18),
+    ),
+    elevation: 2,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Stack(
+          children: [
+            _shimmerBox(
+              width: double.infinity,
+              height: 135,
+              radius: 0,
+            ),
 
+            Positioned(
+              right: 8,
+              bottom: 8,
+              child: _shimmerBox(
+                width: 78,
+                height: 26,
+                radius: 20,
+              ),
+            ),
+          ],
+        ),
+
+        Padding(
+          padding: const EdgeInsets.all(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _shimmerBox(width: double.infinity, height: 14),
+              const SizedBox(height: 6),
+
+              _shimmerBox(width: 120, height: 12),
+              const SizedBox(height: 10),
+
+              _shimmerBox(width: 95, height: 12),
+              const SizedBox(height: 6),
+
+              _shimmerBox(width: 135, height: 12),
+              const SizedBox(height: 12),
+
+              _shimmerBox(
+                width: double.infinity,
+                height: 34,
+                radius: 10,
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}

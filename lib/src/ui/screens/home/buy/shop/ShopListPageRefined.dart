@@ -113,7 +113,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
   String selectedFilter = "all";
   // keep track of which chips are selected
   final List<String> _allFilters = [
-    "spagho", "poissonbraise",
+    "Promo","spagho", "poissonbraise",
     "foufou", "akoumé", "émakoume", "degue", "botokoin" , "tchintchinga" , "pizza" , "burger"  , "shawarma" , "glaces" , "brochettes" , "poulet" , "riz",
     "jus", "smoothie", "milkshakes", "théaulait", "crêpes", "bouillie"
   ];
@@ -287,7 +287,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: Colors.grey.withOpacity(0.1),
                           spreadRadius: 5,
                           blurRadius: 7,
                         )
@@ -310,8 +310,8 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                   primaryColor: KColors.primaryColor,
                   onSelect: (value) {
                     setState(() {
-                      _selectedFilter = value;
-                      searchTypePosition=2;
+                       _selectedFilter = value;
+                        searchTypePosition = 2;
                     });
                   },
                 ):Container(),
@@ -369,13 +369,7 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 5,
-            blurRadius: 7,
-          )
-        ],
+
       ),
       child: Row(
         children: [
@@ -415,6 +409,12 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
       onSelected: (value) {
         setState(() {
           selectedFilter = value;
+          PAGE_SIZE = 20;
+          _selectedFilter="";
+          final filtered = filterShops(widget.restaurantList ?? []);
+          visibleItems = filtered.length > PAGE_SIZE
+              ? filtered.sublist(0, PAGE_SIZE)
+              : filtered;
         });
       },
       shape: RoundedRectangleBorder(
@@ -451,6 +451,17 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
             ],
           ),
         ),
+        PopupMenuItem(
+          value: "promo",
+          child: Row(
+            children: [
+              Icon(Icons.discount, color: KColors.pureGreen, size: 20),
+              const SizedBox(width: 10),
+              Text(AppLocalizations.of(context)!.translate("promo")),
+            ],
+          ),
+        ),
+
       ],
       child: Container(
         height: 50,
@@ -504,6 +515,9 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
 
     return shops.where((shop) {
       final status = getRestaurantStatus(shop);
+      if(selectedFilter.toLowerCase().contains('promo')){
+        return shop.is_promotion ==1;
+      }
       if (selectedFilter == "open") return status == "open";
       if (selectedFilter == "closed") {
         return status == "closed" ||
@@ -537,11 +551,12 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
     });
     // category / 1001 / shop
     return Container(
+      margin: EdgeInsets.only(top: 10),
       color: Colors.white,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.only(left: 10,right: 10,top: 0),
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height - 200,
+        height: MediaQuery.of(context).size.height - 100,
         child: Column(
 
           children: <Widget>[
@@ -595,54 +610,52 @@ class _ShopListPageRefinedState extends State<ShopListPageRefined>
                                               thumbVisibility: true,
                                               controller:
                                                   _restaurantListScrollController,
-                                              child: ListView.builder(
-                                                controller:
-                                                    _restaurantListScrollController,
-                                                itemCount:
-                                                filteredfilteredVisibleItems?.length != null
-                                                        ? filteredfilteredVisibleItems!.length +
-                                                            1
-                                                        : 0,
-                                                itemBuilder:
-                                                    (context, position) {
-                                                  if (position ==
-                                                      filteredfilteredVisibleItems?.length) {
-                                                    if (hasMoreData()) {
-                                                      return Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 100,
-                                                          child: Center(
-                                                              child:
-                                                                  CircularProgressIndicator()));
-                                                    } else {
-                                                      return Container(
-                                                          width: MediaQuery.of(
-                                                                  context)
-                                                              .size
-                                                              .width,
-                                                          height: 100,
-                                                          child: Center(
-                                                              child: Text(
-                                                            "${AppLocalizations.of(context)!.translate("the_end")}",
-                                                            style: TextStyle(
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                fontSize: 12,
-                                                                color: KColors
-                                                                    .new_black),
-                                                          )));
-                                                    }
-                                                  } else {
-                                                    return ShopListWidget(
-                                                        shopModel: filteredfilteredVisibleItems![
-                                                            position]);
-                                                  }
-                                                },
-                                              ),
+                                              child: Builder(
+                                                builder: (context) {
+                                    final filteredItems = filteredfilteredVisibleItems;
+                                    final filteredTotal = filterShops(widget.restaurantList ?? []);
+
+                                    return ListView.builder(
+                                    controller: _restaurantListScrollController,
+                                    itemCount: filteredItems.length + 1,
+                                    itemBuilder: (context, position) {
+                                    if (position == filteredItems.length) {
+                                    final bool hasMoreFilteredData =
+                                    filteredItems.length < filteredTotal.length;
+
+                                    if (hasMoreFilteredData) {
+                                    return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 100,
+                                    child: const Center(
+                                    child: CircularProgressIndicator(),
+                                    ),
+                                    );
+                                    }
+
+                                    return Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    height: 100,
+                                    child: Center(
+                                    child: Text(
+                                    AppLocalizations.of(context)!.translate("the_end"),
+                                    style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: KColors.new_black,
+                                    ),
+                                    ),
+                                    ),
+                                    );
+                                    }
+
+                                    return ShopListWidget(
+                                    shopModel: filteredItems[position],
+                                    );
+                                    },
+                                    );
+                                    },
+                                    ),
                                             ),
                                           ),
                                   )
@@ -1351,33 +1364,47 @@ Padding
       child: Scrollbar(
         thumbVisibility: true,
         controller: _restaurantListScrollController,
-        child: ListView.builder(
-          controller: _restaurantListScrollController,
-          itemCount: filteredfilteredVisibleItems?.length != null ? filteredfilteredVisibleItems!.length + 1 : 0,
-          itemBuilder: (context, position) {
-            if (position == filteredfilteredVisibleItems?.length) {
-              if (hasMoreData()) {
-                return Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 100,
-                    child: Center(child: CircularProgressIndicator()));
-              } else {
-                return Container(
+        child: Builder(
+          builder: (context) {
+            final filteredItems = filteredfilteredVisibleItems;
+            final filteredTotal = filterShops(widget.restaurantList ?? []);
+            return ListView.builder(
+              controller: _restaurantListScrollController,
+
+              itemCount: filteredItems.length + 1,
+
+              itemBuilder: (context, position) {
+
+                if (position == filteredItems.length) {
+
+                  if (filteredItems.length < filteredTotal.length) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 100,
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  }
+
+                  return Container(
                     width: MediaQuery.of(context).size.width,
                     height: 100,
                     child: Center(
-                        child: Text(
-                      "${AppLocalizations.of(context)!.translate("the_end")}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: KColors.new_black),
-                    )));
-              }
-            } else {
-              return ShopListWidget(shopModel: filteredfilteredVisibleItems![position]);
-            }
-          },
+                      child: Text(
+                        AppLocalizations.of(context)!
+                            .translate("the_end"),
+                      ),
+                    ),
+                  );
+                }
+
+                return ShopListWidget(
+                  shopModel: filteredItems[position],
+                );
+              },
+            );
+          }
         ),
         /*     child: ListView.builder(
           addAutomaticKeepAlives: true,
@@ -1540,18 +1567,23 @@ Padding
   bool get wantKeepAlive => true;
 
   @override
+  @override
   void inflateRestaurants(List<ShopModel> restaurants) {
-
     PAGE_SIZE = 20;
+
     setState(() {
       widget.finalRestaurantList = restaurants;
       widget.restaurantList = restaurants;
+
       _setLastTimeRestaurantListRequestToNow();
-      visibleItems = (widget?.restaurantList?.length != null &&
-              widget!.restaurantList!.length > PAGE_SIZE
-          ? widget.restaurantList!.sublist(0, PAGE_SIZE)
-          : widget.restaurantList);
+
+      final filtered = filterShops(restaurants);
+
+      visibleItems = filtered.length > PAGE_SIZE
+          ? filtered.sublist(0, PAGE_SIZE)
+          : filtered;
     });
+
     restartTimer();
   }
 
@@ -1629,7 +1661,6 @@ Padding
 
       // convert different in minute seconds
       int min = (diff + POTENTIAL_EXECUTION_TIME) ~/ 60;
-
       if (min >= MAX_MINUTES_FOR_AUTO_RELOAD ||
           (widget.hasGps == false &&
               (StateContainer.of(context).location != null)))

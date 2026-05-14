@@ -47,6 +47,7 @@ class TagCarousel extends StatelessWidget {
         // 🍴 Emoji selector
         String emoji = '';
         if (filter.toLowerCase().contains('spag')) emoji = '🍝';
+        if (filter.toLowerCase().contains('promo')) emoji = '🔥';
         else if (filter.toLowerCase().contains('poiss')) emoji = '🐟';
         else if (filter.toLowerCase().contains('fouf')) emoji = '🍲';
         else if (filter.toLowerCase().contains('akou')) emoji = '🍛';
@@ -65,21 +66,23 @@ class TagCarousel extends StatelessWidget {
         else if (filter.toLowerCase().contains('thé')) emoji = '🍵';
         else if (filter.toLowerCase().contains('crep') || filter.toLowerCase().contains('crêp')) emoji = '🥞';
         else if (filter.toLowerCase().contains('bouill')) emoji = '🥣';
+
+        bool isPromo =  filter.toLowerCase().contains("promo");
         return ChoiceChip(
           labelPadding: const EdgeInsets.symmetric(horizontal: 6),
           label: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "#$filter",
+                isPromo?"$filter":"#$filter",
                 maxLines: 1,
                 overflow: TextOverflow.fade,
                 softWrap: false,
                 style: TextStyle(
                   fontSize: 12,
-                  color: isSelected ? Colors.white : Colors.black,
+                  color: isSelected && !isPromo? Colors.white : Colors.black,
                   fontWeight:
-                  isSelected ? FontWeight.bold : FontWeight.w500,
+                  isSelected && !isPromo? FontWeight.bold : FontWeight.w500,
                 ),
               ),
               if (emoji.isNotEmpty) ...[
@@ -90,11 +93,11 @@ class TagCarousel extends StatelessWidget {
           ),
           showCheckmark: false,
           selected: isSelected,
-          selectedColor: primaryColor.withOpacity(.8),
+          selectedColor:isPromo?Colors.green.withOpacity(.2): primaryColor.withOpacity(.8),
           backgroundColor: Colors.grey.shade200,
           side: BorderSide(
             color: isSelected
-                ? Colors.transparent
+                ?isPromo?Colors.green.withOpacity(.5): Colors.transparent
                 : AuthColors.inputBorder,
             width: 1.4,
           ),

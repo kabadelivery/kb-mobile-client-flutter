@@ -365,5 +365,6 @@ class ServerRoutes {
   static const String LINK_GET_PERFORMANCE_RATING =ServerConfig.STAT_SERVER_ADDRESS + "/mobile/api/command/rating/v4/get";
   static const String LINK_PAY_BY_WALLET = ServerConfig.PAY_SERVER_ADDRESS_SECURE+"/api/subscription/pay/wallet";
   static const String NEW_SEARCH_FOOD_ACTION = ServerConfig.STAT_SERVER_ADDRESS+"/mobile/api/v4/foods/search";
+  static const String SEARCH_FOOD_PROMO_ACTION = ServerConfig.SERVER_ADDRESS+"/article/promo/search";
   static const String GET_PROMOTION = ServerConfig.SERVER_ADDRESS+"/api/delivery-promo/get";
 }

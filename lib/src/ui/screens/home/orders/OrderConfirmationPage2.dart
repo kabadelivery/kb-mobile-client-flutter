@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionPlansSheet.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cherry_toast/cherry_toast.dart';
 import 'package:cherry_toast/resources/arrays.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:KABA/src/StateContainer.dart';
 import 'package:KABA/src/contracts/address_contract.dart';
@@ -177,6 +179,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25),bottomRight: Radius.circular(25))
+            ),
             leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
@@ -1079,17 +1084,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 child: TextField(
                     controller: _addInfoController,
                     textAlign: TextAlign.start,
-
                     maxLines: 1,
                     style:
-                    TextStyle(color: KColors.new_black, fontSize: 14),
+                    TextStyle(color: KColors.new_black, fontSize: 14.sp),
                     decoration: InputDecoration(
                       suffixIcon: Icon(Icons.messenger_outline,
                           color:Color(0xFFCB1F44)),
                       labelText:
                       "${AppLocalizations.of(context)!.translate('additional_info')}",
                       border: InputBorder.none,
-                    )),
+                    )
+                ),
               ),
 
               SizedBox(height: 10),
@@ -1122,7 +1127,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                       child: Column(
                         children: [
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
                                   padding: EdgeInsets.all(6),
@@ -1133,15 +1138,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                                   ),
                                   child:Icon(Icons.location_on_outlined,color: Colors.blue,size:22)
                               ),
-                              SizedBox(width:32),
-                              Flexible(child: Text(AppLocalizations.of(context)!.translate('chooseDeliveryAddress'),style: TextStyle(fontWeight:FontWeight.normal),)),
-                              SizedBox(width:70),
+                              Flexible(child: AutoSizeText(
+                                AppLocalizations.of(context)!.translate('chooseDeliveryAddress'),
+                                minFontSize: 10,
+                                maxFontSize: 14,
+
+                                style: TextStyle(fontWeight:FontWeight.normal),)),
                               Icon(Icons.control_point_outlined, color: Colors.blue),
                               /*  ElevatedButton(
-
-                  onPressed: () {},
-                  child: Icon(Icons.plus_one_rounded, color: Colors.blue),
-                ) */
+                              onPressed: () {},
+                              child: Icon(Icons.plus_one_rounded, color: Colors.blue),
+                            ) */
                             ],
                           ),
 
@@ -1515,7 +1522,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     }
 
     CustomerModel customerModel = await CustomerUtils.getCustomer();
-
+    debugPrint('XXX custom${customerModel.toJson()}');
     widget.presenter!.payNow(
       customerModel,
       widget.foods!,
@@ -1676,9 +1683,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         onPressed: () {
                           Navigator.pop(context, codeController.text.trim());
                         },
-                        child: Text(
+                        child: AutoSizeText(
                           AppLocalizations.of(context)!.translate('confirm'),
-                          style: const TextStyle(color: Colors.white),
+                          maxLines: 1,
+                          minFontSize: 10,
+                          maxFontSize: 14,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(color: Colors.white,fontSize:14),
                         ),
                       ),
                     ),
@@ -2856,12 +2867,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         children: [
                           Icon(Icons.code, color: KColors.white, size: 18),
                           const SizedBox(width: 6),
-                          Text(
-                            AppLocalizations.of(context)!.translate('addSubscriptionCode'),
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: AutoSizeText(
+                              AppLocalizations.of(context)!.translate('addSubscriptionCode'),
+                              minFontSize: 8,
+                              maxFontSize: 12,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ],
                       ),
@@ -2889,12 +2905,17 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                         children: [
                           Icon(CupertinoIcons.tickets, color: KColors.white, size: 18),
                           const SizedBox(width: 6),
-                          Text(
-                            "${AppLocalizations.of(context)!.translate('add_coupon')}",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold),
+                          Flexible(
+                            child: AutoSizeText(
+                              "${AppLocalizations.of(context)!.translate('add_coupon')}",
+                              minFontSize: 8,
+                              maxFontSize: 12,
+                              maxLines: 1,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ],
                       ),
