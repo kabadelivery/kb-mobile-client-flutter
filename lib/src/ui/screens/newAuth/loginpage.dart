@@ -58,6 +58,22 @@ class _LoginPageV2State extends State<LoginPageV2> {
   final _emailFieldKey = GlobalKey<FormFieldState<String>>();
   void initState(){
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        clearAuthFields();
+        authBloc.email="";
+        authBloc.username="";
+        authBloc.isPhone=true;
+        authBloc.requestId="";
+        authBloc.app_version="";
+        authBloc.phoneNumber="";
+        authBloc.shouldSendOtp=false;
+        authBloc.isOtpRequired=false;
+        authBloc.password="";
+        authBloc.otpReceived="";
+        authBloc.success=false;
+      }
+    });
     _getIsOkWithTerms().then((isOkWithTerms){
       if (!isOkWithTerms) {
         // jump to terms page.
@@ -66,12 +82,32 @@ class _LoginPageV2State extends State<LoginPageV2> {
     });
     authBloc=context.read<AuthBloc>();
   }
+  void clearAuthFields() {
+    _numberFieldController.clear();
+    _emailFieldController.clear();
+    _passwordController.clear();
+    _confirmPasswordController.clear();
+    _fullNameController.clear();
+    otpController.clear();
 
+    _formKey.currentState?.reset();
+
+    setState(() {
+      isLogin = true;
+      isPhoneSelected = true;
+      _obscurePassword = true;
+      _obscureConfirmPassword = true;
+      isConnecting = false;
+      _loading = false;
+      _isOtpDialogOpen = false;
+    });
+  }
 
   void resetKey(){
     String tempIdentifier=isPhoneSelected?_emailFieldController.text: _numberFieldController.text;
     String password = _passwordController.text;
     String confirmPassword = _confirmPasswordController.text;
+
     _formKey.currentState?.reset();
     if(isPhoneSelected)
       _emailFieldController.text=tempIdentifier;
@@ -142,6 +178,7 @@ class _LoginPageV2State extends State<LoginPageV2> {
     _numberFieldController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    otpController.dispose();
     _fullNameController.dispose();
     super.dispose();
   }
@@ -657,82 +694,18 @@ class _LoginPageV2State extends State<LoginPageV2> {
                               ],
                               const SizedBox(height: 20),
                               Column(
-                                      children:[
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              backgroundColor:  AuthColors.primaryRed,
-                                              padding: const EdgeInsets.symmetric(vertical: 20),
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(15),
-                                              ),
-                                            ),
-                                            onPressed: () async{
-                                              if(_formKey.currentState!.validate()){
-                                                if (isLogin) {
-                                                    await launchLogin();
-                                                } else {
-                                                 await launchSignUp();
-                                                }
-                                              }
-                                            },
-                                            child: isConnecting
-                                                ? const SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: CircularProgressIndicator(
-                                                color: Colors.white,
-                                                strokeWidth: 2,
-                                              ),
-                                            )
-                                                : Text(
-                                             isLogin? "${AppLocalizations.of(context)!.translate('connexion')}":
-                                             "${AppLocalizations.of(context)!.translate('signup')}",
-                                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ),
-                                        const SizedBox(height: 20),
-                                        if(isLogin)...[
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(AppLocalizations.of(context)!.translate('no_account_yet'),style: TextStyle(fontWeight: FontWeight.w300,color: AuthColors.textMain),),
-                                              SizedBox(width: 5),
-                                              GestureDetector(
-                                                  onTap: (){
-                                                   authBloc.add(ClickAuthTypeEvent(isLogin: !isLogin));
-                                                  },
-                                                  child: Text(AppLocalizations.of(context)!.translate('signup'),style: TextStyle(fontWeight: FontWeight.bold,color: AuthColors.primaryRed),))
-                                            ],
-                                          ),
-                                          SizedBox(height:30),
-                                          GestureDetector(
-                                            onTap: onForgotPasswordTap,
-                                            child: Text(AppLocalizations.of(context)!.translate("forgot_password"),style: TextStyle(color:AuthColors.textMain.withOpacity(.5),
-                                                decorationStyle:TextDecorationStyle.solid,
-                                                decoration: TextDecoration.underline,
-                                                decorationColor: AuthColors.textMain.withOpacity(.5))),
-                                          )
-                      
-                                        ]
-                                        else...[
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Text(AppLocalizations.of(context)!.translate('already_have_an_account'),style: TextStyle(fontWeight: FontWeight.w300,color: AuthColors.textMain),),
-                                              SizedBox(width: 5),
-                                              GestureDetector(
-                                                  onTap: (){
-                                                    authBloc.add(ClickAuthTypeEvent(isLogin: !isLogin));
-                                                  },
-                                                  child: Text(AppLocalizations.of(context)!.translate('login_button'),style: TextStyle(fontWeight: FontWeight.bold,color: AuthColors.primaryRed),))
-                                            ],
-                                          )
-                                        ],
-                                      ]
-                                  ),
+                                children: isLogin
+                                    ? [
+                                  loginButton(),
+                                  const SizedBox(height: 20),
+                                  signupButton(),
+                                ]
+                                    : [
+                                  signupButton(),
+                                  const SizedBox(height: 20),
+                                  loginButton(),
+                                ],
+                              ),
                               SizedBox(height: 30),
                       
                             ]
@@ -744,6 +717,83 @@ class _LoginPageV2State extends State<LoginPageV2> {
             )
           )
         ));
+  }
+  Widget signupButton(){
+    return  SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          elevation: !isLogin?1:0,
+          backgroundColor: isLogin?AuthColors.inputBackground: AuthColors.primaryRed,
+          padding:  EdgeInsets.symmetric(vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side:isLogin? BorderSide(width: 1,color: AuthColors.inputBorder):BorderSide.none,
+          ),
+        ),
+        onPressed: () async{
+
+          if(!isLogin){
+            if(_formKey.currentState!.validate())
+              await launchSignUp();
+          }else{
+            authBloc.add(ClickAuthTypeEvent(isLogin: false));
+          }
+        },
+        child: isConnecting && !isLogin
+            ? const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2,
+          ),
+        )
+            : Text(
+          !isLogin?"${AppLocalizations.of(context)!.translate('validate')}": "${AppLocalizations.of(context)!.translate('signup')}",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: isLogin?AuthColors.textInactive:Colors.white),
+        ),
+      ),
+    );
+  }
+  Widget loginButton(){
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+
+        style: ElevatedButton.styleFrom(
+          elevation: isLogin?1:0,
+          backgroundColor: !isLogin?AuthColors.inputBackground: AuthColors.primaryRed,
+          padding: const EdgeInsets.symmetric(vertical: 20),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side:!isLogin? BorderSide(width: 1,color: AuthColors.inputBorder):BorderSide.none,
+
+          ),
+        ),
+        onPressed: () async{
+          if(isLogin){
+            if(_formKey.currentState!.validate())
+              await launchLogin();
+          }else{
+            authBloc.add(ClickAuthTypeEvent(isLogin: true));
+          }
+        },
+        child: isConnecting
+            ? const SizedBox(
+          width: 20,
+          height: 20,
+          child: CircularProgressIndicator(
+            color: Colors.white,
+            strokeWidth: 2,
+          ),
+        )
+            : Text(
+          isLogin?"${AppLocalizations.of(context)!.translate('validate')}":"${AppLocalizations.of(context)!.translate('connexion')}",
+          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: !isLogin?AuthColors.textInactive:Colors.white),
+        ),
+      ),
+    );
   }
   void _askTerms() {
     showDialog(

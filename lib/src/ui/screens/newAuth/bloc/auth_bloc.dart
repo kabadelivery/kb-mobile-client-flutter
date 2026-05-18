@@ -86,6 +86,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             ClientPersonalApiProvider provider = ClientPersonalApiProvider();
             var result = await provider.checkRequestCodeAction(event.otp,requestId);
             int error = mJsonDecode(result)["error"];
+            int code = mJsonDecode(result)["code"];
             if(error==0){
               add(onSendLoginOtpEvent(
                   login:!isPhone?email:phoneNumber,
@@ -93,6 +94,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   app_version:app_version,
                   shouldSendOtp:false
               ));
+            }else if(error==500 && code==404){
+              emit(ClickAuthTypeState(isLogin: false));
+              emit(AuthFailure(message: "user_exists"));
             }else{
               emit(AuthFailure(message: "invalid_otp"));
             }
@@ -188,7 +192,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             }
             else if(error==1 && result['code']==401){
               emit(AuthFailure(message: "login_error"));
-            }else if(error==-1){
+            }else if(error==500 &&  result['code']==404){
               emit(AuthFailure(message: "account_no_exists"));
             }
             else{
