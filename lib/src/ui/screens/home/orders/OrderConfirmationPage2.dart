@@ -2911,7 +2911,8 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
             padding: const EdgeInsets.only(left: 20, right: 20),
             child:   Row(
               children: [
-                Expanded(
+                /*
+                * Expanded(
                   child: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -2951,7 +2952,9 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     ),
                   ),
                 ),
-                const SizedBox(width: 10), // espace entre les deux
+                const SizedBox(width: 10),
+                * */
+                 // espace entre les deux
                 Expanded(
                   child: GestureDetector(
                     onTap: () {
