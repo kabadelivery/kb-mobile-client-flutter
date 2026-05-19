@@ -369,94 +369,144 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   }
 
   _buildEligibleVoucher(List<VoucherModel>? eligible_vouchers) {
-    if (eligible_vouchers == null)
+    if (eligible_vouchers == null || eligible_vouchers.isEmpty) {
       return Container();
-    else
-      return Container(
-        color: KColors.new_gray,
-        margin: EdgeInsets.only(left: 20, right: 20),
-        child: Column(
+    }
+
+    return Container(
+      color: KColors.new_gray,
+      margin: EdgeInsets.only(left: 20, right: 20),
+      child: SizedBox(
+        height: eligible_vouchers.length > 4 ? 250 : null,
+
+        child: SingleChildScrollView(
+          child: Column(
             children: List.generate(eligible_vouchers.length, (index) {
+
               if (eligible_vouchers[index].id == _selectedVoucher?.id ||
                   eligible_vouchers[index].use_count! -
                       eligible_vouchers[index].already_used_count! ==
-                      0)
-                return Container(
-                  /* padding: EdgeInsets.only(
-                    right: 10,
-                    left: 10,
-                    top: index == 0 ? 10 : 0,
-                    bottom: index == eligible_vouchers.length - 1 ? 10 : 0)*/
-                );
+                      0) {
+                return Container();
+              }
+
               return Container(
                 padding: EdgeInsets.only(
-                    right: 10,
-                    left: 10,
-                    top: index == 0 ? 10 : 5,
-                    bottom: index == eligible_vouchers.length - 1 ? 10 : 5),
+                  right: 10,
+                  left: 10,
+                  top: index == 0 ? 10 : 5,
+                  bottom: index == eligible_vouchers.length - 1 ? 10 : 5,
+                ),
                 child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(children: [
-                              Container(
-                                  child: Text(
-                                    "${eligible_vouchers[index].value} ${eligible_vouchers[index].type == 1 ? "F" : "%"} OFF",
-                                    style: TextStyle(
-                                        color: KColors.primaryColor,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                  padding: EdgeInsets.only(
-                                      left: 10, right: 10, top: 5, bottom: 5),
-                                  decoration: BoxDecoration(
-                                      color: KColors.primaryColor.withAlpha(30),
-                                      borderRadius: BorderRadius.circular(30))),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                  "${eligible_vouchers[index].type == 1 ? "${AppLocalizations.of(context)!.translate('voucher_type_shop')}" : (eligible_vouchers[index].type == 2 ? "${AppLocalizations.of(context)!.translate('voucher_type_delivery')}" : "${AppLocalizations.of(context)!.translate('voucher_type_all')}")}",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14,
-                                      color: KColors.new_black))
-                            ]),
-                            SizedBox(height: 5),
-                            Text(eligible_vouchers[index].trade_name!,
-                                style: TextStyle(color: Colors.grey, fontSize: 12))
-                          ]),
-                      GestureDetector(
-                        onTap: () {
-                          debugPrint("is new user ${is_new_user}");
-                          if(is_new_user){
-                            mToast("${AppLocalizations.of(context)!.translate('cannot_use_voucher')}");
-                          }else
-                            _selectVoucher(
-                                has_voucher: true, voucher: eligible_vouchers[index]);
-                        },
-                        child: Container(
-                          child: Text(
-                              "${AppLocalizations.of(context)!.translate('voucher_use')}",
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: KColors.primaryColor,
-                                  fontWeight: FontWeight.w600)),
-                          padding: EdgeInsets.only(
-                              left: 10, right: 10, top: 5, bottom: 5),
-                          decoration: BoxDecoration(
-                              color: KColors.primaryColor.withAlpha(30),
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      )
-                    ]),
-              );
-            })),
-      );
-  }
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
 
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(
+                                  left: 10,
+                                  right: 10,
+                                  top: 5,
+                                  bottom: 5),
+                              decoration: BoxDecoration(
+                                color:
+                                KColors.primaryColor.withAlpha(30),
+                                borderRadius:
+                                BorderRadius.circular(30),
+                              ),
+                              child: Text(
+                                "${eligible_vouchers[index].value} "
+                                    "${eligible_vouchers[index].type == 1 ? "F" : "%"} OFF",
+                                style: TextStyle(
+                                  color: KColors.primaryColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+
+                            SizedBox(width: 10),
+
+                            Text(
+                              eligible_vouchers[index].type == 1
+                                  ? AppLocalizations.of(context)!
+                                  .translate('voucher_type_shop')
+                                  : (eligible_vouchers[index].type == 2
+                                  ? AppLocalizations.of(context)!
+                                  .translate('voucher_type_delivery')
+                                  : AppLocalizations.of(context)!
+                                  .translate('voucher_type_all')),
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                color: KColors.new_black,
+                              ),
+                            )
+                          ],
+                        ),
+
+                        SizedBox(height: 5),
+
+                        Text(
+                          eligible_vouchers[index].trade_name!,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        )
+                      ],
+                    ),
+
+                    GestureDetector(
+                      onTap: () {
+                        debugPrint("is new user $is_new_user");
+
+                        if (is_new_user) {
+                          mToast(
+                            "${AppLocalizations.of(context)!.translate('cannot_use_voucher')}",
+                          );
+                        } else {
+                          _selectVoucher(
+                            has_voucher: true,
+                            voucher: eligible_vouchers[index],
+                          );
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(
+                          left: 10,
+                          right: 10,
+                          top: 5,
+                          bottom: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color:
+                          KColors.primaryColor.withAlpha(30),
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: Text(
+                          "${AppLocalizations.of(context)!.translate('voucher_use')}",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: KColors.primaryColor,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
   _buildBill() {
     if (_orderBillConfiguration == null) return Container();
     if (_isPreorderSelected()) {
