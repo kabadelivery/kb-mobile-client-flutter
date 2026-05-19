@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:KABA/src/resources/vouchers_api_provider.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionPlansSheet.dart';
 import 'package:KABA/src/ui/customwidgets/abonnememts/bottomsheet/SubscriptionSuccessSheet.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -108,6 +109,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
   bool _checkOpenStateError = false;
 
   VoucherModel? _oldSelectedVoucher = null;
+  List<VoucherModel> eligibleVouchers = [];
 
   _OrderConfirmationPage2State();
 
@@ -135,9 +137,24 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     });
 
     WidgetsBinding.instance.addPostFrameCallback((_)async{
-      try{
-        sub  = await fetchSubscription();
-      }catch(e){}
+        try{
+          VoucherApiProvider api =VoucherApiProvider();
+          CustomerModel c = await CustomerUtils.getCustomer();
+          eligibleVouchers = await api.loadVouchers(
+            customer: c,
+            restaurantId: widget.restaurant!.id!,
+            foodsId: _getFoodsIdArray(widget.foods!),
+          );
+          debugPrint("eligibleVouchers ${eligibleVouchers}");
+          setState(() {
+
+          });
+        }catch(e){
+
+        }
+        //sub  = await fetchSubscription();
+
+
       var status = await Permission.notification.status;
       if(!status.isGranted){
         await Permission.notification.request();
@@ -1095,7 +1112,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                 ),
               ),
               SizedBox(height: 10),
-              _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers),
+              _buildEligibleVoucher(eligibleVouchers.isEmpty?_orderBillConfiguration.eligible_vouchers:eligibleVouchers),
               SizedBox(height: 10),
               //NEW USER VOUCHER
               is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
@@ -2784,7 +2801,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     * - result may be only vouchers,
     *
     * */
-    Map results;
+    Map? results;
     if (!has_voucher) {
       setState(() {
         _selectedVoucher = null;
@@ -2808,7 +2825,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
 
     if (results != null && results.containsKey('voucher')) {
       setState(() {
-        _selectedVoucher = results['voucher'];
+        _selectedVoucher = results!['voucher'];
       });
 
       if (_selectedAddress != null) {
