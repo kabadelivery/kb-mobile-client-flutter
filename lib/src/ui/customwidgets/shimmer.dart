@@ -14,19 +14,7 @@ Widget foodListShimmer(BuildContext context) {
     child: Container(
       width: MediaQuery.of(context).size.width - 20,
       margin: const EdgeInsets.only(bottom: 15, left: 10, right: 10),
-      padding: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          border: Border.all(width: 1,color: AuthColors.inputBorder.withOpacity(.8)),
-          borderRadius: BorderRadius.circular(20),
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 10,
-                blurRadius: 20,
-                color: Colors.grey.withOpacity(.05)
-            )
-          ]
-      ),
+
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,9 +25,7 @@ Widget foodListShimmer(BuildContext context) {
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 color: const Color.fromRGBO(247, 247, 247, 1.0),
-                borderRadius:  BorderRadius.circular(
-                 15
-                ),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft: Radius.circular(10)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,16 +68,13 @@ Widget foodListShimmer(BuildContext context) {
               ),
             ),
           ),
-          SizedBox(width: 5,),
           /// RIGHT IMAGE
           Container(
             height: 115,
             width: 115,
             decoration: BoxDecoration(
               color: const Color.fromRGBO(247, 247, 247, 1.0),
-              borderRadius: BorderRadius.circular(
-                15
-              ),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(10),bottomRight: Radius.circular(10)),
             ),
             child:  Center(
               child: _shimmerBox(width: 80, height: 80, radius: 8),
@@ -111,19 +94,6 @@ Widget shopListShimmer(BuildContext context) {
     interval: const Duration(milliseconds: 300),
     direction: ShimmerDirection.fromLTRB(),
     child: Container(
-      padding:EdgeInsets.all(15),
-      decoration:BoxDecoration(
-          color:Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(width: 1,color:Colors.grey.withOpacity(.2)),
-          boxShadow: [
-            BoxShadow(
-                spreadRadius: 5,
-                blurRadius: 10,
-                color:Colors.grey.withOpacity(.08)
-            )
-          ]
-      ),
       margin: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 10),
       child: Stack(
         children: [

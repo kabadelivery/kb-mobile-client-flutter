@@ -1018,19 +1018,6 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
       child: Container(
           width: MediaQuery.of(context).size.width - 20,
           margin: EdgeInsets.only(bottom: 15, left: 10, right: 10),
-          decoration: BoxDecoration(
-            border: Border.all(width: 1,color: AuthColors.inputBorder.withOpacity(.8)),
-            borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                spreadRadius: 10,
-                blurRadius: 20,
-                color: Colors.grey.withOpacity(.05)
-              )
-            ]
-          ),
-          padding: EdgeInsets.all(15),
           key: food!.id == highlightedFoodId ? dataKey : null,
           child: Container(
             color: food!.id == highlightedFoodId
@@ -1043,7 +1030,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                 Expanded(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(10),bottomLeft:Radius.circular(10)),
                       color: food!.id == highlightedFoodId
                           ? Colors.yellow.withAlpha(50)
                           : KColors.new_gray),
@@ -1181,7 +1168,7 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                                 child: LayoutBuilder(
                                   builder: (context, constraints) {
                                     final screenWidth = MediaQuery.of(context).size.width;
-                                    final isSmall = screenWidth < 500;
+                                    final isSmall = screenWidth < 380;
                                     return Container(
                                       decoration: BoxDecoration(
                                         color: KColors.primaryColor.withOpacity(.1),
@@ -1230,14 +1217,13 @@ class _RestaurantMenuPageState extends State<RestaurantMenuPage>
                             ])
                       ]),
                 )),
-                SizedBox(width: 5,),
                 Container(
                   color: KColors.new_gray,
                   child: Container(
                     height: 115,
                     width: 115,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.only(topRight: Radius.circular(10),bottomRight: Radius.circular(10)),
                         image: new DecorationImage(
                             fit: BoxFit.cover,
                             image: CachedNetworkImageProvider(

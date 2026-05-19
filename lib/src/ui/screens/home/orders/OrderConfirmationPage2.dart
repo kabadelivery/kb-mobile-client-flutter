@@ -179,9 +179,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(bottomLeft: Radius.circular(25),bottomRight: Radius.circular(25))
-            ),
+
             leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
@@ -1096,11 +1094,13 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                     )
                 ),
               ),
-
+              SizedBox(height: 10),
+              _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers),
               SizedBox(height: 10),
               //NEW USER VOUCHER
               is_new_user? VoucherWidgetSkin(context:context,amount:new_user_voucher_amount):Container(),
-              _usePoint ? Container() :   is_new_user==false?_buildCouponSpace():Container(),
+              _usePoint ? Container() :   is_new_user==false?
+              _buildCouponSpace():Container(),
               SizedBox(height: 10),
               /* choose a delivery address */
               InkWell(
@@ -2985,8 +2985,6 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
         ],
         SizedBox(height: 20),
 
-
-
       ]) ;
     } else {
 //      _selectedVoucher
@@ -3043,7 +3041,7 @@ class _OrderConfirmationPage2State extends State<OrderConfirmationPage2>
                   )),
             ],
           ),
-          _buildEligibleVoucher(_orderBillConfiguration.eligible_vouchers)
+
         ],
       );
     }

@@ -6,8 +6,10 @@ import 'package:KABA/src/ui/screens/home/buy/shop/ShopDetailsPage.dart';
 import 'package:KABA/src/ui/screens/restaurant/RestaurantMenuPage.dart';
 import 'package:KABA/src/utils/_static_data/KTheme.dart';
 import 'package:KABA/src/utils/functions/Utils.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 
@@ -42,19 +44,6 @@ class _ShopListWidgetState extends State<ShopListWidget> {
           child: Stack(
             children: [
               Container(
-                  padding:EdgeInsets.all(15),
-                  decoration:BoxDecoration(
-                    color:Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(width: 1,color:Colors.grey.withOpacity(.2)),
-                    boxShadow: [
-                      BoxShadow(
-                        spreadRadius: 5,
-                        blurRadius: 10,
-                        color:Colors.grey.withOpacity(.08)
-                      )
-                    ]
-                  ),
                   margin: EdgeInsets.only(top: 10),
                   child: Container(
                       decoration: BoxDecoration(
@@ -128,59 +117,47 @@ class _ShopListWidgetState extends State<ShopListWidget> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           Row(
+                                            mainAxisSize: MainAxisSize.min,
                                             children: [
-                                              Expanded(
-                                                child: Row(
-                                                  children: [
-                                                    Expanded(
-                                                      child: Text(
-                                                        widget.shopModel?.name ?? "",
-                                                        overflow: TextOverflow.ellipsis,
-                                                        maxLines: 1,
-                                                        softWrap: false,
-                                                        style: TextStyle(
-                                                          color: KColors.new_black,
-                                                          fontSize: 14,
-                                                          fontWeight: FontWeight.w500,
-                                                        ),
-                                                      ),
-                                                    ),
 
-                                                    if (widget.shopModel?.is_certified == true) ...[
-                                                      const SizedBox(width: 6),
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          showCertificationTutorial(context: context);
-                                                        },
-                                                        child: Image.asset(
-                                                          "assets/images/png/certif.png",
-                                                          width: 20,
-                                                          height: 20,
-                                                          fit: BoxFit.cover,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ],
+                                              Flexible(
+                                                child: Text(
+                                                  widget.shopModel?.name ?? "",
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                  style: TextStyle(
+                                                    color: KColors.new_black,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
                                               ),
-                                              widget?.shopModel?.stars != null &&
-                                                      widget.shopModel!.stars! > 1
-                                                  ? SingleChildScrollView(
-                                                    child: Row(
-                                                        mainAxisSize: MainAxisSize.min,
-                                                        children: [
-                                                            SizedBox(width: 5),
-                                                  Notation(text:"${widget?.shopModel?.stars}"
-                                                               .length >
-                                                               3
-                                                               ? "${widget?.shopModel?.stars}"
-                                                               .substring(
-                                                               0, 3)
-                                                               : "${widget?.shopModel?.stars}")
-                                                            ]
-                                                           ),
-                                                  )
-                                                  : SizedBox(width: 60),
+                                              if (widget.shopModel?.is_certified == true) ...[
+                                                const SizedBox(width: 6),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    showCertificationTutorial(context: context);
+                                                  },
+                                                  child: Image.asset(
+                                                    "assets/images/png/certif.png",
+                                                    width: 20,
+                                                    height: 20,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                ),
+                                              ],
+
+                                              if (widget.shopModel?.stars != null &&
+                                                  widget.shopModel!.stars! > 1) ...[
+                                                const SizedBox(width: 5),
+
+                                                Notation(
+                                                  text: "${widget.shopModel?.stars}".length > 3
+                                                      ? "${widget.shopModel?.stars}".substring(0, 3)
+                                                      : "${widget.shopModel?.stars}",
+                                                ),
+                                              ],
                                             ],
                                           ),
                                           SizedBox(height: 5),

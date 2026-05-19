@@ -10,35 +10,27 @@ Widget Notation({required String text,int? count, ShopProductModel? food}) {
   double note = double.parse(text)<1?0.0:double.parse(text);
 
   return food==null?Container(
-    padding: EdgeInsets.symmetric(horizontal: 5,vertical: 2),
+    padding: EdgeInsets.all(5),
     decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: Colors.orange),
+        color: Colors.yellow.withOpacity(.1)),
 
     child: Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Icon(Icons.star, color: KColors.white, size: 14) ,
-        Text('${note.toStringAsFixed(1)}',style: TextStyle(color: Colors.white,fontSize: 14,),),
+        Icon(Icons.star, color: KColors.primaryYellowColor, size: 14) ,
+        Text('${note.toStringAsFixed(1)}',style: TextStyle(color: Colors.grey,fontSize: 14,),),
       ],
     ),
-  ):Container(
-    padding: EdgeInsets.symmetric(horizontal: 5,vertical: 2),
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        color: Colors.orange),
+  ):Row(
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      Text('${note.toStringAsFixed(1)}',style: TextStyle(color: KColors.primaryColor,fontSize: 14,fontWeight: FontWeight.bold),),
 
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Text('${note.toStringAsFixed(1)}',style: TextStyle(color: KColors.white,fontSize: 14,fontWeight: FontWeight.bold),),
-
-        Icon(Icons.star, color: KColors.white, size: 18) ,
-      ],
-    ),
+      Icon(Icons.star, color: KColors.primaryYellowColor, size: 18) ,
+    ],
   );
 }
 
@@ -62,5 +54,3 @@ Future<Map?> showReviewDialog(BuildContext context,Widget dialog) async {
     },
   );
 }
-
-

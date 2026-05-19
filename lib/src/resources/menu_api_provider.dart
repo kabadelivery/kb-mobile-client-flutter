@@ -40,7 +40,7 @@ class MenuApiProvider {
               ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
               ?.toList();
           ShopModel restaurantModel =
-              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
@@ -77,22 +77,31 @@ class MenuApiProvider {
       if (response.statusCode == 200) {
         int errorCode = mJsonDecode(response.data)["error"];
         if (errorCode == 0) {
-          ShopProductModel food = ShopProductModel.fromJson(
-              mJsonDecode(response.data)["data"]["food"]);
+          final decoded = mJsonDecode(response.data);
+          final data = decoded["data"];
 
-          Iterable lo = mJsonDecode(response.data)["data"]["menus"];
-          List<RestaurantSubMenuModel>? restaurantSubModel = lo
-              ?.map((menu) => RestaurantSubMenuModel.fromJson(menu))
-              ?.toList();
-          ShopModel restaurantModel =
-              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          final foodRaw = Map<String, dynamic>.from(data["food"]);
+          final restoRaw = Map<String, dynamic>.from(data["resto"]);
 
-          Map<String, dynamic> mapRes = new Map();
-          mapRes.putIfAbsent("restaurant", () => restaurantModel);
-          mapRes.putIfAbsent("menus", () => restaurantSubModel);
-          mapRes.putIfAbsent("food", () => food);
+          foodRaw["restaurant"] ??= restoRaw;
 
-          return mapRes;
+          ShopProductModel food = ShopProductModel.fromJson(foodRaw);
+
+          final menusRaw = data["menus"] as List;
+
+          List<RestaurantSubMenuModel> restaurantSubModel = menusRaw
+              .map((menu) => RestaurantSubMenuModel.fromJson(
+            Map<String, dynamic>.from(menu),
+          ))
+              .toList();
+
+          ShopModel restaurantModel = ShopModel.fromJson(restoRaw);
+
+          return {
+            "restaurant": restaurantModel,
+            "menus": restaurantSubModel,
+            "food": food,
+          };
         } else
           throw Exception(-1); // there is an error in your request
       } else {
@@ -132,7 +141,7 @@ class MenuApiProvider {
               ?.map((comment) => RestaurantSubMenuModel.fromJson(comment))
               ?.toList();
           ShopModel restaurantModel =
-              ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
+          ShopModel.fromJson(mJsonDecode(response.data)["data"]["resto"]);
 
           Map<String, dynamic> mapRes = new Map();
           mapRes.putIfAbsent("restaurant", () => restaurantModel);
