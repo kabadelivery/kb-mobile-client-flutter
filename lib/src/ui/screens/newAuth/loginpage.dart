@@ -699,6 +699,14 @@ class _LoginPageV2State extends State<LoginPageV2> {
                                   loginButton(),
                                   const SizedBox(height: 20),
                                   signupButton(),
+                                  const SizedBox(height: 20,),
+                                  GestureDetector(
+                                    onTap: onForgotPasswordTap,
+                                    child: Text(AppLocalizations.of(context)!.translate("forgot_password"),style: TextStyle(color:AuthColors.textMain.withOpacity(.5),
+                                        decorationStyle:TextDecorationStyle.solid,
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: AuthColors.textMain.withOpacity(.5))),
+                                  )
                                 ]
                                     : [
                                   signupButton(),
@@ -792,6 +800,7 @@ class _LoginPageV2State extends State<LoginPageV2> {
           isLogin?"${AppLocalizations.of(context)!.translate('validate')}":"${AppLocalizations.of(context)!.translate('connexion')}",
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold,color: !isLogin?AuthColors.textInactive:Colors.white),
         ),
+
       ),
     );
   }
