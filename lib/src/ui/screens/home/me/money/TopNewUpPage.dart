@@ -1159,161 +1159,238 @@ class _TopNewUpPageState extends State<TopNewUpPage> implements TopUpView {
       showLoading(false);
     });
   }
-  void launchNewMomoTopUp()async{
+  void _setLoading(bool value) {
+    if (!mounted) return;
     setState(() {
-      showLoading(true);
+      showLoading(value);
     });
-    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
-    CustomerModel customer = await CustomerUtils.getCustomer();
-    bool launch_other_payment = false;
-    int transaction_motif_id = 1 ;
-    if(momo_picked_id!="flooz" && momo_picked_id!="t_money"){
-      launch_other_payment=true;
-    }
-    bool isMomoFromTogo   =await detectTogoMomoOperator(_phoneNumberFieldController!.text);
-    if(!isMomoFromTogo){
-      launch_other_payment=true;
-    }
-    if(!launch_other_payment){
-      try{
-        Map result = await provider.launchTopUp(customer,
-            _phoneNumberFieldController!.text,
-            _amountFieldController!.text,
-            _getFees(),
-            transaction_motif_id ,
-            );
-        debugPrint('result $result');
-        if(result!=null && result['error']==0){
-          Navigator.of(context).pop({"success": true,"code":result['code']});
-        }
-      }catch(_){
-        setState(() {
-          showLoading(false);
-        });
-        CherryToast.error(
-          title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-          description: Text("${AppLocalizations.of(context)!.translate('system_error')}"),
-          autoDismiss: true,
-        ).show(context);
-        launch_other_payment=true;
+  }
+
+  void _showSystemError() {
+    if (!mounted) return;
+
+    CherryToast.error(
+      title: Text("${AppLocalizations.of(context)!.translate('error')}"),
+      description: Text("${AppLocalizations.of(context)!.translate('system_error')}"),
+      autoDismiss: true,
+    ).show(context);
+  }
+
+  Future<void> launchNewMomoTopUp() async {
+    _setLoading(true);
+
+    final ClientPersonalApiProvider provider = ClientPersonalApiProvider();
+    final CustomerModel customer = await CustomerUtils.getCustomer();
+
+    final String phoneNumber = _phoneNumberFieldController!.text.trim();
+    final String amountText = _amountFieldController!.text.trim();
+
+    bool launchOtherPayment = false;
+    const int transactionMotifId = 1;
+
+    try {
+      final bool isKnownTogoOperator =
+          momo_picked_id == "flooz" || momo_picked_id == "t_money";
+
+      final bool isMomoFromTogo = await detectTogoMomoOperator(phoneNumber);
+
+      if (!isKnownTogoOperator || !isMomoFromTogo) {
+        launchOtherPayment = true;
       }
-    }
-    if(momo_picked_id=="tmoney") {
-      Navigator.of(context).pop();
-      return;
-    }
-       if(launch_other_payment){
-      KkiapayProvider kkiapayProvider = new KkiapayProvider();
-      kkiapayProvider.launchKkiapayPayment(
-        context,
-        amount:int.parse(_amountFieldController!.text),
-        customer: customer,
-        phone_number: _phoneNumberFieldController!.text,
-        feesAmount: _getFees(), typeOfTransaction: 'momo',
+
+      if (!launchOtherPayment) {
+        final Map result = await provider.launchTopUp(
+          customer,
+          phoneNumber,
+          amountText,
+          _getFees(),
+          transactionMotifId,
         );
+
+        debugPrint('launchTopUp result: $result');
+
+        if (result['error'] == 0) {
+          if (!mounted) return;
+          Navigator.of(context).pop({
+            "success": true,
+            "code": result['code'],
+          });
+          return;
+        }
+
+        launchOtherPayment = true;
+      }
+    } catch (e) {
+      debugPrint("launchNewMomoTopUp error: $e");
+      launchOtherPayment = true;
+    }
+
+    _setLoading(false);
+
+    if (launchOtherPayment) {
+      /*
+    Kkiapay fallback usage.
+
+    Enable this block only when you want non-Flooz / non-TMoney
+    or non-Togo mobile money payments to go through Kkiapay.
+
+    final KkiapayProvider kkiapayProvider = KkiapayProvider();
+
+    kkiapayProvider.launchKkiapayPayment(
+      context,
+      amount: int.parse(amountText),
+      customer: customer,
+      phone_number: phoneNumber,
+      feesAmount: _getFees(),
+      typeOfTransaction: 'momo',
+    );
+    */
+
+      _showSystemError();
     }
   }
-  void launchNewCardTopUp()async{
-    setState(() {
-      showLoading(true);
-    });
-    bool launch_other_payment = false;
-    ClientPersonalApiProvider provider = new ClientPersonalApiProvider();
-    CustomerModel customer = await CustomerUtils.getCustomer();
-    Map<String, dynamic> semoaResult = {};
-    try{
+  Future<void> launchNewCardTopUp() async {
+    _setLoading(true);
+
+    final ClientPersonalApiProvider provider = ClientPersonalApiProvider();
+    final CustomerModel customer = await CustomerUtils.getCustomer();
+
+    final String phoneNumber = _phoneNumberFieldController!.text.trim();
+    final String amountText = _amountFieldController!.text.trim();
+
+    bool launchOtherPayment = false;
+
+    try {
       debugPrint("_getRealInitialAmountFromTotal ${_getRealTotalAmountFromInitial()}");
-      Map<String, dynamic> paymentData = {
-        "amount": (_getRealTotalAmountFromInitial()),
+
+      final Map<String, dynamic> paymentData = {
+        "amount": _getRealTotalAmountFromInitial(),
         "description": "Paiement par carte",
         "client": {
-          "lastname": "${customer.nickname}",
+          "lastname": customer.nickname ?? "",
           "firstname": "",
-          "phone": "${_selectedCountryCode}${_phoneNumberFieldController!.text}",
+          "phone": "$_selectedCountryCode$phoneNumber",
         },
         "type_notif": ["SMS", "MAIL"],
       };
-      semoaResult = await provider.launchSemoa(customer, paymentData);
-    }catch(_){
-      launch_other_payment=true;
-    }
-    if(semoaResult!=null && semoaResult.isNotEmpty){
-      debugPrint('semoaResult $semoaResult');
-      if(semoaResult['order_reference']!=null){
-        Map<String, dynamic> semoaData = semoaResult;
-        List<dynamic> paymentsMethods = semoaData['payments_method'] ?? [];
-        String orderReference = semoaData['order_reference'] ?? '';
-        Map<String, dynamic> semoaStoreData = {
+
+      final Map<String, dynamic> semoaResult =
+      await provider.launchSemoa(customer, paymentData);
+
+      debugPrint('semoaResult: $semoaResult');
+
+      final String? orderReference = semoaResult['order_reference'];
+
+      if (orderReference == null || orderReference.isEmpty) {
+        launchOtherPayment = true;
+      } else {
+        final List<dynamic> paymentsMethods =
+            semoaResult['payments_method'] ?? [];
+
+        final Map<String, dynamic> semoaStoreData = {
           'transaction_id': orderReference,
-          'amount': int.parse(_amountFieldController!.text),
-          'user_id': customer?.id,
+          'amount': int.parse(amountText),
+          'user_id': customer.id,
           'fees': _getFees(),
           'details': 'Rechargement de carte',
-          'transaction_motif_id':1
+          'transaction_motif_id': 1,
         };
-        Map result = await provider.launchStoreSemoaTransaction(customer,semoaStoreData);
-        debugPrint('paymentsMethods: $paymentsMethods');
-        if( result!=null && result['data']['success']&& paymentsMethods.isNotEmpty) {
+
+        final Map storeResult = await provider.launchStoreSemoaTransaction(
+          customer,
+          semoaStoreData,
+        );
+
+        final bool storeSuccess =
+            storeResult['data'] != null && storeResult['data']['success'] == true;
+
+        if (!storeSuccess || paymentsMethods.isEmpty) {
+          launchOtherPayment = true;
+        } else {
           Map<String, dynamic>? firstPaymentMethod;
-          if (paymentsMethods.isNotEmpty && paymentsMethods[0] is List) {
-            List<dynamic> firstGroup = paymentsMethods[0];
-            if (firstGroup.isNotEmpty) {
-              firstPaymentMethod = firstGroup[0];
-            }
+
+          if (paymentsMethods.first is List &&
+              (paymentsMethods.first as List).isNotEmpty) {
+            firstPaymentMethod =
+            Map<String, dynamic>.from((paymentsMethods.first as List).first);
           }
 
-          if (firstPaymentMethod != null) {
-            String actionUrl = firstPaymentMethod['action'] ?? '';
-            String gatewayName = firstPaymentMethod['gateway'] ?? 'Unknown';
-            String description = firstPaymentMethod['description'] ?? '';
-            if(firstPaymentMethod['gateway'].toString().contains("Ecobank-Semoa")){
+          if (firstPaymentMethod == null) {
+            launchOtherPayment = true;
+          } else {
+            final String actionUrl = firstPaymentMethod['action'] ?? '';
+            final String gatewayName = firstPaymentMethod['gateway'] ?? '';
+
+            if (gatewayName.contains("Ecobank-Semoa")) {
+              if (!mounted) return;
+
               setState(() {
-                textActionSemoaAvailable=true;
-                textActionSemoa = firstPaymentMethod!['action'];
+                textActionSemoaAvailable = true;
+                textActionSemoa = actionUrl;
                 showLoading(false);
-                return;
               });
+
+              return;
             }
-            if (actionUrl.isNotEmpty && actionUrl.contains('https')) {
-              final uri = Uri.parse(actionUrl);
+
+            if (actionUrl.isNotEmpty && actionUrl.startsWith('https')) {
+              final Uri uri = Uri.parse(actionUrl);
+
               if (await canLaunchUrl(uri)) {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                _setLoading(false);
+
+                await launchUrl(
+                  uri,
+                  mode: LaunchMode.externalApplication,
+                );
+
+                if (!mounted) return;
                 Navigator.of(context).pop();
+                return;
               } else {
-                launch_other_payment=true;
+                launchOtherPayment = true;
               }
+            } else {
+              launchOtherPayment = true;
             }
           }
         }
-    }else{
-        CherryToast.error(
-          title: Text("${AppLocalizations.of(context)!.translate('error')}"),
-          description: Text("${AppLocalizations.of(context)!.translate('system_error')}"),
-          autoDismiss: true,
-        ).show(context);
-        setState(() {
-          showLoading(false);
-        });
-      launch_other_payment=true;
       }
+    } catch (e) {
+      debugPrint("launchNewCardTopUp error: $e");
+      launchOtherPayment = true;
     }
 
-    if(launch_other_payment){
-      KkiapayProvider kkiapayProvider = new KkiapayProvider();
-      String picked_card = bankPaymentModes.where((element) => element["id"]==bank_picked_id).first['name'];;
-      kkiapayProvider.launchKkiapayPayment(
-        context,
-        amount:int.parse(_amountFieldController!.text),
-        customer: customer,
-        selectedCard: picked_card,
-        feesAmount: _getFees(),
-        typeOfTransaction: 'card',
-      );
-      setState(() {
-        showLoading(true);
-      });
+    _setLoading(false);
+
+    if (launchOtherPayment) {
+      /*
+    Kkiapay fallback usage.
+
+    Enable this block only when Semoa fails, no valid payment method
+    is returned, or the Semoa action URL cannot be launched.
+
+    final KkiapayProvider kkiapayProvider = KkiapayProvider();
+
+    final String pickedCard = bankPaymentModes
+        .firstWhere(
+          (element) => element["id"] == bank_picked_id,
+          orElse: () => {"name": ""},
+        )['name'];
+
+    kkiapayProvider.launchKkiapayPayment(
+      context,
+      amount: int.parse(amountText),
+      customer: customer,
+      selectedCard: pickedCard,
+      feesAmount: _getFees(),
+      typeOfTransaction: 'card',
+    );
+    */
+
+      _showSystemError();
     }
-    }
+  }
   _onSwitch(int i) {
     setState(() {
       showLoading(false);
