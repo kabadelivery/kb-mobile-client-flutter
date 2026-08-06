@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 android {
     namespace "tg.tmye.kaba.brave.one"
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     lintOptions {
         disable 'InvalidPackage'
@@ -48,7 +48,7 @@ android {
     defaultConfig {
         applicationId "tg.tmye.kaba.brave.one"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
